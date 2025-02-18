@@ -45,29 +45,73 @@
 \cleardoublepage\include{frontbackmatter/abstract}
 \cleardoublepage\include{frontbackmatter/acknowledgments}
 \pagestyle{scrheadings}
-\cleardoublepage\include{frontbackmatter/contents}
+\cleardoublepage\include{frontbackmatter/table-of-contents}
 
 %
 % Mainmatter
 %
 \cleardoublepage\pagenumbering{arabic}%
-\def\dir{chapters/introduction}
-\include{\dir/main}
-
-\cleardoublepage%
-\def\dir{chapters/sample-chapter}
+\def\dir{chapters/01-introduction}
 \include{\dir/main}
 
 % Include some blind text
-\Blinddocument
+%\Blinddocument
 
 \cleardoublepage%
-\def\dir{chapters/conclusion_outlook}
+\def\dir{chapters/02-literature-review}
 \include{\dir/main}
+
+% Part I: GPU Port
+\part{GPU Porting of Dirac Solvers}
+
+\cleardoublepage%
+\def\dir{chapters/part-1/03-introduction}
+\include{\dir/main}
+
+\cleardoublepage%
+\def\dir{chapters/part-1/04-methodology}
+\include{\dir/main}
+
+\cleardoublepage%
+\def\dir{chapters/part-1/05-results}
+\include{\dir/main}
+
+\cleardoublepage%
+\def\dir{chapters/part-1/06-discussion}
+\include{\dir/main}
+
+% Part I: MGLMA
+\part{Variance Reduction for Two-Point Functions}
+
+\cleardoublepage%
+\def\dir{chapters/part-2/07-introduction}
+\include{\dir/main}
+
+\cleardoublepage%
+\def\dir{chapters/part-2/08-methodology}
+\include{\dir/main}
+
+\cleardoublepage%
+\def\dir{chapters/part-2/09-results}
+\include{\dir/main}
+
+\cleardoublepage%
+\def\dir{chapters/part-2/10-discussion}
+\include{\dir/main}
+
+\cleardoublepage%
+\def\dir{chapters/11-conclusion-outlook}
+\include{\dir/main}
+
+% Appendices
 
 \appendix
 \cleardoublepage%
-\def\dir{chapters/appendix}
+\def\dir{chapters/99-A-appendix}
+\include{\dir/main}
+
+\cleardoublepage%
+\def\dir{chapters/99-B-appendix}
 \include{\dir/main}
 
 \cleardoublepage\include{frontbackmatter/bibliography}

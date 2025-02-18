@@ -1,4 +1,10 @@
 \chapter{Memory Management System}
 \label{ch:p1:memory}
 
-\worktodo{todo}
+In a second stage, we plan to unify the spinor fields among the two applications. The key idea is to not deal with fields on the CPU separately from fields on the GPU. A challenge is that the two applications have a vastly different memory layouts for fields and reordering has to be performed from one to the other. In openQxD a spinor field is just a large array of structs, whereas in QUDA a field is a C++ object. We plan to implement a memory management system, that keeps track of where each field currently resides (CPU, GPU or both), where it was last updated (CPU or GPU) and implicitly transfer the field if a function reads or writes to it. Such a system should be backward compatible with the memory layout of openQxD. Using C macros, we may guide the compiler to the GPU-variants of certain functions that overwrite CPU functions.
+
+This will enable us to work in the framework of openQxD in the same way as before and at the same time use GPU features. 
+%The application decides where to transfer fields.
+Existing software will benefit from such a memory management system too.
+
+\worktodo{more details}

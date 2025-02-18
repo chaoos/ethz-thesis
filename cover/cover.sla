@@ -92,37 +92,35 @@
         <PAGEOBJECT XPOS="523.873385826772" YPOS="71.9856167979002" OwnPage="0" ItemID="341103061" PTYPE="4" WIDTH="28.0000000000001" HEIGHT="34.4645669291335" FRTYPE="0" CLIPEDIT="0" ROT="-90" PWIDTH="1" PLINEART="1" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="1" RATIO="1" COLUMNS="1" COLGAP="0" AUTOTEXT="0" EXTRA="0" TEXTRA="0" BEXTRA="0" REXTRA="0" VAlign="0" FLOP="0" PLTSHOW="0" BASEOF="0" textPathType="0" textPathFlipped="0" path="M0 0 L28 0 L28 34.4646 L0 34.4646 L0 0 Z" copath="M0 0 L28 0 L28 34.4646 L0 34.4646 L0 0 Z" gXpos="523.874015748032" gYpos="71.9868766404193" gWidth="0" gHeight="0" PSTYLE="Default Paragraph Style" LAYER="1" NEXTITEM="-1" BACKITEM="-1">
             <StoryText>
                 <DefaultStyle PARENT="Default Paragraph Style" CPARENT="Default Character Style"/>
-                <ITEXT CPARENT="Default Character Style" CH="1905"/>
+                <ITEXT CPARENT="Default Character Style" CH="2025"/>
                 <trail PARENT="Spine"/>
             </StoryText>
         </PAGEOBJECT>
         <PAGEOBJECT XPOS="523.472440944882" YPOS="167.551181102361" OwnPage="0" ItemID="341178837" PTYPE="4" WIDTH="80.6559280089984" HEIGHT="28.0399604594879" FRTYPE="0" CLIPEDIT="0" ROT="-90" PWIDTH="1" PLINEART="1" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="1" RATIO="1" COLUMNS="1" COLGAP="0" AUTOTEXT="0" EXTRA="0" TEXTRA="0" BEXTRA="0" REXTRA="0" VAlign="0" FLOP="0" PLTSHOW="0" BASEOF="0" textPathType="0" textPathFlipped="0" path="M0 0 L80.6559 0 L80.6559 28.04 L0 28.04 L0 0 Z" copath="M0 0 L80.6559 0 L80.6559 28.04 L0 28.04 L0 0 Z" gXpos="523.473070866142" gYpos="167.552440944881" gWidth="0" gHeight="0" PSTYLE="Default Paragraph Style" LAYER="1" NEXTITEM="-1" BACKITEM="-1">
             <StoryText>
                 <DefaultStyle PARENT="Default Paragraph Style" CPARENT="Default Character Style"/>
-                <ITEXT CH="Albert Einstein"/>
+                <ITEXT CH="Roman Gruber"/>
                 <trail PARENT="Spine"/>
             </StoryText>
         </PAGEOBJECT>
         <PAGEOBJECT XPOS="573.385826771653" YPOS="45.007874015748" OwnPage="0" ItemID="341184469" PTYPE="4" WIDTH="265" HEIGHT="21.9790551181103" FRTYPE="0" CLIPEDIT="0" PWIDTH="1" PLINEART="1" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="1" RATIO="1" COLUMNS="1" COLGAP="0" AUTOTEXT="0" EXTRA="0" TEXTRA="0" BEXTRA="0" REXTRA="0" VAlign="0" FLOP="0" PLTSHOW="0" BASEOF="0" textPathType="0" textPathFlipped="0" path="M0 0 L265 0 L265 21.9791 L0 21.9791 L0 0 Z" copath="M0 0 L265 0 L265 21.9791 L0 21.9791 L0 0 Z" gXpos="573.386456692913" gYpos="45.0091338582677" gWidth="0" gHeight="0" PSTYLE="Default Paragraph Style" LAYER="1" NEXTITEM="-1" BACKITEM="-1">
             <StoryText>
                 <DefaultStyle PARENT="Default Paragraph Style" CPARENT="Default Character Style"/>
-                <ITEXT CH="Albert Einstein"/>
+                <ITEXT CH="Roman Gruber"/>
                 <trail PARENT="Author"/>
             </StoryText>
         </PAGEOBJECT>
         <PAGEOBJECT XPOS="573.385826771653" YPOS="70.9999999999996" OwnPage="0" ItemID="338812885" PTYPE="4" WIDTH="352" HEIGHT="107.094488188976" FRTYPE="0" CLIPEDIT="0" PWIDTH="1" PLINEART="1" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="1" RATIO="1" COLUMNS="1" COLGAP="0" AUTOTEXT="0" EXTRA="0" TEXTRA="0" BEXTRA="0" REXTRA="0" VAlign="0" FLOP="0" PLTSHOW="0" BASEOF="0" textPathType="0" textPathFlipped="0" path="M0 0 L352 0 L352 107.094 L0 107.094 L0 0 Z" copath="M0 0 L352 0 L352 107.094 L0 107.094 L0 0 Z" gXpos="573.386456692913" gYpos="71.0012598425193" gWidth="0" gHeight="0" PSTYLE="Default Paragraph Style" LAYER="1" NEXTITEM="-1" BACKITEM="-1">
             <StoryText>
                 <DefaultStyle PARENT="Default Paragraph Style" CPARENT="Default Character Style"/>
-                <ITEXT CH="Eine neue Bestimmung der"/>
-                <breakline/>
-                <ITEXT CH="Moleküldimensionen"/>
+                <ITEXT CH="Variance reduction in lattice determinations of the leading order hadronic vacuum polarisation contribution to the muon g-2"/>
                 <trail PARENT="Title"/>
             </StoryText>
         </PAGEOBJECT>
         <PAGEOBJECT XPOS="647.314960629921" YPOS="564.482992125984" OwnPage="0" ItemID="336930773" PTYPE="4" WIDTH="274.393700787402" HEIGHT="31" FRTYPE="0" CLIPEDIT="0" PWIDTH="1" PLINEART="1" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="1" RATIO="1" COLUMNS="1" COLGAP="0" AUTOTEXT="0" EXTRA="0" TEXTRA="0" BEXTRA="0" REXTRA="0" VAlign="0" FLOP="0" PLTSHOW="0" BASEOF="0" textPathType="0" textPathFlipped="0" path="M0 0 L274.394 0 L274.394 31 L0 31 L0 0 Z" copath="M0 0 L274.394 0 L274.394 31 L0 31 L0 0 Z" gXpos="647.315590551181" gYpos="564.484251968504" gWidth="0" gHeight="0" PSTYLE="Default Paragraph Style" LAYER="1" NEXTITEM="-1" BACKITEM="-1">
             <StoryText>
                 <DefaultStyle PARENT="Default Paragraph Style" CPARENT="Default Character Style"/>
-                <ITEXT CH="Diss. ETH No. ?"/>
+                <ITEXT CH="Diss. ETH No. TODO"/>
                 <para PARENT="DissNo"/>
             </StoryText>
         </PAGEOBJECT>

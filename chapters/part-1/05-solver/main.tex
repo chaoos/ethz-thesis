@@ -1,0 +1,55 @@
+\chapter{Solver}
+\label{ch:p1:solver}
+
+% A main program in openQxD that wants to leverage QUDAs solvers may be changed in the following way.
+In order to use QUDA in openQxD, we 
+ include the necessary header files that provide the interface to QUDA, and link it with the compiled QUDA library (details on linking the library are discussed in \cref{building_openqxd_against_quda}):
+
+\begin{lstlisting}[language=C++]
+#include "quda_utils.h"
+#include <quda_openqcd_interface.h>
+\end{lstlisting}
+
+In this example \code{quda\_utils.h} is a header file in openQxD that provides the function
+\begin{lstlisting}[language=C++]
+openQCD_QudaInitArgs_t quda_init(void);
+\end{lstlisting}
+This function takes no arguments and its return struct can be ignored (it is used in some of the tests). The function initializes a struct that describes the lattice setup such as boundary conditions (return value of \code{bc\_parms()}), Dirac parameters (return value of \code{dirac\_parms()}), gauge group (\code{flds\_parms()}), local lattice dimensions, process grid and its mapping to MPI ranks, process block grid, pointers to the gauge and clover fields. All these structs have to be set before calling \code{quda\_init()}. This information is passed to QUDA by calling \code{openQCD\_qudaInit()} in \code{quda\_openqcd\_interface.h}, which itself initializes the communication grid (and arranges the ranks as needed by the boundary conditions). QUDA is then initialized by calling \code{initQuda()}.
+
+The header file \code{quda\_openqcd\_interface.h} provides API functions to set up, invoke and destroy the solver context \footnote{Notice that these function names might be subject of change in the near future.}.
+
+\begin{lstlisting}[language=C++]
+void* openQCD_qudaSolverSetup(char *infile,
+                              char *section);
+double openQCD_qudaInvert(void *param, double mu,
+                          void *source, void *solution,
+                          int *status);
+void openQCD_qudaSolverDestroy(void *param);
+\end{lstlisting}
+
+The function \code{openQCD\_qudaSolverSetup()} takes two parameters; a path to an input file and a section name. The input file looks like a regular openQCD input file in a dialect of the INI file format. This input file is assumed to have a section given by the section name, where the QUDA-solver is described:
+
+\begin{lstlisting}[]
+[Solver ABC]
+solver          QUDA
+maxiter         2048
+gcrNkrylov      20
+tol             1e-4
+reliable_delta  1e-5
+inv_type        QUDA_GCR_INVERTER
+verbosity       QUDA_VERBOSE
+\end{lstlisting}
+
+The section name in the above example is \code{Solver ABC}. For the section to be a valid QUDA-solver section we need the key-value pair \code{solver = QUDA} in the section, else the setup function will throw an error message. All the remaining keys parameterize the various members of the struct \code{QudaInvertParam} and we refer the reader to its documentation (see \code{Wiki} on \cite{QUDApaper}). The example section above is minimal, i.e. it only sets required parameters; it solves the Wilson-Clover Dirac equation using a GCR solver without any preconditioning to a residual of $\text{tol} = $\code{1e-4}. The setup function \code{openQCD\_qudaSolverSetup()} returns a void pointer that acts as a solver handle holding all the relevant information.
+
+When calling the solver with \code{openQCD\_qudaInvert}, the function expects this solver handle as its first parameter. In order to mimic the behaviour of the openQCD solvers (e.g. \code{tmcg}, \code{sap\_gcr}, \code{dfl\_sap\_gcr}), the invert-function accepts a twisted mass parameter \code{mu} explicitly. The two following parameters are the \code{source} and \code{solution} vectors given as regular openQCD arrays of \code{spinor\_dble} that might have been allocated and reserved using \code{alloc\_wsd()} and \code{reserve\_wsd()} respectively. Note that both spinor fields, \code{source} and \code{solution}, have to be allocated on the CPU and \code{source} might be initialized as a point or random source at this point. Finally the \code{status} variable is set to a negative integer if the solver fails and to a positive number (number of outer iteration steps) otherwise.
+
+When the solver is not needed anymore, the data structs can be deallocated by calling the destroy function \code{openQCD\_qudaSolverDestroy()}, which also takes the solver handle as its only argument.
+
+Finally, to destroy the QUDA context entirely, we call the finalize function:
+
+\begin{lstlisting}[language=C++]
+void openQCD_qudaFinalize(void);
+\end{lstlisting}
+
+This interface makes all variants of the iterative solver algorithms in the QUDA library for Wilson fermions accessible in openQxD, including the conjugate gradient (CG), generalized conjugate residuals (GCR) and the adaptive multi-grid preconditioner (MG)~\cite{Babich:2010qb} which is similar to the inexact deflation method implemented natively in openQxD. 

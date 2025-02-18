@@ -173,6 +173,34 @@
 \definecolor{chapter-color}{cmyk}{1, 0.50, 0, 0.25}
 \definecolor{link-color}{cmyk}{1, 0.50, 0, 0.25}
 \definecolor{cite-color}{cmyk}{0, 0.7, 0.9, 0.2}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+%\definecolor{codegreen}{RGB}{0, 153, 0}
+%\definecolor{codegray}{RGB}{127, 127, 127}
+\definecolor{codeblue}{RGB}{102, 214, 237}
+\definecolor{codekeyword}{RGB}{249, 36, 114}
+\definecolor{codecomment}{RGB}{127, 127, 127}
+\definecolor{backcolor}{RGB}{242, 242, 235}
+\definecolor{linkcolor}{RGB}{102, 0, 0}
+\definecolor{corange}{RGB}{255, 70, 0}
+\definecolor{cyellow}{RGB}{209, 153, 0}
+\definecolor{cblue}{RGB}{64, 128, 255}
+\definecolor{cbrown}{RGB}{153, 102, 51}
+\definecolor{cpink}{RGB}{255, 0, 255}
+\definecolor{cred}{RGB}{255, 64, 0}
+\definecolor{cgreen}{RGB}{0, 191, 0}
+\definecolor{clightblue}{RGB}{191, 217, 255}
+\definecolor{cturquois}{RGB}{0, 255, 255}
+\definecolor{cpurple}{RGB}{128, 0, 255}
+\definecolor{clightgreen}{RGB}{175, 255, 175}
+\definecolor{clightgray}{RGB}{211, 211, 211}
+\definecolor{clightpink}{RGB}{255, 175, 255}
+\definecolor{cdarkblue}{RGB}{0, 0, 255}
+\definecolor{cdarkred}{RGB}{255, 0, 0}
+\definecolor{cdarkgreen}{RGB}{0, 255, 0}
+
 
 % Hyperref
 \usepackage{bookmark}
@@ -245,6 +273,9 @@
   \endgroup
 }
 
+% Inline code
+\def\code#1{\texttt{#1}}
+
 % Put pages on A4 w/ crop marks
 %\usepackage[a4,center,cam]{crop}
 
@@ -252,3 +283,40 @@
 \clubpenalty = 10000
 \widowpenalty = 10000
 %\displaywidowpenalty = 10000
+
+% Code Listings
+\usepackage{listings}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+\crefname{lstlisting}{listing}{listings}
+\Crefname{lstlisting}{Listing}{Listings}
+
+% for includestandalone and its tikz pictures
+\usepackage{standalone}
+\usepackage{tikz,ifthen}
+\usetikzlibrary{calc}
+\usetikzlibrary{math}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\usetikzlibrary{decorations}
+\usetikzlibrary{positioning}

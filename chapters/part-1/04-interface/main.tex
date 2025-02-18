@@ -1,0 +1,234 @@
+\chapter{Interface}
+\label{ch:p1:interface}
+
+Linking openQxD against QUDA involves three major steps:
+
+\begin{enumerate}
+\item{The memory layout of lattice fields is a fundamental difference between the two applications. We implement an interface that reorders the fields to agree with the different conventions.}
+\item{QUDA does not support $C^\star$ boundary conditions, so we implement them in the QUDA library.}
+\item{QUDA does not support simulating QCD+QED either. This feature involves modifying the Wilson-Dirac operator and the clover term.}
+\end{enumerate}
+
+In the following we present details of each step.
+
+\subsection{Field reordering}
+
+In order to use QUDA's functionality within openQxD, one has to build QUDA as a library, include the main header file (\code{quda.h}) and link openQxD against it. 
+As an example for a QUDA function, we consider inversions of the Dirac operator, whose API call signature looks as follows:
+
+\begin{lstlisting}[language=C++]
+void invertQuda(void *h_x, void *h_b,
+                QudaInvertParam *param);
+\end{lstlisting}
+
+Here, \code{h\_x} and \code{h\_b} are void pointers pointing to the host spinor fields in openQxD order, i.e. base pointers to arrays of \code{spinor\_dble} structs, as described previously. The \code{QudaInvertParam} struct parametrizes the solver (see \code{quda.h} and Ref.~\cite{QUDApaper} for details).
+
+
+We implement the reordering in the following classes in QUDA \cite{QUDApaper}:
+\begin{itemize}
+  \item \code{OpenQCDOrder} in \code{include/gauge\_field\_order.h} for the gauge field.
+  \item \code{OpenQCDDiracOrder} in \code{include/color\_spinor\_field\_order.h} for the spinor field.
+  \item \code{OpenQCDOrder} in \code{include/clover\_field\_order.h} for the clover field.
+\end{itemize}
+
+All of the fields have the Euclidean space-time index in common, so we begin by discussing the order of the lattice sites in the following section.
+
+\subsubsection{Space-time coordinates}
+
+Denoting the rank-local lattice extent in direction $\mu=0,1,2,3$ by $L_\mu \in \mathbb{N}$, we can write the lattice coordinate as a 4-vector, $x = (x_0,x_1,x_2,x_3)$, where $x_\mu \in \{ 0, \dots, L_\mu -1 \}$. openQxD puts time coordinate first $x = (t, \vec{x})$, which we refer to as (txyz)-convention. From that we can create a lexicographical index
+\begin{equation} \label{eq:lexi}
+\Lambda(x, L) := L_3 L_2 L_1 x_0 + L_3 L_2 x_1 + L_3 x_2 + x_3.
+\end{equation}
+openQxD orders the indices in so called cache-blocks; a decomposition of the rank-local lattice into equal blocks of extent $B_\mu \in \mathbb{N}$ in direction $\mu$. Within a block, points are indexed lexicographically $\Lambda(b, B)$ as in \cref{eq:lexi}, but the $L_\mu$ replaced by $B_\mu$ and $x$ replaced by the block local Euclidean index $b$, such that $b_\mu = x_\mu \mod B_\mu \in \{ 0, \dots, B_\mu -1 \}$.  
+Furthermore, the blocks themselves are indexed lexicographically within the rank-local lattice decomposition into blocks, i.e. $\Lambda(n, N_B)$, where we denote the number of blocks in direction $\mu$ as $N_{B,\mu} = L_\mu / B_\mu$, and the Euclidean index of the block as $n$, such that $n_\mu = \lfloor x_\mu / B_\mu \rfloor \in \{ 0, \dots, N_{B,i} -1 \}$.
+
+In addition, openQxD employs even-odd ordering, that is all even-parity lattice points (those where the sum $\sum_{\mu=0}^3 x_\mu$ of the rank-local coordinate $x$ is even) come first followed by all odd-parity points.
+
+Therefore, the total rank-local unique lattice index is
+\begin{align} \label{eq:ipt}
+\hat{x} &= \biggl \lfloor \frac{1}{2} \Big( V_B \Lambda(n, N_B) + \Lambda(b, B) \Big) \biggr \rfloor + P(x) \frac{V}{2},
+\end{align}
+where $V_B = B_0 B_1 B_2 B_3$ is the volume of a block, $P(x)=\tfrac{1}{2}(1-(-1)^{\sum_\mu x_\mu})$ gives the parity of index $x$, and $b$, $n$ are related to $x$ as described in the text above (see \cref{fig:index} for an example).
+
+\begin{figure}
+  \includestandalone[width=0.5\linewidth]{\dir/index} %without .tex extension
+  % or use \input{mytikz}
+  \caption{2D example ($8 \times 8$ local lattice) of the rank-local unique lattice index in openQxD (in time first convention (txyz)). The blue rectangles denote cache blocks of size $4 \times 4$. Gray sites are odd, white sites are even lattice points.}
+  \label{fig:index}
+\end{figure}
+
+This is implemented in openQxD by the mapping array \code{ipt}, $\hat{x} \coloneqq \text{ipt}\left[\Lambda(x,L)\right]$. Such mapping arrays are not recommended on GPUs due to shared memory contentions and memory usage. Instead, it is advisable to write a pure function $f \colon x \mapsto \hat{x}$ that implements \cref{eq:ipt} by calculating the index on the fly such that the compiler can properly inline the calculation.
+
+We write the \code{OpenQCDDiracOrder} class that implements a \code{load()} and a \code{save()} method for the spinor fields:
+
+\begin{lstlisting}[language=C++]
+__device__ __host__ inline void load(complex v[length/2], int x_cb, int parity = 0)
+__device__ __host__ inline void save(const complex v[length/2], int x_cb, int parity = 0) const
+\end{lstlisting}
+
+These two methods are called by QUDA in a loop with all possible values for \code{x\_cb} and \code{parity}, where \code{x\_cb} denotes the (local) checkerboard site index and \code{parity} the parity of the point. QUDA provides an (inlined) function \code{getCoords()} to translate the checkerboard and parity index into a (local) 4-vector $x = (\vec{x}, t)$ with time coordinate last ((xyzt)-convention). After permuting the coordinates into (txyz)-convention, we can query the mapping function $f$ to obtain for the desired lattice point the offset from the base pointer in openQxD and copy the data to or from the location pointed to by the variable \code{v}. That data might have additional indices that we describe in the
+following.
+
+\subsubsection{Spinor Field}
+
+As mentioned previously, spinor fields have indices $(x,\alpha,a)$, where we describe how to transform the space-time index $x$ in the previous section. Both QUDA and openQxD use the same order for spinor index $\alpha$ and color index $a$. Thus at each space-time index we can copy $12=4 \cdot 3$ consecutive complex numbers (i.e. \code{24*sizeof(Float)} bytes where \code{Float} is a template parameter for real numbers (\code{double}, \code{float}, \code{half}) to or from the output array \code{v}. This is implemented in the order class \code{OpenQCDDiracOrder} in \code{include/color\_spinor\_field\_order.h} \cite{QUDApaper} and concludes spinor field reordering.
+
+\subsubsection{Clover Field}
+
+Similarly to the spinor field, for each space-time index, we can copy $72 = 2*36$ real numbers (i.e. \code{72*sizeof(Float)} bytes)
+to the output array \code{v} (the save function is not necessary, since we never need to save clover fields from device to host).
+
+openQxD stores the clover field as two arrays $u$ of length $36$ that represent two Hermitian 6$\times$ 6 matrices (one for each chirality $\pm$). The first $6$ entries are the diagonal real numbers and the following 15 pairs denote real and imaginary parts of the strictly upper triangular part in row-major order:
+\newlength{\oldcolsep}
+\setlength{\oldcolsep}{\arraycolsep}
+\setlength{\arraycolsep}{4pt}
+\begin{equation}{\small
+\begin{pmatrix}
+u_0   & u_6 + iu_7 & u_8 + iu_9       & u_{10} + iu_{11} & u_{12} + iu_{13} & u_{14} + iu_{15} \\
+\cdot & u_1        & u_{16} + iu_{17} & u_{18} + iu_{19} & u_{20} + iu_{21} & u_{22} + iu_{23} \\
+\cdot & \cdot      & u_2              & u_{24} + iu_{25} & u_{26} + iu_{27} & u_{28} + iu_{29} \\
+\cdot & \cdot      & \cdot            & u_3              & u_{30} + iu_{31} & u_{32} + iu_{33} \\
+\cdot & \cdot      & \cdot            & \cdot            & u_4              & u_{34} + iu_{35} \\
+\cdot & \cdot      & \cdot            & \cdot            & \cdot            & u_5
+\end{pmatrix}}\,.
+\end{equation}
+
+QUDA stores these 36 numbers in a similar format (see \code{include/clover\_field\_order.h} \cite{QUDApaper}):
+\begin{equation}{\small
+\begin{pmatrix}
+u_0              & \cdot            & \cdot            & \cdot            & \cdot            & \cdot \\
+u_6 + iu_7       & u_1              & \cdot            & \cdot            & \cdot            & \cdot \\
+u_8 + iu_9       & u_{16} + iu_{17} & u_2              & \cdot            & \cdot            & \cdot \\
+u_{10} + iu_{11} & u_{18} + iu_{19} & u_{24} + iu_{25} & u_3              & \cdot            & \cdot \\
+u_{12} + iu_{13} & u_{20} + iu_{21} & u_{26} + iu_{27} & u_{30} + iu_{31} & u_4              & \cdot \\
+u_{14} + iu_{15} & u_{22} + iu_{23} & u_{28} + iu_{29} & u_{32} + iu_{33} & u_{34} + iu_{35} & u_5
+\end{pmatrix}}\,. 
+\end{equation}
+\setlength{\arraycolsep}{\oldcolsep}
+
+We see that the diagonal elements are the same in both applications, but QUDA stores the strictly lower triangular part in column-major order. 
+So we can transfer the clover field from openQxD to QUDA by specifying how these 36 numbers transform. In particular, the QED
+clover field does not affect the block structure of the clover term and we can also transfer the clover term in QCD+QED (see \cref{sec:qcd+qed}
+for details).
+On the other hand, a pure QCD clover field can be calculated natively within QUDA and no additional transfer of fields is needed in that case.
+
+\subsubsection{Gauge Field}
+    QUDA associates 4 gauge fields for each space-time point (one for each positive direction $\mu=0,1,2,3$), whereas openQxD stores $8$
+    (forward and backward) directions of gauge fields for all odd-parity points (see \code{main/README.global} for more information \cite{openqxd}). When looking at local lattices in a multi-rank scenario, this implies that openQxD locally stores gauge fields on the boundaries only for odd-parity points and not for even-parity points (see \cref{fig:gauge}). These even-parity boundary fields are stored in a buffer space, but they have to be communicated from neighbouring lattices first.
+
+\begin{figure}
+  \includestandalone[width=\linewidth]{\dir/gauge} %without .tex extension
+  % or use \input{mytikz}
+  \caption{2D example ($4 \times 4$ local lattice) of how and which gauge fields are stored in memory in openQxD (left) and QUDA (right). Filled lattice points are even, unfilled odd lattice points. The red filled lattice point denotes the origin. Arrows represent gauge fields and the arrow head points to the lattice point where we store the field.}
+  \label{fig:gauge}
+\end{figure}
+
+This requires us to transfer the missing gauge fields from one rank to the other before entering any QUDA interface function. The gauge field is loaded to and saved from QUDA by the following two API calls
+
+\begin{lstlisting}[language=C++]
+void loadGaugeQuda(void *h_gauge, QudaGaugeParam *param);
+void saveGaugeQuda(void *h_gauge, QudaGaugeParam *param);
+\end{lstlisting}
+
+where the void pointer \code{h\_gauge} points to the gauge fields in the CPU memory (the missing fields have to be available already) and \code{param} is a struct holding information about the gauge field and how it should be interpreted by the various Dirac operators supported by QUDA.
+
+We implement an ordering class called \code{OpenQCDOrder} (see \code{include/gauge\_field\_order.h} \cite{QUDApaper}) with corresponding load and save methods. The only difference to the spinor and clover field order classes is that the methods are called with an additional direction variable \code{dir}. For a fixed space-time $x$ and direction, the remaining two color indices $(a,b)$ of the gauge field are row-major in both applications, thus we can copy $3\times 3$ consecutive complex numbers to or from \code{v}.
+
+\begin{lstlisting}[language=C++]
+__device__ __host__ inline void load(complex v[length/2], int x_cb, int dir, int parity, Float = 1.0) const
+__device__ __host__ inline void save(const complex v[length/2], int x_cb, int dir, int parity) const
+\end{lstlisting}
+
+The variable \code{dir} runs from $0$ to $3$ and denotes the positive link direction in QUDA convention (see \cref{fig:gauge} right).
+
+\subsection{C$^{\star}$ boundary conditions}
+\label{sub:cstar}
+
+Gauss's law prohibits dynamical simulations of charged particles in a finite box with periodic boundary conditions; $C^\star$ boundary conditions do not suffer from this restriction \cite{Kronfeld1991}.
+% , which are not yet implemented in QUDA. 
+The implementation of these conditions in QUDA is the focus of the current section.
+Unlike periodic boundary conditions, we identify the field shifted by one lattice length not with itself (periodic boundary conditions), but with
+its charge conjugation. A simple implementation consists in doubling the lattice size in $x$-direction (this choice of direction is arbitrary). We refer
+ to this as extended lattice, which consists of a physical and mirror lattice. The fields on the mirror lattice 
+ are related to the physical lattice by charge conjugation. Thus, C$^\star$ boundary conditions are implemented by translation from
+ physical to mirror lattice and choosing appropriate boundary conditions  (see \cref{fig:cstar}).
+
+\begin{figure}
+  \includestandalone[width=\linewidth]{\dir/cstar}
+  \caption{2D example of a $6 \times 6$ lattice with C$^\star$ boundary conditions on both directions. We have the (doubled) x-direction (horizontal) and a direction with C$^\star$ boundaries (vertical). Left is the physical, right the mirror lattice. Unfilled lattice points are exterior boundary points, whereas filled points are interior (boundary) points. The points of the same color are identified with each other. Notice that in x-direction we have regular periodic boundary conditions, since C$^\star$ boundaries are periodic over twice the lattice extent. The red, green and blue arrows indicate the path
+  taken when leaving the physical lattice and entering the mirror lattice.}
+  \label{fig:cstar}
+\end{figure}
+
+We choose to implement C$^\star$ boundary conditions in the same way as they are implemented in openQxD -- by doubling of the lattice in $x$-direction and by imposing shifted boundaries as illustrated in \cref{fig:cstar}. Note that openQxD requires at least two ranks for C$^\star$ boundary conditions,
+which ensures that a rank stores points in either the physical or mirror lattice.
+
+When QUDA initializes its communication grid topology, we specify the neighbours of each rank in all directions. The function \code{comm\_rank\_displaced()} in \code{include/communicator\_quda.h} \cite{QUDApaper} calculates the neighbouring rank number given one of (positive or negative) 8 directions. We change this function to achieve shifted boundary conditions as in \cref{fig:cstar}: Consider the case of two ranks, one of which contains all physical points, the other the mirror points. The neighbour of the physical lattice in "upward" direction is the mirror rank (and vice versa), which is different from periodic boundary conditions.
+
+\subsection{QCD+QED}
+\label{sec:qcd+qed}
+
+The Wilson-Clover Dirac operator in QCD simulations applied onto a spinor field $\psi(x)$ is (the lattice spacing is set to $a = 1$)
+\begin{equation}
+\begin{aligned} \label{eq:Dw}
+D_\mathrm{w} &\psi(x) = 4 \psi(x) \\
+-&\frac{1}{2} \sum_{\mu=0}^3 \Big\{
+  U_{\mu}(x) (1-\gamma_{\mu}) \psi(x + \hat{\mu})
++ U_{\mu}(x-\hat{\mu})^{-1} (1+\gamma_{\mu}) \psi(x-\hat{\mu})
+\Big\} \\
++&c_\mathrm{sw}^{SU(3)} \frac{i}{4} \sum_{\mu,\nu=0}^3 \sigma_{\mu \nu} \hat{F}_{\mu \nu}(x) \psi(x),
+\end{aligned}
+\end{equation}
+where the gauge field $U_{\mu}(x)$ is the $SU(3)$-valued link between lattice point $x$ and $x + \hat{\mu}$, the $\gamma_{\mu}$ are the Dirac matrices obeying the Euclidean Clifford algebra, $\{\gamma_{\mu}, \gamma_{\nu}\} = 2 \delta_{\mu \nu}$ and $\sigma_{\mu \nu} = \frac{i}{2} \left[\gamma_{\mu}, \gamma_{\nu}\right]$. The last term is called SW-term (or clover term) and is block-diagonal. The $SU(3)$ field strength tensor $\hat{F}$ is defined as
+
+\begin{align*}
+\hat{F}_{\mu \nu}(x) &= \frac{1}{8} \left\{
+    Q_{\mu \nu}(x) - Q_{\nu \mu}(x)
+\right\}, \\
+Q_{\mu \nu}(x)
+&= U_{\mu}(x)
+   U_{\nu}(x+\hat{\mu})
+   U_{\mu}(x+\hat{\nu})^{-1}
+   U_{\nu}(x)^{-1} \\
+&+ U_{\nu}(x)
+   U_{\mu}(x-\hat{\mu}+\hat{\nu})^{-1}
+   U_{\nu}(x-\hat{\mu})^{-1}
+   U_{\mu}(x-\hat{\mu}) \\
+&+ U_{\mu}(x-\hat{\mu})^{-1}
+   U_{\nu}(x-\hat{\mu}-\hat{\nu})^{-1}
+   U_{\mu}(x-\hat{\mu}-\hat{\nu})
+   U_{\nu}(x-\hat{\nu}) \\
+&+ U_{\nu}(x-\hat{\nu})^{-1}
+   U_{\mu}(x-\hat{\nu})
+   U_{\nu}(x+\hat{\mu}-\hat{\nu})
+   U_{\mu}(x)^{-1}.
+\end{align*}
+
+In QCD+QED simulations, in addition to the $SU(3)$-valued gauge field $U_\mu(x)$, we have the $U(1)$-valued gauge field $A_\mu(x)$, which when combined results
+in a $U(3)$-valued field $e^{i q A_\mu(x)} U_\mu(x)$ with $q_f$ the charge of a quark. These links are produced by multiplying the $U(1)$ phase to the $SU(3)$ matrices, which can be done in openQxD. For a QCD+QED operator in QUDA, we just upload these $U(3)$-valued links instead of the $SU(3)$ ones.
+
+In addition, we add another SW-term,
+\begin{equation} \label{eq:Dw2}
+D_\mathrm{w} \rightarrow D_\mathrm{w} + q c_\mathrm{sw}^{U(1)} \frac{i}{4} \sum_{\mu,\nu=0}^3 \sigma_{\mu \nu} \hat{A}_{\mu \nu}\,,
+\end{equation}
+where $q$ is the charge and the $U(1)$ field strength tensor $\hat{A}_{\mu \nu}(x)$ is defined as
+\begin{align*}
+\hat{A}_{\mu \nu}(x) &= \frac{i}{4 q_{el}} \text{Im} \left\{
+      z_{\mu \nu}(x)
+    + z_{\mu \nu}(x-\hat{\mu})
+    \right. \\
+    &\phantom{=\frac{i}{4 q_{\text{el}}} \text{Im} \left\{ \right.} \left. 
+    + z_{\mu \nu}(x-\hat{\nu})
+    + z_{\mu \nu}(x-\hat{\mu}-\hat{\nu})
+\right\} \\
+z_{\mu \nu}(x) &= e^{i\left\{
+      A_{\mu}(x)
+    + A_{\nu}(x+\hat{\mu})
+    - A_{\mu}(x+\hat{\nu})
+    - A_{\nu}(x)
+\right\}}
+\end{align*}
+
+Therefore, the QCD+QED Clover term consists of both the $SU(3)$ and the $U(1)$ term, which can be calculated in openQxD. The resulting term is still diagonal in space-time and chirality, and is Hermitian in color and spin. Therefore it has the same representation in memory as the $SU(3)$ clover term alone and we can just upload this new clover field to QUDA using the clover field reordering class that we have already implemented.
+
+Transferring the QCD+QED clover term, the $U(3)$ links as well as the changes in the process grid topology enables QUDA to handle the QCD+QED Wilson-Clover Dirac operator. This concludes our first implementation of QCD+QED in QUDA.

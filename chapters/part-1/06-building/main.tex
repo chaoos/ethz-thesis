@@ -1,0 +1,93 @@
+\chapter{Building}
+\label{ch:p1:building}
+
+% \subsection{Environment setup and recommended versions}
+
+
+
+
+
+
+
+% Compiling QUDA and openQxD each require to have some environment variables declared to correctly compile them and make use of their features, we refer to the documentations for their independent compilation's details.
+
+% Compiling QUDA and openQxD requires the declaration of certain environment variables. Detailed instructions for these independent compilation processes can be found in their respective documentation.
+
+% Regarding compiling the OpenQxD for 
+
+% , it's important to note that OpenQxD assumes the environment variables \code{GCC}, \code{MPI\_HOME}, and \code{MPI\_INCLUDE} are set to the path to the gcc compiler, the MPI installation directory, and the path to the directory where \code{mpi.h} is located. The compilation of OpenQxD programs for interfacing with QUDA is performed by using the C99 standard instead of C89, which is the one present in the official OpenQxD release v.1.1.
+
+
+
+A recommended compilation from scratch is presented below, first by compiling the QUDA library according to our simulation's needs, then by compiling openQxD with the QUDA library linked to it.
+
+\subsection{QUDA}
+
+QUDA needs to be compiled as a library. We refer to the QUDA documentation \cite{QUDApaper} for generic compilation instructions and focus
+on enabling support for openQxD.
+
+%To build QUDA v.1.1.0 (develop), we need an installation of CMake v.3.18 or later. For compiling QUDA, an installation of the CUDA toolkit v.11.0 at least is recommended\footnote{ref:QUDA documentation}, as well as compilers that have support for the C++17 standard, such as gcc v.5.0 or later for partial support, or gcc v.9.0 or later for full C++17 support. Alternatively, QUDA can be compiled with the C++14 by setting CMake accordingly.
+
+%When compiling QUDA with MPI, we require an MPI implementation adopting the 4.0 standard at least.
+
+% Regarding support for the C++17 standard\todo{add ref:}\footnote{ref:https://gcc.gnu.org/projects/cxx-status.html}, which is used throughout QUDA, we require at least gcc v.9 for full support of its features, (in our system we use gcc v.11.4). Finally, for MPI support, QUDA developers recommend at least OpenMPI v.4.0.x (we use OpenMPI v.4.1.2).
+
+%For details of how to setup environment variables for a successful QUDA compilation, we refer to CMake \todo{rm:v.3.18} documentation \todo{add ref}.
+
+% When CMake builds QUDA, it will detect environment variables essential for QUDA's compilation. In case some variables are not defined, CMake will try and define them according to your system, but this could not properly work in a given system, and it is thus recommended to declare some of them from start. For example, in our system environment, we defined the following.
+
+% \begin{lstlisting}[language=bash]
+% # GCC compilers, make sure it is gcc version 9.x at least
+% export CC=/usr/bin/x86_64-linux-gnu-gcc-11
+% export GCC=${CC}
+% export CXX=/usr/bin/x86_64-linux-gnu-g++-11
+% export CF=/usr/bin/x86_64-linux-gnu-gfortran-11
+
+% # MPI support, make sure it is OpenMPI version 4.0.x at least
+% export MPI_HOME=/usr/lib/x86_64-linux-gnu/openmpi
+% export MPI_INCLUDE=${MPI_HOME}/include
+% # Add MPI to libpath
+% export LD_LIBRARY_PATH=${MPI_HOME}/lib:${LD_LIBRARY_PATH}
+
+% # CUDA Toolkit and compilers, make sure it is v.11.0 at least
+% export CUDA_HOME=/usr/local/cuda-11.6
+% export CUDACXX=/usr/local/cuda-11.6/bin/nvcc
+% export CUDA_BIN_PATH=/usr/local/cuda-11.6/bin
+% # Add CUDA_BIN to PATH
+% export PATH=${CUDA_BIN_PATH}$:${PATH}
+% \end{lstlisting}
+
+Building QUDA with support for the openQxD interface requires setting a few CMake build-flags. To enable the Wilson-Clover Dirac operator we set the following flags in \code{CMakeLists.txt} \cite{QUDApaper}:
+\begin{lstlisting}[]
+QUDA_DIRAC_DEFAULT_OFF=ON # disables ALL Dirac operators
+QUDA_DIRAC_WILSON=ON      # enables Wilson-Dirac
+                          # operators
+QUDA_DIRAC_CLOVER=ON      # enables Wilson-clover
+                          # operators
+\end{lstlisting}
+We enable the openQCD interface by setting
+\begin{lstlisting}[]
+QUDA_INTERFACE_OPENQCD=ON # enable openQCD interface
+QUDA_RECONSTRUCT=4        # no gauge field reconstruction
+\end{lstlisting}
+(the gauge fields in openQxD are not compressed so we do not need to reconstruct them). Furthermore we enable multi-GPU support and the multigrid solver by
+\begin{lstlisting}[]
+QUDA_MPI=ON          # enable MPI
+QUDA_MULTIGRID=ON    # enable multigrid solvers
+\end{lstlisting}
+
+\subsection{openQxD}
+
+After QUDA is built according to the previous section, we compile openQxD. Note that we require a compiler compliant with the C89 and the MPI 1.2 standard. We refer the user to the official openQxD documentation \cite{openqxd} on how to compile and focus here on the changes that have to be made to compile against QUDA. Note that we need to dynamically link every openQxD binary that wants to use the QUDA library.
+
+% ref: https://gitlab.com/rcstar/openQxD README
+% \todo{add ref to OpenQxD docs on compiling}, with the exception of needing to 
+
+Hence, when compiling an openQxD program, we add the path to QUDA's \code{include} directory (e.g., \code{-I<path>} for gcc), the path to QUDA's \code{lib} directory (e.g., \code{-L<path>} for gcc), and the named library (e.g., \code{-lquda} for gcc) in the linking phase. An example \code{Makefile} can be found under \code{devel/quda/Makefile} in the openQxD repository \cite{openqxd}.
+
+% Note that any modification to the lattice geometry in OpenQxD (i.e., in \code{global.h}) necessitates recompiling the program binaries. 
+
+% For the dynamic linking of OpenQxD:
+% \code{
+% export LD_LIBRARY_PATH=/scratch/jfernande/quda_openqxd/openqxd_quda_build/build/lib:\${LD_LIBRARY_PATH}
+% }

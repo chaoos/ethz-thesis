@@ -16,10 +16,9 @@ In the following we present details of each step.
 In order to use QUDA's functionality within openQxD, one has to build QUDA as a library, include the main header file (\code{quda.h}) and link openQxD against it. 
 As an example for a QUDA function, we consider inversions of the Dirac operator, whose API call signature looks as follows:
 
-\begin{lstlisting}[language=C++]
-void invertQuda(void *h_x, void *h_b,
-                QudaInvertParam *param);
-\end{lstlisting}
+\begin{minted}[]{cpp}
+void invertQuda(void *h_x, void *h_b, QudaInvertParam *param);
+\end{minted}
 
 Here, \code{h\_x} and \code{h\_b} are void pointers pointing to the host spinor fields in openQxD order, i.e. base pointers to arrays of \code{spinor\_dble} structs, as described previously. The \code{QudaInvertParam} struct parametrizes the solver (see \code{quda.h} and Ref.~\cite{QUDApaper} for details).
 
@@ -61,10 +60,12 @@ This is implemented in openQxD by the mapping array \code{ipt}, $\hat{x} \colone
 
 We write the \code{OpenQCDDiracOrder} class that implements a \code{load()} and a \code{save()} method for the spinor fields:
 
-\begin{lstlisting}[language=C++]
-__device__ __host__ inline void load(complex v[length/2], int x_cb, int parity = 0)
-__device__ __host__ inline void save(const complex v[length/2], int x_cb, int parity = 0) const
-\end{lstlisting}
+\begin{minted}[]{cpp}
+__device__ __host__ inline void load(complex v[length/2], int x_cb,
+                                     int parity = 0)
+__device__ __host__ inline void save(const complex v[length/2], int x_cb,
+                                     int parity = 0) const
+\end{minted}
 
 These two methods are called by QUDA in a loop with all possible values for \code{x\_cb} and \code{parity}, where \code{x\_cb} denotes the (local) checkerboard site index and \code{parity} the parity of the point. QUDA provides an (inlined) function \code{getCoords()} to translate the checkerboard and parity index into a (local) 4-vector $x = (\vec{x}, t)$ with time coordinate last ((xyzt)-convention). After permuting the coordinates into (txyz)-convention, we can query the mapping function $f$ to obtain for the desired lattice point the offset from the base pointer in openQxD and copy the data to or from the location pointed to by the variable \code{v}. That data might have additional indices that we describe in the
 following.
@@ -125,19 +126,21 @@ On the other hand, a pure QCD clover field can be calculated natively within QUD
 
 This requires us to transfer the missing gauge fields from one rank to the other before entering any QUDA interface function. The gauge field is loaded to and saved from QUDA by the following two API calls
 
-\begin{lstlisting}[language=C++]
+\begin{minted}[]{cpp}
 void loadGaugeQuda(void *h_gauge, QudaGaugeParam *param);
 void saveGaugeQuda(void *h_gauge, QudaGaugeParam *param);
-\end{lstlisting}
+\end{minted}
 
 where the void pointer \code{h\_gauge} points to the gauge fields in the CPU memory (the missing fields have to be available already) and \code{param} is a struct holding information about the gauge field and how it should be interpreted by the various Dirac operators supported by QUDA.
 
 We implement an ordering class called \code{OpenQCDOrder} (see \code{include/gauge\_field\_order.h} \cite{QUDApaper}) with corresponding load and save methods. The only difference to the spinor and clover field order classes is that the methods are called with an additional direction variable \code{dir}. For a fixed space-time $x$ and direction, the remaining two color indices $(a,b)$ of the gauge field are row-major in both applications, thus we can copy $3\times 3$ consecutive complex numbers to or from \code{v}.
 
-\begin{lstlisting}[language=C++]
-__device__ __host__ inline void load(complex v[length/2], int x_cb, int dir, int parity, Float = 1.0) const
-__device__ __host__ inline void save(const complex v[length/2], int x_cb, int dir, int parity) const
-\end{lstlisting}
+\begin{minted}[]{cpp}
+__device__ __host__ inline void load(complex v[length/2], int x_cb, int dir,
+                                     int parity, Float = 1.0) const
+__device__ __host__ inline void save(const complex v[length/2], int x_cb,
+                                     int dir, int parity) const
+\end{minted}
 
 The variable \code{dir} runs from $0$ to $3$ and denotes the positive link direction in QUDA convention (see \cref{fig:gauge} right).
 

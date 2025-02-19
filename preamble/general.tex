@@ -102,10 +102,17 @@
 % Graphics
 \usepackage{graphicx}
 \usepackage{rotating}
-\usepackage{tikz}
+\usepackage{tikz,ifthen}
 \usepackage{pgfplots}
 \pgfplotsset{compat=newest}
 \usetikzlibrary{shapes.geometric}
+\usetikzlibrary{calc}
+\usetikzlibrary{math}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{decorations.markings}
+\usetikzlibrary{decorations}
+\usetikzlibrary{positioning}
+
 
 % Circled numbers
 \newcommand*\circled[1]{
@@ -137,7 +144,8 @@
 \usepackage{enumitem}
 
 % Load classicthesis style
-\usepackage{scrhack}
+%\usepackage{scrhack}
+\usepackage[listings=false]{scrhack} % else listings with minted are broken, see https://latex.org/forum/viewtopic.php?t=35833
 \usepackage{classicthesis}
 
 % Customize text width and length
@@ -177,6 +185,8 @@
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
 \definecolor{codepurple}{rgb}{0.58,0,0.82}
 \definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\definecolor{codebgcolor}{RGB}{129, 139, 152}
+\definecolor{codehighlightcolor}{RGB}{255, 230, 153}
 %\definecolor{codegreen}{RGB}{0, 153, 0}
 %\definecolor{codegray}{RGB}{127, 127, 127}
 \definecolor{codeblue}{RGB}{102, 214, 237}
@@ -274,7 +284,22 @@
 }
 
 % Inline code
-\def\code#1{\texttt{#1}}
+% see https://tex.stackexchange.com/a/568900
+\usepackage[most]{tcolorbox}
+\tcbset{
+  on line,
+  boxsep=2pt,
+  left=0pt,
+  right=0pt,
+  top=0pt,
+  bottom=0pt,
+  colframe=white,
+  colback=codebgcolor!12,
+  highlight math style={enhanced}
+}
+%\def\code#1{\tcbox{\texttt{#1}}}
+\def\code#1{\tcbox{\fontfamily{qcr}\selectfont #1 }}
+%\def\code#1{\tcbox{\mintinline[fontsize=\small]{text}{#1}}} % creates a intermediate file for EVERY \code command
 
 % Put pages on A4 w/ crop marks
 %\usepackage[a4,center,cam]{crop}
@@ -284,39 +309,32 @@
 \widowpenalty = 10000
 %\displaywidowpenalty = 10000
 
-% Code Listings
-\usepackage{listings}
+%%%%%%%%%%%%%%%%%%%%%%%
+% Code Listings BEGIN %
+%%%%%%%%%%%%%%%%%%%%%%%
 
-\lstdefinestyle{mystyle}{
-    backgroundcolor=\color{backcolour},
-    commentstyle=\color{codegreen},
-    keywordstyle=\color{magenta},
-    numberstyle=\tiny\color{codegray},
-    stringstyle=\color{codepurple},
-    basicstyle=\ttfamily\footnotesize,
-    breakatwhitespace=false,
-    breaklines=true,
-    captionpos=b,
-    keepspaces=true,
-    numbers=left,
-    numbersep=5pt,
-    showspaces=false,
-    showstringspaces=false,
-    showtabs=false,
-    tabsize=2
+\usepackage{minted}
+\usemintedstyle{default}
+\setminted{
+  bgcolor=backcolor,
+  linenos=true,
+  fontsize=\footnotesize,
+  highlightcolor=codehighlightcolor,
+  %xleftmargin=20pt
 }
+\newenvironment{codelisting}{\captionsetup{type=listing}}{}
 
-\lstset{style=mystyle}
+% make the enumeration of listings as <chapter>.<counter>
+\usepackage{chngcntr}
+\counterwithin{listing}{chapter}
+\renewcommand{\thelisting}{\thechapter.\arabic{listing}}
 
-\crefname{lstlisting}{listing}{listings}
-\Crefname{lstlisting}{Listing}{Listings}
+%%%%%%%%%%%%%%%%%%%%%%%
+% Code Listings END   %
+%%%%%%%%%%%%%%%%%%%%%%%
 
 % for includestandalone and its tikz pictures
 \usepackage{standalone}
-\usepackage{tikz,ifthen}
-\usetikzlibrary{calc}
-\usetikzlibrary{math}
-\usetikzlibrary{arrows.meta}
-\usetikzlibrary{decorations.markings}
-\usetikzlibrary{decorations}
-\usetikzlibrary{positioning}
+
+% To add code listing into footnotes, use \cprotect\footnote{blabla}
+%\usepackage{cprotect}

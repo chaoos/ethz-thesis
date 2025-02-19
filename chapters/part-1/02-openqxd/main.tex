@@ -5,7 +5,7 @@
 
 The openQxD code~\cite{openqxd} is an extension of the state-of-the-art
 lattice QCD Markov Chain Monte Carlo code
-openQCD~\cite{openqcd,Luscher:2012av}, which is written in the C89 standard
+openQCD~\cite{openqcd,Luscher:2012av}, which is written in the \worktodo{C89} standard
 with MPI parallelization with proven strong-scalability to hundreds of
 CPU-based nodes and specific optimizations for x86 architectures.
 Due to the extensive suite of legacy applications based on openQCD, as well as
@@ -47,29 +47,37 @@ The double precision spinor field is stored as an array of $V_\mathrm{L}$ \code{
 
 The gauge field is stored as an array of $4V_\mathrm{L}$ \code{su3\_dble} structs (\cref{lst:gauge}), which rely on \code{complex\_dble} structs (\cref{lst:complex_double}). The double precision spinor field is stored as an array of $V_\mathrm{L}$ \code{spinor\_dble} structs (\cref{lst:spinor}), while the clover field is an array of $2V_\mathrm{L}$ \code{pauli\_dble} (\cref{lst:clover}). 
 
-\begin{lstlisting}[language=C++, caption=The  complex double struct, label=lst:complex_double]
+\begin{codelisting}
+\begin{minted}[]{cpp}
 typedef struct
 {
    double re,im;
 } complex_dble;
-\end{lstlisting}
+\end{minted}
+\caption{The complex double struct}
+\label{lst:complex_double}
+\end{codelisting}
 
-\noindent
-\begin{minipage}{\linewidth}
-\begin{lstlisting}[language=C++, caption=The gauge field struct, label=lst:gauge]
+\begin{codelisting}
+\begin{minted}[]{cpp}
 typedef struct
 {
    complex_dble c11,c12,c13,c21,c22,c23,c31,c32,c33;
 } su3_dble;
-\end{lstlisting}
-\end{minipage}
+\end{minted}
+\caption{The gauge field struct}
+\label{lst:gauge}
+\end{codelisting}
+
 
 %\todo{Since the struct complex double is present in the spinor and gauge-field structs, I believe it is better for the listing to be split.}
 % typedef struct
 % {
 %    double re,im;
 % } complex_dble;
-\begin{lstlisting}[language=C++, caption=The spinor field struct, label=lst:spinor]
+
+\begin{codelisting}
+\begin{minted}[]{cpp}
 typedef struct
 {
    complex_dble c1,c2,c3;
@@ -79,16 +87,22 @@ typedef struct
 {
    su3_vector_dble c1,c2,c3,c4;
 } spinor_dble;
-\end{lstlisting}
+\end{minted}
+\caption{The spinor field struct}
+\label{lst:spinor}
+\end{codelisting}
 
 
-
-\begin{lstlisting}[language=C++, caption=The clover field struct, label=lst:clover]
+\begin{codelisting}
+\begin{minted}[]{cpp}
 typedef struct
 {
    double u[36];
 } pauli_dble;
-\end{lstlisting}
+\end{minted}
+\caption{The clover field struct}
+\label{lst:clover}
+\end{codelisting}
 
 The spinor field has indices $(x, \alpha, a)$ ($a$ running fastest), where $x=(x_0,x_1,x_2,x_3)$ is the lattice index (a Euclidean 4-vector), $\alpha \in \{0,1,2,3\}$ is the spinor index and $a \in \{0,1,2\}$ is the color index.
 

@@ -1,7 +1,13 @@
 \chapter{QUDA}
 \label{ch:p1:quda}
 
-QUDA \cite{QUDApaper} is a library written in CUDA C++ that contains a suite of efficient kernels and solvers to implement lattice QCD simulations (the current release version 1.1.0 complies with the C++14 and 17 standards). It is thus natural that QCD fields are represented by objects, and the pointers to the fields' values are accessible via their objects.
+QUDA \cite{QUDApaper} is a library written in CUDA C++ that contains a suite of efficient kernels and solvers to implement lattice QCD simulations.
+
+QUDA is highly optimized to run on multiple GPUs and has backends for CUDA, HIP, SYCL and multi-threading. It thus runs on a variety of different hardware vendors.
+
+It has a very powerful and customizable solver suite, including a state-of-the-art multigrid implementation, comes with support for many different lattice discretizations, such as Wilson, Wilson-Clover, Twisted mass, Twisted-Clover, staggered, improved staggered, Domain-Wall and Möbius. In the meantime there is a large community of lattice practitioners actively working on and maintaining the software project.
+
+The current release version 1.1.0 complies with the C++14 and 17 standards. It is thus natural that QCD fields are represented by objects, and the pointers to the fields' values are accessible via their objects.
 
 % making use of the modern C++ standards, an  with  making use of the object paradigm and a high degree of abstraction.
 % \todo{exact standard?: by checking the CMakeFiles, QUDA v.1.0 got C++11 or 14, in v.1.1.0 needs C++14 or 17 (ref: \code{https://github.com/search?q=repo\%3Alattice\%2Fquda+c\%2B\%2B17\&type=code}, and 
@@ -9,4 +15,3 @@ QUDA \cite{QUDApaper} is a library written in CUDA C++ that contains a suite of 
 
 A spinor field is represented by an instance of \code{ColorSpinorField}, a gauge field by \code{GaugeField} and a clover field as \code{CloverField}, all of which inherit from the \code{LatticeField} class. The different degrees of freedom are realised in the inheriting classes. The actual numbers are accessible via a pointer whose accessor is called \code{data()}.
 
-QUDA is highly optimized to run on multiple GPUs, specifically on NVIDIA and AMD cards. In addition, it offers a multi-threading backend.

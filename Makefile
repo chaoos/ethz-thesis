@@ -11,5 +11,8 @@ $(BUILD_DIR)/thesis.pdf: thesis.tex $(BUILD_DIR)
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
 
-clean:
+old-clean:
 	latexmk $(TEXFLAGS) -jobname=$(BUILD_DIR)/ -C thesis.tex
+
+clean:
+	rm -rf $(BUILD_DIR)

@@ -22,18 +22,14 @@ We decided on a testing strategy as follows:
     \begin{minted}[linenos=false]{text}
 cscs-ci run default
     \end{minted}
-    This will invoke the webhook that triggers CSCS services to run the pipeline. A short time after commenting \worktodo{TODO}...
-    }
+    This will invoke the webhook that triggers CSCS services to run the pipeline. A short time after commenting a new job appears in the pipeline view, see \cref{fig:cicd:external}.}
 \end{itemize}
-
-see figure \cref{fig:external} blabla.
 
 \begin{figure}
     \centering
-    \includesvg[inkscapelatex=false,scale=1.2]{\dir/img/external4}
-    %\includegraphics[]{\dir/img/external.tiff}
-    \caption{BLAbla.}
-    \label{fig:external}
+    \includegraphics[width=100px]{\dir/img/default}
+    \caption{The external job that represents the CSCS default pipeline. One can click on the job to be redirected to CSCS servers where the whole pipeline including status of the jobs is visible.}
+    \label{fig:cicd:external}
 \end{figure}
 
 Thus there are two pipelines. One that runs on via GitLab on local resources at ETH, and one that runs via CSCS on the GH200 nodes at CSCS. Both pipelines are independent and completely detached from each other, they may run in parallel or not.

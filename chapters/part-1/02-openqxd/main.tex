@@ -18,10 +18,10 @@ intensive kernel of the Monte Carlo algorithm, whose correctness can be
 checked a posteriori, thereby allowing us to retain the functionality of
 existing applications while interfacing only a minimal set of parameters.
 
-The Wilson-Clover Dirac operator $\Dw$ is a nearest-neighbour stencil operator
+The Wilson-Clover Dirac operator $\Dw$ is a nearest-neighbor stencil operator
 acting on a linear space of quark (or spinor) fields defined on a regular 4D
 cubic lattice of $V_\mathrm{G}=N_0N_1N_2N_3$ sites, typically in the range $10^6-10^8$.
-Due to the nearest-neighbour coupling, a good parallelization is achieved by
+Due to the nearest-neighbor coupling, a good parallelization is achieved by
 domain decomposition, where a contiguous local volume of size $V_\mathrm{L}=L_0L_1L_2L_3$,
 which divides the global problem size, is associated with a single computing
 unit.

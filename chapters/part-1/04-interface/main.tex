@@ -115,7 +115,7 @@ On the other hand, a pure QCD clover field can be calculated natively within QUD
 
 \subsubsection{Gauge Field}
     QUDA associates 4 gauge fields for each space-time point (one for each positive direction $\mu=0,1,2,3$), whereas openQxD stores $8$
-    (forward and backward) directions of gauge fields for all odd-parity points (see \code{main/README.global} for more information \cite{openqxd}). When looking at local lattices in a multi-rank scenario, this implies that openQxD locally stores gauge fields on the boundaries only for odd-parity points and not for even-parity points (see \cref{fig:gauge}). These even-parity boundary fields are stored in a buffer space, but they have to be communicated from neighbouring lattices first.
+    (forward and backward) directions of gauge fields for all odd-parity points (see \code{main/README.global} for more information \cite{openqxd}). When looking at local lattices in a multi-rank scenario, this implies that openQxD locally stores gauge fields on the boundaries only for odd-parity points and not for even-parity points (see \cref{fig:gauge}). These even-parity boundary fields are stored in a buffer space, but they have to be communicated from neighboring lattices first.
 
 \begin{figure}
   \includestandalone[width=\linewidth]{\dir/gauge} %without .tex extension
@@ -166,7 +166,7 @@ its charge conjugation. A simple implementation consists in doubling the lattice
 We choose to implement C$^\star$ boundary conditions in the same way as they are implemented in openQxD -- by doubling of the lattice in $x$-direction and by imposing shifted boundaries as illustrated in \cref{fig:cstar}. Note that openQxD requires at least two ranks for C$^\star$ boundary conditions,
 which ensures that a rank stores points in either the physical or mirror lattice.
 
-When QUDA initializes its communication grid topology, we specify the neighbours of each rank in all directions. The function \code{comm\_rank\_displaced()} in \code{include/communicator\_quda.h} \cite{QUDApaper} calculates the neighbouring rank number given one of (positive or negative) 8 directions. We change this function to achieve shifted boundary conditions as in \cref{fig:cstar}: Consider the case of two ranks, one of which contains all physical points, the other the mirror points. The neighbour of the physical lattice in "upward" direction is the mirror rank (and vice versa), which is different from periodic boundary conditions.
+When QUDA initializes its communication grid topology, we specify the neighbors of each rank in all directions. The function \code{comm\_rank\_displaced()} in \code{include/communicator\_quda.h} \cite{QUDApaper} calculates the neighboring rank number given one of (positive or negative) 8 directions. We change this function to achieve shifted boundary conditions as in \cref{fig:cstar}: Consider the case of two ranks, one of which contains all physical points, the other the mirror points. The neighbor of the physical lattice in "upward" direction is the mirror rank (and vice versa), which is different from periodic boundary conditions.
 
 \subsection{QCD+QED}
 \label{sec:qcd+qed}

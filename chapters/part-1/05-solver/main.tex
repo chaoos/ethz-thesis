@@ -1,7 +1,9 @@
+%!TEX root = ../../../thesis.tex
+
 \chapter{Solver}
 \label{ch:p1:solver}
 
-This section describes how to port an existing program within the framework of openQxD to leverages the solvers available through the new interface to QUDA.
+This section describes how to port an existing program within the framework of openQxD to leverage the solvers available through the new interface to QUDA.
 
 % A main program in openQxD that wants to leverage QUDAs solvers may be changed in the following way.
 In order to use QUDA in openQxD, we require to include the necessary header files that provide the interface to QUDA
@@ -73,7 +75,7 @@ int main(int argc, char *argv[])
 \label{lst:example_program}
 \end{codelisting}
 
-A paradigm that occures quite often when writing applications in openQxD is a code snippet that dispatches the solvers. Such a function could easily be ported to utilize QUDAs solvers as well. This could look like the function \code{solve()} in \cref{lst:example_solver}, again the relevant parts are highlighted. If we build without the flag \code{QUDA\_INTERFACE}, the highlighted parts are removed and the code falls back to the standard openQxD function that dispatches the available solvers. With the flag set, we enable a new solver type \code{QUDA} and if the input file provides a solver of type \code{QUDA}, the function in the snippet will offload the solve to QUDA.
+A paradigm that occures quite often when writing applications in openQxD is a code snippet that dispatches the solvers. Such a function could easily be ported to utilize QUDAs solvers as well. This could look like the function \code{solve()} in \cref{lst:example_solver}, again the relevant parts are highlighted. If we build without the flag \code{QUDA\_INTERFACE}, the highlighted parts are removed and the code falls back to the standard openQxD function that dispatches the available solvers. With the flag set, we enable a new solver type \code{QUDA} and if the input file provides a solver of type \code{QUDA}, the function in the snippet will offload the solve by calling \code{openQCD\_qudaInvert()}.
 
 \begin{codelisting}
 \begin{minted}[highlightlines={11-16}]{c}
@@ -112,7 +114,7 @@ double openQCD_qudaInvert(int id, double mu, void *source, void *solution,
 takes 5 arguments which will be discussed now. The function solves the currently loaded and configured Clover-Wilson Dirac operator. All fields passed and returned are host (CPU) field in openQxD order. The arguments are:
 \begin{itemize}
   \item \code{id}: The solver identifier in the input file, i.e. \code{Solver \#}. The input file is the one which was given to \code{quda\_init()}.
-  \item \code{mu}: In order to mimic the behaviour of the openQCD solvers (e.g. \code{tmcg}, \code{sap\_gcr}, \code{dfl\_sap\_gcr}), the invert-function accepts a twisted mass parameter \code{mu} explicitly.
+  \item \code{mu}: In order to mimic the behavior of the openQCD solvers (e.g. \code{tmcg}, \code{sap\_gcr}, \code{dfl\_sap\_gcr}), the invert-function accepts a twisted mass parameter \code{mu} explicitly.
   \item \code{source}: The source spinor field given as a regular openQCD array of \code{spinor\_dble} that might have been allocated and reserved using \code{alloc\_wsd()} and \code{reserve\_wsd()} respectively. This field has to be allocated on the CPU and might be initialized as a point or random source when calling the function.
   \item \code{solution}: The solution spinor field as an allocated \code{spinor\_dble}, see \code{source}.
   \item \code{status}: If the solver is able to solve the Dirac equation to the desired accuracy (see \code{invert\_param->tol}), then \code{status} reports the total number of iteration steps. A value of -1 indicates that the solver failed.
@@ -121,7 +123,7 @@ takes 5 arguments which will be discussed now. The function solves the currently
 There are two main modes on how this function can be operating for maximal flexibility for the programmer.
 
 \begin{enumerate}
-  \item{The function can be savely called right after QUDA was initialized by \code{quda\_init()}. It will itself parse the input parameters from the input file, transfer the gauge fields and generate or transfer the clover field if necessary. The interface code holds information about the relevant parameters for the Dirac operator and whether the fields are up-to-date or not. Namely these are
+  \item{The function can be safely called right after QUDA was initialized by \code{quda\_init()}. It will itself parse the input parameters from the input file, transfer the gauge fields and generate or transfer the clover field if necessary. The interface code holds information about the relevant parameters for the Dirac operator and whether the fields are up-to-date or not. Namely these are
   \begin{itemize}
     \item whether the gauge field is in sync or not,
     \item whether the clover field is in sync or not,
@@ -130,7 +132,7 @@ There are two main modes on how this function can be operating for maximal flexi
     \item \code{u1csw}: the SW-coefficient for the $U(1)$ clover term,
     \item \code{qhat}: the inverse charge of the current flavor.
   \end{itemize}
-  If the interface detects a change in one or multiple of these parameters on the side of openQxD, a synchronisation of parameters and regeneration or retransfer of the gauge and/or clover fields is triggered.}
+  If the interface detects a change in one or multiple of these parameters on the side of openQxD, a synchronization of parameters and regeneration or retransfer of the gauge and/or clover fields is triggered.}
   \item{Developers using openQxD are very used to a standard workflow as 1) parsing the input file for parameters and solvers, 2) printing the parsed parameters to the logfile and 3) do some logic (solving the Dirac equation for instance). To support this programming paradigm, we made the interface flexible. In a second mode, the user can work in the same way as with legacy openQxD code. The QUDA interface is fully integrated into the relevant core components of the openQxD codebase. This means that the legacy functions
   \begin{minted}[]{c}
 void read_solver_parms(int isp);
@@ -143,11 +145,11 @@ void check_solver_parms(FILE *fdat);
 void *openQCD_qudaSolverGetHandle(int id);
 int openQCD_qudaSolverGetHash(int id);
   \end{minted}
-  The first function returns a pointer to the solver context, i.e. pointing to the corresponding \code{QudaInvertParam} struct which configures the solver. The seconds function returns a hash from the relevant subset of members of the \code{QudaInvertParam} struct. This is to be able to write QUDA solver parameters to disk using \code{write\_solver\_parms()} when a run has finished and to detect if settings have changed in \code{check\_solver\_parms()} when a run is restarted or continued. This is common practise in openQxD and fully supported by the interface.
+  The first function returns a pointer to the solver context, i.e. pointing to the corresponding \code{QudaInvertParam} struct which configures the solver. The seconds function returns a hash from the relevant subset of members of the \code{QudaInvertParam} struct. This is to be able to write QUDA solver parameters to disk using \code{write\_solver\_parms()} when a run has finished and to detect if settings have changed in \code{check\_solver\_parms()} when a run is restarted or continued. This is common practice in openQxD and fully supported by the interface.
   }
 \end{enumerate}
 
-It remains to explain how the QUDA interface code expects the input file to look like. In our design choices, we made this as flexible as possible and compatible to legacy behavior of openQxD. Therefore a QUDA solver may be descibed in the same way as a openQCD solver. A minimal solver section may look as
+It remains to explain how the QUDA interface code expects the input file to look like. In our design choices, we made this as flexible as possible and compatible to legacy behavior of openQxD. Therefore a QUDA solver may be described in the same way as a openQCD solver. A minimal solver section may look as
 \begin{minted}[]{ini}
 [Solver 3]
 solver          QUDA
@@ -167,7 +169,7 @@ For the section to be a valid QUDA solver section we need to specify the key-val
 else the setup function will throw an error message if
 fed with \code{id=3}. All the remaining keys parameterize the
 various members of the \code{QudaInvertParam} struct and we refer
-the reader to its documentation \cite{QUDApaper,gitlab:quda}. The example section above is minimal, i.e. it only sets required parameters; it solves the Wilson-Clover Dirac equation using a BiCGSTAB solver without any preconditioning to a relative residual of $10^{-4}$.
+the reader to its documentation \cite{QUDApaper,github:quda}. The example section above is minimal, i.e. it only sets required parameters; it solves the Wilson-Clover Dirac equation using a BiCGSTAB solver without any preconditioning to a relative residual of $10^{-4}$.
 
 % The header file \code{quda\_openqcd\_interface.h} provides API functions to set up, invoke and destroy the solver context \footnote{Notice that these function names might be subject of change in the near future.}.
 
@@ -207,7 +209,7 @@ Finally, to destroy the QUDA context, we call the finalize function
 \begin{minted}[]{cpp}
 void openQCD_qudaFinalize(void);
 \end{minted}
-which deallocates all the solvers, eigensolvers and finalizes QUDA by calling \code{endQuda()}. Usually, this function doesn't have to be called explicitely, but one should rather call \code{quda\_finalize()}, which itself calls this function.
+which deallocates all the solvers, eigensolvers and finalizes QUDA by calling \code{endQuda()}. Usually, this function doesn't have to be called explicitly, but one should rather call \code{quda\_finalize()}, which itself calls this function.
 
 This interface makes all variants of the iterative solver algorithms in the QUDA library for Wilson fermions accessible in openQxD, including the conjugate gradient (CG), generalized conjugate residuals (GCR) and the adaptive multi-grid preconditioner (MG)~\cite{Babich:2010qb} which is similar to the inexact deflation method implemented natively in openQxD and many more.
 

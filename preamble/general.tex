@@ -322,7 +322,7 @@
   highlightcolor=codehighlightcolor,
   %xleftmargin=20pt
 }
-\newenvironment{codelisting}{\captionsetup{type=listing}}{}
+\newenvironment{codelisting}{\captionsetup{type=listing, belowskip=10pt}}{}
 
 % make the enumeration of listings as <chapter>.<counter>
 \usepackage{chngcntr}
@@ -338,3 +338,6 @@
 
 % To add code listing into footnotes, use \cprotect\footnote{blabla}
 %\usepackage{cprotect}
+
+% for \includesvg to add SVG images
+\usepackage{svg}

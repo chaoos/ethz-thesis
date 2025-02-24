@@ -1,6 +1,9 @@
 \chapter{Building}
 \label{ch:p1:building}
 
+\worktodo{a few word about compilers to use for QUDA, BUILD\_TYPE and
+flags for openqxd (eg. -pedantic -Werror)}
+
 % \subsection{Environment setup and recommended versions}
 
 % Compiling QUDA and openQxD each require to have some environment variables declared to correctly compile them and make use of their features, we refer to the documentations for their independent compilation's details.
@@ -11,9 +14,9 @@
 
 % , it's important to note that OpenQxD assumes the environment variables \code{GCC}, \code{MPI\_HOME}, and \code{MPI\_INCLUDE} are set to the path to the gcc compiler, the MPI installation directory, and the path to the directory where \code{mpi.h} is located. The compilation of OpenQxD programs for interfacing with QUDA is performed by using the C99 standard instead of C89, which is the one present in the official OpenQxD release v.1.1.
 
-A recommended compilation from scratch is presented below, first by compiling the QUDA library according to our simulation's needs, then by compiling openQxD with the QUDA library linked to it.
+This section discusses the various ways on how to build QUDA and openQxD with and without QUDA support. A recommended compilation from scratch is presented below, first by compiling the QUDA library according to our simulation's needs, then by compiling openQxD with the QUDA library linked to it.
 
-\subsection{QUDA}
+\subsection{Building QUDA using CMake}
 \label{sec:building:quda}
 
 QUDA needs to be compiled as a library. We refer to the QUDA documentation \cite{QUDApaper} and its official GitHub page \cite{github:quda} for generic compilation instructions and focus on enabling support for openQxD.
@@ -50,50 +53,70 @@ QUDA needs to be compiled as a library. We refer to the QUDA documentation \cite
 % \end{minted}
 
 Building QUDA with support for the openQxD interface requires setting a few CMake build-flags. To enable the Wilson-Clover Dirac operator we set the following flags in \code{CMakeLists.txt} \cite{QUDApaper}:
-\begin{minted}[]{bash}
+\begin{minted}[linenos=false]{bash}
 QUDA_DIRAC_DEFAULT_OFF=ON # disables ALL Dirac operators
 QUDA_DIRAC_WILSON=ON      # enables Wilson-Dirac operators
 QUDA_DIRAC_CLOVER=ON      # enables Wilson-clover operators
 \end{minted}
-We enable the openQCD interface by setting
-\begin{minted}[]{bash}
+We enable the openQCD interface by setting (we may disable all the other interfaces)
+\begin{minted}[linenos=false]{bash}
 QUDA_INTERFACE_OPENQCD=ON # enable openQCD interface
 \end{minted}
-which builds all necessary code for interfacing. Furthermore we enable multi-GPU support and the multigrid solver by
-\begin{minted}[]{bash}
+which builds all necessary code for the interfacing with openQxD. Furthermore we enable multi-GPU support using MPI and the multigrid solver by
+\begin{minted}[linenos=false]{bash}
 QUDA_MPI=ON          # enable MPI
 QUDA_MULTIGRID=ON    # enable multigrid preconditioning
 \end{minted}
 In a production build one would add desired null space vector sizes to the list
-\begin{minted}[]{bash}
+\begin{minted}[linenos=false]{bash}
 QUDA_MULTIGRID_NVEC_LIST=6,24,32
 \end{minted}
-This means that, in a multigrid setup, the number of coarse color degrees of freedom can be either 6, 24 or 32. The list can be extended at wish. Furthermore we want to enable double, single and half precision support by
-\begin{minted}[]{bash}
+This means that, in a multigrid setup, the number of coarse color degrees of freedom can be either 6, 24 or 32. The list can be extended at wish at the cost of compile time. Furthermore we want to enable double, single and half precision support by
+\begin{minted}[linenos=false]{bash}
 QUDA_PRECISION=14   # 4-bit number to specify which precisions we will enable
                     # (8: double, 4: single, 2: half, 1: quarter).
 \end{minted}
-For QCD-only and QCD+QED simulations, we require QUDA to be able to store the gauge fields in the compressed formats with 8, 12 or 18 real degrees of freedom for $SU(3)$ fields and with 9, 13 or 18 real degrees of freedom for $U(3)$ fields. For this we enable all reconstruction types
-\begin{minted}[]{bash}
+For QCD-only and QCD+QED simulations, we require QUDA to be able to store the gauge fields in the compressed formats with 8, 12 or 18 real degrees of freedom for $SU(3)$ fields and with 9, 13 or 18 real degrees of freedom for $U(3)$ fields. For this we enable all reconstruction types by setting
+\begin{minted}[linenos=false]{bash}
 QUDA_RECONSTRUCT=7  # 3-bit number to specify which reconstructs we will enable
                     # (4: reconstruct-no, 2: reconstruct-12/13, 
                     #  1: reconstruct-8/9).
 \end{minted}
 The above mentioned CMake flags are just an excerpt of the many available flags. One might call
-\begin{minted}[]{bash}
+\begin{minted}[linenos=false]{bash}
 cmake -LAH
 \end{minted}
 in the build directory of QUDA for a list of all available CMake flags together with a brief description. We only covered the ones which are crucial to build openQxD against QUDA. For an explanation of the remaining compile flags we refer the reader to the official documentation of how to build QUDA \cite{github:quda}.
 
-\subsection{openQxD}
+\subsection{Building QUDA using Spack}
+\label{sec:building:quda:spack}
+
+We have created a Spack\cite{Gamblin_The_Spack_Package_2015} package for QUDA, that can be found in the official Spack repositories\cite{spack:quda}. The advantage of this is that it makes it very easy to build and install QUDA. This package will be useful in \cref{ch:p1:cicd} to build and deploy automatically. However, the build instructions above are full of intricate details and pitfalls and one might suffer a lot until one obtains a working build\footnote{I did.}. If Spack is available on a machine, one can just invoke
+\begin{minted}[linenos=false]{bash}
+spack install quda cuda_arch=80
+\end{minted}
+in a terminal and QUDA is properly built and installed on the current system (the architecture \code{cuda\_arch} of the GPU may have to be adjusted). It is also straightforward to build against a HIP target:
+\begin{minted}[linenos=false]{bash}
+spack install quda +rocm amdgpu_target=gfx90a # AMD Instinct MI250
+\end{minted}
+This also works on a machine without a GPU installed, which might be useful for testing purposes. To build and install QUDA as described in \cref{sec:building:quda} one would call
+\begin{minted}[linenos=false]{bash}
+spack install quda@develop +mpi +multigrid +openqcd \
+                           +wilson +clover cuda_arch=80
+\end{minted}
+with the appropriate CUDA architecture.
+
+\worktodo{Command above only works if feature/openqxd is merged into develop}
+
+\subsection{Building openQxD against QUDA}
 \label{sec:building:openqxd}
 
-After QUDA is built according to the previous section\footnote{In this section we expect QUDA to be built and the shared library \code{libquda.so} as well as header files, like \code{quda.h}, to be available under a known path.}, we compile openQxD. Note that we require a compiler compliant with the C99 and the MPI 1.2 standard. We refer the user to the official openQxD documentation \cite{openqxd} and its GitLab repository \cite{gitlab:openqxd} on how to compile and focus here on the changes that have to be made to compile against QUDA. Note that we need to dynamically link every openQxD binary that wants to use the QUDA library.
+After QUDA is built according to the previous section, we compile openQxD\footnote{In this section we expect QUDA to be built and the shared library \code{libquda.so} as well as header files, like \code{quda.h}, to be available under a path known to the reader.}. Note that we require a compiler compliant with C99 and the MPI 1.2 standard. We refer the user to the official openQxD documentation \cite{openqxd} and its GitLab repository \cite{gitlab:openqxd} on how to compile and focus here on the changes that have to be made to compile against QUDA. Note that we need to dynamically link every openQxD binary that wants to use the QUDA library.
 
 % ref: https://gitlab.com/rcstar/openQxD README
 % \todo{add ref to OpenQxD docs on compiling}, with the exception of needing to 
 
-Hence, when compiling an openQxD program, we add the path to QUDA's \code{include} directory (e.g., \code{-I<path>} for gcc), the path to QUDA's \code{lib} directory (e.g., \code{-L<path>} for gcc), and the named library (e.g., \code{-lquda} for gcc) in the linking phase. An example \code{Makefile} can be found under \code{devel/quda/Makefile} in the openQxD repository \cite{gitlab:openqxd-devel}.
+Hence, when compiling an openQxD program, we add the path to QUDA's \code{include} directory (e.g., \code{-I<path>} for gcc), the path to QUDA's \code{lib} directory (e.g., \code{-L<path>} for gcc), and the named library (e.g., \code{-lquda} for gcc) in the linking phase. An example \code{Makefile} can be found under \code{devel/quda/Makefile} in the openQxD development repository \cite{gitlab:openqxd-devel}.
 
 To compile openQxD against QUDA, we require some environment variables to be set properly, \cref{lst:openqxd:env_vars}
 
@@ -111,7 +134,7 @@ export QUDA_BUILD=<path>     # adds -I${QUDA_BUILD}/include -L${QUDA_BUILD}/lib
 \label{lst:openqxd:env_vars}
 \end{codelisting}
 
-The environment variable \code{GCC} should point to a recent gcc compiler\footnote{At the time of writing this thesis, the authors recommend gcc version 12 or newer.}, whereas \code{CC} usually points to the MPI C compiler wrapper of the used MPI implementation\footnote{Usually just \code{mpicc} in the users \code{\$PATH}.}. \code{MPI\_HOME} and \code{MPI\_INCLUDE} have to point to directories of the MPI implementation and its include directory where the file \code{mpi.h} lies\footnote{Usually we have \code{MPI\_INCLUDE=\$\{MPI\_HOME\}/include}.}. These two directories are aggregated into the compile commands as \code{-I\$\{MPI\_INCLUDE\}} (directories to be searched for header files) and \code{-L\$\{MPI\_HOME\}/lib} (directories to be searched for \code{-l}, i.e. for named libraries.) respectively. The variable \code{QUDA\_BUILD} is very similar. It points to the path where QUDA was built. In the Makefiles it has 3 roles. It is being added to the generated compiler commands as \code{-I\$\{QUDA\_BUILD\}/include -L\$\{QUDA\_BUILD\}/lib} and the flag \code{-rpath \$\{QUDA\_BUILD\}/lib} as an absolute path is being added to the underlying linker in the linking stage. This makes the binary find \code{libquda.so} even if \code{LD\_LIBRARY\_PATH} is not set properly.
+The environment variable \code{GCC} should point to a recent gcc compiler\footnote{At the time of writing this thesis, the authors recommend gcc version 12 or newer.}, whereas \code{CC} usually points to the MPI C compiler wrapper of the used MPI implementation\footnote{Usually just \code{mpicc} in the users \code{\$PATH}.}. \code{MPI\_HOME} and \code{MPI\_INCLUDE} have to point to directories of the MPI implementation and its include directory where the file \code{mpi.h} lies\footnote{Usually we have \code{MPI\_INCLUDE=\$\{MPI\_HOME\}/include}.}. These two directories are passed to the compile commands as \code{-I\$\{MPI\_INCLUDE\}} (directories to be searched for header files) and \code{-L\$\{MPI\_HOME\}/lib} (directories to be searched for \code{-l}, i.e. for named libraries.) respectively. The variable \code{QUDA\_BUILD} is very similar. It points to the path where QUDA was built. In the Makefiles it has 3 roles. It is being added to the generated compiler commands as \code{-I\$\{QUDA\_BUILD\}/include -L\$\{QUDA\_BUILD\}/lib} and the flag \code{-rpath \$\{QUDA\_BUILD\}/lib} as an absolute path is being added to the underlying linker in the linking stage. This makes the binary find \code{libquda.so} even if \code{LD\_LIBRARY\_PATH} is not set properly.
 
 % Note that any modification to the lattice geometry in OpenQxD (i.e., in \code{global.h}) necessitates recompiling the program binaries. 
 
@@ -119,21 +142,6 @@ The environment variable \code{GCC} should point to a recent gcc compiler\footno
 % \code{
 % export LD_LIBRARY_PATH=/scratch/jfernande/quda_openqxd/openqxd_quda_build/build/lib:\${LD_LIBRARY_PATH}
 % }
-
-\subsection{Spack}
-\label{sec:building:quda:spack}
-
-We have created a Spack\cite{Gamblin_The_Spack_Package_2015} package for QUDA, that can be found in the official Spack repositories\cite{spack:quda}. The advantage of this is that it makes it very easy to build and install QUDA. This package will be useful in \cref{ch:p1:cicd} to build and deploy automatically. However, the build instructions above are full of intricate details and pitfalls and one might suffer a lot until one obtains a working build\footnote{I did.}. If Spack is available on a machine, one can just invoke
-\begin{minted}[]{bash}
-spack install quda cuda_arch=80
-\end{minted}
-in a terminal and QUDA is properly built and installed on the current system (the architecture \code{cuda\_arch} of the GPU may have to be adjusted). This also works on a machine without a GPU installed, which might be useful for testing purposes. To build and install QUDA as described in \cref{sec:building:quda} one would call
-\begin{minted}[]{bash}
-spack install quda@develop +mpi +multigrid +openqcd \
-                           +wilson +clover cuda_arch=80
-\end{minted}
-
-\worktodo{Command above only works if feature/openqxd is merged into develop}
 
 \subsection{uenv}
 \label{sec:building:uenv}

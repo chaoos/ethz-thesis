@@ -1,6 +1,9 @@
 \chapter{Interface}
 \label{ch:p1:interface}
 
+\worktodo{refactor, more detail, documentation of interface, side:openqxd,
+side:quda}
+
 Linking openQxD against QUDA involves three major steps:
 
 \begin{enumerate}
@@ -83,7 +86,7 @@ openQxD stores the clover field as two arrays $u$ of length $36$ that represent 
 \newlength{\oldcolsep}
 \setlength{\oldcolsep}{\arraycolsep}
 \setlength{\arraycolsep}{4pt}
-\begin{equation}{\small
+\begin{equation}
 \begin{pmatrix}
 u_0   & u_6 + iu_7 & u_8 + iu_9       & u_{10} + iu_{11} & u_{12} + iu_{13} & u_{14} + iu_{15} \\
 \cdot & u_1        & u_{16} + iu_{17} & u_{18} + iu_{19} & u_{20} + iu_{21} & u_{22} + iu_{23} \\
@@ -91,11 +94,11 @@ u_0   & u_6 + iu_7 & u_8 + iu_9       & u_{10} + iu_{11} & u_{12} + iu_{13} & u_
 \cdot & \cdot      & \cdot            & u_3              & u_{30} + iu_{31} & u_{32} + iu_{33} \\
 \cdot & \cdot      & \cdot            & \cdot            & u_4              & u_{34} + iu_{35} \\
 \cdot & \cdot      & \cdot            & \cdot            & \cdot            & u_5
-\end{pmatrix}}\,.
+\end{pmatrix}\,.
 \end{equation}
 
 QUDA stores these 36 numbers in a similar format (see \code{include/clover\_field\_order.h} \cite{QUDApaper}):
-\begin{equation}{\small
+\begin{equation}
 \begin{pmatrix}
 u_0              & \cdot            & \cdot            & \cdot            & \cdot            & \cdot \\
 u_6 + iu_7       & u_1              & \cdot            & \cdot            & \cdot            & \cdot \\
@@ -103,7 +106,7 @@ u_8 + iu_9       & u_{16} + iu_{17} & u_2              & \cdot            & \cdo
 u_{10} + iu_{11} & u_{18} + iu_{19} & u_{24} + iu_{25} & u_3              & \cdot            & \cdot \\
 u_{12} + iu_{13} & u_{20} + iu_{21} & u_{26} + iu_{27} & u_{30} + iu_{31} & u_4              & \cdot \\
 u_{14} + iu_{15} & u_{22} + iu_{23} & u_{28} + iu_{29} & u_{32} + iu_{33} & u_{34} + iu_{35} & u_5
-\end{pmatrix}}\,. 
+\end{pmatrix}\,. 
 \end{equation}
 \setlength{\arraycolsep}{\oldcolsep}
 

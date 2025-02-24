@@ -18,21 +18,24 @@ We decided on a testing strategy as follows:
     \item For continuous testing, the master branch is tested on a daily basis overnight at 1 am (CET) on local resources at ETH. This runs the GitLab pipeline described in \cref{sec:cicd:pipeline:gitlab}.
     \item For continuous testing, the master branch is tested every 3 months on GH200 machines at CSCS. This runs the CSCS pipeline described in \cref{sec:cicd:pipeline:cscs}.
     \item For continuous integration, every commit into every open merge-request is automatically tested on local resources at ETH. This runs the GitLab pipeline described in \cref{sec:cicd:pipeline:gitlab}.
-    \item{For continuous integration, open merge-requests can be tested by triggering the CSCS pipeline manually. This runs the CSCS pipeline described in \cref{sec:cicd:pipeline:cscs}. The pipeline can be trigger by commenting on a merge-request with
-    \begin{minted}[linenos=false]{text}
-cscs-ci run default
-    \end{minted}
-    This will invoke the webhook that triggers CSCS services to run the pipeline. A short time after commenting a new job appears in the pipeline view, see \cref{fig:cicd:external}.}
+    \item{For continuous integration, open merge-requests can be tested by triggering the CSCS pipeline manually. This runs the CSCS pipeline described in \cref{sec:cicd:pipeline:cscs}. The pipeline can be trigger by commenting on any merge-request with \code{cscs-ci run default}, see \cref{fig:cicd:comment}. This will invoke the webhook that triggers CSCS services to pull the repository and run the pipeline. A short time after commenting, a new job appears in the pipeline view with stage external, see \cref{fig:cicd:external}.}
 \end{itemize}
 
 \begin{figure}
     \centering
-    \includegraphics[width=100px]{\dir/img/default}
-    \caption{The external job that represents the CSCS default pipeline. One can click on the job to be redirected to CSCS servers where the whole pipeline including status of the jobs is visible.}
+    \includegraphics[width=\linewidth]{\dir/img/comment.png}
+    \caption{The comment to add to a pull-request that starts the CSCS default pipeline.}
+    \label{fig:cicd:comment}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=100px]{\dir/img/default.png}
+    \caption{The job in the external stage that represents the CSCS default pipeline. One can click on the job to be redirected to CSCS servers where the whole pipeline including status of the jobs is visible.}
     \label{fig:cicd:external}
 \end{figure}
 
-Thus there are two pipelines. One that runs on via GitLab on local resources at ETH, and one that runs via CSCS on the GH200 nodes at CSCS. Both pipelines are independent and completely detached from each other, they may run in parallel or not.
+Thus there are two separate pipelines. One that runs on via GitLab on local resources at ETH, and one that runs via CSCS on the GH200 nodes at CSCS. Both pipelines are independent and completely detached from each other, they may run in parallel or not.
 
 \subsection{GitLab pipeline}
 \label{sec:cicd:pipeline:gitlab}
@@ -54,13 +57,13 @@ The pipeline consists of three stages; prepare, build and test. In general the s
 \subsubsection{The build stage}
 \label{sec:cicd:pipeline:gitlab:build}
 
-\emph{All jobs in the build stage may run on official GitLab runners.} However, this stage consists of a matrix of jobs that compiles openQxD with various combinations of compilers and MPI implementations. This can be easily extended to cover missing combinations. At the time of writing, we cover compilers gcc-10, gcc-11, gcc-12, gcc-13, gcc-14, clang-18 and two MPI libraries Open MPI\cite{online:openmpi} and MPICH\cite{online:mpich}. These compile-jobs search through the whole repository. In every directory they find a \code{Makefile}, they will call \code{make}. This makes sure that all programs and modules in the project are compiled. These jobs do not depend on any other job and will fail if one of the commands fails. Their job names have the pattern
+\emph{All jobs in the build stage may run on official GitLab runners.} However, this stage consists of a matrix of jobs that compile openQxD with various combinations of compilers and MPI implementations. This can be easily extended to cover missing combinations. At the time of writing, we cover compilers gcc-10, gcc-11, gcc-12, gcc-13, gcc-14, clang-18 and two MPI libraries Open MPI\cite{online:openmpi} and MPICH\cite{online:mpich}. These compile-jobs search through the whole repository. In every directory they find a \code{Makefile}, they will call \code{make}. This makes sure that all programs and modules in the project are compiled. These jobs do not depend on any other job and will fail if one of the \code{make} commands fails. Their job names have the pattern
 \begin{minted}[linenos=false]{text}
 build-openqxd/<mpi>:<version>-<compiler>:<version>
 \end{minted}
-where \code{<mpi>} is replaced by either \code{openmpi} or \code{mpich} and \code{<compiler>} with \code{gcc} or \code{clang}.
+where \code{<mpi>} is replaced by either \code{openmpi} or \code{mpich} and \code{<compiler>} with \code{gcc} or \code{clang} and their respective versions.
 
-The other build jobs may depend on the prepare stage or on other build jobs. The jobs with pattern
+The remaining build jobs may depend on the prepare stage or on other build jobs. The jobs with pattern
 \begin{minted}[linenos=false]{text}
 build-quda/cuda:<version>-<cuda_arch>
 \end{minted}
@@ -70,7 +73,7 @@ Finally the jobs to build openQxD against QUDA have the pattern
 \begin{minted}[linenos=false]{text}
 build-openqxd/quda-checks/<cuda_arch>-<bcs>
 \end{minted}
-They depend on the previous build jobs that build QUDA with the appropriate \code{<cuda\_arch>}. The placeholder \code{<bcs>} is substituted with the boundary conditions of the lattice we want to test against. Currently we run tests on two lattices, see \cref{tab:cicd:ensembles}. Thus we compile openQxD on a process grid of 1x2x2x2 for these two lattices. Also these jobs can be extended to other lattices.
+They depend on the previous build jobs that build QUDA with the corresponding \code{<cuda\_arch>}. The placeholder \code{<bcs>} is substituted with the boundary conditions of the lattice we want to test against. Currently we run tests on two lattices, see \cref{tab:cicd:ensembles}. Thus we compile openQxD on a process grid of 1x2x2x2 with 8 ranks for these two lattices. Again this can be extended to other lattices.
 
 \begin{table}[t]
   \centering
@@ -93,30 +96,30 @@ They depend on the previous build jobs that build QUDA with the appropriate \cod
 \subsubsection{The test stage}
 \label{sec:cicd:pipeline:gitlab:test}
 
-\emph{All jobs in the test stage may \textbf{not} run on official GitLab runners, they require a GPU and thus may only run on the local resource.} Jobs in this stage depend on the build jobs that build openQxD against QUDA discussed at the end of the previous section. They may not run if previous jobs failed. They have names as
+\emph{All jobs in the test stage may \textbf{not} run on official GitLab runners, they require a GPU and thus may only run on the local resource specified above or on a registered runner exposing a GPU.} Jobs in this stage depend on the build jobs that build openQxD against QUDA discussed at the end of the previous section. They may not run if previous jobs in the dependency chain failed. They have names as
 \begin{minted}[linenos=false]{text}
 test-openqxd/quda-check<N>/<cuda_arch>-<bcs>
 \end{minted}
 where \code{<N>} is the number of the check we run, i.e. the check corresponds to \code{devel/quda/check<N>.c} which was built in the previous stage. We briefly discuss the binaries:
 \begin{itemize}
-  \item \code{devel/quda/check1}: Checks the indexing functions of fields, i.e. the arrays \code{ipt[VOLUME]} and \code{iup[VOLUME][4]} (see \code{main/README.global}) against the pure function implementations in QUDA, \code{openQCD\_qudaIndexIpt} and \code{openQCD\_qudaIndexIup} respectively. Afterwards the transfers of gauge field to QUDA and back are executed and compared two each other. Finally the plaquette on QUDA and on openQCD are computed and compared. This is done only with the $SU(3)$-valued gauge field, even if a QCD+QED lattice is given as input.
-  \item \code{devel/quda/check2}: This check performs a host-to-device and device-to-host transfer of a spinor field compares the two on the host. Further the norm function as well as the gamma matrix applications are compared to make sure the gamma basis is the same. Finally we compare the Wilson-Clover Dirac operator by acting on a random spinor field on both openQxD and QUDA and compare them.
+  \item \code{devel/quda/check1}: Checks the indexing functions of fields, i.e. the arrays \code{ipt[VOLUME]} and \code{iup[VOLUME][4]} (see \code{main/README.global}) against the pure function implementations in QUDA, \code{openQCD\_qudaIndexIpt} and \code{openQCD\_qudaIndexIup} respectively. Afterwards the transfers of the gauge field to QUDA and back are performed and compared two each other. Finally the plaquette on QUDA and on openQxD are computed and compared. This last test is done only with the $SU(3)$-valued gauge field, even if a QCD+QED lattice is given as input, since QUDA is not capable of calculating the QCD+QED plaquette.
+  \item \code{devel/quda/check2}: This check performs a host-to-device and device-to-host transfer of a spinor field and compares the two on the host. Further the norm function as well as the gamma matrix applications are compared to make sure the gamma basis is the same. Finally we compare the Wilson-Clover Dirac operator by acting on a random spinor field on both openQxD and QUDA and compare them.
   \item \code{devel/quda/check3}: Here we have implemented acceptance tests of solvers in QUDA. This means we call the solver in QUDA according to its configuration from the input file provided to the executable. The relative residual of the yielded solution is checked explicitely against the Dirac operator in openQxD and compared to the desired relative residual from the solver configuration.
   \item \code{devel/quda/check4}: Consists of a check of the eigensolver of QUDA. This is currently not tested.
 \end{itemize}
 
-For the check of the solvers, \code{check3}, we decided to verify certain interface functionalities apart from a correct solution. We run on $2$ gauge configurations, $2$ different flavors and $3$ different solvers. The input files can be found under \code{ci/input/*.in}. That implies $12$ actual calls to a solver in QUDA. We test multiple gauge configs and flavors to verify if the interface properly updates gauge and clover fields and is aware of changing parameters due to changing flavors. For instance, if on a QCD+QED C$^{\star}$-lattice we change the value of the inverse charge, \code{qhat}, we have to retransfer the gauge field to QUDA, because $\hat{q}$ appears in the $U(1)$-phase of the $U(3)$-valued gauge field, see \worktodo{equation}. This has to be triggered automatically by the interface code when changing parameters.
+For the check of the solvers, \code{check3}, we decided to verify certain interface functionalities apart from a correct solution. We run on $2$ gauge configurations, $2$ different flavors and $3$ different solvers. The input files can be found under \code{ci/input/*.in} in \cite{gitlab:openqxd-devel}. That implies $12$ actual calls to a solver in QUDA. We test multiple gauge configs and flavors to verify if the interface properly updates gauge and clover fields and is aware of changing parameters due to changing flavors. For instance, if on a QCD+QED C$^{\star}$-lattice we change the value of the inverse charge, \code{qhat}, we have to retransfer the gauge field to QUDA, because $\hat{q}$ appears in the $U(1)$-phase of the $U(3)$-valued gauge field, see \worktodo{equation}. This has to be triggered automatically by the interface code when changing parameters.
 
-Additionally, we test $3$ different solvers. One is a multigrid solver similar to one that would be used in a production run. The second solver is also a multigrid solver to check if multiple different instances of multigrid do not interfere with each other. Finally, a BiCGSTAB solver without any preconditioning is tested to check if another type of solver can be interfaced successfully.
+Additionally, we test $3$ different solvers. One is a multigrid solver similar to one that would be used in a production run. The second solver is also a multigrid solver to check if multiple different instances of multigrid do not interfere with each other. Finally, a BiCGSTAB solver without any preconditioning is tested to check if other types of solvers can be interfaced successfully.
 
-In order to test on multiple gauge configurations, we need them available in the job. This is achieved by enabling the package registry on GitLab and uploading the gauge configs as \code{tar.gz} archives. These can be found in the GitLab project under \code{Deploy -> Package Registry}. The test jobs download the archive corresponding to the lattice they run on, control the MD5 sums and run the checks.
+In order to test on multiple gauge configurations, we need them available in the job. This is achieved by enabling the package registry on GitLab and uploading the gauge configs as \code{tar.gz} archives. These can be found in the GitLab project under \code{Deploy -> Package Registry}. The test jobs download the archive corresponding to the lattice they run on, control the MD5 sums, unpack them and run the checks.
 
 This concludes the discussion of the GitLab pipeline.
 
 \subsection{CSCS pipeline}
 \label{sec:cicd:pipeline:cscs}
 
-This pipeline may only run on the official GH200 nodes at CSCS and is associated with an account having compute quota on the Daint Alps vCluster. \emph{Running job in this pipeline consumes nodehours of the associated account.} The entrypoint for this pipeline is in the openQxD-devel repository\cite{gitlab:openqxd-devel} under \code{ci/cscs\_default\_pipeline.yml}. The pipeline consists of two stages; build and test.
+This pipeline may only run on the official GH200 nodes at CSCS and is associated with an account having compute quota on the Daint Alps vCluster. \emph{Running this pipeline consumes nodehours of the associated account.} The entrypoint for this pipeline is in the openQxD-devel repository\cite{gitlab:openqxd-devel} under \code{ci/cscs\_default\_pipeline.yml}. The pipeline consists of two stages; build and test.
 
 \subsubsection{The build stage}
 
@@ -134,15 +137,15 @@ We see that it simply extends the runner \code{.uenv-builder-daint-gh200}, which
   \item \code{UENV\_VERSION}: specifies the version of the uenv image we want to build.
   \item \code{UENV\_RECIPE}: points to a uenv recipe.
 \end{itemize}
-The uenv recipe is a descriptive way on how to specify an environment in terms of its software dependencies. It consists of several YAML-files:
+The uenv recipe is a descriptive way on how to specify an environment on CSCS compute and login nodes in terms of its software dependencies. It consists of a directory with several YAML-files:
 \begin{itemize}
   \item \code{config.yaml}: Description of the package, its name, brief description in a sentence and which Spack version to use.
-  \item \code{compilers.yaml}: Description of the compilers for bootstrapping and the compiler to use when compiling all software and dependencies. This works as follows: the system compiler (usually a very old gcc) is used to compiler the bootstrap compiler (usually a newer gcc). Then the bootstrap compiler is used to compile the compiler we want to use (usually a recent gcc).
+  \item \code{compilers.yaml}: Description of the compilers for bootstrapping and the compiler to use when compiling all software and dependencies. This works as follows: the system compiler (usually a very old gcc) is used to compile the bootstrap compiler (usually a newer gcc). Then the bootstrap compiler is used to compile the compiler we want to use to compile our software stack (usually a recent gcc).
   \item{\code{environments.yaml}: Description of the environment, i.e. \code{gcc-env.specs} list all Spack specs that should be compiled and installed, \code{gcc-env.mpi} is dictated by CSCS to be \code{cray-mpich} with CUDA enabled (CUDA-aware MPI), \code{gcc-env.variants} adds Spack variant modifiers to all packages that support them in the spec list. \code{gcc-env.views} configures the available views in the image. The view \code{spack} is always added to the image. The view \code{modules} is added if in \code{config.yaml} we set \code{modules: true}. The \code{openqxd} view is added in the \code{post-install} script. The specs hold a spec for QUDA
   \begin{minted}[linenos=false]{text}
   quda@experimental +openqcd +multigrid +wilson +clover
   \end{minted}
-  which builds and installs QUDA with the interface code. This is currently installed with the additional package under \code{repo/} describing the QUDA build and install procedures. \worktodo{change to develop}}
+  which builds and installs QUDA with the interface code. This is currently installed using the additional package description under \code{repo/} describing the QUDA build and install procedures. \worktodo{change to develop}}
   \item \code{modules.yaml}: Description of the \code{modules} view if it was enabled in \code{config.yaml}. This is for legacy behavior if we want to generate Tcl\cite{online:tcl} or Lmod\cite{github:lmod} modules from the software given in the \code{gcc-env.specs} in \code{environments.yaml}. These can be loaded once the uenv is started.
   \item \code{post-install}: A post installation script that currently adds the \code{openqxd} view which specifies the environment variables required to build openQxD.
   \item \code{repo/}: An additional repo path to add to Spack. Under this path currently lies the QUDA package description until it is available in the official Spack repositories.
@@ -152,7 +155,7 @@ However, this builds a uenv image containing QUDA built for the GH200 nodes with
 
 \subsubsection{The test stage}
 
-In the same way as for the GitLab pipeline (\cref{sec:cicd:pipeline:gitlab}) we run the checks in \code{devel/quda} using the same lattices (\cref{tab:cicd:ensembles}), and input files. All that differs is that we run all checks sequentially in one job. We do not discuss the individual checks again and refer the reader to \cref{sec:cicd:pipeline:gitlab:test} for more details. However, there are two test jobs, one for the periodic and one for the C$^{\star}$ lattice. Both run with 8 ranks, thus 2 GH200 nodes, each 4 GPUs. The specification of a GH200 nodes is
+In the same way as for the GitLab pipeline (\cref{sec:cicd:pipeline:gitlab}) we run the checks in \code{devel/quda} using the same lattices (\cref{tab:cicd:ensembles}), and input files. All that differs is that we run all checks sequentially in one job. We do not discuss the individual checks again and refer the reader to \cref{sec:cicd:pipeline:gitlab:test} for more details. However, there are two test jobs, one for a periodic and one for a C$^{\star}$ lattice. Both run with 8 ranks, thus 2 GH200 nodes, each 4 GPUs. The specification of a GH200 node is
 \begin{itemize}
     \item 4x NVIDIA Grace (72 Neoverse V2 cores) processor
     \item 4x NVIDIA H100 (96 GB HBM3, CUDA-architecture \code{sm\_90})
@@ -165,12 +168,12 @@ For continuous deployment, open merge-requests can be deployed by triggering the
 \begin{minted}[linenos=false]{text}
 cscs-ci run deploy
 \end{minted}
-in the same way as described in \cref{sec:cicd:testing} for the testing.
+in the same way as described in \cref{sec:cicd:testing} for the default pipeline.
 
 \subsection{CSCS deploy pipeline}
 \label{sec:cd:pipeline:cscs}
 
-The entrypoint for this pipeline is in the openQxD-devel repository\cite{gitlab:openqxd-devel} under \code{ci/cscs\_deploy\_pipeline.yml}. The pipeline consists of only one stage; deploy.
+The entrypoint for this pipeline is in the openQxD-devel repository [15] under \code{ci/cscs\_deploy\_pipeline.yml}. \emph{One should only run this pipeline when the default pipeline finished successfully.} The pipeline consists of only one stage; deploy.
 
 \subsubsection{The deploy stage}
 

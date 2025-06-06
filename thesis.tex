@@ -16,9 +16,12 @@
 \usepackage[final]{pdfpages}
 
 % Bibliography
-\addbibresource[label=ownpubs]{ownpubs.bib}
-\addbibresource{bibliography.bib}
-\addbibresource{misc.bib}
+\addbibresource[label=ownpubs]{references/ownpubs.bib}
+\addbibresource{references/bibliography.bib}
+\addbibresource{references/misc.bib}
+
+% Custom commands
+\input{preamble/include_only}
 
 \begin{document}
 \frenchspacing
@@ -32,6 +35,8 @@
 %
 % Uncomment and adapt these lines if you want to include a cover PDF.
 %
+
+% PYTHON: title or cover
 \includepdf[pages={1,{}}]{cover/crop/cover_front.pdf}
 \cleardoublepage\setcounter{page}{1}
 
@@ -39,18 +44,42 @@
 % Frontmatter
 %
 
+% PYTHON: title or dirtytitlepage
 \include{frontbackmatter/dirtytitlepage}
+
+% PYTHON: title or titlepage
 \include{frontbackmatter/titlepage}
+
+% PYTHON: title or titleback
 \include{frontbackmatter/titleback}
+
+% PYTHON: front or dedication or ded
 \cleardoublepage\include{frontbackmatter/dedication}
+
+% PYTHON: front or abstract
 \cleardoublepage\include{frontbackmatter/abstract}
+
+% PYTHON: front or doo or declaration or dec
+\cleardoublepage\include{frontbackmatter/declaration-of-originality}
+
+% PYTHON: front or acknowledgments or ack
 \cleardoublepage\include{frontbackmatter/acknowledgments}
+
 \pagestyle{scrheadings}
+
+% PYTHON: front or toc
 \cleardoublepage\include{frontbackmatter/table-of-contents}
 
 %
 % Mainmatter
 %
+
+% PYTHON: main or notation
+\cleardoublepage\pagenumbering{arabic}%
+\def\dir{chapters/00-notation}
+\include{\dir/main}
+
+% PYTHON: main or intro or introduction
 \cleardoublepage\pagenumbering{arabic}%
 \def\dir{chapters/01-introduction}
 \include{\dir/main}
@@ -58,92 +87,170 @@
 % Include some blind text
 %\Blinddocument
 
-\cleardoublepage%
-\def\dir{chapters/02-literature-review}
-\include{\dir/main}
+% PYTHON: deprecated and (main or lit or review)
+%\cleardoublepage%
+%\def\dir{chapters/02-literature-review}
+%\include{\dir/main}
 
 % Part I: GPU Port
+% PYTHON: main or part1 or p1label or label
 \part{GPU Porting of Dirac Solvers}
+\label{part:gpu}
 
+% PYTHON: main or part1 or part1_introduction or part1_intro or p1intro
 \cleardoublepage%
 \def\dir{chapters/part-1/01-introduction}
 \include{\dir/main}
 
+% PYTHON: main or part1 or openqxd or openqcd
 \cleardoublepage%
 \def\dir{chapters/part-1/02-openqxd}
 \include{\dir/main}
 
+% PYTHON: main or part1 or quda
 \cleardoublepage%
 \def\dir{chapters/part-1/03-quda}
 \include{\dir/main}
 
+% PYTHON: main or part1 or interface or int
 \cleardoublepage%
 \def\dir{chapters/part-1/04-interface}
 \include{\dir/main}
 
+% PYTHON: main or part1 or (developing or dev)
 \cleardoublepage%
 \def\dir{chapters/part-1/05-developing}
 \include{\dir/main}
 
-\cleardoublepage%
-\def\dir{chapters/part-1/06-building}
-\include{\dir/main}
+% PYTHON: deprecated and (main or part1 or (building or build))
+%\cleardoublepage%
+%\def\dir{chapters/part-1/00-deprecated_06-building}
+%\include{\dir/main}
 
-\cleardoublepage%
-\def\dir{chapters/part-1/07-running}
-\include{\dir/main}
+% PYTHON: deprecated and (main or part1 or (running or run))
+%\cleardoublepage%
+%\def\dir{chapters/part-1/00-deprecated_07-running}
+%\include{\dir/main}
 
+% PYTHON: main or part1 or (performance or perf)
 \cleardoublepage%
 \def\dir{chapters/part-1/08-performance}
 \include{\dir/main}
 
+% PYTHON: main or part1 or (cicd)
 \cleardoublepage%
 \def\dir{chapters/part-1/09-cicd}
 \include{\dir/main}
 
+% PYTHON: main or part1 or (memory_manager or mm)
 \cleardoublepage%
 \def\dir{chapters/part-1/10-memory-manager}
 \include{\dir/main}
 
-% Part I: MGLMA
-\part{Variance Reduction for Two-Point Functions}
+% PYTHON: main or part1 or (conclusions or concl or p1concl)
+\cleardoublepage%
+\def\dir{chapters/part-1/11-conclusions}
+\include{\dir/main}
 
+% Part I: MGLMA
+% PYTHON: main or part2 or p2label or label
+\part{Variance Reduction for Two-Point Functions}
+\label{part:variance}
+
+% PYTHON: main or part2 or part2_introduction or part2_intro or p2intro
 \cleardoublepage%
 \def\dir{chapters/part-2/01-introduction}
 \include{\dir/main}
 
+% PYTHON: main or part2 or two_pt_corr or 2pt or two_pt
 \cleardoublepage%
-\def\dir{chapters/part-2/02-methodology}
+\def\dir{chapters/part-2/02-two-pt-corr}
 \include{\dir/main}
 
+% PYTHON: main or part2 or subspace_deflation or subspace or sd
 \cleardoublepage%
-\def\dir{chapters/part-2/03-results}
+\def\dir{chapters/part-2/03-subspace-deflation}
 \include{\dir/main}
 
+% PYTHON: main or part2 or localcoherence or lc
 \cleardoublepage%
-\def\dir{chapters/part-2/04-discussion}
+\def\dir{chapters/part-2/04-local-coherence}
 \include{\dir/main}
 
+% PYTHON: main or part2 or multigrid or mg
+\cleardoublepage%
+\def\dir{chapters/part-2/05-multigrid}
+\include{\dir/main}
+
+% PYTHON: main or part2 or num or numerics or numerical
+\cleardoublepage%
+\def\dir{chapters/part-2/06-numerics}
+\include{\dir/main}
+
+% PYTHON: main or part2 or chirality or chiral or ch
+\cleardoublepage%
+\def\dir{chapters/part-2/07-chirality}
+\include{\dir/main}
+
+% PYTHON: main or part2 or conclusions or concl
+\cleardoublepage%
+\def\dir{chapters/part-2/08-conclusions}
+\include{\dir/main}
+
+% PYTHON: main or conclusion or concl
 \cleardoublepage%
 \def\dir{chapters/11-conclusion-outlook}
 \include{\dir/main}
 
 % Appendices
+\bookmarksetup{startatroot}
 
 \appendix
+
+% PYTHON: back or appendix or appendices or appendixA or appA or A
 \cleardoublepage%
-\def\dir{chapters/99-A-appendix}
+\def\dir{chapters/appendices/A}
 \include{\dir/main}
 
+% PYTHON: back or appendix or appendices or appendixB or appB or B
 \cleardoublepage%
-\def\dir{chapters/99-B-appendix}
+\def\dir{chapters/appendices/B}
 \include{\dir/main}
 
+% PYTHON: back or appendix or appendices or appendixC or appC or C
+\cleardoublepage%
+\def\dir{chapters/appendices/C}
+\include{\dir/main}
+
+% PYTHON: back or appendix or appendices or appendixC or appD or D
+\cleardoublepage%
+\def\dir{chapters/appendices/D}
+\include{\dir/main}
+
+% PYTHON: back or appendix or appendices or appendixC or appE or E
+\cleardoublepage%
+\def\dir{chapters/appendices/E}
+\include{\dir/main}
+
+% PYTHON: back or bibliography or bib or refs
 \cleardoublepage\include{frontbackmatter/bibliography}
 
 \bookmarksetup{startatroot}
 %\pagenumbering{gobble}
-\cleardoublepage\include{frontbackmatter/cv}
+
+% PYTHON: back or lof or figures
+\cleardoublepage\include{frontbackmatter/list-of-figures}
+
+% PYTHON: back or lot or tables
+\cleardoublepage\include{frontbackmatter/list-of-tables}
+
+\bookmarksetup{startatroot}
+%\pagenumbering{gobble}
+
+% PYTHON: deprecated and (back or cv)
+%\cleardoublepage\include{frontbackmatter/cv}
+
+% PYTHON: back or publications or pubs
 \cleardoublepage\include{frontbackmatter/publications}
 
 \end{document}

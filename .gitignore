@@ -2,6 +2,10 @@
 build/
 *.aux
 *.log
+*.fdb_latexmk
+*.fls
+*.gz
+_minted-build/
 
 # Emacs junk
 auto/
@@ -13,3 +17,10 @@ ltxpng/
 # Temps
 *.*~
 *.bak
+
+# Sublime
+*.sublime-project
+*.sublime-workspace
+
+
+*.pdf

@@ -1,18 +1,414 @@
 \chapter{Introduction}
 \label{ch:p1:introduction}
 
-The goal of lattice Quantum Chromodynamics (lattice QCD) is to numerically simulate the interactions of quarks and gluons on a finite and discrete Euclidean spacetime grid, enabling first-principles predictions of hadron properties. 
+\dictum[Thomas C. Schulthess]{%
+  \worktodo{When allocating resources on a cluster, it is the responsibility of the programmer to utilize all the available resources as efficient as possible. }}%
+\vskip 1em
 
-Computing hadronic observables to subpercent precision, as needed for example to interpret the most recent Muon g-2 measurements~\cite{Muong-2:2023cdq,Gerardin:2020gpp}, poses formidable challenges. It requires simulating four dynamical quark flavors, incorporating quantum electrodynamics (QED) effects, using fine lattice spacings for reasonable continuum extrapolation, using physical quark masses, and high statistics. Meeting these demands substantially increases computational requirements for generating Monte Carlo samples of gauge field configurations on large lattices.
-% ~footnote{See, for example, Ref.~\cite{Gerardin:2020gpp} for a more detailed picture of the complexities involved in computing hadronic contributions to $(g-2)_\mu$ to subpercent precision using lattice QCD.}.
+\readit{1}
 
-The growing adoption of GPU-accelerated supercomputing in major facilities, largely driven by machine learning needs, presents new opportunities for using GPUs for lattice QCD codes. As lattice simulations are constrained by memory bandwidth rather than floating point operations, the high-memory throughput of GPUs is expected to give a speed-up for calculations.
+%
+% * supercomputing changes towards GPU
+%   * why? needs of ML/AI
+%   * 90% linalg even more of large models, 10% non-linear parts (activation functions)
+%   * linalg = mem bound
+%   * linalg = large dense GEMMs or mat-vec, large batched GEMMs or mat-vec
+%     * sparse: less, but growing
+%     * large dense GEMM is tiled into many tensor core sized submatrices
+%     * tensor cores: why faster? mem bus is same?
+%     * LLMs: billions of parameters -> lots of memory
+%     * many GEMMs per training step, many training steps
+%     * training steps are like a markov chain => parallelizing the step
+%     * Tensor Cores execute fused matrix operations at warp-level (32 threads at once), eliminating instruction overhead.
+%     * GPU efficient with big problems that expose lots of paralleizability
+% * GPUs have higher memory bandwidth than CPUs, because they were designed to process massively parallel workloads with a wider memory bus at the cost of latency. Optimized for sequential memory access and high mem throughput.
+% * CPUs have lower latency and optimized for random access to mem
+% * GPU is a latency hiding machine using caches and a more loose cache coherency protocol where explicite synchronization though memory barriers might be written by the developer to enforce all cores see the same memory.
+% * necessity to run lattice simulations on GPU, profit from these advancements, taking opportunities
+% * lattice simulations: 1) sampling gauge fields 2) observables
+% * observables: massively dominated my Dirac solves without lots of changing the gauge field, but many RHS
+%   * subpercent precision:
+%     * many statistics -> many solves
+%     * inclusion of QED effects
+%     * larger lattice sizes: better comtinuum extrapolations
+%
+% * sampling: many Dirac solves, but with very regularly changing gauge field
+% * target of this work: observables => Dirac operator, inverter, general sparse linalg kernels
+% * Improve TTS => Solves on the GPU
+%
+% * Target of this part -> solves to GPU
+%
+% * Lattice QCD+QED
+%   * Dirac operator: large sparse, nearest neighbor insteractions
+%   * Inverters: dominiated by SpMv
+%
+% * What we did: openqxd <-> quda
+%
 
-Our code, openQxD-1.1~\cite{openqxd}, extends the widely used openQCD-1.6 package~\cite{online:openqcd}, which supports the $O(a)-$improved Wilson fermion discretization (from now on, we will refer to these codebases simply as openQxD and openQCD, respectively). openQxD extends openQCD by allowing the simulation of QCD together with quantum electrodynamics (QED). This is accomplished through the use of C$^\star$ spatial boundary conditions \cite{Kronfeld1991}, which respect locality and Gauss's law at the same time reducing finite-size effects compared to periodic boundaries or other lattice QED formulations. These features make openQxD a versatile tool for achieving higher levels of precision. The codebase is designed for efficient parallel execution on CPU-based supercomputing architectures.
+%
+% GH200 paper: https://arxiv.org/pdf/2408.11556v1
+% 
+% * memory bound problems -> latency and bandwidth within the system has become a main driver in the development of new architectures
+% * tightly coupled heterogeneous system
+% * unified address space among all CPUs and GPUs
+% * NVLink-C2C (C2C) interconnect (cite: https://ieeexplore.ieee.org/abstract/document/10067395), allowing for fast, low latency, cache coherent interaction between different classes of chiplets
+% * ARM CPU
+% * heterogeneous system!
+% * automatic BLAS offloading
+% * Growth in computing power was not matched by improvements in memory access latency and bandwidth, resulting in many applications becoming memory-bound. 
+% * NUMA consists of defining the affinity of cores to different regions of memory
+% * single page table and virtual address space are shared between CPU and GPU
+% * CPU to DDR latency lower than GPU to HBM latency
+%
+%
+%
 
-openQxD uses the Hybrid Monte Carlo algorithm for dynamical fermion lattice simulations, where the most time-consuming task is the repeated inversion of a large sparse operator to solve the Dirac equation. This Dirac operator, which connects nearest neighbor points on a 4D Euclidean spacetime lattice, has indices for Dirac spin, color charge, and space-time. By porting the Dirac solver to GPUs, the overall execution time of openQxD is expected to be significantly reduced.
+\worktodo{
+* review of existing GPU porting strategies and other lattice software
+* Reproducibility and Software Availability: where is the code, compilers, dependencies, ...
+}
 
-Among the various possibilities for GPU-accelerating lattice QCD calculations, we choose to interface openQxD with the QUDA library~\cite{QUDApaper}, which provides optimized algorithms for NVIDIA and AMD GPUs, including an efficient iterative solver for the Dirac equation. 
-We implement C$^\star$ boundary conditions and QED effects, as these are features that are particular to openQxD and do not yet exist in QUDA. In this way we combine openQxD's comprehensive physics toolset with QUDA's GPU-accelerated operations, thus enhancing openQxD simulations with GPU performance.
+\tldr{ML dictates HPC trends -> GPU}
+In the last few years modern hardware in supercomputing centers experienced a paradigm shift away from classical monolithic general-purpose CPU architectures towards high throughput and massively parallel GPU accelerators~\cite{online:top500,khan2021analysis,Satoshi:2009,Navarro:2014}.
+These are substantially different machines targeted at specific problem classes.
+Namely the computational challenges that come with large machine learning and artificial intelligence (ML/AI) workloads required for instance for large language models -- one of the biggest consumers of high performance computing (HPC) and the main influencers of new hardware developments and trends in the area of scientific computing.
+The ML/AI community has pushed hardware manufacturers to build specialized integrated circuits directly aiming at their problems.
+An example of such a new hardware development that entered the GPU is the tensor core \cite{markidis2018nvidia,10.1007/978-3-030-10549-5_35} -- a hardware unit to perform small dense matrix multiply-accumulate operations.
 
-The remainder of this paper is structured as follows: \cref{ch:p1:openqxd} introduces the openQxD codebase, while \cref{ch:p1:quda} describes the QUDA library. \cref{ch:p1:interface} details the process of interfacing the openQxD application with the QUDA library: it discusses the modifications to the memory layout of lattice fields, the implementation of $C^\star$ boundary conditions, and the extension of QUDA to handle QCD+QED simulations. \cref{ch:p1:solver} describes the steps needed to call QUDA solvers from openQxD, that is initialization, parameter setup, error handling, and finalization. \cref{ch:p1:building} explains how to build openQxD with QUDA. \cref{ch:p1:performance} includes benchmark tests of CPU and GPU implementations of the Dirac operator and solvers. The strategy for continuous integration and continuous delivery (CI/CD) is discussed in \cref{ch:p1:cicd}. Finally, \cref{ch:p1:memory} proposes a way to continue the developments regarding the continuation of the PASC project when considering HMC on GPUs.
+\tldr{ML is dense GEMM, multi-GPU, mem-bound, training is markov chain}
+A typical machine learning pipeline consists of about 90-95 \% of linear algebra in the form of mostly memory bandwidth limited dense large matrix-matrix or matrix-vector multiplications (GEMM, GEMV) and a small remainder of about 5-10 \% non-linear activation functions which are usually compute bound, because they often involve transcendental functions\footnote{The larger the large language models the more the linear algebra part dominates.}\footnote{GEMMs may become compute bound on high-bandwidth memory (HBM) and datatypes where no tensor cores are available~\cite{fusco2024}.}.
+These GEMMs may have multiple thousands of rows and columns and are tiled into many sub-matrices to fit the tensor cores~\cite{novikov2015tensorizing}.
+Memory requirements are proportional to the number of parameters which may go into the trillions for very large models~\cite{isaev2023}.
+Since the training steps are comparable to a Markov chain, ML pipelines need to scale out and utilize hundreds of GPUs concurrently to be able to process in a reasonable time.
+
+\tldr{what is a GPU}
+Originally designed for efficient parallel real-time graphics rendering, GPUs are well-suited for this class of problems, since they have higher memory throughput than CPUs.
+They were designed with a wider memory bus at the cost of latency, heavily optimized for high throughput and sequential memory access as opposed to CPUs which are optimized for random memory access and low latency.
+The GPU is a latency hiding machine using caches with a less stringent cache coherency protocol than the CPU.
+Explicit synchronization though memory barriers might be triggered manually by the developer to enforce all threads to see the same memory.
+While CPUs have powerful individual cores capable of branch prediction and high single-thread performance, GPUs have thousands of lightweight threads with limited control flow handling not efficient for frequent branching and thread divergence.
+The loose cache coherency protocol, the wider memory bus, the reduced memory hierarchy depth and the highly parallel execution model -- featuring both SIMD (Single Instruction, Multiple Data) and SIMT (Single Instruction, Multiple Threads) -- make GPUs well-suited for many computational scientific tasks, such as machine learning, data analytics, and large-scale simulations.
+
+%However, this class of problems is suited well for processing on GPUs, since they have higher memory bandwidth than CPUs, because they were designed with a wider memory bus at the cost of latency, heavily optimized for sequential memory access and high throughput.
+
+\tldr{lattice is Dirac equation solves, sparse, SpMv, Krylov}
+Lattice QCD simulations are dominated by solves of the Dirac equation -- a large sparse linear system of equations governed by the Dirac operator.
+This is a derivative operator connecting nearest neighbor lattice points on a 4D Euclidean spacetime lattice with covariant derivatives that depend on an additional field connecting the links of the lattice called the gauge field.
+Solves of this equation are performed using Krylov subspace methods~\cite{krylov1931numerical,book:saad2003iterative}, that iteratively refine their solution up to a desired convergence criterion.
+This class of algorithms implicitly construct a polynomial in the Dirac operator applied to the right-hand side.
+The main computational kernel is thus the application of this stencil operator to one or multiple vectors (SpMv).
+
+\tldr{computationally lattice is comparable to ML}
+Even though Lattice QCD simulations are a somewhat different kind of computational problem compared to machine learning, they can profit from the hardware advancements
+%and take the opportunity
+on GPU accelerators utilizing modern clusters.
+Most lattice simulations consist of two parts with slightly different computational motives; sampling of gauge fields and evaluation of observables.
+However, both are dominated by repeated solves of the Dirac equation.
+For gauge field sampling, the gauge field defining the Dirac operator might change from solve to solve.
+On the other hand in case of observable evaluation, the gauge field does not change too frequently meaning that the same linear system of equations has to be solved for possibly thousands of right-hand sides.
+The goal of this work is to offload solves in the context of observable evaluation to the accelerator.
+
+\tldr{theory: high-precision lattice is +QED}
+Further motivation for such an undertaking come from recent theoretical determinations of the hadronic vacuum polarization contribution (HVP) to the Muon g-2 which target sub-percent precision on the resulting quantity~\cite{RBC_2024, bmw_2017, Djukanovic:2024cmq, bmw_2024, milc_gm2, ExtendedTwistedMass:2022jpw, FermilabLattice:2024yho,snowmass:2020,snowmass:2025}.
+This poses major challenges for a number of conceptual and computational reasons.
+High precision determinations of gold-plated hadronic quantities like the mentioned one require us to consider quantum electrodynamic (QED) effects, because their contribution to the observable exceed the sub-percent.
+This can be done perturbatively in a QCD only simulation in the observable evaluation phase~\cite{deDivitiis:2011eh,deDivitiis:2013xla} or by dynamically simulating both theories QCD+QED in the gauge field sampling phase~\cite{Lucini:2015,10.1143/PTP.120.413,PhysRevLett.117.072002,Blum:2017cer,Feng:2018qpx}.
+
+\tldr{our theory approach: we do QCD+QEDC + Cstar boundaries}
+The approach of the \RCstar collaboration for high precision lattice determinations is to non-perturbatively simulate QCD+QED directly in the Hybrid Monte Carlo algorithm when sampling gauge fields. This is accomplished through the use of \Cstar spatial boundary conditions~\cite{cstar:Wiese1992,cstar:Polley1993,cstar:Kronfeld1991,cstar:Kronfeld1993}, which respect locality and Gauss's law at the same time reducing finite-size effects compared to periodic boundaries or other lattice QED formulations. This approach allows a local and gauge-invariant formulation of QED in a finite volume.
+
+\tldr{our CPU approach (up to now): we did this on CPU, MPI}
+Our codebase, \openqxd~\cite{openqxd,gitlab:openqxd}, extends the widely used \openqcd-1.6 package~\cite{online:openqcd}, which supports the $O(a)$-improved Wilson fermion discretization (from now on, we will refer to these codebases simply as \openqxd and \openqcd, respectively).
+\Openqxd extends \openqcd by allowing the dynamic simulation of QCD together with QED by employing \Cstar boundary conditions.
+These features make \openqxd a versatile tool for achieving higher levels of precision.
+The codebase is designed for efficient parallel execution on pure-MPI CPU-based supercomputing architectures.
+In order to make \openqxd run on modern GPU-based clusters, we have many options.
+
+% computationally: What can be done? alternatives
+
+\tldr{alternative: openmp offloading}
+Recent new introductions to the \openmp standard~\cite{openmp,openmp:standard:4.0} consist of powerful GPU offloading directives, that aim at rapid porting of \openmp applications to run on GPUs with minimal effort.
+With a pure-MPI code as basis, investigating this possibility resulted in disappointing results, since a large fractions of the core memory layouts had to be refactored to optimize for such an implementation.
+
+\tldr{alternative: existing solver suite}
+Plenty of Krylov solver suites with efficient implementations on various GPU architectures exist~\cite{doi:10.1177/1094342016646844,7529929,866,816,833,KNIBBE2011281,ganesan2020sparshamglibraryhybridcpugpu,anzt2017preconditioned}.
+Nevertheless an efficient implementation of the Dirac stencil is crucial for such libraries to perform well.
+Often these general solver suites are not on eye level with state-of-the-art domain-specific solvers highly optimized for lattice QCD and its unusual stencil operator.
+These suites often take the operator in terms of a sparse matrix format or a stencil formulation that does not allow fine grained control.
+The way the gauge field is represented and applied is crucial for the performance of a matrix-vector operation.
+Precondition methods like multigrid lack comparable implementations for general problems compared to ones optimized for the various discretizations of the lattice Dirac operator.
+
+\tldr{alternative: own CUDA/HIP implementation}
+Another alternative would be to change \openqxd's memory layouts to ones more favorable for GPUs and incorporate GPU code in terms of CUDA and/or HIP runtime calls directly into the core components of the application. Certainly this would be the cleanest solution without any external dependencies, but the intrusions into the core components will be non-trivial and breaking the CPU code unless one maintains two versions. The effort of such an undertaking will be high and results can be expected only late in the development process, optimized code even only at the end.
+
+\tldr{computationally: We do this now with solves to QUDA}
+Among the various possibilities for GPU-accelerating lattice QCD calculations, we choose to interface \openqxd with the \quda library~\cite{QUDApaper,Babich:2011np,Clark:2016rdz} -- a lattice QCD library which provides optimized algorithms for NVIDIA and AMD GPUs, including an efficient iterative solver for the Dirac equation as well as a state-of-the-art multigrid preconditioning tailored for lattice QCD.
+We implement C$^\star$ boundary conditions and QED effects, as these are features that are particular to \openqxd and do not yet exist in \quda.
+In this way we combine \openqxd's comprehensive physics toolset with \quda's GPU-accelerated operations, thus enhancing our simulations with an efficient GPU backend.
+
+\tldr{review: quda}
+It makes sense to briefly review strategies of other simulation software packages common in the field.
+As mentioned in the last paragraph, \quda was designed as pure-GPU code.
+It is capable of running on various hardware, such as NVIDIA and AMD, but support for SYCL on Intel platforms or a thread backend to run on CPUs are in development.
+\Quda developers interfaced to Chroma~\cite{Edwards:2004sx,github:chroma}, CPS~\cite{online:cps} and QDP/C~\cite{online:qdpc} already in 2009~\cite{QUDApaper}.
+
+\tldr{review: openqcd}
+Recent releases of \openqcd (the package which \openqxd is based on) include openMP thread support~\cite{online:openqcd}.
+Further developments go into direction of a CUDA/HIP porting of large parts of the software package.
+Development is still in progress in a private GitHub repository and a release date is not communicated yet, a status report can be found in ref.~\cite{online:openqcdongpu}.
+
+\tldr{review: tmlqcd}
+The software package tmLQCD~\cite{jansen2009} already went the path we did by coupling to \quda.
+They offload solves of the Dirac equation, but in the meantime also large parts of the Hybrid Monte Carlo (HMC) algorithms as of writing this document~\cite{Kostrzewa:2022,Finkenrath:2023,Garofalo:2025}.
+
+\tldr{review: grid}
+Grid~\cite{Boyle:2015,github:grid} is mainly targeted at domain wall and Möbius fermions, but simulations of Wilson-Clover fermions are supported too~\cite{Richtmann:2019}.
+It has its own GPU backend and runs efficiently on NVIDIA, AMD and Intel GPUs as well as on CPUs with MPI and openMP thread support~\cite{Yamaguchi:2022}.
+Newest features include blocked solvers for domain wall fermions~\cite{Boyle:2024pio}.
+
+\tldr{review: chroma}
+Chroma~\cite{Edwards:2004sx} was developed and optimized for CPU based machines~\cite{mcclendon2001optimized} and is fully interfaced with \quda in terms of Dirac equation solves and the HMC.
+
+\tldr{review: milc}
+MILC~\cite{github:milc,online:milc} is used for dynamical simulations of staggered and HISQ fermions.
+It is interfaced to \quda and Grid.
+
+%   tmLQCD
+%   GRID
+%   openqcd
+%   chroma
+%   CPS
+%   QDP/C
+%   MILC
+% HiREP
+
+% {\color{gray}
+% The goal of lattice Quantum Chromodynamics (lattice QCD) is to numerically simulate the interactions of quarks and gluons on a finite and discrete Euclidean spacetime grid, enabling first-principles predictions of hadron properties. 
+
+% Computing hadronic observables to subpercent precision, as needed for example to interpret the most recent Muon g-2 measurements~\cite{Muong-2:2023cdq,Gerardin:2020gpp}, poses formidable challenges. It requires simulating four dynamical quark flavors, incorporating quantum electrodynamics (QED) effects, using fine lattice spacings for reasonable continuum extrapolation, using physical quark masses, and high statistics. Meeting these demands substantially increases computational requirements for generating Monte Carlo samples of gauge field configurations as well as evaluation of observables on large lattices.
+% % ~footnote{See, for example, Ref.~\cite{Gerardin:2020gpp} for a more detailed picture of the complexities involved in computing hadronic contributions to $(g-2)_\mu$ to subpercent precision using lattice QCD.}.
+
+% The growing adoption of GPU-accelerated supercomputing in major facilities, largely driven by machine learning needs, presents new opportunities for using GPUs for lattice QCD codes. As lattice simulations are constrained by memory bandwidth rather than floating point operations, the high-memory throughput of GPUs is expected to give a speed-up for calculations.
+
+% Our code, openQxD-1.1~\cite{openqxd}, extends the widely used openQCD-1.6 package~\cite{online:openqcd}, which supports the $O(a)-$improved Wilson fermion discretization (from now on, we will refer to these codebases simply as openQxD and openQCD, respectively). openQxD extends openQCD by allowing the simulation of QCD together with quantum electrodynamics (QED). This is accomplished through the use of C$^\star$ spatial boundary conditions \cite{cstar:Wiese1992,cstar:Polley1993,cstar:Kronfeld1991,cstar:Kronfeld1993}, which respect locality and Gauss's law at the same time reducing finite-size effects compared to periodic boundaries or other lattice QED formulations. These features make openQxD a versatile tool for achieving higher levels of precision. The codebase is designed for efficient parallel execution on CPU-based supercomputing architectures.
+
+% openQxD uses the Hybrid Monte Carlo algorithm for dynamical fermion lattice simulations, where the most time-consuming task is the repeated inversion of a large sparse operator to solve the Dirac equation. This Dirac operator, which connects nearest neighbor points on a 4D Euclidean spacetime lattice, has indices for Dirac spin, color charge, and space-time. By porting the Dirac solver to GPUs, the overall execution time of openQxD is expected to be significantly reduced.
+
+% Among the various possibilities for GPU-accelerating lattice QCD calculations, we choose to interface openQxD with the \quda library~\cite{QUDApaper}, which provides optimized algorithms for NVIDIA and AMD GPUs, including an efficient iterative solver for the Dirac equation. 
+% We implement C$^\star$ boundary conditions and QED effects, as these are features that are particular to openQxD and do not yet exist in \quda. In this way we combine openQxD's comprehensive physics toolset with \quda's GPU-accelerated operations, thus enhancing openQxD simulations with GPU performance.
+% }
+
+\tldr{Definition of problem to offload}
+We are interested in solving the lattice Dirac equation~\cref{eq:dirac:equation} on the GPU.
+%The system of linear equations of interest is the Dirac equation on the lattice~\cref{eq:dirac:equation}.
+It is the most time intensitve kernel given many right-hand sides $\eta$.
+Offloading this kernel allows us to retain the functionality of existing applications while interfacing only a minimal set of parameters.
+The interface needs to transmit field data from one applicaprocess of interfacing tion to the other.
+Different conventions, memory layouts, data types, precisions, storage formats, freedom in $\gamma$-basis choice, boundary conditions and many more have to be taken into account when designing an interface.
+The work that will follow concentrates on the measurement part of the workflow, i.e. offloading of solves of the Dirac equation.
+Although the gauge fields are periodically updated along the Markov chain, in the measurement part of the workflow they are kept fixed.
+
+% The solution of this system for many right-hand sides $\eta$ is the most time
+% intensive kernel of the Monte Carlo algorithm, whose correctness can be
+% checked a posteriori, thereby allowing us to retain the functionality of
+% existing applications while interfacing only a minimal set of parameters.
+
+% \tldr{what to offload}
+% The fine-grid problem which we wish to offload is defined by the right-hand
+% side spinor $\eta$, which may be represented in different ways depending on
+% conventions. These different conventions need to be mapped into each other in
+% the interface. Likewise, the couplings between the sites, which define the
+% Dirac operator, are parameterized by a set of so-called vector (or gauge)
+% field variables $U_\mu$ for the four directions $\mu=0,1,2,3$, which need to
+% be passed through the interface as well. Although these fields are
+% periodically updated along the Markov chain, in the measurement part of the
+% workflow they are kept fixed.
+
+\tldr{remainder of the part}
+The rest of this part is arranged as follows.
+%The remainder of this chapter introduces the theoretical background for QCD and QCD+QED lattice simulations. 
+\Cref{ch:p1:openqxd,ch:p1:quda} introduce the \openqxd and \quda codebases, their design choices, memory layouts and other features relavant for this work.
+\Cref{ch:p1:interface}, the main piece of this part, details the process of interfacing \openqxd with the \quda library: it discusses the modifications to the memory layout of lattice fields, the implementation of $C^\star$ boundary conditions in \quda, the extension of \quda to handle QCD+QED simulations and the various ways to access the interface.
+\Cref{ch:p1:develop} describes the steps needed to call \quda solvers in various scenarios from within \openqxd, that is initialization, parameter setup, error handling, and finalization.
+%\Cref{ch:p1:building} explains how to build \openqxd with \quda support.
+%The \quda solver expects the input file to describe various solver parameters. How this may look like is described in \cref{ch:p1:running}.
+\Cref{ch:p1:performance} presents benchmark tests of various components of the interface.
+The strategy for continuous integration and continuous delivery (CI/CD) is discussed in \cref{ch:p1:cicd}.
+Finally, \cref{ch:p1:memory} proposes a way to continue the developments regarding the continuation of the PASC project~\cite{online:pasc2025} when considering gauge field configuration generation on GPUs.
+
+% \section{Dirac operator}
+
+% \tldr{Definition of Dop on lattice}
+% \textcolor{gray}{
+% The QCD Wilson-Clover Dirac operator $\Dw$ is a nearest-neighbor stencil operator
+% acting on a linear space of quark (or spinor) fields defined on a regular 4D
+% cubic lattice of $V_\mathrm{G}=N_0N_1N_2N_3$ sites, typically in the range $10^6-10^8$.
+% Applied to a spinor field $\psi(x)$ the Dirac operator can be written as (the lattice spacing is set to $a = 1$)
+% \begin{equation}
+% \begin{aligned} \label{eq:Dw}
+% D_\mathrm{w} &\psi(x) = (4 + m_0) \psi(x) \\
+% -&\frac{1}{2} \sum_{\mu=0}^3 \Big\{
+%   U_{\mu}(x) (1-\gamma_{\mu}) \psi(x + \hat{\mu})
+% + U_{\mu}(x-\hat{\mu})^{-1} (1+\gamma_{\mu}) \psi(x-\hat{\mu})
+% \Big\} \\
+% +&c_\mathrm{sw}^{SU(3)} \frac{i}{4} \sum_{\mu,\nu=0}^3 \sigma_{\mu \nu} \hat{F}_{\mu \nu}(x) \psi(x),
+% \end{aligned}
+% \end{equation}
+% where the gauge field $U_{\mu}(x)$ is the $SU(3)$-valued link between lattice point $x$ and $x + \hat{\mu}$, the $\gamma_{\mu}$ are the Dirac matrices obeying the Euclidean Clifford algebra, $\{\gamma_{\mu}, \gamma_{\nu}\} = 2 \delta_{\mu \nu}$ and $\sigma_{\mu \nu} = \frac{i}{2} \left[\gamma_{\mu}, \gamma_{\nu}\right]$.
+% The last term is called SW-term (or clover term) is block-diagonal and give $\bigO(a)$ improvement à la Symansik~\cite{symanzik1982,SYMANZIK1983}.
+% }
+% \textcolor{gray}{The $SU(3)$ field strength tensor $\hat{F}$ is defined as
+% \begin{equation}
+% \begin{aligned} \label{eq:intro:clover}
+% \hat{F}_{\mu \nu}(x) &= \frac{1}{8} \left\{
+%     Q_{\mu \nu}(x) - Q_{\nu \mu}(x)
+% \right\}, \\
+% Q_{\mu \nu}(x)
+% &= U_{\mu}(x)
+%    U_{\nu}(x+\hat{\mu})
+%    U_{\mu}(x+\hat{\nu})^{-1}
+%    U_{\nu}(x)^{-1} \\
+% &+ U_{\nu}(x)
+%    U_{\mu}(x-\hat{\mu}+\hat{\nu})^{-1}
+%    U_{\nu}(x-\hat{\mu})^{-1}
+%    U_{\mu}(x-\hat{\mu}) \\
+% &+ U_{\mu}(x-\hat{\mu})^{-1}
+%    U_{\nu}(x-\hat{\mu}-\hat{\nu})^{-1}
+%    U_{\mu}(x-\hat{\mu}-\hat{\nu})
+%    U_{\nu}(x-\hat{\nu}) \\
+% &+ U_{\nu}(x-\hat{\nu})^{-1}
+%    U_{\mu}(x-\hat{\nu})
+%    U_{\nu}(x+\hat{\mu}-\hat{\nu})
+%    U_{\mu}(x)^{-1}.
+% \end{aligned}
+% \end{equation}}
+% Due to the nearest-neighbor coupling, a good parallelization scheme is achieved by domain decomposition, where a contiguous local volume of size $V_\mathrm{L}=L_0L_1L_2L_3$, which divides the global problem size, is associated with a single computing unit.
+% With accessible problem sizes, the Dirac operator is poorly conditioned and multi-grid preconditioning such as the inexact deflation \cite{Luescher2007} provided in \openqcd or its \quda equivalent is needed to speed up the convergence of the iterative solvers used.
+
+% \section{C\texorpdfstring{$^{\star}$}{*} boundary conditions}
+
+% \tldr{Def of Cstar boundaries}
+% Gauss's law prohibits dynamical simulations of charged particles in a finite box with periodic boundary conditions. A local and gauge-invariant formulation of QED theory on the lattice can be provided by using C$^{\star}$ boundary conditions along spatial lattice extents\cite{cstar:Wiese1992,cstar:Polley1993,cstar:Kronfeld1991,cstar:Kronfeld1993}. This theory is usually referred to as \QEDC\cite{Lucini:2015}. It has some useful advantages like no zero-modes of the gauge field or small finite-volume effects due to its locality compared to other (non-local) QED formulations on the lattice \cite{10.1143/PTP.120.413,PhysRevLett.117.072002,Blum:2017cer,Feng:2018qpx}. Fields are only periodic up to charge conjugation, that is
+% \begin{align} \label{eq:cstar:bcs}
+%   \begin{split}
+%     \psi(x + L_k \hat{k})       &= \psi^{\mathcal{C}}(x)       = C^{-1}\bar{\psi}^{\text{T}}(x), \\
+%     \bar{\psi}(x + L_k \hat{k}) &= \bar{\psi}^{\mathcal{C}}(x) = -\psi^{\text{T}}(x)C, \\
+%     A_{\mu}(x + L_k \hat{k})    &= A_{\mu}^{\mathcal{C}}(x)    = - A_{\mu}(x), \\
+%     U_{\mu}(x + L_k \hat{k})    &= U_{\mu}^{\mathcal{C}}(x)    = U_{\mu}^{*}(x),
+%   \end{split}
+% \end{align}
+% where $\psi$ is a fermion field, $A$ the $U(1)$-valued photon field and $U$ the $SU(3)$-valued gluon field and the subscript $\mathcal{C}$ stands for the charge conjugated field. The vector $\hat{k}$ is the unit vector in spatial $k$-direction with $k=1,2,3$, $\mu=0,1,2,3$ denotes the space-time direction and $L_k$ is the spatial lattice extent in direction $k$. The star symbol $U^{*}$ denotes element-wise complex conjugation. Finally $C$ is the invertible charge conjugation matrix obeying
+% \begin{equation}
+%   C^{-1} \gamma_{\mu} C = - \gamma_{\mu}^{\text{T}}
+%   \quad
+%   \text{and}
+%   \quad
+%   \det(C) = 1
+% \end{equation}
+% with the Euclidean $\gamma$-matrices. We would expect that charge conjugating the fields twice gives us back the original field. Thus shifting by twice the spatial lattice extent, the fermion field transforms as
+% \begin{align}
+%   \psi(x + 2 L_k \hat{k}) &= C^{-1}\bar{\psi^{\text{T}}}(x + L_k \hat{k}) = - C^{-1} C^{\text{T}} \psi(x), \\
+%   \bar{\psi}(x + 2 L_k \hat{k}) &= -\psi^{\text{T}}(x + L_k \hat{k})C = - \bar{\psi}(x) (C^{-1})^{\text{T}} C
+% \end{align}
+% If we chose the matrix $C$ to additionally satisfy $C^{\text{T}} = -C$, the RHS equals $\psi(x)$ and $\bar{\psi}(x)$ respectively and the fermion field is periodic in space in twice the lattice extent $L_k$. Such a matrix $C$ always exists in four dimensions.
+
+% \tldr{Extended lattice is requirement not implementation trick}
+% Looking at \cref{eq:cstar:bcs}, we see that the photon and the gluon field on the mirror lattice are completely determined by charge conjugating their values on the physical lattice. Their integration measure is given by
+% \begin{align}
+% \left[ \dd U \right]_{\lat{phys}} &= \prod_{\mu=0}^{3} \prod_{x \in \lat{phys}} \dd U_{\mu}(x), \\
+% \left[ \dd A \right]_{\lat{phys}} &= \prod_{\mu=0}^{3} \prod_{x \in \lat{phys}} \dd A_{\mu}(x).
+% \end{align}
+% On the other hand, $\psi$ and $\bar{\psi}$ are independent Grassmann variables on the physical lattice, whereas on the extended lattice $\bar{\psi}$ is completely determined by $\psi$. In the path integral the integration measure of the Grassmann variables therefore turns into
+% \begin{equation}
+% \left[ \dd \psi \right]_{\lat{phys}} \left[ \dd \bar{\psi} \right]_{\lat{phys}}
+% = \prod_{x \in \lat{phys}} \dd \psi(x) \bar{\psi}(x)
+% = \prod_{x \in \lat{ext}} \dd \psi(x)
+% = \left[ \dd \psi \right]_{\lat{ext}}.
+% \end{equation}
+% The fermion field is dynamic on the whole extended lattice, where the physical and mirror lattices can also be seen as a further degree of freedom or an additional index $i \in \{ \text{physical}, \text{mirror} \}$ of the fermion field. For that reason the fermion field defined on the whole lattice is sometimes called doublet.
+
+% \section{QCD+QED}
+
+% \worktodo{maybe a bit more detail, the action?}
+
+% % The QCD Wilson-Clover Dirac operator applied to a spinor field $\psi(x)$ can be written as (the lattice spacing is set to $a = 1$)
+% % \begin{equation}
+% % \begin{aligned} \label{eq:Dw}
+% % D_\mathrm{w} &\psi(x) = 4 \psi(x) \\
+% % -&\frac{1}{2} \sum_{\mu=0}^3 \Big\{
+% %   U_{\mu}(x) (1-\gamma_{\mu}) \psi(x + \hat{\mu})
+% % + U_{\mu}(x-\hat{\mu})^{-1} (1+\gamma_{\mu}) \psi(x-\hat{\mu})
+% % \Big\} \\
+% % +&c_\mathrm{sw}^{SU(3)} \frac{i}{4} \sum_{\mu,\nu=0}^3 \sigma_{\mu \nu} \hat{F}_{\mu \nu}(x) \psi(x),
+% % \end{aligned}
+% % \end{equation}
+% % where the gauge field $U_{\mu}(x)$ is the $SU(3)$-valued link between lattice point $x$ and $x + \hat{\mu}$, the $\gamma_{\mu}$ are the Dirac matrices obeying the Euclidean Clifford algebra, $\{\gamma_{\mu}, \gamma_{\nu}\} = 2 \delta_{\mu \nu}$ and $\sigma_{\mu \nu} = \frac{i}{2} \left[\gamma_{\mu}, \gamma_{\nu}\right]$. The last term is called SW-term (or clover term) and is block-diagonal. The $SU(3)$ field strength tensor $\hat{F}$ is defined as
+
+% % \begin{equation}
+% % \begin{aligned} \label{eq:intro:clover}
+% % \hat{F}_{\mu \nu}(x) &= \frac{1}{8} \left\{
+% %     Q_{\mu \nu}(x) - Q_{\nu \mu}(x)
+% % \right\}, \\
+% % Q_{\mu \nu}(x)
+% % &= U_{\mu}(x)
+% %    U_{\nu}(x+\hat{\mu})
+% %    U_{\mu}(x+\hat{\nu})^{-1}
+% %    U_{\nu}(x)^{-1} \\
+% % &+ U_{\nu}(x)
+% %    U_{\mu}(x-\hat{\mu}+\hat{\nu})^{-1}
+% %    U_{\nu}(x-\hat{\mu})^{-1}
+% %    U_{\mu}(x-\hat{\mu}) \\
+% % &+ U_{\mu}(x-\hat{\mu})^{-1}
+% %    U_{\nu}(x-\hat{\mu}-\hat{\nu})^{-1}
+% %    U_{\mu}(x-\hat{\mu}-\hat{\nu})
+% %    U_{\nu}(x-\hat{\nu}) \\
+% % &+ U_{\nu}(x-\hat{\nu})^{-1}
+% %    U_{\mu}(x-\hat{\nu})
+% %    U_{\nu}(x+\hat{\mu}-\hat{\nu})
+% %    U_{\mu}(x)^{-1}.
+% % \end{aligned}
+% % \end{equation}
+
+% \tldr{QED in Dop}
+% For QCD+QED simulations, the Dirac operator \cref{eq:Dw} has to be modified to include electromagnetic interactions.
+% In addition to the \ggrp{SU}{3}-valued QCD gauge field $U_\mu(x)$, we have the \ggrp{U}{1}-valued QED gauge field $A_\mu(x)$, which when combined results in a \ggrp{U}{3}-valued field $e^{i q A_\mu(x)} U_\mu(x)$ with $q_f$ the charge of a quark. These links are produced by multiplying the \ggrp{U}{1} phase to the \ggrp{SU}{3} matrices.
+
+% \tldr{QED SW term}
+% In addition, we add another SW-term with sepatate coefficient,
+% \begin{equation} \label{eq:Dw2}
+% D_\mathrm{w} \rightarrow D_\mathrm{w} + q c_\mathrm{sw}^{U(1)} \frac{i}{4} \sum_{\mu,\nu=0}^3 \sigma_{\mu \nu} \hat{A}_{\mu \nu}\,,
+% \end{equation}
+% where $q$ is the charge and the $U(1)$ field strength tensor $\hat{A}_{\mu \nu}(x)$ is defined as
+% \begin{align*}
+% \hat{A}_{\mu \nu}(x) &= \frac{i}{4 q_{el}} \text{Im} \left\{
+%       z_{\mu \nu}(x)
+%     + z_{\mu \nu}(x-\hat{\mu})
+%     \right. \\
+%     &\phantom{=\frac{i}{4 q_{\text{el}}} \text{Im} \left\{ \right.} \left. 
+%     + z_{\mu \nu}(x-\hat{\nu})
+%     + z_{\mu \nu}(x-\hat{\mu}-\hat{\nu})
+% \right\}, \\
+% z_{\mu \nu}(x) &= e^{i\left\{
+%       A_{\mu}(x)
+%     + A_{\nu}(x+\hat{\mu})
+%     - A_{\mu}(x+\hat{\nu})
+%     - A_{\nu}(x)
+% \right\}},
+% \end{align*}
+% similar to the \ggrp{SU}{3} field strength with $q_{el} = \frac{1}{6}$ the elementary charge.
+
+% \tldr{Full QCD+QED Wilson Clover Dop}
+% Therefore the full QCD-QED Wilson-Clover Dirac operator applied to a spinor field $\psi$ is
+% \begin{equation}
+% \begin{aligned} \label{eq:Dw:QCD+QED}
+% D_\mathrm{w} \psi(x) = \left( 4 + m_0 \right) &\psi(x) + \frac{1}{2} \sum_{\mu=0}^3
+% \Big\{
+%   \begin{multlined}[t]
+%     U_{\mu}(x)e^{i \hat{q} A_{\mu}(x)} (1-\gamma_{\mu}) \psi(x + \hat{\mu}) \\
+%    +U_{\mu}(x-\hat{\mu})^{-1}e^{-i \hat{q} A_{\mu}(x) } (1+\gamma_{\mu}) \psi(x-\hat{\mu})
+% \Big\} \end{multlined} \\
+% +&c_\mathrm{sw}^{SU(3)}  \frac{i}{4} \sum_{\mu,\nu=0}^3 \sigma_{\mu \nu} \hat{F}_{\mu \nu}(x) \psi(x)
+% +q c_\mathrm{sw}^{U(1)} \frac{i}{4} \sum_{\mu,\nu=0}^3 \sigma_{\mu \nu} \hat{A}_{\mu \nu}(x) \psi(x),
+% \end{aligned}
+% \end{equation}
+% where the integer $\hat{q} = \frac{q}{q_{el}}$ and $m_0$ is the bare quark mass.

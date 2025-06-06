@@ -1,0 +1,37 @@
+\documentclass{standalone}
+
+\usepackage{tikz}
+\usepackage{amsmath}
+\usepackage{makecell}%
+
+\usetikzlibrary{arrows}
+\usetikzlibrary{decorations.pathreplacing}
+
+% definition of all the colors
+\usepackage{xcolor}
+\input{preamble/colors.tex}
+
+\begin{document}
+
+\begin{tikzpicture}
+
+%\draw[help lines] (-0.1,-1.1) grid[step=.5] (18.1,2.1);
+
+\draw [decorate,decoration={brace,amplitude=5pt,raise=4ex}]
+  (1,0.8) -- (9,0.8) node[midway,yshift=3em]{CPU field};
+
+\draw[thick,|-|] (1,1) -- (9,1);
+
+\node[] at (9.5,1.0) {$\simeq$};
+
+\draw [decorate,decoration={brace,amplitude=5pt,raise=4ex}]
+  (10,0.8) -- (19,0.8) node[midway,yshift=3em]{GPU field};
+
+\draw[thick,|-|] (10,1) -- (19,1);
+
+
+%\draw[draw=cred,thin,<-] (4,0.8) --  node[below=1mm] {\textcolor{cred}{access}} (4,0.5);
+
+\end{tikzpicture}
+
+\end{document}

@@ -1,87 +1,119 @@
 \chapter{\texorpdfstring{openQ$^\star$D}{openQxD}}
 \label{ch:p1:openqxd}
 
-\worktodo{openqxd, openqcd and its programming philosophy and paradigms,
-memory layouts, allocating fields, non-pure functions and other shenani-
-gans}
+\readit{1}
 
-\newcommand{\Dw}{{D_{\mathrm{w}}}}
+% \worktodo{openqxd, openqcd and its programming philosophy and paradigms,
+% memory layouts, allocating fields, non-pure functions and other shenanigans}
 
-The openQxD code~\cite{openqxd} is an extension of the state-of-the-art
-lattice QCD Markov Chain Monte Carlo code
-openQCD~\cite{online:openqcd,Luscher:2012av}, which is written in the \worktodo{C89} standard
-with MPI parallelization with proven strong-scalability to hundreds of
-CPU-based nodes and specific optimizations for x86 architectures.
-Due to the extensive suite of legacy applications based on openQCD, as well as
-its renowned stability and reproducibility, our goal is to accelerate the code
-by offloading the solution of a large linear system of equations
-$\Dw\psi=\eta$, defined by the Dirac operator $\Dw$, to the
-device using the QUDA library.
-The solution of this system for many right-hand sides is the most time
-intensive kernel of the Monte Carlo algorithm, whose correctness can be
-checked a posteriori, thereby allowing us to retain the functionality of
-existing applications while interfacing only a minimal set of parameters.
+%\newcommand{\Dw}{{D_{\mathrm{w}}}}
 
-The Wilson-Clover Dirac operator $\Dw$ is a nearest-neighbor stencil operator
-acting on a linear space of quark (or spinor) fields defined on a regular 4D
-cubic lattice of $V_\mathrm{G}=N_0N_1N_2N_3$ sites, typically in the range $10^6-10^8$.
-Due to the nearest-neighbor coupling, a good parallelization is achieved by
-domain decomposition, where a contiguous local volume of size $V_\mathrm{L}=L_0L_1L_2L_3$,
-which divides the global problem size, is associated with a single computing
-unit.
-With accessible problem sizes, the Dirac operator is poorly conditioned and
-multi-grid preconditioning such as the inexact deflation \cite{Lüscher2007deflation} provided in openQCD
-or its QUDA equivalent is needed to speed up the convergence of the iterative
-solvers used.
+\tldr{openqxd and openqcd intro}
+The \openqxd code~\cite{openqxd} is an extension of the state-of-the-art lattice QCD Markov Chain Monte Carlo code openQCD~\cite{online:openqcd,Luscher:2012av}, which complies to the C89 standard with MPI parallelization and proven strong-scalability to hundreds of CPU-based nodes including specific optimizations for x86 architectures.
+Due to the extensive suite of legacy applications based on \openqcd, as well as its renowned stability and reproducibility, our goal is to accelerate the code by offloading the solution to the Dirac equation \cref{eq:dirac:equation} to the GPU accelerator using the \quda library.
 
-The fine-grid problem which we wish to offload is defined by the right-hand
-side spinor $\eta$, which may be represented in different ways depending on 
-conventions. These different conventions need to be mapped into each other in the interface.
-Likewise, the couplings between the sites, which define the Dirac operator, are
-parameterized by a set of so-called vector (or gauge) field variables $U_\mu$
-for the four directions $\mu=0,1,2,3$, which need to be passed through the interface as well.
-Although these fields are periodically updated along the Markov chain, in
-the measurement part of the workflow they are kept fixed.
-Finally, it is convenient to precompute the site-local coupling called the
-clover-field which is a function of the gauge-field variables.
-All these parameters are represented in openQCD by arrays of structs of length of
-the local lattice volume which are described as follows.
+% The Wilson-Clover Dirac operator $\Dw$ is a nearest-neighbor stencil operator
+% acting on a linear space of quark (or spinor) fields defined on a regular 4D
+% cubic lattice of $V_\mathrm{G}=N_0N_1N_2N_3$ sites, typically in the range $10^6-10^8$.
+% Due to the nearest-neighbor coupling, a good parallelization is achieved by
+% domain decomposition, where a contiguous local volume of size $V_\mathrm{L}=L_0L_1L_2L_3$,
+% which divides the global problem size, is associated with a single computing
+% unit.
+% With accessible problem sizes, the Dirac operator is poorly conditioned and
+% multi-grid preconditioning such as the inexact deflation \cite{Luescher2007} provided in openQCD
+% or its QUDA equivalent is needed to speed up the convergence of the iterative
+% solvers used.
 
-The double precision spinor field is stored as an array of $V_\mathrm{L}$ \code{spinor\_dble} structs (\cref{lst:spinor}), the gauge field is stored as an array of $4V_\mathrm{L}$ \code{su3\_dble} structs (\cref{lst:gauge}), whereas the clover field is an array of $2V_\mathrm{L}$ \code{pauli\_dble} (\cref{lst:clover}).
+% {\color{gray}
+% The fine-grid problem which we wish to offload is defined by the right-hand
+% side spinor $\eta$, which may be represented in different ways depending on
+% conventions. These different conventions need to be mapped into each other in
+% the interface. Likewise, the couplings between the sites, which define the
+% Dirac operator, are parameterized by a set of so-called vector (or gauge)
+% field variables $U_\mu$ for the four directions $\mu=0,1,2,3$, which need to
+% be passed through the interface as well. Although these fields are
+% periodically updated along the Markov chain, in the measurement part of the
+% workflow they are kept fixed.}
 
-The gauge field is stored as an array of $4V_\mathrm{L}$ \code{su3\_dble} structs (\cref{lst:gauge}), which rely on \code{complex\_dble} structs (\cref{lst:complex_double}). The double precision spinor field is stored as an array of $V_\mathrm{L}$ \code{spinor\_dble} structs (\cref{lst:spinor}), while the clover field is an array of $2V_\mathrm{L}$ \code{pauli\_dble} (\cref{lst:clover}). 
+\section{Design principles}
 
+\tldr{lattice geometry as compile time constants}
+The lattice topology in terms of process grid, global and local lattice sizes are defined globally at compile time in a header file called \code{include/global.h} using C preprocessor directives, see \cref{lst:openqxd:global.h}. This implies that \openqxd must be recompiled every time the lattice or the process grid changes.
 \begin{codelisting}
-\begin{minted}[]{cpp}
-typedef struct
-{
-   double re,im;
-} complex_dble;
+\begin{minted}[]{c}
+#define NPROC0 1
+#define NPROC1 2
+#define NPROC2 2
+#define NPROC3 2
+
+#define L0 8
+#define L1 8
+#define L2 8
+#define L3 8
+
+#define NPROC0_BLK 1
+#define NPROC1_BLK 1
+#define NPROC2_BLK 1
+#define NPROC3_BLK 1
 \end{minted}
-\caption{The complex double struct}
-\label{lst:complex_double}
+\caption{Excerpt of the file \code{include/global.h} describing the \openqxd process grid.}
+\label{lst:openqxd:global.h}
 \end{codelisting}
 
+\tldr{lack of convenience in openqxd}
+The program was probably never intended to be used as framework to do arbitrary lattice calculations apart from gauge field sampling. There is no convenient single function to initialize and finalize a program written in \openqxd. The codebase is written in a very static way, highly optimized for its exact purpose, making additions and extension to the functionality hard to implement. This exposes itself in a lack of convenience functions for bootstrapping, input file parsing and validation, logging, profiling, field management, log file handling, field index abstraction and many more and culminates usually in lots of code duplication and boilerplate code.
+
+\tldr{translation units with lots of global state}
+A common pattern are translation units carrying static global state variables allocated by some initialization function and later accessed from functions within the translation unit. This implies that many functions in \openqxd have non-trivial side effects.% and are thus non-pure.
+
+\tldr{Static field allocation scheme}
+Spinor field allocation and management is handled by a set of functions that allocate, reserve and release fields. The number of fields required for the whole run -- including fields used by solvers -- has to be known when calling the field allocation function. This has to happen early in the program. Although this practice has a very clean and predictable memory footprint as its advantage, it does not allow a more modern flexible programming style with on demand field allocation.
+
+\tldr{Ancient C standard}
+The usage of a quite old standard of the C programming language has implications in the codebase as well. The absence of modern programming paradigms has the advantage that everything is implemented explicitly in a procedural form with little abstraction. On the other hand, modern language features that have impact on performance such as function inlining, the \code{restrict} keyword for better loop unrolling and automatic vectorization, variable length arrays on the stack instead of the heap, native complex arithmetic support and many more do not exist in C89.
+
+\tldr{Field layouts differ}
+In order to offload the aforementioned system of linear equations, all involved fields defined on the lattice in \openqxd have to be mapped to fields on the lattice in \quda.
+In the following we discus the layouts of these fields and the way they are represented in \openqxd.
+
+\section{Space-time indexing}
+\label{sec:openqxd:index}
+
+\tldr{spacetime convention and ordering}
+Denoting the rank-local lattice extent in direction $\mu=0,1,2,3$ by $L_\mu \in \mathbb{N}$, we can write the lattice coordinate as a 4-vector, $x = (x_0,x_1,x_2,x_3)$, where $x_\mu \in \{ 0, \dots, L_\mu -1 \}$. \Openqxd puts time coordinate first $x = (t, \vec{x})$, which we refer to as (\txyz)-convention. From that we can create a lexicographical index
+\begin{equation} \label{eq:lexi}
+\Lambda(x, L) := L_3 L_2 L_1 x_0 + L_3 L_2 x_1 + L_3 x_2 + x_3.
+\end{equation}
+\Openqxd orders the indices in so called cache-blocks; a decomposition of the rank-local lattice into equal blocks of extent $B_\mu \in \mathbb{N}$ in direction $\mu$. Within a block, points are indexed lexicographically $\Lambda(b, B)$ as in \cref{eq:lexi}, but the $L_\mu$ replaced by $B_\mu$ and $x$ replaced by the block local Euclidean index $b$, such that $b_\mu = x_\mu \mod B_\mu \in \{ 0, \dots, B_\mu -1 \}$.
+Furthermore, the blocks themselves are indexed lexicographically within the rank-local lattice decomposition into blocks, i.e. $\Lambda(n, N_B)$, where we denote the number of blocks in direction $\mu$ as $N_{B,\mu} = L_\mu / B_\mu$, and the Euclidean index of the block as $n$, such that $n_\mu = \lfloor x_\mu / B_\mu \rfloor \in \{ 0, \dots, N_{B,i} -1 \}$.
+
+\tldr{even odd ordering}
+In addition, \openqxd employs even-odd ordering, that is all even-parity lattice points (those where the sum $\sum_{\mu=0}^3 x_\mu$ of the rank-local coordinate $x$ is even) come first followed by all odd-parity points.
+
+\tldr{total spacetime index + illustration}
+Therefore, the total rank-local unique lattice index in \openqxd is
+\begin{align} \label{eq:openqcd:ipt}
+\hat{x} &= \biggl \lfloor \frac{1}{2} \Big( V_B \Lambda(n, N_B) + \Lambda(b, B) \Big) \biggr \rfloor + P(x) \frac{V}{2},
+\end{align}
+where $V_B = B_0 B_1 B_2 B_3$ is the volume of a block,
+\begin{align} \label{eq:parity}
+P(x)=\tfrac{1}{2}(1-(-1)^{\sum_\mu x_\mu})
+\end{align}
+gives the parity of index $x$, and $b$, $n$ are related to $x$ as described in the text above (see \cref{fig:index} for an example).
+\begin{figure}
+  \includestandalone[width=0.5\linewidth]{\dir/img/index} %without .tex extension
+  \caption{2D example ($8 \times 8$ local lattice) of the rank-local unique lattice index in \openqxd (in time first convention (\txyz)). The blue rectangles denote cache blocks of size $4 \times 4$. Gray sites are odd, white sites are even lattice points.}
+  \label{fig:index}
+\end{figure}
+This is implemented in \openqxd by means of the mapping array \code{ipt}, $\hat{x} \coloneqq \text{ipt}\left[\Lambda(x,L)\right]$.
+
+\section{The spinor field}
+\label{sec:openqxd:spinor_field}
+
+\tldr{spinor struct}
+The double precision spinor field is stored as an array of $V_\mathrm{L}$ \code{spinor\_dble} structs (\cref{lst:openqxd:spinor}) where $V_\mathrm{L} = L_0 L_1 L_2 L_3$ is the rank-local lattice volume.
 \begin{codelisting}
-\begin{minted}[]{cpp}
-typedef struct
-{
-   complex_dble c11,c12,c13,c21,c22,c23,c31,c32,c33;
-} su3_dble;
-\end{minted}
-\caption{The gauge field struct}
-\label{lst:gauge}
-\end{codelisting}
-
-
-%\todo{Since the struct complex double is present in the spinor and gauge-field structs, I believe it is better for the listing to be split.}
-% typedef struct
-% {
-%    double re,im;
-% } complex_dble;
-
-\begin{codelisting}
-\begin{minted}[]{cpp}
+\begin{minted}[]{c}
 typedef struct
 {
    complex_dble c1,c2,c3;
@@ -93,12 +125,63 @@ typedef struct
 } spinor_dble;
 \end{minted}
 \caption{The spinor field struct}
-\label{lst:spinor}
+\label{lst:openqxd:spinor}
 \end{codelisting}
+An individual field does not carry further information apart from its actual data. Meta information like the local size of the field are globally available in terms of compile time constants and the precision of the underlying floating point number is encoded in the naming of the struct. There is also a single precision variant of this struct simply called \code{spinor} holding structs of type \code{su3\_vector} again holding \code{complex}.
 
-
+\tldr{complex numbers}
+As explained above \openqcd complies to the C89 standard. A native implementation of complex numbers was introduced in C99. This is the reason why \openqcd, and by this \openqxd, has two structs representing complex floats as defined in \cref{lst:openqxd:complex_double}.
 \begin{codelisting}
-\begin{minted}[]{cpp}
+\begin{minted}[]{c}
+typedef struct
+{
+   float re,im;
+} complex;
+
+typedef struct
+{
+   double re,im;
+} complex_dble;
+\end{minted}
+\caption{The \code{complex} and \code{complex\_dble} struct}
+\label{lst:openqxd:complex_double}
+\end{codelisting}
+These are alignment compatible to the C99 native data types \code{float complex} and \code{double complex} respectively, thus they can be cast safely\footnote{When including \code{<complex.h>} for complex number support in C99 and newer, one has to be careful because the single precision complex struct in \openqxd has the same name as the complex datatype. Without renaming, there will be naming conflicts.}.
+Nevertheless arithmetic using these structs is cumbersome and error-prone. 
+
+\tldr{spinor field indices}
+The spinor field has indices $(x, \alpha, a)$, where $x=(x_0,x_1,x_2,x_3)$ is the lattice index (a Euclidean 4-vector), $\alpha \in \{0,1,2,3\}$ is the spinor index and $a \in \{0,1,2\}$ is the color index. From \cref{lst:openqxd:spinor} we may read off the index order as color index fastest running, followed by spin followed by the slowest running index space-time.
+%The precise space-time indexing is defined, when discussing the interface in \cref{sec:interface:field_reordering}.
+Functions operating on such spinor fields take base pointers of type \code{spinor\_dble*} as input and output arguments.
+
+\section{The gauge field}
+\label{sec:openqxd:gauge_field}
+
+\tldr{gauge struct}
+The gauge field is stored as an array of $4V_\mathrm{L}$ \code{su3\_dble} structs (\cref{lst:gauge}).
+\begin{codelisting}
+\begin{minted}[]{c}
+typedef struct
+{
+   complex_dble c11,c12,c13,c21,c22,c23,c31,c32,c33;
+} su3_dble;
+\end{minted}
+\caption{The gauge field struct}
+\label{lst:gauge}
+\end{codelisting}
+As can be seen, there is no enforcement of the matrices being $\ggrp{SU}{3}$ nor compression of the gauge field exploiting the gauge group symmetry. All \num{9} complex numbers are explicitly written out as row-major matrix. An advantage of such a storage model is that is can easily be extended to arbitrary gauge groups. This made implementing QCD+QED which has a gauge group of $\ggrp{U}{3}$ straightforward, see \cref{sec:openqxd:qcd+qed}. A clear downside is performance. By exploiting the Lie-algebra structure of $\liealg{su}{3}$, the gauge field could be stored with \num{8} real degrees of freedom instead. This would reduce the size of the struct to \num{8} floating point numbers instead of \num{18}. In memory bound kernels this would result in a speedup about two.
+
+\tldr{gauge field index}
+The gauge field has indices $(x_{odd}, \pm \mu, a, b)$, where $x_{odd}$ is the lattice index (only odd points, $V_\mathrm{L}/2$ elements), $\mu \in \{\pm 0, \pm 1, \pm 2, \pm 3\}$ is the direction of the gauge link (in positive as well as negative direction, i.e., 8 possibilities) and $a,b$ parameterize the row and column of the $\ggrp{SU}{3}$-valued gauge link (row-major). Thus \openqxd stores the gauge links in all \num{8} directions at odd lattice points in contrast to most other common conventions which store \num{4} gauge links in positive directions for every lattice point.
+
+\section{The clover field}
+\label{sec:openqxd:clover_field}
+
+\tldr{clover struct + storage form}
+Finally, it is convenient to precompute the site-local coupling called the clover-field which is a function of the gauge-field variables, \cref{eq:intro:clover}.
+The clover field is an array of $2V_\mathrm{L}$ \code{pauli\_dble} structs (\cref{lst:clover}).
+\begin{codelisting}
+\begin{minted}[]{c}
 typedef struct
 {
    double u[36];
@@ -107,15 +190,64 @@ typedef struct
 \caption{The clover field struct}
 \label{lst:clover}
 \end{codelisting}
+It is stored in a compressed form exploiting its symmetry and block diagonal form
+\begin{equation}
+c_\mathrm{sw}^{SU(3)} \frac{i}{4} \sum_{\mu,\nu=0}^3 \sigma_{\mu \nu} \hat{F}_{\mu \nu}(x) =
+c_\mathrm{sw}^{SU(3)} \begin{pmatrix}
+   A_{+}(x) & 0 \\
+   0        & A_{-}(x)
+\end{pmatrix}
+\end{equation}
+where $A_{\pm}(x)$ are $6 \times 6$ Hermitian matrices. They can be stored as $36$ real numbers. This is the way the $\ggrp{SU}{3}$ clover term is stored internally in \openqxd. The first $6$ entries are the diagonal real numbers and the following 15 pairs denote real and imaginary parts of the strictly upper triangular part in row-major order:
+\begin{equation} \label{eq:openqxd:clover}
+\begin{pmatrix}
+u_0   & u_6 + iu_7 & u_8 + iu_9       & u_{10} + iu_{11} & u_{12} + iu_{13} & u_{14} + iu_{15} \\
+\cdot & u_1        & u_{16} + iu_{17} & u_{18} + iu_{19} & u_{20} + iu_{21} & u_{22} + iu_{23} \\
+\cdot & \cdot      & u_2              & u_{24} + iu_{25} & u_{26} + iu_{27} & u_{28} + iu_{29} \\
+\cdot & \cdot      & \cdot            & u_3              & u_{30} + iu_{31} & u_{32} + iu_{33} \\
+\cdot & \cdot      & \cdot            & \cdot            & u_4              & u_{34} + iu_{35} \\
+\cdot & \cdot      & \cdot            & \cdot            & \cdot            & u_5
+\end{pmatrix}\,.
+\end{equation}
 
-The spinor field has indices $(x, \alpha, a)$ ($a$ running fastest), where $x=(x_0,x_1,x_2,x_3)$ is the lattice index (a Euclidean 4-vector), $\alpha \in \{0,1,2,3\}$ is the spinor index and $a \in \{0,1,2\}$ is the color index.
+\tldr{clover field indices}
+The clover field has indices $(x, \pm, i)$, where $x$ is the lattice index, $\pm \in \{+, -\}$ denotes the chirality (i.e. the upper ($+$) or lower ($-$) $6 \times 6$-block of the $12 \times 12$ clover matrix) and $i \in \{0, \dots, 35\}$ the $36$ non-zero real numbers needed to parametrize a $6 \times 6$ Hermitian matrix.
 
-The gauge field instead has indices $(x_{odd}, \pm \mu, a, b)$, where $x_{odd}$ is the lattice index (only odd points, $V_\mathrm{L}/2$ elements), $\mu \in \{\pm 0, \pm 1, \pm 2, \pm 3\}$ is the direction of the gauge link (in positive as well as negative direction, i.e., 8 possibilities) and $a,b$ parameterize the row and column of the $SU(3)$-valued gauge link (row-major). Thus openQxD stores the gauge links in all $8$ directions at odd lattice points in contrast with most other common conventions which store $4$ gauge links in positive directions for every lattice point.
+%\todo{Since the struct complex double is present in the spinor and gauge-field structs, I believe it is better for the listing to be split.}
+% typedef struct
+% {
+%    double re,im;
+% } complex_dble;
 
-Finally, the clover field has indices $(x, \pm, i)$, where $x$ is the lattice index, $\pm \in \{+, -\}$ denotes the chirality (i.e. the upper ($+$) or lower ($-$) $6 \times 6$-block of the $12 \times 12$ clover matrix) and $i \in \{0, \dots, 35\}$ the $36$ non-zero real numbers needed to parametrize a $6 \times 6$ Hermitian matrix.
+\tldr{new stuff in openqxd compared to openqcd}
+In addition to the data structs discussed in \cref{sec:openqxd:spinor_field,sec:openqxd:gauge_field,sec:openqxd:clover_field}, already defined in \openqcd, the \openqxd package -- which provides an extension to incorporate electromagnetic gauge fields -- implements new functionality such as C$^\star$ boundary conditions and additional degrees of freedom: these are described in more detail in \cref{sec:openqxd:cstar_bcs,sec:openqxd:qcd+qed}.
 
-In addition to these data structs, already defined in openQCD, the openQxD package --
-which provides an extension to incorporate electromagnetic gauge fields --
-requires new functionality such as C$^\star$ boundary conditions
-and additional degrees of freedom: these are described in more detail in
-\worktodo{sec:qcd+qed,sub:cstar} and respectively.
+\section{C\texorpdfstring{$^{\star}$}{*} boundary conditions}
+\label{sec:openqxd:cstar_bcs}
+
+\tldr{Cstar BCs = doubling lattice}
+C$^{\star}$ boundary conditions on the lattice can be implemented by means of doubling the lattice in a certain spatial dimension (taken arbitrarily as x-direction in the following). The doubled lattice will be called the extended lattice $\lat{ext}$ and the two copies the physical lattice $\lat{phys}$ and the mirror lattice $\lat{mirror}$. This is called the orbifold construction, see \cref{fig:cstar:orbi}.
+\begin{figure}
+  \includestandalone[width=0.8\linewidth]{\dir/img/cstar}
+  \caption{2D example of a $6 \times 6$ lattice with C$^\star$ boundary conditions on both directions. We have the (doubled) x-direction (horizontal) and a direction with C$^\star$ boundaries (vertical). Left is the physical, right the mirror lattice. Unfilled lattice points are exterior boundary points, whereas filled points are interior (boundary) points. The points of the same color are identified with each other. Notice that in x-direction we have regular periodic boundary conditions, since C$^\star$ boundaries are periodic over twice the lattice extent. The red, green and blue arrows indicate the path taken when leaving the physical lattice and entering the mirror lattice.}
+  \label{fig:cstar:orbi}
+\end{figure}
+
+\tldr{spacetime index define physical/mirror}
+In \openqxd the fermion field is defined on the extended lattice where the space-time lattice index determines whether we are on the physical or on the mirror lattice. The gauge fields are copied to the mirror lattice sites and charge conjugated. This implementation has advantages and disadvantages. It is simple to extend code that already operates on periodic fields, but the gauge fields are redundant in memory making an application of the Dirac operator roughly twice as expensive as it could be implemented. %without further optimizations.
+
+\section{QCD+QED}
+\label{sec:openqxd:qcd+qed}
+
+\tldr{gauge groups and how they're stored}
+The code stores the $\ggrp{SU}{3}$ gauge fields internally as an array of structs \cref{lst:gauge} which are \num{9} complex numbers. The $\ggrp{U}{1}$ field is stored in terms of its Lie-algebra $\liealg{u}{1}$ which are just real phases $A_{\mu}(x)$ as a simple array of double precision floats. This is done such that when the charge $\hat{q}$ changes in \cref{eq:Dw:QCD+QED} the $\ggrp{U}{1}$-value can be regenerated without taking logarithms followed by re-exponentiation. Additionally the compound $\ggrp{U}{3}$-valued field, $e^{i \hat{q} A_{\mu}(x) U_{\mu}(x)}$ is held in memory as an array of structs of type \cref{lst:gauge}. This is not a problem, since the \code{su3\_dble} struct parametrizes all \num{9} complex numbers of an arbitrary $3 \times 3$ complex matrix. All functions using the gauge field, such as the Dirac operator operate now on the compound field instead of the $\ggrp{SU}{3}$-valued one. All fields are defined on the extended lattice and when copying the field values to the mirror lattice, the boundaries \cref{eq:cstar:bcs} are imposed on the gauge and clover fields.
+
+\tldr{Why are they separate in memory?}
+The $\ggrp{SU}{3}$ and $\ggrp{U}{1}$ field are kept separate in memory, because their clover terms have separate coefficients and field strength tensors, see \cref{eq:Dw:QCD+QED}. Luckily, the QED clover term does not change block structure and Hermiticity of the blocks. Therefore \openqxd just adds the QED term on top of the QCD term, \cref{eq:Dw2}, and obtains the sum of the two clover terms, still stored in memory as discussed in \cref{sec:openqxd:clover_field}. Functions depending on the clover field instead operate on the sum of the two clover fields.
+This will become important later, because \quda is not capable of generating the $\ggrp{U}{1}$ clover term.
+
+%stores the real phases of U(1) field
+%\worktodo{we have the SU3 and the U1 fields separately, but also the combined U3 defined on the extended lattice. QED clover term is added on top of the QCD clover term.}
+
+
+

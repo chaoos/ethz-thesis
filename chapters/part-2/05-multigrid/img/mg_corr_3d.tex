@@ -1,0 +1,127 @@
+\documentclass[tikz]{standalone}
+
+\usepackage{tikz}
+\usepackage{ifthen}
+\pgfdeclarelayer{back}
+\pgfsetlayers{back,main}
+
+\input{preamble/colors}
+
+\colorlet{colorL0}{myorange}
+\colorlet{colorL1}{mygreen}
+\colorlet{colorL2}{myred}
+\colorlet{colorL3}{mypurple}
+
+\makeatletter
+\pgfkeys{%
+  /tikz/on layer/.code={
+    \def\tikz@path@do@at@end{\endpgfonlayer\endgroup\tikz@path@do@at@end}%
+    \pgfonlayer{#1}\begingroup%
+  }%
+}
+\makeatother
+
+\begin{document}
+
+\begin{tikzpicture}
+
+\tikzstyle{every node}=[font=\tiny, text=gray]
+%\draw[black, thick] (-0.1,-0.1) rectangle (4.1,4.1);
+
+\def\z{3}%
+\begin{scope}[every node/.append style={yslant=-0.5},yslant=-0.5]
+\foreach \x in {0,...,3} {
+    \foreach \y in {0,...,3} {
+        \coordinate (A1) at (\x*1.0+0.0,7.0-\y*1.0);
+        \coordinate (B1) at (\x*1.0+1.0,8.0-\y*1.0);
+
+        \ifthenelse{\x=0 \OR \y=0}{
+            \draw[color=mygray, fill=colorL0!10, very thin] (A1) rectangle (B1)
+                node[midway, color=colorL0]{$C_{\x\y\z}$};
+        }{
+            \ifthenelse{\x=1 \OR \y=1}{
+                \draw[color=mygray, fill=colorL1!10, very thin] (A1) rectangle (B1)
+                    node[midway, color=colorL1]{$C_{\x\y\z}$};
+            }{
+                \ifthenelse{\x=2 \OR \y=2}{
+                    \draw[color=mygray, fill=colorL2!10, very thin] (A1) rectangle (B1)
+                        node[midway, color=colorL2]{$C_{\x\y\z}$};
+                }{
+                    \ifthenelse{\x=3 \OR \y=3}{
+                        \draw[color=mygray, fill=colorL3!10, very thin] (A1) rectangle (B1)
+                            node[midway, color=colorL3]{$C_{\x\y\z}$};
+                    }{
+                        \ifthenelse{\x=5 \AND \y=5}{
+                            \draw[color=white] (A1) rectangle (B1)
+                                node[midway, color=mygray]{$\ddots$};
+                        }{
+                            \ifthenelse{\x=6 \AND \y=6}{
+                                \draw[color=white] (A1) rectangle (B1)
+                                    node[midway, color=mygray]{$\ddots$};
+                            };
+                        };
+                    };
+                };
+            };
+        };
+    };
+};
+\end{scope}
+
+\def\x{3}%
+\begin{scope}[every node/.append style={yslant=0.5},yslant=0.5,shift={(4*1.0,-4*1.0)}]
+\foreach \y in {0,...,3} {
+    \foreach \z in {0,...,3} {
+        \coordinate (A1) at (3*1.0-\z*1.0+0.0, 7.0-\y*1.0);
+        \coordinate (B1) at (3*1.0-\z*1.0+1.0, 8.0-\y*1.0);
+
+        \ifthenelse{\y=0 \OR \z=0}{
+            \draw[color=mygray, fill=colorL0!10, very thin] (A1) rectangle (B1)
+                node[midway, color=colorL0]{$C_{\x\y\z}$};
+        }{
+            \ifthenelse{\y=1 \OR \z=1}{
+                \draw[color=mygray, fill=colorL1!10, very thin] (A1) rectangle (B1)
+                    node[midway, color=colorL1]{$C_{\x\y\z}$};
+            }{
+                \ifthenelse{\y=2 \OR \z=2}{
+                    \draw[color=mygray, fill=colorL2!10, very thin] (A1) rectangle (B1)
+                        node[midway, color=colorL2]{$C_{\x\y\z}$};
+                }{
+                    \ifthenelse{\y=3 \OR \z=3}{
+                        \draw[color=mygray, fill=colorL3!10, very thin] (A1) rectangle (B1)
+                            node[midway, color=colorL3]{$C_{\x\y\z}$};
+                    }{
+                        \ifthenelse{\y=5 \AND \z=5}{
+                            \draw[color=white] (A1) rectangle (B1)
+                                node[midway, color=mygray]{$\ddots$};
+                        }{
+                            \ifthenelse{\y=6 \AND \z=6}{
+                                \draw[color=white] (A1) rectangle (B1)
+                                    node[midway, color=mygray]{$\ddots$};
+                            };
+                        };
+                    };
+                };
+            };
+        };
+    };
+};
+\end{scope}
+
+\def\y{0}%
+\begin{scope}[every node/.append style={yslant=0.5,xslant=-1},yslant=0.5,xslant=-1,shift={(8*1.0,0*1.0)}]
+\foreach \x in {0,...,3} {
+  \foreach \z in {0,...,3} {
+    \coordinate (A1) at (3*1.0-\z*1.0+0.0,7.0-\x*1.0);
+    \coordinate (B1) at (3*1.0-\z*1.0+1.0,8.0-\x*1.0);
+
+    \draw[color=mygray, fill=colorL0!10, very thin] (A1) rectangle (B1)
+        node[midway, color=colorL0]{$C_{\x\y\z}$};
+  };
+};
+\end{scope}
+
+
+\end{tikzpicture}
+
+\end{document}

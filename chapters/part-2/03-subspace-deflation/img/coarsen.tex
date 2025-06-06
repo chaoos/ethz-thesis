@@ -1,0 +1,49 @@
+\documentclass[tikz]{standalone}
+
+\usepackage{tikz}
+\usepackage{ifthen}
+\pgfdeclarelayer{back}
+\pgfsetlayers{back,main}
+
+\input{preamble/colors.tex}
+\input{preamble/commands.tex}
+\input{preamble/symbols.tex}
+
+\makeatletter
+\pgfkeys{%
+  /tikz/on layer/.code={
+    \def\tikz@path@do@at@end{\endpgfonlayer\endgroup\tikz@path@do@at@end}%
+    \pgfonlayer{#1}\begingroup%
+  }%
+}
+\makeatother
+
+\tikzset{
+  font={\fontsize{20pt}{12}\selectfont}}
+
+\begin{document}
+
+\begin{tikzpicture}
+
+\edef \A {4}
+\edef \B {1.6}
+
+
+\draw[] (-\A-1,\A-\B) rectangle (-1, \A) node[pos=.5] {$\restrictor$};
+
+\node[] at (-0.5,\A-\B/2) {$\cdot$};
+
+\draw[] (0, 0) rectangle (\A, \A) node[pos=.5] {$K$};
+
+\node[] at (\A+0.5,\A/2) {$\cdot$};
+
+\draw[] (\A+1,0) rectangle (\A+\B+1,\A) node[pos=.5] {$\prolongator$};
+
+\node[] at (-\A-1.5, \A-\B/2) {$=$};
+
+\draw[] (-\A-\B-2,\A-\B) rectangle (-\A-2,\A) node[pos=.5] {$\coarse{K}$};
+
+
+\end{tikzpicture}
+
+\end{document}

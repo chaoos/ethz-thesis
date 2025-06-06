@@ -1,0 +1,147 @@
+\documentclass{standalone}
+
+\usepackage{tikz}
+ \usetikzlibrary {arrows.meta} 
+
+\newcommand{\rotate}[2] {
+    \pgftransformcm{1.0}{0.0}{0.4}{0.5}{\pgfpoint{#1cm}{#2cm}}
+}
+
+\newcommand{\drawDots}[3] {
+\begin{scope}
+    \foreach \x in {0,#1,...,#2} {
+        \foreach \y in {0,#1,...,#2} {
+            \fill[color=#3] (\x,\y) circle (0.1);
+        };
+    };
+\end{scope}
+}
+
+\newcommand{\drawPlate}[4] {
+    \draw[rounded corners, color=#1!100, fill=#1!5, thin] (#2,#2) rectangle (#3,#3)
+        node[rotate=90, above right] {#4};
+}
+
+\newcommand{\drawGrid}[4] {
+    \draw [#1,step=#2] (#3,#3) grid (#4,#4);
+}
+
+\newcommand{\restrictA}[3] {
+    \draw [-{Latex[length=2mm]}, dashed] (#1) to [bend left=20]  node [above, sloped] {#3} (#2);
+}
+\newcommand{\restrictB}[3] {
+    \draw [-{Latex[length=2mm]}, dashed] (#1) to [bend left=20]  node [below, sloped] {#3} (#2);
+}
+
+\newcommand{\prologB}[3] {
+    \draw [-{Latex[length=2mm]}, dashed] (#1) to [bend left=20]  node [rotate=180, below, sloped] {#3} (#2);
+}
+\newcommand{\prologA}[3] {
+    \draw [-{Latex[length=2mm]}, dashed] (#1) to [bend left=20]  node [rotate=180, above, sloped] {#3} (#2);
+}
+
+\newcommand{\drawShiftedGrid}[6] {
+    \begin{scope}[yshift=#5,xshift=#6]
+        \drawGrid{#1}{#2}{#3}{#4}
+    \end{scope}
+}
+
+\input{preamble/colors.tex}
+\input{preamble/commands.tex}
+\input{preamble/symbols.tex}
+
+%\colorlet{colorL0}{myblue}
+\colorlet{colorL0}{myorange}
+\colorlet{colorL1}{mygreen}
+\colorlet{colorL2}{myred}
+\colorlet{colorL3}{mypurple}
+
+\usepackage{graphicx} % for \rotatebox
+
+\begin{document}
+\pagestyle{empty}
+
+\rotatebox{-90}{%
+\begin{tikzpicture}
+
+\begin{scope}
+    \rotate{0}{0};
+    \node (L0l) at (-1,0) {};
+    \node (L0r) at (8,7.5) {};
+    \drawPlate{colorL0}{-0.5}{7.5}{\Ln{0}: $\onlvl{V}{0} = 64$ ($8 \times 8$)}
+    \drawGrid{colorL0!70}{1}{-0.5}{7.5}
+    %\drawPlate{colorL0}{-0.75}{7.75}{L0: 8x8}
+    %\drawShiftedGrid{colorL0!30}{1}{-1}{7}{0.5cm}{0.5cm}
+    \drawDots{1}{7}{colorL0!100}
+    \begin{scope}[yshift=0.5cm,xshift=0.5cm]
+        \drawGrid{colorL1!30}{2}{-1}{7}
+        %\drawShiftedGrid{colorL1!30}{2}{-2}{6}{1cm}{1cm}
+        \drawDots{2}{7}{colorL1!100}
+    \end{scope}
+\end{scope}
+
+\begin{scope}
+    \rotate{0}{4.5};
+    \node (L1l) at (-1,0) {};
+    \node (L1r) at (8,7.5) {};
+    \drawPlate{colorL1}{-0.5}{7.5}{\Ln{1}: $\onlvl{V}{1} = 16$ ($4 \times 4$)}
+    %\drawPlate{colorL1}{-0.75}{7.75}{L1: 4x4}
+    \begin{scope}[yshift=0.5cm,xshift=0.5cm]
+        \drawGrid{colorL1!70}{2}{-1}{7}
+        %\drawShiftedGrid{colorL1!30}{2}{-2}{6}{1cm}{1cm}
+        \drawDots{2}{7}{colorL1!100}
+        \begin{scope}[yshift=1cm,xshift=1cm]
+            \drawGrid{colorL2!30}{4}{-2}{6}
+            %\drawShiftedGrid{colorL2!30}{4}{-4}{4}{2cm}{2cm}
+            \drawDots{4}{7}{colorL2!100}
+        \end{scope}
+    \end{scope}
+\end{scope}
+
+\begin{scope}
+    \rotate{0}{9};
+    \node (L2l) at (-1,0) {};
+    \node (L2r) at (8,7.5) {};
+    \drawPlate{colorL2}{-0.5}{7.5}{\Ln{2}: $\onlvl{V}{2}=4$ ($2 \times 2$)}
+    %\drawPlate{colorL2}{-0.75}{7.75}{L2: 2x2}
+    \begin{scope}[yshift=1.5cm,xshift=1.5cm]
+        \drawGrid{colorL2!70}{4}{-2}{6}
+        %\drawShiftedGrid{colorL2!30}{4}{-4}{4}{2cm}{2cm}
+        \drawDots{4}{7}{colorL2!100}
+        \begin{scope}[yshift=2.0cm,xshift=2.0cm]
+            \drawGrid{colorL3!30}{8}{-4}{4}
+            %\drawShiftedGrid{colorL3!30}{8}{-8}{0}{4cm}{4cm}
+            \fill[color=colorL3!100] (0,0) circle (0.1);
+        \end{scope}
+    \end{scope}
+\end{scope}
+
+\begin{scope}
+    \rotate{0}{13.5};
+    \node (L3l) at (-1,0) {};
+    \node (L3r) at (8,7.5) {};
+    \drawPlate{colorL3}{-0.5}{7.5}{\Ln{3}: $\onlvl{V}{3}=1$ ($1 \times 1$)}
+    %\drawPlate{colorL3}{-0.75}{7.75}{L3: 1x1}
+    \begin{scope}[yshift=3.5cm,xshift=3.5cm]
+        \drawGrid{colorL3!70}{8}{-4}{4}
+        %\drawShiftedGrid{colorL3!30}{8}{-8}{0}{4cm}{4cm}
+        \fill[color=colorL3!100] (0,0) circle (0.1);
+    \end{scope}
+\end{scope}
+
+\restrictB{L0l}{L1l}{$\onlvl{\restrictor}{0}$}
+\restrictB{L1l}{L2l}{$\onlvl{\restrictor}{1}$}
+\restrictB{L2l}{L3l}{$\onlvl{\restrictor}{2}$}
+\prologA{L1r}{L0r}{$\onlvl{\prolongator}{0}$}
+\prologA{L2r}{L1r}{$\onlvl{\prolongator}{1}$}
+\prologA{L3r}{L2r}{$\onlvl{\prolongator}{2}$}
+
+%\restrictB{L0l}{L2l}{$\mathcal{R}_1$}
+\restrictB{L0l}{L3l}{$\onlvl{\mathcal{\restrictor}}{3}$}
+%\prologA{L2r}{L0r}{$\mathcal{T}_1$}
+\prologA{L3r}{L0r}{$\onlvl{\mathcal{\prolongator}}{3}$}
+
+\end{tikzpicture}%
+}
+
+\end{document}

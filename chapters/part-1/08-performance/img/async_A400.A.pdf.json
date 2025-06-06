@@ -1,0 +1,58 @@
+{
+  "Axis: A400 @ Daint (tuned)": {
+    "Label: Total": {
+      "x_data": [
+        "sleep()",
+        "I/O",
+        "I/O+MPI",
+        "Dirac operator",
+        "MPI_Allreduce()",
+        "Memory"
+      ],
+      "y_data": [
+        13.666,
+        13.8186,
+        16.596000000000004,
+        13.624400000000001,
+        13.6066,
+        13.6096
+      ]
+    },
+    "Label: GPU Solver": {
+      "x_data": [
+        "sleep()",
+        "I/O",
+        "I/O+MPI",
+        "Dirac operator",
+        "MPI_Allreduce()",
+        "Memory"
+      ],
+      "y_data": [
+        5.860000000000001,
+        5.860000000000001,
+        5.860000000000001,
+        5.860000000000001,
+        5.860000000000001,
+        5.860000000000001
+      ]
+    },
+    "Label: CPU Kernel": {
+      "x_data": [
+        "sleep()",
+        "I/O",
+        "I/O+MPI",
+        "Dirac operator",
+        "MPI_Allreduce()",
+        "Memory"
+      ],
+      "y_data": [
+        7.806,
+        7.9586,
+        10.736,
+        7.7644,
+        7.7466,
+        7.7496
+      ]
+    }
+  }
+}

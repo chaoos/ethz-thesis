@@ -1,0 +1,88 @@
+\documentclass[tikz]{standalone}
+
+\usepackage{tikz}
+\usepackage{ifthen}
+\pgfdeclarelayer{back}
+\pgfsetlayers{back,main}
+\usetikzlibrary{math} %needed tikz library
+
+\input{preamble/colors.tex}
+
+\makeatletter
+\pgfkeys{%
+  /tikz/on layer/.code={
+    \def\tikz@path@do@at@end{\endpgfonlayer\endgroup\tikz@path@do@at@end}%
+    \pgfonlayer{#1}\begingroup%
+  }%
+}
+\makeatother
+
+\begin{document}
+
+\begin{tikzpicture}
+
+\tikzmath{
+\volume = 8; % volume of the 1D lattice
+\slimit = \volume -1;
+\size = 4.0; % size in points
+\step = \size / \volume;
+\ndots = 6; % dots per square
+\dlimit = \ndots -1;
+\dstep = \step / \ndots;
+} 
+
+\draw[black, thick] (-0.1,-0.1) rectangle (\size+0.1,\size+0.1);
+
+% for orientation
+%\filldraw[red] (0.0,0.0) circle (1.0pt);
+%\filldraw[green] (1.0,0.0) circle (1.0pt);
+%\filldraw[yellow] (0.0,1.0) circle (1.0pt);
+
+\foreach \c in {0,...,\slimit} {
+    \coordinate (A1) at (\c*\step+0.0,  \size-\step-\c*\step);
+    \coordinate (B1) at (\c*\step+\step,\size-\c*\step);
+
+    \ifthenelse{\c=\slimit}{
+        \coordinate (A2) at (0.0,       \size-\step-\c*\step);
+        \coordinate (B2) at (\step,       \size-\c*\step);
+        \coordinate (A3) at (\c*\step+0.0,\size-\step);
+        \coordinate (B3) at (\c*\step+\step,\size);
+    }{
+        \coordinate (A2) at (\c*\step+1*\step,\size-\step-\c*\step);
+        \coordinate (B2) at (\c*\step+2*\step,\size-\c*\step);
+        \coordinate (A3) at (\c*\step+0*\step,\size-2*\step-\c*\step);
+        \coordinate (B3) at (\c*\step+1*\step,\size-\step-\c*\step);
+    }
+    
+    \draw[color=cblue!60, fill=cblue!5, thin, on layer=back] (A1) rectangle (B1);
+    \draw[color=cblue!60, fill=cblue!5, thin, on layer=back] (A2) rectangle (B2);
+    \draw[color=cblue!60, fill=cblue!5, thin, on layer=back] (A3) rectangle (B3);
+
+    \foreach \x in {0,...,\dlimit} {
+        \foreach \y in {0,...,\dlimit} {
+            % diagonal dots
+            \coordinate (C) at (\x*\dstep+0.5*\dstep+\c*\step,\y*\dstep+\size-\step+0.5*\dstep-\c*\step);
+
+            \ifthenelse{\c=0}{
+                \coordinate (O1) at (\x*\dstep+\size-\step+0.5*\dstep+\c*\step,\y*\dstep+\size-\step+0.5*\dstep-\c*\step);
+            }{
+                \coordinate (O1) at (\x*\dstep-\step+0.5*\dstep+\c*\step,\y*\dstep+\size-\step+0.5*\dstep-\c*\step);
+            }
+
+            \ifthenelse{\c=\slimit}{
+                \coordinate (O2) at (\x*\dstep+0.5*\dstep,\y*\dstep+\size-\step+0.5*\dstep-\c*\step);
+            }{
+                \coordinate (O2) at (\x*\dstep+\step+0.5*\dstep+\c*\step,\y*\dstep+\size-\step+0.5*\dstep-\c*\step);
+            }
+
+            \filldraw[cgray] (C) circle (0.2pt);
+            \filldraw[cgray] (O1) circle (0.2pt);
+            \filldraw[cgray] (O2) circle (0.2pt);
+
+        };
+    };
+};
+
+\end{tikzpicture}
+
+\end{document}

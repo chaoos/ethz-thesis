@@ -1,0 +1,15 @@
+%********************************************************************
+% List of Figures
+%*******************************************************
+% work-around to have small caps also here in the headline
+\manualmark%
+\markboth{\spacedlowsmallcaps{\listfigurename}}{\spacedlowsmallcaps{\listfigurename}} % work-around to have small caps also
+%\phantomsection 
+\refstepcounter{dummy}
+%\addtocontents{toc}{\protect\vspace{\beforebibskip}} % to have the bib a bit from the rest in the toc
+\addcontentsline{toc}{chapter}{\tocEntry{\listfigurename}}
+\label{app:list-of-figures}
+{%
+  \emergencystretch=1em%
+  \listoffigures%
+}

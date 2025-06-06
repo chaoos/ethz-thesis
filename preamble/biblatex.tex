@@ -57,7 +57,7 @@
   refsection=none, % (part, chapter, section, subsection)
   refsegment=none, % (none, part, chapter, section, subsection)
   abbreviate=true, % (true, false)
-  defernumbers=false, % 
+  defernumbers=false, % was false
   punctfont=false, % 
   arxiv=abs, % (ps, pdf, format)	
   %--- Style Options --- --- ---	
@@ -80,3 +80,17 @@
 
 % Use only the first page number in a given range
 \DeclareFieldFormat{pages}{\mkfirstpage{#1}}
+
+% Citation of own publications
+% Command to use only: \citeOwn
+% Note: all in ownpubs.bib have to be cited, else they don't apear!
+% Had to change defernumbers=true above (not sure about the impact)
+\DeclareBibliographyCategory{catOwn}
+\DeclareRefcontext{labelprefix=P}{refcatOwn}
+\newcommand{\citeOwn}[1]{%
+  \begin{refcontext}[labelprefix=P]{refcatOwn}%
+    \assignrefcontextentries[labelprefix=P]{#1}%
+    \addtocategory{catOwn}{#1}%
+    \cite{#1}%
+  \end{refcontext}%
+}

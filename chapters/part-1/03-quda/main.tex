@@ -1,20 +1,116 @@
 \chapter{QUDA}
 \label{ch:p1:quda}
 
-\worktodo{what is quda, its programming paradigms (OOP, functors, abstrac-
-tion, ...), its idiosyncrasies, ...}
+\readit{1}
 
-QUDA \cite{QUDApaper} is a library written in CUDA C++ that contains a suite of efficient kernels and solvers to implement lattice QCD simulations.
+\worktodo{what is quda, its programming paradigms (cpp, OOP, functors, templating, abstraction, ...), its idiosyncrasies, capability of different precisions, gauge field reconstructs (gauge grp), ...}
 
-QUDA is highly optimized to run on multiple GPUs and has backends for CUDA, HIP, SYCL and multi-threading. It thus runs on a variety of different hardware vendors.
+%\worktodo{initQuda, endQuda, loadCloverQuda loadGaugeQuda newMultigridQuda, createCloverQuda, updateMultigridQuda, freeCloverQuda, destroyMultigridQuda}
 
+\tldr{what is quda}
+\Quda \cite{QUDApaper} is a library written in CUDA C++ that contains a suite of efficient kernels and solvers to implement lattice QCD simulations. It can be used as a plug and play substitute for certain compute intensive tasks.
+\Quda is highly optimized to run on multiple GPUs and has backends for CUDA, HIP, SYCL and multi-threading, where it performs autotuning to determine empirically the best kernel launch parameters for every kernel separately.
+It thus runs efficiently on a variety of different hardware vendors.
+
+\tldr{qudas feature set}
 It has a very powerful and customizable solver suite, including a state-of-the-art multigrid implementation, comes with support for many different lattice discretizations, such as Wilson, Wilson-Clover, Twisted mass, Twisted-Clover, staggered, improved staggered, Domain-Wall and Möbius. In the meantime there is a large community of lattice practitioners actively working on and maintaining the software project.
 
-The current release version 1.1.0 complies with the C++14 and 17 standards. It is thus natural that QCD fields are represented by objects, and the pointers to the fields' values are accessible via their objects.
+\tldr{current release}
+The current release version 1.1.0 complies with the C++14 and 17 standards and is released under an NVIDIA license similar to the MIT license.
+
+\section{Kernel invocation}
+
+\tldr{overloading, templates, functors, backend abstraction}
+The codebase heavily relies on C++ features such as operator overloading and templates. Device kernels, launched on backends such as CUDA, HIP, SYCL, or threading models, are typically represented as functors -- functions that carry internal state, implemented in C++ as classes overloading the function-call operator, \code{operator()}. This approach enables seamless abstraction of implementation details from the underlying backends.
+%Kernels implemented as functors are
+
+\tldr{example of gamma5}
+As an introductory example, we provide the call stack of the function \code{gamma5} in \cref{fig:quda:gamma5}. The function applies the $\gamma^5$ matrix to an input spinor and writes the result to an output spinor. The function itself is just a wrapper around \code{ApplyGamma} which itself calls the instantiation of the functor \code{GammaApply}. \code{GammaApply} calls its \code{apply} method in its constructor triggering tuning for the \code{Gamma} functor. Finally in the tuning kernels, the \code{launch\_device} call dispatches to the correct backend and finally instructs the runtime API to launch the kernel, for instance via \code{cudaLaunchKernel} in case of CUDA. That executes the previously packed device function which ultimately instantiates the \code{Gamma} functor and then calls it via its function-call operator.
+\begin{figure}
+  \includestandalone[width=\linewidth]{\dir/img/gamma5}
+  \caption{Call graph of the \code{gamma5} function in \quda as an example of how kernels are abstracted from the backends. This function acts on fields already transferred to \quda, thus there is no gamma basis transformation.}
+  \label{fig:quda:gamma5}
+\end{figure}
+%The codebase heavily utilizes the template engine of C++.
+
+\section{Field representations}
+
+\tldr{field are object instances, inheritance}
+Naturally fields on the lattice are represented as objects, and pointers to the fields' values as well as various meta information about the field are accessible via their properties and accessors.
+A spinor field is represented by an instance of \code{ColorSpinorField}, a gauge field by \code{GaugeField} and a clover field as \code{CloverField}, all of which inherit from the \code{LatticeField} class. Different internal degrees of freedom are realized in the inheriting classes. The actual numbers are accessible via pointers whose accessors are called \code{data()}.
+
+\subsection{Field transfer}
+
+\tldr{copy/move overloading}
+Copying and moving fields is efficiently handled by overloading the copy assignment and move assignment operators, \code{operator=} of classes representing fields.
+Fields carry meta information about whether their data lies on the CPU or GPU.
+Field transfers between CPU and GPU as well as reordering of data is fully abstracted away and pushed into the function bodies of the copy and move overload implementations.
+
+%A \code{src} a \code{...} b \code{CopyColorSpinor\_} c \code{dst} bla.
+
+\tldr{spinor equating example}
+We illustrate this in \cref{fig:quda:copy}.
+For example, when equating two fields of type \code{ColorSpinorField}, the copy assignment operator is triggered which initiates the copy process.
+After some instantiation of template parameters such as the floating point precision of the source \code{src} and destination \code{dst} fields (both \code{double} in this example), spin and color degrees of freedom (\num{4} and \num{3} respectively) and the order classes for the source and destination (more on reordering in \cref{sec:interface:field_reordering}), the copy functor \code{CopyColorSpinor\_} is launched through the tuning procedure with the correct gamma basis transformation as argument.
+The remainder of the diagram after the last point indicated by \code{...} is very similar to the call graph of \code{gamma5}, \cref{fig:quda:gamma5}.
+\begin{figure}
+  \includestandalone[width=\linewidth]{\dir/img/copy}
+  \caption{Copy process triggered by equating two fields of type \code{ColorSpinorField}.}
+  \label{fig:quda:copy}
+\end{figure}
+
+\tldr{quda translates gamma bases}
+Thus, input fields might have different $\gamma$-basis conventions than output field.
+\Quda transforms every field coming from an external application on the CPU into its preferred internal $\gamma$-basis representation and transforms back when storing the field back to the applications memory region.
+This is part of the data reordering procedure.
+
+\section{Precisions}
+
+\tldr{template make it easy for precisions}
+The usage of C++ templates enables simple replacements for the precision of fields on the lattice in terms of floating point numbers as illustrated in \cref{fig:quda:gamma5,fig:quda:copy}. \Quda allows kernels and fields to operate with the usual IEEE 754 floats like double, single, half and quarter. Assigning fields of different precision to each other triggers conversion. This makes implementations of mixed precision solvers straightforward and readable.
+
+\section{Compression formats}
+\label{quda:compresed_formats}
+
+\tldr{internal dof with symmetries}
+For fields whose internal degrees of freedom carry additional symmetry, such as the \ggrp{SU}{3}-valued gauge field, \quda provides compression formats for efficient representation in memory.
+This makes sense in memory-bound scenarios, because in kernels using such a field the produced memory traffic is decreased and the arithmetic intensity increased when the field is represented in a compressed format.
+For certain gauge groups \quda allows the gauge field to be stored in the following formats
+\begin{itemize}
+  \item \code{QUDA\_RECONSTRUCT\_NO}: Store all \num{9} complex (\num{18} real) numbers per gauge link explicitly. This reconstruction type allows to use any arbitrary gauge group.
+  \item \code{QUDA\_RECONSTRUCT\_8}: Reconstruct each gauge link from \num{8} real numbers. This is inspired by the Lie-algebra of \ggrp{SU}{3} which has \num{8} real degrees of freedom. It is the smallest representation in terms of bytes.
+  \item \code{QUDA\_RECONSTRUCT\_9}: If the \ggrp{SU}{3} matrix additionally carries a \ggrp{U}{1} phase, the Lie-algebra will have \num{9} real degrees of freedom.
+  \item \code{QUDA\_RECONSTRUCT\_12}: A reconstruction type using \num{12} real numbers that is mean to be used for \ggrp{SU}{3}-valued gauge links which is more stable in reconstructing the $3 \times 3$ complex matrix.
+  \item \code{QUDA\_RECONSTRUCT\_13}: Similar to the previous entry, but with an additional \ggrp{U}{1} phase.
+  \item \code{QUDA\_RECONSTRUCT\_10}: A \num{10}-number parameterization used for storing the momentum field.
+\end{itemize}
+Comparing the \code{QUDA\_RECONSTRUCT\_NO} type with \code{QUDA\_RECONSTRUCT\_8} we see that the former stores \num{18} real numbers, whereas the latter only needs \num{8}. Memory boundedness of a kernel involving such a field implies roughly a speedup of $18/8 > 2$ when using the compressed format over the uncompressed one.
 
 % making use of the modern C++ standards, an  with  making use of the object paradigm and a high degree of abstraction.
 % \todo{exact standard?: by checking the CMakeFiles, QUDA v.1.0 got C++11 or 14, in v.1.1.0 needs C++14 or 17 (ref: \code{https://github.com/search?q=repo\%3Alattice\%2Fquda+c\%2B\%2B17\&type=code}, and 
 % }, 
 
-A spinor field is represented by an instance of \code{ColorSpinorField}, a gauge field by \code{GaugeField} and a clover field as \code{CloverField}, all of which inherit from the \code{LatticeField} class. The different degrees of freedom are realized in the inheriting classes. The actual numbers are accessible via a pointer whose accessor is called \code{data()}.
+\section{Important interface functions}
+
+\tldr{some interface functions in quda.h}
+In the following we will list interface functions exposed by \quda's interface via \code{quda.h} that are relevant in the remainder of this document, specially for the discussion of the interface, \cref{ch:p1:interface}.
+More detailed descriptions can be found in the doxygen string of each function.
+These functions may trigger field transfers or reordering.
+
+\begin{itemize}
+  \item \code{initQuda()}: initialize \quda.
+  \item \code{endQuda()}: finalize \quda.
+  \item \code{loadGaugeQuda()}: load the gauge field from the CPU.
+  \item \code{saveGaugeQuda()}: save the gauge field to the CPU.
+  \item \code{freeGaugeQuda()}: free the resident gauge field in \quda.
+  \item \code{loadCloverQuda()}: load the clover field from the CPU.
+  \item \code{freeCloverQuda()}: free the resident clover field in \quda.
+  \item \code{newMultigridQuda()}: create a new multigrid instance.
+  \item \code{updateMultigridQuda()}: update an existing multigrid instance.
+  \item \code{destroyMultigridQuda()}: destroy an existing multigrid instance.
+  \item \code{invertQuda()}: call the inverter on CPU fields.
+  \item \code{eigensolveQuda()}: call the eigensolver on CPU fields.
+  \item \code{MatQuda()}: call the Dirac operator on CPU fields.
+  \item \code{plaqQuda()}: calculate the plaquette over the resident $\ggrp{SU}{3}$ gauge field.
+\end{itemize} 
 

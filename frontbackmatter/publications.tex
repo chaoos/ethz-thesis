@@ -4,18 +4,32 @@
 \pdfbookmark[1]{Publications}{publications}
 \chapter*{Publications}
 
+\worktodo{Fix unpublished stuff}
+
+% \noindent
+% Articles in peer-reviewed journals:
+% \begin{refsection}[ownpubs]
+%   \small%
+%   \nocite{*}
+%   \printbibliography[heading=none,type=article]
+% \end{refsection}
+
+% \noindent
+% Conference contributions:
+% \begin{refsection}[ownpubs]
+%   \small%
+%   \nocite{*}
+%   \printbibliography[heading=none,type=inproceedings]
+% \end{refsection}
+
 \noindent
 Articles in peer-reviewed journals:
-\begin{refsection}[ownpubs]
-  \small%
-  \nocite{*}
-  \printbibliography[heading=none,type=article]
-\end{refsection}
+\begin{refcontext}[labelprefix=P]{refcatOwn}
+  \printbibliography[heading=none,type=article,category=catOwn,resetnumbers=1]
+\end{refcontext}
 
 \noindent
 Conference contributions:
-\begin{refsection}[ownpubs]
-  \small%
-  \nocite{*}
-  \printbibliography[heading=none,type=inproceedings]
-\end{refsection}
+\begin{refcontext}[labelprefix=P]{refcatOwn}
+  \printbibliography[heading=none,type=inproceedings,category=catOwn,resetnumbers=5]
+\end{refcontext}

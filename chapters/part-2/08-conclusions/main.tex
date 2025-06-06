@@ -1,0 +1,52 @@
+\chapter{Conclusions}
+\label{ch:p2:conclusions}
+
+\worktodo{
+* Conclusions
+%	* Staggered
+	* Outlook
+%		* other observables, 1pt function, baryon corrs, ...
+%	* most lattice discretizations differ in their treatment of chirality making MG a challange to be studied. It has to be studied separately on all of them
+	* reaching gauge noise is hard. multi-level schemes (that reduce gauge noise) make it even harder
+}
+
+We have introduced a novel variance reduction method called multigrid low-mode averaging, combining the efficient multigrid preconditioner with low-mode deflation of correlators.
+The method can be applied to any $n$-point function, but benefits are only expected if the observable is sensitive to low-mode noise.
+This is the case for a large class of observables including meson two-point functions important in the high-precision determination of the leading-order HVP of the muon $g-2$, but also baryon three-point functions important for hadron spectroscopy.
+For disconnected diagrams leading to one-point functions, we do not expect a huge gain in variance reduction, since the success of methods like frequency splitting suggests that the noise comes from the high modes, rather than the low modes.
+However, as a rule of thumb, whenever LMA is beneficial, MG-LMA should be too.
+
+The insights when studying chirality on the subspaces and the fact that most lattice discretizations differ in their treatment of chiral symmetry, leads to the conclusion that MG-LMA has to be investigated and possibly adjusted on each discretization separately.
+Although, the introduced method will constantly benefit from the rapid theoretic and algorithmic developments of multigrid algorithms on different lattice discretizations.
+
+\tldr{twisted mass and MG}
+For twisted mass fermions multigrid had to be adjusted by introducing a pure algorithmic parameter -- a factor for the coarse twisted mass~\cite{Alexandrou:2016izb} -- to improve the condition of the coarse grid twisted mass Dirac operator.
+If not adjusted, the solver performance might degrade or stall entirely.
+However, the coarse operator is not the fine grid restriction anymore if that factor is unequal to one.
+This trade off might have impact into the variance contribution and might degrade the performance of MG-LMA compared to Wilson fermions.
+
+\tldr{staggered and MG}
+The staggered fermion Dirac operator shows spurious eigenvalues on coarse grids~\cite{Brower:2018ymy} making it especially challenging to obtain a performant multigrid implementation.
+The solution seems to be a transformation of the operator by the Kähler-Dirac spin structure~\cite{Becher:1982ud,Bodwin:1987ah} before coarsening.
+This results in a spectrum similar to the Wilson Dirac one and multigrid can be successfully formulated on the Kähler-Dirac transformed operator which was verified on the Schwinger model~\cite{Brower:2018ymy} and later on full lattice QCD~\cite{Ayyar:2022krp}.
+A straightforward application of MG-LMA without taking these developments into consideration is thus not expected.
+
+\tldr{domain wall and MG}
+For Domain Wall fermions with its Dirac operator spectrum enclosing the origin one usually coarsens the normal HPD system $D^{\dagger} D$~\cite{Cohen:2011ivh,Boyle:2014rwa} or the Pauli-Villars operator~\cite{Brower:2020xmc}.
+Although the second option has only been tested on the 2D Schwinger model.
+As proven in \cref{thm:cond:hpd}, for the HPD system, the coarse operators will be at least as good conditioned as the fine one, no matter if chirality is preserved or not.
+Admittedly this operator is more expensive to apply and complex to coarsen as it includes next-to-nearest neighbor couplings.
+On the other hand, when naively coarsening $D$, coarse operators show spurious eigenvalues~\cite{Brower:2020xmc} similar to the staggered case.
+Again, we do not expect a naive application of MG-LMA to the Domain Wall discretization to be successful without considering the developments made in recent multigrid literature.
+
+\tldr{concluding discretizations}
+Multigrid low-mode averaging -- despite being very successful on the Wilson discretization as shown -- has to be studied for all of the above discretizations individually and carefully.
+There is still a lot of theoretic and algorithmic work to do.
+
+\tldr{outlook: baryons}
+A promising imminent application without fundamental changes would be three-point functions which emerge when considering baryon correlators.
+They manifest a severe signal-to-noise ratio problem and low-mode averaging is applied to these problems with success.
+We expect a clear improvement of MG-LMA when applied.
+%Most promising might be an application to three-point functions which emerge when considering baryon correlators.
+
+

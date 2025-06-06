@@ -1,0 +1,130 @@
+\chapter{Appendix: Running on the GPU}
+\label{ch:appendix:running}
+
+\readit{1}
+
+\tldr{running intro}
+This section describes how to run the interface checks interface manually\footnote{For automated testing, please refer to \cref{ch:p1:cicd}.} and how the interface exposes itself to the user of openQxD once the software has been succesfully compiled.
+
+\section{The input file}
+\label{sec:running:infile}
+
+\tldr{infile format for general section}
+The contents of the input file may be written in the traditional openQCD INI-inspired style.
+If the input file contains a section called \code{QUDA}, settings from that section will be read in in the bootstrapping phase, i.e. when calling \code{quda\_init()}.
+An example may look as follows:
+\begin{minted}[]{ini}
+[QUDA]
+verbosity QUDA_VERBOSE # general verbosity
+\end{minted}
+This defaults to \code{QUDA\_VERBOSE} and may be overwritten by verbosities set in solver sections.
+Possible values include (in order or increasing verbosity) \code{QUDA\_SILENT}, \code{QUDA\_SUMMARIZE}, \code{QUDA\_VERBOSE} and \code{QUDA\_DEBUG\_VERBOSE}.
+
+\section{Parametrizing a simple solver}
+\label{sec:running:solver}
+
+\tldr{infile format for solver section + simple example}
+It remains to explain how the interface code expects the input file to look like.
+In our design choices, we made this as flexible as possible and compatible to legacy behavior of \openqxd.
+Therefore a \quda solver can be described in the same way as an \openqcd solver.
+A minimal solver section may look as
+\begin{minted}[]{ini}
+[Solver 3]
+solver          QUDA
+maxiter         2048
+gcrNkrylov      10
+tol             1e-4
+reliable_delta  1e-5
+inv_type        QUDA_BICGSTAB_INVERTER
+verbosity       QUDA_VERBOSE
+solution_type   QUDA_MAT_SOLUTION
+solve_type      QUDA_DIRECT_SOLVE
+\end{minted}
+The section name in the above example is \code{Solver 3}, thus the solver identifier is \num{3}.
+This is the argument \code{id} that has to be provided when calling the solver with one of the various solver kernels, see \cref{sec:develop:solver,sec:interface:solver:simple,sec:interface:solver:mrhs,sec:interface:solver:async}.
+For the section to be a valid \quda solver section we need to specify the key-value pair \code{solver = QUDA}, else the setup function will throw an error message if fed with \code{id=3}.
+All the remaining keys parameterize the various members of the \code{QudaInvertParam} struct and we refer the reader to its documentation \cite{QUDApaper,github:quda}.
+We note that every enum in \code{<quda>/include/quda\_enum.h} can be used as value for the key-value pairs in the input file for readability, so that the user doesn't have to write \code{2} for \code{QUDA\_GCR\_INVERTER} for instance.
+The example section above is minimal, i.e. it only sets required parameters; it solves the Wilson-Clover Dirac equation using a BiCGSTAB solver without any preconditioning to a relative residual of $10^{-4}$.
+We may have mutiple sections as the one above each one enumerated by a unique identifier \code{id}.
+
+\section{Parametrizing a multigrid solver}
+\label{sec:running:multgrid}
+
+\tldr{MG example solver section}
+This section describes a more involved example of a section that parametrizes a multigrid solver.
+It may look like
+\begin{minted}[]{ini}
+[Solver 4]
+solver                  QUDA
+maxiter                 256
+gcrNkrylov              10
+tol                     1e-12
+reliable_delta          1e-5
+inv_type                QUDA_GCR_INVERTER
+verbosity               QUDA_VERBOSE
+inv_type_precondition   QUDA_MG_INVERTER # use multigrid preconditioning
+solution_type           QUDA_MAT_SOLUTION
+solve_type              QUDA_DIRECT_SOLVE
+mass_normalization      QUDA_MASS_NORMALIZATION
+cuda_prec_sloppy        QUDA_SINGLE_PRECISION
+cuda_prec_precondition  QUDA_HALF_PRECISION
+\end{minted}
+Different from the simple example in the previous section is that we specify a preconditioner via \code{inv\_type\_precondition}.
+Multigrid is special in the sense that it requires many more parameters to be set.
+Namely the number of levels and an additional section of parameters for each level separately.
+This is specifed by a second section in the input file that may look as
+\begin{minted}[]{ini}
+[Solver 4 Multigrid]
+n_level                 2
+generate_all_levels     QUDA_BOOLEAN_TRUE
+run_verify              QUDA_BOOLEAN_FALSE
+compute_null_vector     QUDA_COMPUTE_NULL_VECTOR_YES
+\end{minted}
+This addtional section describes the multigrid preconditioner to consist of 2 levels.
+The name of the section is fixed to be \code{[Solver <N> Multigrid]} where \code{<N>} has to be substituted with the identifier of the solver section that specifies \code{inv\_type\_precondition=QUDA\_MG\_INVERTER}.
+The two levels are specified by two separate sections as
+\begin{minted}[]{ini}
+[Solver 4 Multigrid Level 0]
+geo_block_size              4 4 4 4
+n_vec                       24
+n_vec_batch                 2
+verbosity                   QUDA_VERBOSE
+spin_block_size             2
+precision_null              QUDA_HALF_PRECISION
+smoother                    QUDA_CA_GCR_INVERTER
+smoother_tol                0.25
+smoother_solve_type         QUDA_DIRECT_PC_SOLVE
+nu_pre                      0
+nu_post                     8
+omega                       0.8
+cycle_type                  QUDA_MG_CYCLE_RECURSIVE
+coarse_solver               QUDA_GCR_INVERTER
+coarse_solver_tol           0.25
+coarse_solver_maxiter       50
+coarse_grid_solution_type   QUDA_MATPC_SOLUTION
+location                    QUDA_CUDA_FIELD_LOCATION
+
+[Solver 4 Multigrid Level 1]
+precision_null              QUDA_HALF_PRECISION
+coarse_solver               QUDA_CA_GCR_INVERTER
+smoother                    QUDA_CA_GCR_INVERTER
+smoother_tol                0.25
+smoother_solve_type         QUDA_DIRECT_PC_SOLVE
+spin_block_size             1
+coarse_solver_tol           0.25
+coarse_solver_maxiter       50
+coarse_grid_solution_type   QUDA_MATPC_SOLUTION
+cycle_type                  QUDA_MG_CYCLE_RECURSIVE
+nu_pre                      0
+nu_post                     8
+omega                       0.8
+location                    QUDA_CUDA_FIELD_LOCATION
+\end{minted}
+Again, the section names are fixed to be \code{[Solver <N> Multigrid Level <M>]}, where \code{<N>} is the solver section identifier as above and \code{<M>} indicates the level, starting from zero being the finest coarse level.
+Assignable parameters for each level are those in the \code{QudaMultigridParam} struct that hold arrays of length \code{QUDA\_MAX\_MG\_LEVEL}, whereas all the other properties can be specified in the general multigrid section named \code{[Solver <N> Multigrid]}.
+By this, all possible parameters for a multigrid solver can be specified exhaustively.
+Some properties have no effect on the finest coarse level, some have no effect on the coarsest level.
+We refer the reader to the \quda documentation for further details.
+
+%\worktodo{command to run?}

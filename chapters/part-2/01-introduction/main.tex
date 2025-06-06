@@ -1,4 +1,258 @@
 \chapter{Introduction}
 \label{ch:p2:introduction}
 
-\worktodo{todo}
+\dictum[Nazario Tantalo]{%
+  I use to say that discussions about noise are simply noise ...}%
+\vskip 1em
+
+\readit{1}
+
+\worktodo{
+* motivation for variance reduction methods, importance
+	* high-precision lattice QCD, QED
+	% * signal to noise ratio problem:
+	% 	* Cite Parisi: G. Parisi, Phys. Rept. 103 (1984) 203.
+	% 	* And  Lepage: G.P. Lepage, TASI 89 Summer School, Boulder, CO, Jun 4-30, 1989.
+% * review of other variance reduction techniques
+% 	* LMA: light meson and baryon correlators, long distance
+% 		* V2 problem when discussing LMA
+% 		* X-term problem when discussing LMA
+% 		* on meson and baryon masses
+% 			* REF: https://inspirehep.net/literature/875775
+% 	* AMA: many cheap low-precision solves, correct with few high-precision solves
+% 		*  REF: [Blum et al. 1208.4349, Shintani et al. 1402.0244, Blum et al. 1801.07224, Blum et al. 1512.09054]
+% 	* TSM: many heavily truncated solves, correct with few high-precision solves
+% 		* REF:  [Kuberski 2312.13753, Borsanyi et al. 1711.04980]
+% 	* CAA: Covariant Approximation Averaging: generalization of AMA/LMA/translation average into general symmetries of the observable which we can average over for improved estimators, essentially a recipe to design improved estimators.
+	% * stochastic estimators with random wall-sources: enables all-to-all props, but intriduces stochastic noise, comes with averaging over dilution space, wall-sources, Z(N) noise, choice of noise, all sub-gaussians, source recycling for different estimators and observables (ratio observables)
+	%  	* all-to-all props: https://inspirehep.net/literature/365602 ???
+	%  	* one-end trick: https://journals.aps.org/prd/abstract/10.1103/PhysRevD.73.074506, https://journals.aps.org/prd/abstract/10.1103/PhysRevD.59.074503
+	%  	* M. F. Hutchinson, A stochastic estimator of the trace of the influence matrix for Laplacian smoothing splines
+	%  	* Z2 = +-1 noise minimizes variance of real random vectors (https://inspirehep.net/literature/3656029) and 
+	% 	* Hierarchical probing: disconnected diags, like random noise vectors, but replaces purely random noise vectors with structured ones
+	% 		* REF: https://inspirehep.net/literature/1219962, https://epubs.siam.org/doi/abs/10.1137/18M1176427
+	% * Dilution methods: stoachstic all-to-all props, spin, color, eo, space-time, 
+	% 	* REF: https://www.sciencedirect.com/science/article/pii/S0010465505004005
+	% 	* REF: earlier, calls it "partitioning": https://arxiv.org/abs/hep-lat/9911013
+	* point sources: exact, regularly spaced, randomly placed, ...
+	% * frequency splitting: stochastic estimation of disconnected diagrams, ...
+	% 	* REF: https://arxiv.org/pdf/1903.10447
+	% 	* REF: https://arxiv.org/pdf/2001.08783
+	% * Gauge smearing: jacobi, HYP, stout smearing, suitable for hadron spectrostopy, Smooth gauge fields, enhance overlap with true ground state
+	% * fermion smearing: smooth fermion fields, Hadron spectroscopy, Matrix elements, jacobi, wuppertal, Reduces excited-state contamination, better overlap of ground state
+	% * Distillation: Distillation / Laplacian Heaviside smearing, eigenvectors of laplacian 
+	% 	* was investigated as variance reduction method à la LMA in REF: lucius thesis
+	% 	* original REF: https://journals.aps.org/prd/abstract/10.1103/PhysRevD.80.054506
+	% 	* improved REF: https://inspirehep.net/literature/2087060
+	% * multi-level algs: work on pure-gauge theories, still exploratory on QCD, exponentially reduces noise at large distance (challenging in full QCD due to fermion determinant), REF: https://inspirehep.net/literature/1985266, https://inspirehep.net/literature/1805459, https://inspirehep.net/literature/1706999
+	% 	* in presence of fermions:
+	% 		* REF: https://journals.aps.org/prd/abstract/10.1103/PhysRevD.93.094507
+	% 		* REF: https://journals.aps.org/prd/abstract/10.1103/PhysRevD.95.034503
+	% * MGMLMC: single inverse matrix traces, discon. diags
+	% 	* REF: https://inspirehep.net/literature/2612876
+	% * one-end trick: used for twisted mass fermions
+	% 	* was used in the stochastic estimation of the trace for the twisted mass discretization of fermions 
+	% 	* REF: Ph. Boucaud, P. Dimopoulos, F. Farchioni, R. Frezzotti, V. Gimenez, G. Herdoiza, K. Jansen, V. Lubicz, C. Michael, G. Münster, D. Palao, G.C. Rossi, L. Scorzato, A. Shindler, S. Simula, T. Sudmann, C. Urbach, and U. Wenger. Dynamical twisted mass fermions with light quarks: simulation and analysis details. Computer Physics Communications, 179(10):695–715, 2008.
+* motivation for powerful preconditioners
+	* ill-cond systems (physical pion mass ensembles, un-prec solvers stall, ...)
+* review on solver preconditioners
+	* EO-precond
+	* SAP
+	* Deflation/Multigrid: accelerate solves of Dirac eqation using inexact or exact low-modes (not a variance reduction method ifself, but important for all of them that heavily utilize inversions of D)
+		* physical motivation behind, preconditoners
+}
+
+\tldr{signal/noise ratio problem and parisi/lepage}
+Precise observable evaluations in the context of numerical lattice field theory require significant computational resources.
+Requirements in error budget pose challenges, both for systematic and statistic error estimations.
+This opens the vast field of research of variance reduction methods.
+Many observables suffer a systemic phenomenon called the signal-to-noise ratio problem~\cite{parisi1984,lepage1989}.
+It states that the signal gets lost in the noise in the large distance regime.
+%It states that the noise of the correlator starts to dominate the signal in the large distance regime.
+For correlation functions, both the signal as well as the noise decay exponentially, but at different rates.
+The signal decays as $e^{-E_0 t}$ with $E_0 > 0$ the lowest energy state, whereas the noise, which is proportional to the magnitude squared of the correlator, decays as $e^{-E_{\text{noise}}t/2}$ where $E_{\text{noise}} > 0$ is the energy of the lightest state of the squared correlator.
+The ratio of the two $e^{-(E_0 - E_{\text{noise}}/2)t}$, decays exponentially if $2E_0 > E_{\text{noise}}$, meaning the signal deteriorates for large times $t$.
+
+\tldr{pion corr is good, baryons bad}
+The pion correlator for instance has $E_0 = m_{\pi}$ the pion mass and $E_{\text{noise}} = 2 m_{\pi}$ leading to a constant signal-to-noise ratio.
+The signal of that correlator clearly does not deteriorate as time increases.
+For baryon correlators where $E_0 = m_{b}$ the baryon mass, we find $E_{\text{noise}} = 3/2 m_{\pi}$.
+Since baryon masses are in the regime of one or multiple GeV and the pion masses are about \SI{135}{\mega \eV}, we observe a signal loss already early in the decay.
+
+\tldr{multi-level integration}
+This fundamental restriction on correlation functions led to the development of algorithms employing integration techniques with multiple levels.
+Such multi-level algorithms use domain decomposition into overlapping blocks to split the lattice into domains, write the action in terms of contributions from domains which finally leads to a factorization of the observable itself.
+Each factor depends on a different set of gauge fields with support only on the domain of the decomposed lattice.
+If applied appropriately, they lead to exponential signal-to-noise suppression in the prefactor of $e^{-(E_0 - E_{\text{noise}}/2)t}$, circumventing the Parisi-LePage argument.
+If applied to pure gauge theory this either completely removes the signal-to-noise problem or suppresses it substantially~\cite{Luscher:2001up,Meyer:2002cd,DellaMorte:2007zz,DellaMorte:2008jd,della2011novel}.
+Once fermions enter the theory, non-locality of the determinant and the fermion propagator are challenging to deal with in the factorization~\cite{Ce:2016idq,Ce:2016ajy,Giusti:2017ksp,Ce:2017ndt}.
+In the meantime it has been successfully applied to connected and disconnected diagrams of meson two-point functions~\cite{Giusti:2018vxm} and the light-connected leading-order hadronic vacuum polarization contribution (HVP) to the muon $g-2$~\cite{DallaBrida:2020cik,Giusti:2021qhk}.
+
+\tldr{multi-level is at gauge field sampling}
+A multi-level integration scheme is a variance reduction method entering the gauge field generation phase.
+Gauge fields in different domains are drawn according to the domain decomposed action.
+This reduces the variance of the full translation averaged correlator, i.e. what we will call the gauge variance or gauge noise of the observable in the following (it will be formally defined in \cref{sec:numerics:gauge:variance}).
+Reaching the gauge noise level with state-of-the-art estimators on large physical pion mass ensembles becomes prohibitively expensive, even more so if applied multi-level schemes reduce the gauge noise further.
+In this work we are concerned with methods to reach the gauge noise with as little as possible computational resources, not with a reduction of the gauge noise itself.
+We thus expect the gauge fields to be generated already from now on.
+Methods that we will discuss in the following can thus be applied \emph{together} with a multi-level scheme to be even more efficient. 
+
+\tldr{smearing methods}
+In order to increase overlap with the true ground state of the system and reducing excited state contamination, investigation of different operators, but with equal quantum numbers was put forward.
+This led to smearing techniques for gauge and fermion fields.
+Instead of localized point sources which are unphysical, smeared localized sources were employed leading to smeared propagators.
+The goal is always an optimization of the signal.
+Common smearing kernels are Jacobi~\cite{GUSKEN1989,PhysRevD.56.2743,Collins:1992fj,UKQCD:1993gym}, Wuppertal~\cite{GUSKEN1990361} or momentum smearing~\cite{Bali:2016lva}.
+These techniques can be supplemented by smearing of gauge fields using APE~\cite{ALBANESE1987163}, HYP~\cite{Hasenfratz:2001hp} or Stout smearing~\cite{PhysRevD.69.054501}.
+
+	% * Distillation: Distillation / Laplacian Heaviside smearing, eigenvectors of laplacian 
+	% 	* was investigated as variance reduction method à la LMA in REF: lucius thesis
+	% 	* original REF: https://journals.aps.org/prd/abstract/10.1103/PhysRevD.80.054506
+	% 	* improved REF: https://inspirehep.net/literature/2087060
+
+\tldr{distillation}
+A noteworthy smearing method in the context of this thesis is distillation~\cite{HadronSpectrum:2009krc,Knechtli:2022bji}, where low modes of the 3D spatial gauge-covariant Laplacian are generated.
+The source fields are then projected to that low-rank linear subspace; the projector acts as a smearing kernel.
+The method is based on the gauge-covariant smearing of fermion fields which in the limit exponentially suppress high mode contributions.
+Thus only the lowest mode components of the sources dominate ground state overlap.
+The cost is proportional the number of modes determined and correlation functions restricted to that subspace can be volume averaged easily, since the restricted propagators are all-to-all.
+The method was also investigated as a substitute for low-mode averaging~\cite{Bushnaq:2023}.
+
+\tldr{smearing changes amplitude}
+Smearing of gauge and fermion fields has no effect on the asymptotic exponential behavior of the correlator, but modifying its absolute value.
+This makes smearing very suitable for spectroscopy studies, where one is interested in the exponential decay rate for mass extraction, but unsuitable if contributions from excited states need to be included or the correlator amplitude is important too.
+This is the case for the HVP of the muon $g-2$.
+
+	% * stochastic estimators with random wall-sources: enables all-to-all props, but intriduces stochastic noise, comes with averaging over dilution space, wall-sources, Z(N) noise, choice of noise, all sub-gaussians, source recycling for different estimators and observables (ratio observables)
+	%   * . Bitar, A.D. Kennedy, R. Horsley, S. Meyer, P. Rossi, The QCD finite temperature transition and hybrid Monte Carlo. Nucl. Phys. B 313, 348–376 (1989)
+	%   * UKQCD Collaboration, C. Michael, J. Peisa, Maximal variance reduction for stochastic propagators with applications to the static quark spectrum. Phys. Rev. D 58, 034506 (1998). arXiv:hep-lat/9802015
+	%  	* all-to-all props: https://inspirehep.net/literature/365602 ???
+	%  	* one-end trick: https://journals.aps.org/prd/abstract/10.1103/PhysRevD.73.074506, https://journals.aps.org/prd/abstract/10.1103/PhysRevD.59.074503
+	%  		* 17. E.T.M. Collaboration, P. Boucaud et al., Dynamical twisted mass fermions with light quarks: simulation and analysis details. Comput. Phys. Commun. 179, 695–715 (2008). arXiv:0803.0224
+	%  		* 18. E.T.M. Collaboration, S. Dinter, V. Drach, R. Frezzotti, G. Herdoiza, K. Jansen, G. Rossi, Sigma terms and strangeness content of the nucleon with N f = 2 + 1 + 1 twisted mass fermions. JHEP 08, 037 (2012). arXiv:1202.1480
+	%  	* M. F. Hutchinson, A stochastic estimator of the trace of the influence matrix for Laplacian smoothing splines
+	%  	* Z2 = +-1 noise minimizes variance of real random vectors (https://inspirehep.net/literature/365602) and 
+	% 	* Hierarchical probing: disconnected diags, like random noise vectors, but replaces purely random noise vectors with structured ones
+	% 		* REF: https://inspirehep.net/literature/1219962, https://epubs.siam.org/doi/abs/10.1137/18M1176427
+	% * Dilution methods: stoachstic all-to-all props, spin, color, eo, space-time, 
+	% 	* REF: https://www.sciencedirect.com/science/article/pii/S0010465505004005
+	% 	* REF: earlier, calls it "partitioning": https://arxiv.org/abs/hep-lat/9911013
+	% * point sources: exact, regularly spaced, randomly placed, ...
+
+\tldr{simple Hutchinson}
+A standard estimator for traces over propagators is the Hutchinson method~\cite{Hutchinson01011990}, where a stochastic identity was introduced for an estimation of single inverse matrix traces.
+As a negative byproduct, this introduces additional stochastic noise which has to be suppressed separately.
+However, this enabled stochastic all-to-all propagators~\cite{Foley:2005ac} when using random wall-sources; sources with support only on a certain time slice.
+A necessity stemming from correlation functions usually being investigated as functions Euclidean time or if at least some translation averaging is used.
+The noise can be any set with zero mean and unit variance, like Gaussian or subsets thereof; a popular choice is $\mathbb{Z}_2 = \{\pm 1\}$, which minimizes stochastic variance over traces of real matrices~\cite{Bernardson:1993he}.
+
+\tldr{index dilution}
+Further developments led to dilution schemes (also called partitioning in earlier works~\cite{Wilcox:1999ab}).
+Random sources with support only on certain spin~\cite{Wilcox:1997rm,Alexandrou:2010jr}, color, time~\cite{GUSKEN1989,OCais:2004xgm,Bali:2014pva}, space slices~\cite{Foley:2005ac}, even-odd indices or combinations thereof~\cite{Morningstar:2008mc,Bulava:2008qx,Foley:2010vv,Morningstar:2008ph}.
+Apart from positive impact on the variance, dilution also has algorithmic consequences.
+Spin dilution for instance makes it possible with just \num{4} inversions to reconstruct every $\gamma$-matrix monomial possibly appearing in an interpolating operator.
+This makes it possible to evaluate multiple diagrams with the same \num{4} spin-diluted noise sources.
+Dilution on an internal degree of freedom like color and/or spin tends to reduce the overall stochastic noise introduced by the stochastic identity now being exactly zero on off-diagonal dilution indices~\cite{Babich:2010at,Morningstar:2011ka}.
+Variance caused by even-odd interactions can be cancelled by even-odd dilution~\cite{Bali_2009,Foley:2005ac,Morningstar:2011ka}.
+The structure of the observables should always be a guidance for an effective dilution scheme.
+Clearly the extreme case would be a dilution in all indices; color, spin, time and space, resulting in an exact estimation, but at infeasible cost.
+
+\tldr{hierarchical probing}
+For disconnected diagrams which are closely related to single inverse matrix traces, methods based on specific choice of probing vectors have been developed.
+They go under the name of hierarchical probing~\cite{tang2012probing,Stathopoulos:2013aci}.
+%, in the assumption that the off-diagonal elements of the inverse of a nearest neighbor stencil operator fall off exponentially fast.
+Based on the analysis in ref.~\cite{Hutchinson01011990}, the variance of the trace is the Frobenius norm of the matrix with zeroed diagonal entries.
+The probing method builds structured vectors that systematically cancel noise coming from short distance on nearby lattice sites resulting in significantly reduced variance as compared to standard stochastic estimators for disconnect diagrams~\cite{Stathopoulos:2013aci}.
+
+	% * frequency splitting: stochastic estimation of disconnected diagrams, ...
+	% 	* REF: https://arxiv.org/pdf/1903.10447
+	% 	* REF: https://arxiv.org/pdf/2001.08783
+
+\tldr{frequency splitting}
+In a very similar tone, the method called frequency splitting~\cite{Giusti:2019kff,Giusti:2020dtz} separates high and low frequencies associated to short and long distances in disconnected diagrams.
+The propagator itself is split, turning the disconnected diagram into possibly multiple pieces; the short distance (high frequency) part is split into a bulk which is calculated exactly (i.e. at its gauge noise level) and a remainder, estimated stochastically, with small contribution to the variance.
+The remaining long distance (low frequency) part (differences of quark propagators with different masses) can then very efficiently be estimated with stochastic split-even estimators making use of the identity $D_1^{-1} - D_2^{-1} = (m_2 - m_1) D_2^{-1} D_1^{-1}$ where $D_i$ is the Dirac operator with mass $m_i$~\cite{Whyte:2022vrk}.
+This is sometimes referred to as the one-end trick in context of twisted mass fermions~\cite{ETM:2008zte,PhysRevD.73.074506,PhysRevD.59.074503}.
+Crucial for this method is that the Dirac operator is better conditioned for large quark masses.
+%However, this exploits the fact that the Dirac operator is better conditioned for large quark masses.
+
+	% * MGMLMC: single inverse matrix traces, discon. diags
+	% 	* REF: https://inspirehep.net/literature/2612876
+	% 	* REFS: Frommer:2025kfp
+	%
+	% 	doi:10.1137/21M1441894:2022
+
+\tldr{Multilevel Monte Carlo}
+We want to briefly discuss multilevel Monte Carlo (MLMC) methods~\cite{giles2008,Giles_2015}.
+Unfortunately there is a naming clash: this has nothing to do with multi-level algorithms for gauge field generation as discussed above.
+Multilevel Monte Carlo is a general framework to split an unbiased stochastic estimator into a sum of estimators.
+The individual terms contribute differently to the overall variance and one hopes to find decompositions where terms dominating the variance are cheap to estimate.
+MLMC does not propose actual decomposistions, but formalizes the general procedure, describing the heart of nearly every variance reduction method.
+
+\tldr{MG-MLMC}
+In this spirit, deflation of low modes was used to estimate traces over inverse matrices in~\cite{Gambhir:2016uwp}, but speedups where only obtained together with hierarchical probing.
+A method called multigrid multilevel Monte Carlo (MG-MLMC) decomposes the propagator into multigrid levels using an adaptive algebraic multigrid approach and then estimates the trace separately on all levels.
+This was investigated on the 2D (gauge-covariant) Laplacian and the Schwinger model~\cite{doi:10.1137/21M1441894:2022}.
+A similar method was previously been used for trace estimation of single inverse matrices using inexact deflation à la Lüscher~\cite{Romero:2019psj}.
+It was recently improved to use the Hutch++ method on coarse levels~\cite{Frommer:2022qiy}.
+The Hutch++ method~\cite{doi:10.1137/1.9781611976496.16:2021} decomposes the trace into a projected low-rank term computed exactly, whereas the remainder is estimated using standard Hutchinson~\cite{Hutchinson01011990}.
+First tests on disconnected QCD diagrams where conducted~\cite{Frommer:2025kfp} resulting in a moderate variance reduction of about \SI{12}{\percent} compared to standard Hutchinson.
+This is to be expected, since the variance in disconnected diagrams stems from the high modes, not from the low modes.
+
+% * review of other variance reduction techniques
+% 	* LMA: light meson and baryon correlators, long distance
+% 		* V2 problem when discussing LMA
+% 		* X-term problem when discussing LMA
+% 		* on meson and baryon masses
+% 			* REF: https://inspirehep.net/literature/875775
+% 	* AMA: many cheap low-precision solves, correct with few high-precision solves
+% 		*  REF: [Blum et al. 1208.4349, Shintani et al. 1402.0244, Blum et al. 1801.07224, Blum et al. 1512.09054]
+% 	* TSM: many heavily truncated solves, correct with few high-precision solves
+% 		* REF:  [Kuberski 2312.13753, Borsanyi et al. 1711.04980]
+% 	* CAA: Covariant Approximation Averaging: generalization of AMA/LMA/translation average into general symmetries of the observable which we can average over for improved estimators, essentially a recipe to design improved estimators.
+
+\tldr{LMA original and usages}
+We will now discuss the method of low-mode averaging~\cite{Neff_2001,DeGrand_2004,Giusti_2004,} (LMA) and some of its many variants which this document is based upon.
+It decomposed the quark propagator $D^{-1}$ into a truncated spectral decomposition and a remainder.
+The spectral sum can be easily volume averaged pushing its variance to its gauge noise.
+This method is used widely in the field for quantities suffering from the signal-to-noise ratio problem in the long distance.
+Examples are the HVP~\cite{bmw_2024,Kuberski_2023,Aubin:2022hgm,Bazavov:2024eou,RBC_2024} and HLbL~\cite{Lin:2024khg} contributions to the muon $g-2$ or derived quantities~\cite{ExtendedTwistedMass:2025tpc}, baryon three-point functions~\cite{Yang:2015zja,Ohki:2012jyg} and masses \cite{Bali:2010se}, nucleon charges~\cite{Yamanaka:2018uud}, reweighting of the RHMC~\cite{Kuberski:2023zky}, decay constants~\cite{Bali:2014pva}, low energy couplings~\cite{Bernardoni:2011kd}, form factors~\cite{JLQCD:2009ofg} and many more.
+Clearly, the method is only beneficial if the majority of the noise comes from the low-mode contribution and one can afford a numerical determination of the low-mode subspace.
+
+\tldr{V2 problem}
+The method usually comes with two tasks, both of which are computationally expensive.
+First, one has to determine a certain number of eigenmodes of the (Hermitian) Dirac operator.
+This number heavily depends on the lattice volume, the physical quantity of interest and the variance reduction goal.
+Obviously the more modes involved, the better the outcome.
+The number of low modes required for constant variance reduction is proportional to the lattice volume for a fixed quantity, because the size of the low-mode subspace is proportional to the lattice volume~~\cite{banks1980}.
+Therefore the computational work to determine the low-mode subspace scales quadratic in the lattice volume, which we will refer to as \emph{$V^{2}$-problem}~\cite{Luescher2007}.
+This fact makes LMA on large-scale physical point lattices prohibitively expensive.
+On recent high-precision determinations of the HVP contribution to the muon $g-2$ this number is driven to the limit of affordability; \numrange{1000}{6000}~\cite{Djukanovic:2024cmq,RBC_2024,bmw_2024,Aubin:2022hgm} with varying satisfaction.
+
+\tldr{X-term problem}
+Second, when plugging the decomposition of the propagator into two-point correlators, we obtain a cross-term mixing low- and high-mode contributions, usually called \emph{rest-eigen} term.
+If the number of low modes is not sufficiently high\footnote{The numbers mentioned in the previous paragraph are \emph{not} high enough.}, the cross-term contributes non-negligibly to the overall variance -- an issue which we will refer to as \emph{cross-term problem}.
+The cost of evaluating this term is proportional to the number of low modes.
+Many extensions of LMA have been proposed mainly to deal with the cross-term problem.
+All-mode averaging (AMA) employs many cheap low-precision solves, corrected with a few high-precision solves~\cite{Blum_2012,CAA,RBC_2018,Blum_2015}.
+The truncated solver method (TSM) very similarly uses many heavily truncated solves, corrected with a few high-precision solves~\cite{bmw_2017,Kuberski:2023zky}.
+In refs.~\cite{fermi_2023,lynch2023} the cross-term together with the high-mode (rest-rest) term is evaluated stochastically.
+
+\tldr{V2 vs Xterm vs cost}
+We observe a non-trivial interplay of computational cost and variance reduction.
+In order to achieve a fair variance reduction we want to drive the number of deflated low modes as high as we can afford.
+On the other hand, the cost of the eigensolver and of the cross-term increases proportional to that number.
+It is not feasible anymore on physical point lattices to drive the number of eigenmodes so high to suppress the variance on the cross-term such that its evaluation is cheap.
+An often unmentioned issue is the immense memory footprint of $\bigO(1000)$ low modes that have to be in memory all at the same time.
+
+\tldr{remainder of the part}
+The remainder of this part is structured as follows.
+\Cref{ch:p2:2pt-corr} introduces the main observable of interest -- the connected leading-order HVP of the muon $g-2$.
+Continuing with \cref{ch:p2:subspace-deflation}, we generalize the concept of low-mode averaging to arbitrary subspaces, whereas in \cref{ch:p2:lc} a method to approximately determine the low mode subspace used in solver preconditioning is shown.
+These pieces are put together in \cref{ch:p2:multigrid} to construct a variance reduction method called \emph{multigrid low-mode averaging}, which we will show, solves both the cross-term and the $V^{2}$-problem.
+In \cref{ch:p2:numerics}, we show it in action and provide numerical evidence for its flat volume dependence.
+This part is closed in \cref{ch:p2:chirality} with theoretical considerations about chirality.
+
+\worktodo{solvers and preconditioning}
+%\worktodo{the remainder of this part ...}
+

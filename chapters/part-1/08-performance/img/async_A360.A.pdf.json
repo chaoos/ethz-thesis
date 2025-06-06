@@ -1,0 +1,58 @@
+{
+  "Axis: A360 @ geno": {
+    "Label: Total": {
+      "x_data": [
+        "sleep()",
+        "I/O",
+        "I/O+MPI",
+        "Dirac operator",
+        "MPI_Allreduce()",
+        "Memory"
+      ],
+      "y_data": [
+        42.803,
+        42.711,
+        44.717999999999996,
+        42.842999999999996,
+        42.705,
+        42.711
+      ]
+    },
+    "Label: GPU Solver": {
+      "x_data": [
+        "sleep()",
+        "I/O",
+        "I/O+MPI",
+        "Dirac operator",
+        "MPI_Allreduce()",
+        "Memory"
+      ],
+      "y_data": [
+        21.349999999999998,
+        21.349999999999998,
+        21.349999999999998,
+        21.349999999999998,
+        21.349999999999998,
+        21.349999999999998
+      ]
+    },
+    "Label: CPU Kernel": {
+      "x_data": [
+        "sleep()",
+        "I/O",
+        "I/O+MPI",
+        "Dirac operator",
+        "MPI_Allreduce()",
+        "Memory"
+      ],
+      "y_data": [
+        21.453,
+        21.361,
+        23.368,
+        21.493,
+        21.355,
+        21.361
+      ]
+    }
+  }
+}

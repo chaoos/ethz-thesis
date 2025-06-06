@@ -1,0 +1,96 @@
+%\documentclass{scrartcl}
+\documentclass{standalone}
+
+%\pagestyle{empty}
+
+\usepackage{tikz,ifthen}
+
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{calc}
+\usetikzlibrary{decorations.markings}
+\usetikzlibrary{decorations}
+\usetikzlibrary{fit, positioning, shapes.geometric}
+
+\newcommand{\head}[1]{\textbf{\underline{#1}}}
+\newcommand{\hit}[1]{\textbf{#1}}
+
+\input{preamble/colors.tex}
+\input{preamble/commands.tex}
+\input{preamble/symbols.tex}
+
+\tikzstyle{rank}    = [draw, rounded corners, dashed, inner sep=10pt]
+\tikzstyle{lattice} = [draw, rounded corners, dashed, inner sep=60pt]
+\tikzstyle{block}   = [draw, rounded corners, solid,  inner sep=6pt]
+
+\newcommand{\drawGrid}[6]{%
+  \foreach \x in {0,...,#1} {
+    \foreach \y in {0,...,#2} {
+      \coordinate (n) at  ($(#3,#4)+\x*(20mm, 0)+\y*(0, 20mm)+(0,0)$);
+
+      \coordinate (A1) at ($(#3,#4)+\x*(20mm, 0)+\y*(0, 20mm)+(0,15mm)$);
+      \coordinate (B1) at ($(#3,#4)+\x*(20mm, 0)+\y*(0, 20mm)+(0,5mm)$);
+
+      \coordinate (A2) at ($(#3,#4)+\x*(20mm, 0)+\y*(0, 20mm)+(15mm,0)$);
+      \coordinate (B2) at ($(#3,#4)+\x*(20mm, 0)+\y*(0, 20mm)+(5mm,0)$);
+
+      \coordinate (A3) at ($(#3,#4)+\x*(20mm, 0)+\y*(0, 20mm)-(15mm,0)$);
+      \coordinate (B3) at ($(#3,#4)+\x*(20mm, 0)+\y*(0, 20mm)-(5mm,0)$);
+
+      \coordinate (A4) at ($(#3,#4)+\x*(20mm, 0)+\y*(0, 20mm)-(0,15mm)$);
+      \coordinate (B4) at ($(#3,#4)+\x*(20mm, 0)+\y*(0, 20mm)-(0,5mm)$);
+
+      \node (#5\x\y) [draw=black, fill=#6, circle, minimum size=0.4cm, inner sep=0pt] at (n) {};
+
+      \draw (A1) -- (B1);
+      \draw (A2) -- (B2);
+      \draw (A3) -- (B3);
+      \draw (A4) -- (B4);
+    };
+  };
+}
+
+\begin{document}
+
+\begin{tikzpicture}
+
+\drawGrid{7}{7}{0}{0}{C}{cgreen}
+\drawGrid{7}{7}{20cm}{0}{D}{cblue}
+
+\node[lattice, label={above:\head{openQxD}: world MPI communicator}] (group) [fit={(C00) (C77)}] {};
+\node[lattice, label={above:\head{QUDA}: quda MPI communicator}]     (group) [fit={(D00) (D77)}] {};
+
+% openqxd lattice ranks
+% \node (R0) [rank] [fit={(C00) (C31)}] {}; \node (LR0) [fill=white, text=black] at (R0.south) {rank 0};
+% \node (R1) [rank] [fit={(C40) (C71)}] {}; \node (LR2) [fill=white, text=black] at (R1.south) {rank 1};
+% \node (R2) [rank] [fit={(C02) (C33)}] {}; \node (LR1) [fill=white, text=black] at (R2.south) {rank 2};
+% \node (R3) [rank] [fit={(C42) (C73)}] {}; \node (LR3) [fill=white, text=black] at (R3.south) {rank 3};
+% \node (R4) [rank] [fit={(C04) (C35)}] {}; \node (LR4) [fill=white, text=black] at (R4.south) {rank 4};
+% \node (R5) [rank] [fit={(C44) (C75)}] {}; \node (LR6) [fill=white, text=black] at (R5.south) {rank 5};
+% \node (R6) [rank] [fit={(C06) (C37)}] {}; \node (LR5) [fill=white, text=black] at (R6.south) {rank 6};
+% \node (R7) [rank] [fit={(C46) (C77)}] {}; \node (LR7) [fill=white, text=black] at (R7.south) {rank 7};
+\node (R0) [rank] [fit={(C00) (C11)}] {}; \node (LR0) [fill=white, text=black] at (R0.south) {\hit{rank 0}};
+\node (R1) [rank] [fit={(C20) (C31)}] {}; \node (LR1) [fill=white, text=black] at (R1.south) {rank 1};
+\node (R2) [rank] [fit={(C40) (C51)}] {}; \node (LR2) [fill=white, text=black] at (R2.south) {rank 2};
+\node (R3) [rank] [fit={(C60) (C71)}] {}; \node (LR3) [fill=white, text=black] at (R3.south) {rank 3};
+\node (R4) [rank] [fit={(C02) (C13)}] {}; \node (LR4) [fill=white, text=black] at (R4.south) {\hit{rank 4}};
+\node (R5) [rank] [fit={(C22) (C33)}] {}; \node (LR5) [fill=white, text=black] at (R5.south) {rank 5};
+\node (R6) [rank] [fit={(C42) (C53)}] {}; \node (LR6) [fill=white, text=black] at (R6.south) {rank 6};
+\node (R7) [rank] [fit={(C62) (C73)}] {}; \node (LR7) [fill=white, text=black] at (R7.south) {rank 7};
+\node (R8) [rank] [fit={(C04) (C15)}] {}; \node (LR8) [fill=white, text=black] at (R8.south) {\hit{rank 8}};
+\node (R9) [rank] [fit={(C24) (C35)}] {}; \node (LR9) [fill=white, text=black] at (R9.south) {rank 9};
+\node (R10) [rank] [fit={(C44) (C55)}] {}; \node (LR10) [fill=white, text=black] at (R10.south) {rank 10};
+\node (R11) [rank] [fit={(C64) (C75)}] {}; \node (LR11) [fill=white, text=black] at (R11.south) {rank 11};
+\node (R12) [rank] [fit={(C06) (C17)}] {}; \node (LR12) [fill=white, text=black] at (R12.south) {\hit{rank 12}};
+\node (R13) [rank] [fit={(C26) (C37)}] {}; \node (LR13) [fill=white, text=black] at (R13.south) {rank 13};
+\node (R14) [rank] [fit={(C46) (C57)}] {}; \node (LR14) [fill=white, text=black] at (R14.south) {rank 14};
+\node (R15) [rank] [fit={(C66) (C77)}] {}; \node (LR15) [fill=white, text=black] at (R15.south) {rank 15};
+
+% quda lattice ranks
+\node (QR0) [rank] [fit={(D00) (D33)}] {}; \node (LQR0) [fill=white, text=black] at (QR0.south) {rank 0};
+\node (QR1) [rank] [fit={(D40) (D73)}] {}; \node (LQR1) [fill=white, text=black] at (QR1.south) {rank 1};
+\node (QR2) [rank] [fit={(D04) (D37)}] {}; \node (LQR2) [fill=white, text=black] at (QR2.south) {rank 2};
+\node (QR3) [rank] [fit={(D44) (D77)}] {}; \node (LQR3) [fill=white, text=black] at (QR3.south) {rank 3};
+
+\end{tikzpicture}
+
+\end{document}

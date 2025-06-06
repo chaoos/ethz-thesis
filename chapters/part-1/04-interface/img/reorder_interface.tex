@@ -1,0 +1,126 @@
+\documentclass{standalone}
+\usepackage{quiver}
+\usepackage[most]{tcolorbox}
+\usepackage{xcolor}
+
+\input{preamble/colors.tex}
+\input{preamble/commands.tex}
+\input{preamble/symbols.tex}
+
+\newcommand{\edge}[1]{\code{#1}}
+\newcommand{\head}[1]{\textbf{\underline{#1}}}
+
+%\newcommand{\edge}[1]{#1}
+
+\begin{document}
+% % https://q.uiver.app/#q=WzAsMjcsWzAsOCwiUXVkYUludmVydFBhcmFtIl0sWzIsMTEsImNsb3ZlclxcX29yZGVyIl0sWzMsMTEsIlFVREFcXF9PUEVOUUNEXFxfQ0xPVkVSXFxfT1JERVIiXSxbNywxMSwiT3BlblFDRE9yZGVyIl0sWzIsOSwiZ2F1Z2VcXF9vcmRlciJdLFszLDksIlFVREFcXF9PUEVOUUNEXFxfR0FVR0VcXF9PUkRFUiJdLFs3LDksIk9wZW5RQ0RPcmRlciJdLFsyLDcsImdhbW1hXFxfYmFzaXMiXSxbMyw3LCJRVURBXFxfT1BFTlFDRFxcX0dBTU1BXFxfQkFTSVMiXSxbNSw4LCJOb25SZWxUb09wZW5xY2RCYXNpcyJdLFs1LDYsIk9wZW5xY2RUb05vblJlbEJhc2lzIl0sWzIsNSwiZGlyYWNcXF9vcmRlciAiXSxbMyw1LCJRVURBXFxfT1BFTlFDRFxcX0RJUkFDXFxfT1JERVIiXSxbMCwzLCJDb2xvclNwaW5vclBhcmFtIl0sWzIsMywiZmllbGRPcmRlciAiXSxbMywzLCJRVURBXFxfT1BFTlFDRFxcX0ZJRUxEXFxfT1JERVIiXSxbNywzLCJPcGVuUUNERGlyYWNPcmRlciJdLFsxLDBdLFsxLDEzXSxbNCwwXSxbNCwxM10sWzYsMF0sWzYsMTNdLFswLDEsInBhcmFtXFwgc3RydWN0cyJdLFs1LDEsImJhc2lzXFwgdHJhbnMuIl0sWzcsMSwicmVvcmRlclxcIGNsYXNzZXMiXSxbMywxLCJtZW1iZXJcXCB2YWx1ZXMiXSxbMiwzLCJpbnN0YW50aWF0ZXMiLDFdLFsxLDIsIj09IiwxLHsic3R5bGUiOnsiYm9keSI6eyJuYW1lIjoibm9uZSJ9LCJoZWFkIjp7Im5hbWUiOiJub25lIn19fV0sWzAsMSwibWVtYmVyIiwxXSxbMCw0LCJtZW1iZXIiLDFdLFs0LDUsIj09IiwxLHsic3R5bGUiOnsiYm9keSI6eyJuYW1lIjoibm9uZSJ9LCJoZWFkIjp7Im5hbWUiOiJub25lIn19fV0sWzUsNiwiaW5zdGFudGlhdGVzIiwxXSxbMCw3LCJtZW1iZXIiLDFdLFs3LDgsIj09IiwxLHsic3R5bGUiOnsiYm9keSI6eyJuYW1lIjoibm9uZSJ9LCJoZWFkIjp7Im5hbWUiOiJub25lIn19fV0sWzgsOSwiaW5zdGFudGlhdGVzIiwxXSxbOCwxMCwiaW5zdGFudGlhdGVzIiwxXSxbMCwxMSwibWVtYmVyIiwxXSxbMTEsMTIsIj09IiwxLHsic3R5bGUiOnsiYm9keSI6eyJuYW1lIjoibm9uZSJ9LCJoZWFkIjp7Im5hbWUiOiJub25lIn19fV0sWzEyLDEzLCJpbnN0YW50aWF0ZXMiLDFdLFsxMywxNCwibWVtYmVyIiwxXSxbMTQsMTUsIj09IiwxLHsic3R5bGUiOnsiYm9keSI6eyJuYW1lIjoibm9uZSJ9LCJoZWFkIjp7Im5hbWUiOiJub25lIn19fV0sWzE1LDE2LCJpbnN0YW50aWF0ZXMiLDFdLFsxNywxOCwiIiwxLHsic3R5bGUiOnsiYm9keSI6eyJuYW1lIjoiZG90dGVkIn0sImhlYWQiOnsibmFtZSI6Im5vbmUifX19XSxbMTksMjAsIiIsMSx7InN0eWxlIjp7ImJvZHkiOnsibmFtZSI6ImRvdHRlZCJ9LCJoZWFkIjp7Im5hbWUiOiJub25lIn19fV0sWzIxLDIyLCIiLDEseyJzdHlsZSI6eyJib2R5Ijp7Im5hbWUiOiJkb3R0ZWQifSwiaGVhZCI6eyJuYW1lIjoibm9uZSJ9fX1dXQ==
+% \begin{tikzcd}
+%   & {} &&& {} && {} \\
+%   {param\ structs} && {members} & {defined\ enums} && {gamma\ basis\ transformations} && {reorder\ classes} \\
+%   \\
+%   \edge{ColorSpinorParam} && {\edge{fieldOrder} } & {\edge{QUDA\_OPENQCD\_FIELD\_ORDER}} &&&& \edge{OpenQCDDiracOrder} \\
+%   \\
+%   && {\edge{dirac\_order} } & {\edge{QUDA\_OPENQCD\_DIRAC\_ORDER}} \\
+%   &&&&& \edge{OpenqcdToNonRelBasis} \\
+%   && {\edge{gamma\_basis}} & {\edge{QUDA\_OPENQCD\_GAMMA\_BASIS}} \\
+%   \edge{QudaInvertParam} &&&&& \edge{NonRelToOpenqcdBasis} \\
+%   && {\edge{gauge\_order}} & {\edge{QUDA\_OPENQCD\_GAUGE\_ORDER}} &&&& \edge{OpenQCDOrder} \\
+%   \\
+%   && {\edge{clover\_order}} & {\edge{QUDA\_OPENQCD\_CLOVER\_ORDER}} &&&& \edge{OpenQCDOrder} \\
+%   \\
+%   & {} &&& {} && {}
+%   \arrow[dotted, no head, from=1-2, to=14-2]
+%   \arrow[dotted, no head, from=1-5, to=14-5]
+%   \arrow[dotted, no head, from=1-7, to=14-7]
+%   \arrow["member"{description}, from=4-1, to=4-3]
+%   \arrow["{==}"{description}, draw=none, from=4-3, to=4-4]
+%   \arrow["instantiates"{description}, from=4-4, to=4-8]
+%   \arrow["{==}"{description}, draw=none, from=6-3, to=6-4]
+%   \arrow["instantiates"{description}, from=6-4, to=4-1]
+%   \arrow["{==}"{description}, draw=none, from=8-3, to=8-4]
+%   \arrow["instantiates"{description}, from=8-4, to=7-6]
+%   \arrow["instantiates"{description}, from=8-4, to=9-6]
+%   \arrow["member"{description}, from=9-1, to=6-3]
+%   \arrow["member"{description}, from=9-1, to=8-3]
+%   \arrow["member"{description}, from=9-1, to=10-3]
+%   \arrow["member"{description}, from=9-1, to=12-3]
+%   \arrow["{==}"{description}, draw=none, from=10-3, to=10-4]
+%   \arrow["instantiates"{description}, from=10-4, to=10-8]
+%   \arrow["{==}"{description}, draw=none, from=12-3, to=12-4]
+%   \arrow["instantiates"{description}, from=12-4, to=12-8]
+% \end{tikzcd}
+% https://q.uiver.app/#q=WzAsMjgsWzAsOCwiUXVkYUludmVydFBhcmFtIl0sWzIsOSwiY2xvdmVyXFxfb3JkZXIiXSxbMyw5LCJRVURBXFxfT1BFTlFDRFxcX0NMT1ZFUlxcX09SREVSIl0sWzcsOSwiT3BlblFDRE9yZGVyIl0sWzIsNywiZ2F1Z2VcXF9vcmRlciJdLFszLDcsIlFVREFcXF9PUEVOUUNEXFxfR0FVR0VcXF9PUkRFUiJdLFs3LDcsIk9wZW5RQ0RPcmRlciJdLFsyLDExLCJnYW1tYVxcX2Jhc2lzIl0sWzMsMTEsIlFVREFcXF9PUEVOUUNEXFxfR0FNTUFcXF9CQVNJUyJdLFs1LDEwLCJOb25SZWxUb09wZW5xY2RCYXNpcyJdLFs1LDEyLCJPcGVucWNkVG9Ob25SZWxCYXNpcyJdLFsyLDUsImRpcmFjXFxfb3JkZXIgIl0sWzMsNSwiUVVEQVxcX09QRU5RQ0RcXF9ESVJBQ1xcX09SREVSIl0sWzAsMywiQ29sb3JTcGlub3JQYXJhbSJdLFsyLDMsImZpZWxkT3JkZXIgIl0sWzMsMywiUVVEQVxcX09QRU5RQ0RcXF9GSUVMRFxcX09SREVSIl0sWzcsMywiT3BlblFDRERpcmFjT3JkZXIiXSxbMSwwXSxbMSwxM10sWzQsMF0sWzQsMTNdLFs2LDBdLFs2LDEzXSxbMCwxLCJwYXJhbVxcIHN0cnVjdHMiXSxbNSwxLCJnYW1tYVxcIGJhc2lzXFwgdHJhbnNmb3JtYXRpb25zIl0sWzcsMSwicmVvcmRlclxcIGNsYXNzZXMiXSxbMiwxLCJtZW1iZXJzIl0sWzMsMSwiZGVmaW5lZFxcIGVudW1zIl0sWzIsMywiaW5zdGFudGlhdGVzIiwxXSxbMSwyLCI9PSIsMSx7InN0eWxlIjp7ImJvZHkiOnsibmFtZSI6Im5vbmUifSwiaGVhZCI6eyJuYW1lIjoibm9uZSJ9fX1dLFswLDEsIm1lbWJlciIsMV0sWzAsNCwibWVtYmVyIiwxXSxbNCw1LCI9PSIsMSx7InN0eWxlIjp7ImJvZHkiOnsibmFtZSI6Im5vbmUifSwiaGVhZCI6eyJuYW1lIjoibm9uZSJ9fX1dLFs1LDYsImluc3RhbnRpYXRlcyIsMV0sWzAsNywibWVtYmVyIiwxXSxbNyw4LCI9PSIsMSx7InN0eWxlIjp7ImJvZHkiOnsibmFtZSI6Im5vbmUifSwiaGVhZCI6eyJuYW1lIjoibm9uZSJ9fX1dLFs4LDksImluc3RhbnRpYXRlcyIsMV0sWzgsMTAsImluc3RhbnRpYXRlcyIsMV0sWzAsMTEsIm1lbWJlciIsMV0sWzExLDEyLCI9PSIsMSx7InN0eWxlIjp7ImJvZHkiOnsibmFtZSI6Im5vbmUifSwiaGVhZCI6eyJuYW1lIjoibm9uZSJ9fX1dLFsxMiwxMywiaW5zdGFudGlhdGVzIiwxXSxbMTMsMTQsIm1lbWJlciIsMV0sWzE0LDE1LCI9PSIsMSx7InN0eWxlIjp7ImJvZHkiOnsibmFtZSI6Im5vbmUifSwiaGVhZCI6eyJuYW1lIjoibm9uZSJ9fX1dLFsxNSwxNiwiaW5zdGFudGlhdGVzIiwxXSxbMTcsMTgsIiIsMSx7InN0eWxlIjp7ImJvZHkiOnsibmFtZSI6ImRvdHRlZCJ9LCJoZWFkIjp7Im5hbWUiOiJub25lIn19fV0sWzE5LDIwLCIiLDEseyJzdHlsZSI6eyJib2R5Ijp7Im5hbWUiOiJkb3R0ZWQifSwiaGVhZCI6eyJuYW1lIjoibm9uZSJ9fX1dLFsyMSwyMiwiIiwxLHsic3R5bGUiOnsiYm9keSI6eyJuYW1lIjoiZG90dGVkIn0sImhlYWQiOnsibmFtZSI6Im5vbmUifX19XV0=
+% \begin{tikzcd}
+%   & {} &&& {} && {} \\
+%   {\head{param\ structs}} && \head{members} & \begin{array}{c} \head{defined\ enum\ constants} \\ \code{<include/enum\_quda.h>} \end{array} && \begin{array}{c} \head{gamma\ basis\ transformations} \\ \code{include/kernels/} \\ \code{<copy\_color\_spinor.cuh>} \end{array} && \begin{array}{c} \head{reorder\ classes} \\ \code{include/} \end{array} \\
+%   \\
+%   \begin{array}{c} \edge{ColorSpinorParam} \\ \edge{<lib/color\_spinor\_field.cpp>} \end{array} && {\edge{fieldOrder}} & {\edge{QUDA\_OPENQCD\_FIELD\_ORDER}} &&&& \begin{array}{c} \edge{OpenQCDDiracOrder} \\ {\code{<color\_spinor\_field\_order.h>}} \end{array} \\ %
+%   \\
+%   && {\edge{dirac\_order}} & {\edge{QUDA\_OPENQCD\_DIRAC\_ORDER}} \\
+%   \\
+%   && {\edge{gauge\_order}} & {\edge{QUDA\_OPENQCD\_GAUGE\_ORDER}} &&&& \begin{array}{c} \edge{OpenQCDOrder} \\ {\code{<gauge\_field\_order.h>}} \end{array} \\ % gauge\_field\_order.h
+%   \begin{array}{c} \edge{QudaInvertParam} \\ \edge{<include/quda.h>} \end{array}  \\
+%   && {\edge{clover\_order}} & {\edge{QUDA\_OPENQCD\_CLOVER\_ORDER}} &&&& \begin{array}{c} \edge{OpenQCDOrder} \\ {\code{<clover\_field\_order.h>}} \end{array} \\ % clover\_field\_order.h
+%   &&&&& \edge{NonRelToOpenqcdBasis} \\
+%   && {\edge{gamma\_basis}} & {\edge{QUDA\_OPENQCD\_GAMMA\_BASIS}} \\
+%   &&&&& \edge{OpenqcdToNonRelBasis} \\
+%   & {} &&& {} && {}
+%   \arrow[dotted, no head, from=1-2, to=14-2]
+%   \arrow[dotted, no head, from=1-5, to=14-5]
+%   \arrow[dotted, no head, from=1-7, to=14-7]
+%   \arrow["member"{description}, from=4-1, to=4-3]
+%   \arrow["{==}"{description}, draw=none, from=4-3, to=4-4]
+%   \arrow["instantiates"{description}, from=4-4, to=4-8]
+%   \arrow["{==}"{description}, draw=none, from=6-3, to=6-4]
+%   \arrow["instantiates"{description}, from=6-4, to=4-1]
+%   \arrow["{==}"{description}, draw=none, from=8-3, to=8-4]
+%   \arrow["instantiates"{description}, from=8-4, to=8-8]
+%   \arrow["member"{description}, from=9-1, to=6-3]
+%   \arrow["member"{description}, from=9-1, to=8-3]
+%   \arrow["member"{description}, from=9-1, to=10-3]
+%   \arrow["member"{description}, from=9-1, to=12-3]
+%   \arrow["{==}"{description}, draw=none, from=10-3, to=10-4]
+%   \arrow["instantiates"{description}, from=10-4, to=10-8]
+%   \arrow["{==}"{description}, draw=none, from=12-3, to=12-4]
+%   \arrow["instantiates"{description}, from=12-4, to=11-6]
+%   \arrow["instantiates"{description}, from=12-4, to=13-6]
+% \end{tikzcd}
+% https://q.uiver.app/#q=WzAsMjgsWzAsOCwiUXVkYUludmVydFBhcmFtIl0sWzIsOSwiY2xvdmVyXFxfb3JkZXIiXSxbMyw5LCJRVURBXFxfT1BFTlFDRFxcX0NMT1ZFUlxcX09SREVSIl0sWzUsOSwiT3BlblFDRE9yZGVyIl0sWzIsNywiZ2F1Z2VcXF9vcmRlciJdLFszLDcsIlFVREFcXF9PUEVOUUNEXFxfR0FVR0VcXF9PUkRFUiJdLFs1LDcsIk9wZW5RQ0RPcmRlciJdLFsyLDEzLCJnYW1tYVxcX2Jhc2lzIl0sWzMsMTMsIlFVREFcXF9PUEVOUUNEXFxfR0FNTUFcXF9CQVNJUyJdLFs1LDEyLCJOb25SZWxUb09wZW5xY2RCYXNpcyJdLFs1LDE0LCJPcGVucWNkVG9Ob25SZWxCYXNpcyJdLFsyLDUsImRpcmFjXFxfb3JkZXIgIl0sWzMsNSwiUVVEQVxcX09QRU5RQ0RcXF9ESVJBQ1xcX09SREVSIl0sWzAsMywiQ29sb3JTcGlub3JQYXJhbSJdLFsyLDMsImZpZWxkT3JkZXIgIl0sWzMsMywiUVVEQVxcX09QRU5RQ0RcXF9GSUVMRFxcX09SREVSIl0sWzUsMywiT3BlblFDRERpcmFjT3JkZXIiXSxbMSwwXSxbMSwxNV0sWzQsMF0sWzQsMTVdLFs2LDBdLFs2LDE1XSxbMCwxLCJwYXJhbVxcIHN0cnVjdHMiXSxbNSwxMSwiZ2FtbWFcXCBiYXNpc1xcIHRyYW5zZm9ybWF0aW9ucyJdLFs1LDEsInJlb3JkZXJcXCBjbGFzc2VzIl0sWzIsMSwibWVtYmVycyJdLFszLDEsImRlZmluZWRcXCBlbnVtcyJdLFsyLDMsImluc3RhbnRpYXRlcyIsMV0sWzEsMiwiPT0iLDEseyJzdHlsZSI6eyJib2R5Ijp7Im5hbWUiOiJub25lIn0sImhlYWQiOnsibmFtZSI6Im5vbmUifX19XSxbMCwxLCJtZW1iZXIiLDFdLFswLDQsIm1lbWJlciIsMV0sWzQsNSwiPT0iLDEseyJzdHlsZSI6eyJib2R5Ijp7Im5hbWUiOiJub25lIn0sImhlYWQiOnsibmFtZSI6Im5vbmUifX19XSxbNSw2LCJpbnN0YW50aWF0ZXMiLDFdLFswLDcsIm1lbWJlciIsMV0sWzcsOCwiPT0iLDEseyJzdHlsZSI6eyJib2R5Ijp7Im5hbWUiOiJub25lIn0sImhlYWQiOnsibmFtZSI6Im5vbmUifX19XSxbOCw5LCJpbnN0YW50aWF0ZXMiLDFdLFs4LDEwLCJpbnN0YW50aWF0ZXMiLDFdLFswLDExLCJtZW1iZXIiLDFdLFsxMSwxMiwiPT0iLDEseyJzdHlsZSI6eyJib2R5Ijp7Im5hbWUiOiJub25lIn0sImhlYWQiOnsibmFtZSI6Im5vbmUifX19XSxbMTIsMTMsImluc3RhbnRpYXRlcyIsMV0sWzEzLDE0LCJtZW1iZXIiLDFdLFsxNCwxNSwiPT0iLDEseyJzdHlsZSI6eyJib2R5Ijp7Im5hbWUiOiJub25lIn0sImhlYWQiOnsibmFtZSI6Im5vbmUifX19XSxbMTUsMTYsImluc3RhbnRpYXRlcyIsMV0sWzE3LDE4LCIiLDEseyJzdHlsZSI6eyJib2R5Ijp7Im5hbWUiOiJkb3R0ZWQifSwiaGVhZCI6eyJuYW1lIjoibm9uZSJ9fX1dLFsxOSwyMCwiIiwxLHsic3R5bGUiOnsiYm9keSI6eyJuYW1lIjoiZG90dGVkIn0sImhlYWQiOnsibmFtZSI6Im5vbmUifX19XSxbMjEsMjIsIiIsMSx7InN0eWxlIjp7ImJvZHkiOnsibmFtZSI6ImRvdHRlZCJ9LCJoZWFkIjp7Im5hbWUiOiJub25lIn19fV1d
+\begin{tikzcd}
+  & {} &&& {} && {} \\
+  \head{param\ structs} && \head{members} & \head{defined\ enum\ constants} && \head{reorder\ classes} \\
+  \\
+  \edge{ColorSpinorParam} && \edge{fieldOrder} & \edge{QUDA\_OPENQCD\_FIELD\_ORDER} && \edge{OpenQCDDiracOrder} \\
+  \\
+  && \edge{dirac\_order } & \edge{QUDA\_OPENQCD\_DIRAC\_ORDER} \\
+  \\
+  && \edge{gauge\_order} & \edge{QUDA\_OPENQCD\_GAUGE\_ORDER} && \edge{OpenQCDOrder} \\
+  \edge{QudaInvertParam} \\
+  && \edge{clover\_order} & \edge{QUDA\_OPENQCD\_CLOVER\_ORDER} && \edge{OpenQCDOrder} \\
+  \\
+  &&&&& \head{gamma\ basis\ transformations} \\
+  &&&&& \edge{NonRelToOpenqcdBasis} \\
+  && \edge{gamma\_basis} & \edge{QUDA\_OPENQCD\_GAMMA\_BASIS} \\
+  &&&&& \edge{OpenqcdToNonRelBasis} \\
+  & {} &&& {} && {}
+  \arrow[dotted, no head, from=1-2, to=16-2]
+  \arrow[dotted, no head, from=1-5, to=16-5]
+  \arrow[dotted, no head, from=1-7, to=16-7]
+  \arrow["member"{description}, from=4-1, to=4-3]
+  \arrow["{==}"{description}, draw=none, from=4-3, to=4-4]
+  \arrow["instantiates"{description}, from=4-4, to=4-6]
+  \arrow["{==}"{description}, draw=none, from=6-3, to=6-4]
+  \arrow["instantiates"{description}, from=6-4, to=4-1]
+  \arrow["{==}"{description}, draw=none, from=8-3, to=8-4]
+  \arrow["instantiates"{description}, from=8-4, to=8-6]
+  \arrow["member"{description}, from=9-1, to=6-3]
+  \arrow["member"{description}, from=9-1, to=8-3]
+  \arrow["member"{description}, from=9-1, to=10-3]
+  \arrow["member"{description}, from=9-1, to=14-3]
+  \arrow["{==}"{description}, draw=none, from=10-3, to=10-4]
+  \arrow["instantiates"{description}, from=10-4, to=10-6]
+  \arrow["{==}"{description}, draw=none, from=14-3, to=14-4]
+  \arrow["instantiates"{description}, from=14-4, to=13-6]
+  \arrow["instantiates"{description}, from=14-4, to=15-6]
+\end{tikzcd}
+\end{document}

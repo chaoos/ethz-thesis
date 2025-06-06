@@ -1,0 +1,42 @@
+\documentclass{standalone}
+
+\usepackage{tikz}
+\usepackage{amsmath}
+\usetikzlibrary{automata, positioning, arrows}
+
+% definition of all the colors
+\usepackage{xcolor}
+\input{preamble/colors.tex}
+\input{preamble/commands.tex}
+
+\begin{document}
+
+\begin{tikzpicture}
+
+\tikzset{
+  ->, % makes the edges directed
+  >=latex, % makes the arrow heads bold
+  node distance=6cm, % specifies the minimum distance between two nodes. Change if necessary.
+  every state/.style={thick, fill=gray!10}, % sets the properties for each ’state’ node
+  initial text=\texttt{alloc\_wsd()}, % sets the text that appears on the start arrow
+}
+
+\node[state, initial]          (1) {\shortstack{\texttt{CPU\_NEWER} \\ \texttt{pointer = nullptr} \\ protection: off}};
+\node[state, below left  of=1] (2) {\shortstack{\texttt{IN\_SYNC}   \\ \texttt{pointer = <addr>}  \\ protection: on }};
+\node[state, below right of=1] (3) {\shortstack{\texttt{GPU\_NEWER} \\ \texttt{pointer = <addr>}  \\ protection: on }};
+\node[state, below right of=2] (4) {\shortstack{\texttt{CPU\_NEWER} \\ \texttt{pointer = <addr>}  \\ protection: off}};
+\draw (1) edge[loop above] node{\shortstack{CPU: r/w/rw}}    (1)
+      (2) edge[loop left]  node{\shortstack{GPU: \\ r}}         (2)
+      (3) edge[loop right] node{\shortstack{GPU: \\ r/w/rw}} (3)
+      (4) edge[loop below] node{\shortstack{CPU: r/w/rw}}    (4)
+      (1) edge[sloped, anchor=center, above]             node{\shortstack{GPU: r}}         (2)
+      (1) edge[sloped, anchor=center, above]             node{\shortstack{GPU: w/rw}}        (3)
+      (2) edge[above]                                    node{\shortstack{GPU: w/rw}}        (3)
+      (2) edge[sloped, anchor=center, below, bend right] node{\shortstack{CPU: r/w/rw}} (4)
+      (3) edge[sloped, anchor=center, below, bend left]  node{\shortstack{CPU: r/w/rw}} (4)
+      (4) edge[sloped, anchor=center, above, bend right] node{\shortstack{GPU: r}}         (2)
+      (4) edge[sloped, anchor=center, above, bend left]  node{\shortstack{GPU: w/rw}}        (3);
+
+\end{tikzpicture}
+
+\end{document}

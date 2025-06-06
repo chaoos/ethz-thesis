@@ -1,0 +1,50 @@
+\documentclass{standalone}
+
+\usepackage{tikz}
+\usepackage{amsmath}
+\usepackage{makecell}%
+
+\usetikzlibrary{arrows}
+\usetikzlibrary{decorations.pathreplacing}
+
+% definition of all the colors
+\usepackage{xcolor}
+\input{preamble/colors.tex}
+\input{preamble/commands.tex}
+
+\begin{document}
+
+\begin{tikzpicture}
+
+%\draw[help lines] (-0.1,-2.1) grid[step=.5] (22.1,2.1);
+
+\draw [decorate,decoration={brace,amplitude=5pt,raise=4ex}]
+  (1,0.8) -- (11,0.8) node[midway,yshift=3em]{Spinor field 1};
+
+\draw [decorate,decoration={brace,amplitude=5pt,raise=4ex}]
+  (11,0.8) -- (21,0.8) node[midway,yshift=3em]{Spinor field 2};
+
+\draw[thick,|-|] (1,1) -- (9,1);
+\draw[thick,|-|] (9,1) -- (11,1);
+\draw[thin,<-] (1,0.8) --  node[below=1mm]{\makecell[c]{\code{0xA}\\base pointer 1}} (1,0.5);
+\draw[thin,<-] (9,0.8) --  node[below=1mm]{\makecell[c]{\code{0xA+NSPIN}}} (9,0.5);
+\draw[thin,<-] (11,0.8) --  node[below=1mm]{\makecell[c]{\\\code{0xA+NSPIN+sizeof(spinor\_info)}\\base pointer 2}} (11,-0.1);
+
+\draw [decorate,decoration={brace,amplitude=5pt,mirror,raise=4ex}]
+  (9,-0.8) -- (11,-0.8) node[midway,yshift=-3em]{\code{spinor\_info} struct 1};
+
+\draw[thick,|-|] (11,1) -- (19,1);
+\draw[thick,|-|] (19,1) -- (21,1);
+
+\draw [decorate,decoration={brace,amplitude=5pt,mirror,raise=4ex}]
+  (19,-0.1) -- (21,-0.1) node[midway,yshift=-3em]{\code{spinor\_info} struct 2};
+
+\draw[thin,<-] (21,0.8) --  node[below=1mm]{\makecell[c]{\code{0xA+2*(NSPIN+sizeof(spinor\_info))}\\base pointer 3}} (21,0.5);
+
+%\draw[thin,<-] (17,0.8) --  node[below=1mm]{\makecell[c]{0xA+2*NSPIN}} (17,0.5);
+
+%\draw[draw=cred,thin,<-] (4,0.8) --  node[below=1mm] {\textcolor{cred}{access}} (4,0.5);
+
+\end{tikzpicture}
+
+\end{document}

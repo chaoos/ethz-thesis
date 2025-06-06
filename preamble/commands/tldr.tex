@@ -1,0 +1,12 @@
+
+% summary of each paragraph
+
+\usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
+
+% leavemode: fixes that section titles stay on a page bottom alone.
+\def\tldr#1{\leavevmode\todo{TL;DR: #1}}
+%\def\tldr#1{}
+
+\newcommand{\readit}[1]{ \leavevmode\todo[color=blue!40]{This second/chapter was proof-read \num{#1} times.}}
+%\newcommand{\readit}[1]{ }
+

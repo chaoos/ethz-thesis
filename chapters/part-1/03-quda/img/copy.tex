@@ -1,0 +1,83 @@
+\documentclass{standalone}
+\usepackage{quiver}
+\usepackage[most]{tcolorbox}
+\usepackage{xcolor}
+
+\input{preamble/colors.tex}
+\input{preamble/commands.tex}
+\input{preamble/symbols.tex}
+
+\newcommand{\edge}[1]{\fontfamily{qcr}\selectfont #1}
+\newcommand{\head}[1]{\textbf{\underline{#1}}}
+
+\usetikzlibrary{fit, positioning, decorations.pathreplacing, shapes.geometric, arrows}
+
+\tikzstyle{process} = [rectangle,
+minimum width=2cm,
+minimum height=0.6cm,
+text centered,
+align=center,
+draw=black,
+fill=codebgcolor!12]
+
+\tikzstyle{arrow} = [thick,->,>=stealth]
+
+\begin{document}
+
+\begin{tikzpicture}[node distance=0.2cm, auto]
+
+\node (dstsrc) [process] {\edge{dst = src}};
+\node (dstop) [process, below=of dstsrc] {\edge{dst.operator=(src)}};
+\node (dstcopy) [process, below=of dstop] {\edge{dst.copy(src)}};
+
+\node (copy1) [process, right=of dstcopy, xshift=9cm] {\edge{copyGenericColorSpinor(dst, src)}};
+\node (copy2) [process, below=of copy1] {\edge{copyGenericColorSpinorDD(...)}};
+\node (copy3) [process, below=of copy2] {\edge{CopyGenericColorSpinor<3, double, double>(...)}};
+\node (copy4) [process, below=of copy3] {\edge{copyGenericColorSpinor<4, 3>(...)}};
+\node (copy5) [process, below=of copy4] {\edge{genericCopyColorSpinor<4, 3>(...)}};
+\node (copy6) [process, below=of copy5] {\edge{genericCopyColorSpinor<4, 3, SrcOrderClass>(...)}};
+\node (copy7) [process, below=of copy6] {\edge{CopyColorSpinor<4, 3, SrcOrderClass, DstOrderClass, ...>(...)}};
+\node (copy8) [process, below=of copy7] {\edge{.apply(...)}};
+\node (copy9) [process, below=of copy8] {\edge{\textbf{Arg} = CopyColorSpinorArg<GammaBasisTransf>(...)}};
+
+
+\node (A1) [minimum height=0.6cm,below=of dstcopy] {};
+\node (A2) [minimum height=0.6cm,below=of A1] {};
+\node (A3) [minimum height=0.6cm,below=of A2] {};
+\node (A4) [minimum height=0.6cm,below=of A3] {};
+\node (A5) [minimum height=0.6cm,below=of A4] {};
+\node (A6) [minimum height=0.6cm,below=of A5] {};
+
+\node (tune1) [process, below=of A6] {\edge{TunableKernel2D\_base.launch<CopyColorSpinor\_, ...>(..., \textbf{Arg});}};
+\node (tune2) [process, below=of tune1] {\edge{.launch\_device<CopyColorSpinor\_>(..., \textbf{Arg})}};
+\node (tune3) [process, below=of tune2] {\edge{...}};
+
+
+\node[draw, dashed, inner sep=10pt, label={below:\head{Object specific}: \code{ColorSpinorField}}] (group) 
+  [fit={(dstsrc) (dstop) (dstcopy)}] {};
+
+\node[draw, dashed, inner sep=10pt, label={above:\head{Instantiation}}] (group) 
+  [fit={(copy1) (copy2) (copy3) (copy4) (copy5) (copy6) (copy7) (copy8) (copy9)}] {};
+
+\node[draw, dashed, inner sep=10pt, label={above:\head{Tuning}}] (group) 
+  [fit={(tune1) (tune2) (tune3)}] {};
+
+\draw [arrow] (dstsrc) -- (dstop);
+\draw [arrow] (dstop) -- (dstcopy);
+\draw [arrow] (dstcopy) -- (copy1);
+
+\draw [arrow] (copy1) -- (copy2);
+\draw [arrow] (copy2) -- (copy3);
+\draw [arrow] (copy3) -- (copy4);
+\draw [arrow] (copy4) -- (copy5);
+\draw [arrow] (copy5) -- (copy6);
+\draw [arrow] (copy6) -- (copy7);
+\draw [arrow] (copy7) -- (copy8);
+\draw [arrow] (copy8) -- (copy9);
+
+\draw [arrow] (copy8) -- (tune1);
+\draw [arrow] (tune1) -- (tune2);
+\draw [arrow] (tune2) -- (tune3);
+
+\end{tikzpicture}
+\end{document}

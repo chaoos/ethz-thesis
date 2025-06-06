@@ -1,0 +1,70 @@
+\documentclass[tikz]{standalone}
+
+\usepackage{tikz}
+\usepackage{ifthen}
+\pgfdeclarelayer{back}
+\pgfsetlayers{back,main}
+
+\input{preamble/colors}
+
+\colorlet{colorL0}{myorange}
+\colorlet{colorL1}{mygreen}
+\colorlet{colorL2}{myred}
+\colorlet{colorL3}{mypurple}
+
+\makeatletter
+\pgfkeys{%
+  /tikz/on layer/.code={
+    \def\tikz@path@do@at@end{\endpgfonlayer\endgroup\tikz@path@do@at@end}%
+    \pgfonlayer{#1}\begingroup%
+  }%
+}
+\makeatother
+
+\begin{document}
+
+\begin{tikzpicture}
+
+\tikzstyle{every node}=[font=\tiny, text=gray]
+%\draw[black, thick] (-0.1,-0.1) rectangle (4.1,4.1);
+
+\foreach \x in {0,...,7} {
+    \foreach \y in {0,...,7} {
+        \coordinate (A1) at (\x*0.5+0.0,3.5-\y*0.5);
+        \coordinate (B1) at (\x*0.5+0.5,4.0-\y*0.5);
+
+        \ifthenelse{\x=0 \OR \y=0}{
+            \draw[color=mygray, fill=colorL0!10, very thin] (A1) rectangle (B1)
+                node[midway, color=colorL0]{$C_{\x\y}$};
+        }{
+            \ifthenelse{\x=1 \OR \y=1}{
+                \draw[color=mygray, fill=colorL1!10, very thin] (A1) rectangle (B1)
+                    node[midway, color=colorL1]{$C_{\x\y}$};
+            }{
+                \ifthenelse{\x=2 \OR \y=2}{
+                    \draw[color=mygray, fill=colorL2!10, very thin] (A1) rectangle (B1)
+                        node[midway, color=colorL2]{$C_{\x\y}$};
+                }{
+                    \ifthenelse{\x=3 \OR \y=3}{
+                        \draw[color=mygray, fill=colorL3!10, very thin] (A1) rectangle (B1)
+                            node[midway, color=colorL3]{$C_{\x\y}$};
+                    }{
+                        \ifthenelse{\x=5 \AND \y=5}{
+                            \draw[color=white] (A1) rectangle (B1)
+                                node[midway, color=mygray]{$\ddots$};
+                        }{
+                            \ifthenelse{\x=6 \AND \y=6}{
+                                \draw[color=white] (A1) rectangle (B1)
+                                    node[midway, color=mygray]{$\ddots$};
+                            };
+                        };
+                    };
+                };
+            };
+        };
+    };
+};
+
+\end{tikzpicture}
+
+\end{document}

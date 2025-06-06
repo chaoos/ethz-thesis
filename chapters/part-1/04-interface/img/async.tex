@@ -1,0 +1,70 @@
+\documentclass{standalone}
+\usepackage{quiver}
+\usepackage[many]{tcolorbox}
+
+\input{preamble/colors.tex}
+\input{preamble/symbols.tex}
+
+\newcommand{\edge}[1]{
+  \fbox{%
+    \makebox[60pt]{%
+      \parbox[c][30pt][c]{60pt}{%
+        \centering
+        #1
+      }%
+    }%
+  }
+}
+
+\newcommand{\rank}[1]{
+\begin{tcolorbox}[width=.5\linewidth, halign=center, colback=gray!20, width=60pt, height=50pt, sharp corners=all]
+#1
+\end{tcolorbox}
+}
+
+\newcommand{\mthread}[1]{
+\begin{tcolorbox}[width=.5\linewidth, halign=center, colback=cred!30, width=60pt, height=50pt]
+#1
+\end{tcolorbox}
+}
+
+\newcommand{\wthread}[1]{
+\begin{tcolorbox}[width=.5\linewidth, halign=center, colback=cblue!30, width=60pt, height=50pt]
+#1
+\end{tcolorbox}
+}
+
+\newcommand{\head}[1]{\textbf{\underline{#1}}}
+
+\begin{document}
+% https://q.uiver.app/#q=WzAsMjgsWzEsMiwiTVBJXFwgcmFua1xcXFwwIl0sWzUsNCwid29ya2VyXFxcXHRocmVhZFxcXFwwIl0sWzAsNV0sWzgsNV0sWzQsMF0sWzUsOCwid29ya2VyXFxcXHRocmVhZFxcXFwwIl0sWzEsMTAsIk1QSVxcIHJhbmtcXFxcMCJdLFs0LDExXSxbOCw3XSxbMCw3XSxbMiwxLCJvcGVuUXhEIl0sWzYsMSwiUVVEQSJdLFs3LDQsIndvcmtlclxcXFx0aHJlYWRcXFxcTi0xIl0sWzMsMiwiTVBJXFwgcmFua1xcXFxOLTEiXSxbNyw4LCJ3b3JrZXJcXFxcdGhyZWFkXFxcXE4tMSJdLFszLDEwLCJNUElcXCByYW5rXFxcXE4tMSJdLFsyLDIsIi4uLiJdLFs2LDQsIi4uLiJdLFs2LDgsIi4uLiJdLFsyLDEwLCIuLi4iXSxbMiw2LCJjb21tdW5pY2F0b3JcXCAxXFxcXHdvcmtcXCBAXFwgQ1BVIl0sWzYsNiwiY29tbXVuaWNhdG9yXFwgMlxcXFx3b3JrXFwgQFxcIEdQVSJdLFsxLDQsIm1haW5cXFxcdGhyZWFkXFxcXDAiXSxbMyw0LCJtYWluXFxcXHRocmVhZFxcXFxOLTEiXSxbMSw4LCJtYWluXFxcXHRocmVhZFxcXFwwIl0sWzMsOCwibWFpblxcXFx0aHJlYWRcXFxcTi0xIl0sWzIsNCwiLi4uIl0sWzIsOCwiLi4uIl0sWzAsMSwic3Bhd24iLDEseyJsYWJlbF9wb3NpdGlvbiI6MzAsInN0eWxlIjp7ImJvZHkiOnsibmFtZSI6ImRhc2hlZCJ9fX1dLFsyLDMsIiIsMCx7InN0eWxlIjp7ImJvZHkiOnsibmFtZSI6ImRvdHRlZCJ9LCJoZWFkIjp7Im5hbWUiOiJub25lIn19fV0sWzEsNV0sWzUsNiwiam9pbiIsMSx7ImxhYmVsX3Bvc2l0aW9uIjo3MCwic3R5bGUiOnsiYm9keSI6eyJuYW1lIjoiZGFzaGVkIn19fV0sWzQsNywiIiwwLHsic3R5bGUiOnsiYm9keSI6eyJuYW1lIjoiZG90dGVkIn0sImhlYWQiOnsibmFtZSI6Im5vbmUifX19XSxbOSw4LCIiLDIseyJzdHlsZSI6eyJib2R5Ijp7Im5hbWUiOiJkb3R0ZWQifSwiaGVhZCI6eyJuYW1lIjoibm9uZSJ9fX1dLFsxMywxMiwic3Bhd24iLDEseyJsYWJlbF9wb3NpdGlvbiI6MzAsInN0eWxlIjp7ImJvZHkiOnsibmFtZSI6ImRhc2hlZCJ9fX1dLFsxMiwxNF0sWzE0LDE1LCJqb2luIiwxLHsibGFiZWxfcG9zaXRpb24iOjcwLCJzdHlsZSI6eyJib2R5Ijp7Im5hbWUiOiJkYXNoZWQifX19XSxbMTMsMjNdLFswLDIyXSxbMjIsMjRdLFsyNCw2XSxbMjMsMjVdLFsyNSwxNV1d
+\begin{tikzcd}
+  &&&& {} \\
+  && \head{openQxD} &&&& \head{QUDA} \\
+  & \begin{array}{c} \rank{MPI\\rank\\0} \end{array} & {\dots} & \begin{array}{c} \rank{MPI\\rank\\N-1} \end{array} \\
+  \\
+  & \begin{array}{c} \mthread{main\\thread\\0} \end{array} & {\dots} & \begin{array}{c} \mthread{main\\thread\\N-1} \end{array} && \begin{array}{c} \wthread{worker\\thread\\0} \end{array} & {\dots} & \begin{array}{c} \wthread{worker\\thread\\N-1} \end{array} \\
+  {} &&&&&&&& {} \\
+  && \begin{array}{c} \head{communicator\ 1}\\work\ @\ CPU \end{array} &&&& \begin{array}{c} \head{communicator\ 2}\\work\ @\ GPU \end{array} \\
+  {} &&&&&&&& {} \\
+  & \begin{array}{c} \mthread{main\\thread\\0} \end{array} & {\dots} & \begin{array}{c} \mthread{main\\thread\\N-1} \end{array} && \begin{array}{c} \wthread{worker\\thread\\0} \end{array} & {\dots} & \begin{array}{c} \wthread{worker\\thread\\N-1} \end{array} \\
+  \\
+  & \begin{array}{c} \rank{MPI\\rank\\0} \end{array} & {\dots} & \begin{array}{c} \rank{MPI\\rank\\N-1} \end{array} \\
+  &&&& {}
+  \arrow[dotted, no head, from=1-5, to=12-5]
+  \arrow[from=3-2, to=5-2]
+  \arrow["spawn"{description, pos=0.3}, dashed, from=3-2, to=5-6]
+  \arrow[from=3-4, to=5-4]
+  \arrow["spawn"{description, pos=0.3}, dashed, from=3-4, to=5-8]
+  \arrow[from=5-2, to=9-2]
+  \arrow[from=5-4, to=9-4]
+  \arrow[from=5-6, to=9-6]
+  \arrow[from=5-8, to=9-8]
+  \arrow[dotted, no head, from=6-1, to=6-9]
+  \arrow[dotted, no head, from=8-1, to=8-9]
+  \arrow[from=9-2, to=11-2]
+  \arrow[from=9-4, to=11-4]
+  \arrow["join"{description, pos=0.7}, dashed, from=9-6, to=11-2]
+  \arrow["join"{description, pos=0.7}, dashed, from=9-8, to=11-4]
+\end{tikzcd}
+\end{document}

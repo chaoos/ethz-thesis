@@ -1,0 +1,56 @@
+\documentclass{standalone}
+\usepackage{quiver}
+\usepackage[many]{tcolorbox}
+
+\input{preamble/symbols.tex}
+
+\newcommand{\edge}[1]{
+  \fbox{%
+    \makebox[60pt]{%
+      \parbox[c][30pt][c]{60pt}{%
+        \centering
+        #1
+      }%
+    }%
+  }
+}
+
+\newcommand{\head}[1]{\textbf{\underline{#1}}}
+
+%codebgcolor!12
+%\newcommand{\edge}[1]{#1}
+
+\begin{document}
+% https://q.uiver.app/#q=WzAsMTcsWzUsMiwiTXVsdGlncmlkXFwgMVxcXFxxaGF0LGNzdyxtMCJdLFs3LDUsIkNsb3ZlclxcXFxxaGF0LGNzdyxtMCJdLFs2LDIsIk11bHRpZ3JpZFxcIDJcXFxccWhhdCxjc3csbTAiXSxbNSw2LCJHYXVnZVxcXFxTVSgzKS9VKDMpXFxcXHFoYXQsY3N3LG0wIl0sWzEsNSwiQ2xvdmVyIl0sWzMsNiwiR2F1Z2VcXFxcVSgzKSJdLFsyLDcsIkdhdWdlXFxcXFUoMSkiXSxbMyw3LCJHYXVnZVxcXFxTVSgzKSJdLFsxLDgsInFoYXQiXSxbMyw0LCJEaXJhY1xcXFxvcGVyYXRvciJdLFs1LDQsIkRpcmFjXFxcXG9wZXJhdG9yIl0sWzAsOCwibTAsY3N3Il0sWzQsMV0sWzIsMSwib3BlbnF4ZCJdLFs2LDEsIlFVREEiXSxbNCwwXSxbNCwxMF0sWzMsMSwiZ2VuZXJhdGUiLDIseyJzdHlsZSI6eyJib2R5Ijp7Im5hbWUiOiJkYXNoZWQifX19XSxbNSw0XSxbNiw1XSxbNyw1XSxbOCw2XSxbOCw0XSxbNCwxLCJ0cmFuc2ZlciIsMCx7InN0eWxlIjp7ImJvZHkiOnsibmFtZSI6ImRhc2hlZCJ9fX1dLFs1LDMsInRyYW5zZmVyIl0sWzQsOV0sWzUsOV0sWzEsMTBdLFszLDEwXSxbMTAsMF0sWzEwLDJdLFsxMSw0XSxbMTUsMTYsIiIsMix7InN0eWxlIjp7ImhlYWQiOnsibmFtZSI6Im5vbmUifX19XV0=
+\begin{tikzcd}
+  &&&& {} \\
+  && \head{openQxD} &&&& \head{QUDA} \\
+  &&&&&
+  \begin{array}{c} \edge{Multigrid\\instance 1\\$\hat{q},c_{\text{SW}},m_0$} \end{array} &
+  \begin{array}{c} \edge{Multigrid\\instance 2\\$\hat{q},c_{\text{SW}},m_0$} \end{array} \\
+  \\
+  &&& \begin{array}{c} \edge{Dirac\\operator} \end{array} && \begin{array}{c} \edge{Dirac\\operator} \end{array} \\
+  & \edge{Clover field} &&&&&& \begin{array}{c} \edge{Clover field\\$\hat{q},c_{\text{SW}},m_0$} \end{array} \\
+  &&& \begin{array}{c} \edge{Gauge field\\SU(3)/U(3)} \end{array} && \begin{array}{c} \edge{Gauge field\\SU(3)/U(3)\\$\hat{q},c_{\text{SW}},m_0$} \end{array} \\
+  && \begin{array}{c} \edge{Gauge field\\U(1)} \end{array} & \begin{array}{c} \edge{Gauge field\\SU(3)} \end{array} \\
+  \edge{$m_0,c_{\text{SW}}$} & \edge{$\hat{q}$} \\
+  \\
+  &&&& {}
+  \arrow[dotted, no head, from=1-5, to=11-5]
+  \arrow[from=5-6, to=3-6]
+  \arrow[from=5-6, to=3-7]
+  \arrow[from=6-2, to=5-4]
+  \arrow["transfer", dashed, from=6-2, to=6-8]
+  \arrow[from=6-8, to=5-6]
+  \arrow[from=7-4, to=5-4]
+  \arrow[from=7-4, to=6-2]
+  \arrow["transfer", from=7-4, to=7-6]
+  \arrow[from=7-6, to=5-6]
+  \arrow["generate"', dashed, from=7-6, to=6-8]
+  \arrow[from=8-3, to=7-4]
+  \arrow[from=8-4, to=7-4]
+  \arrow[from=9-1, to=6-2]
+  \arrow[from=9-2, to=6-2]
+  \arrow[from=9-2, to=8-3]
+\end{tikzcd}
+\end{document}

@@ -25,26 +25,26 @@
 % Hyphenation
 \input{preamble/hyphenation}
 
+% Common symbols / abbreviations
+\usepackage{xspace}
+\input{preamble/symbols}
+
 % Finetuning
 \newcounter{dummy}
 \newlength{\abcd}
 
-% Common abbreviations
-\newcommand{\ie}{i.\,e.\xspace}
-\newcommand{\Ie}{I.\,e.\xspace}
-\newcommand{\eg}{e.\,g.\xspace}
-\newcommand{\Eg}{E.\,g.\xspace}
-
 % Handy packages
 \usepackage{csquotes}  % smart quotes
 \usepackage[T1]{fontenc}
-\usepackage{xspace}
 \usepackage{textcomp}
 \usepackage{mparhack}
 \usepackage{relsize}
 
 % Biblatex
 \input{preamble/biblatex}
+
+% Figure placement behavior
+\input{preamble/behavior}
 
 % Redefine cite command to include space before
 % <http://tex.stackexchange.com/questions/11602/>
@@ -53,13 +53,16 @@
 
 % Math stuff
 \usepackage{amsmath}
-%\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{amssymb}
 \usepackage{mathtools}
 \usepackage{isomath}
+\usepackage{physics}
 
 % Figures, tables, and captions
 \usepackage{tabularx}
 \usepackage{ltablex}
+\usepackage{multirow}
 \setlength{\extrarowheight}{3pt}
 \newcommand{\tableheadline}[1]{\multicolumn{1}{c}{\spacedlowsmallcaps{#1}}}
 \newcommand{\myfloatalign}{\centering}
@@ -112,6 +115,7 @@
 \usetikzlibrary{decorations.markings}
 \usetikzlibrary{decorations}
 \usetikzlibrary{positioning}
+\usetikzlibrary{automata, arrows}
 
 
 % Circled numbers
@@ -135,6 +139,14 @@
 \renewcommand*{\subsubsectionautorefname}{Section}
 \providecommand{\subfigureautorefname}{\figureautorefname}%
 \usepackage{cleveref}
+\newcommand*\crefcite[1]{Ref.~\cite{#1}}
+
+% CC-by-SA 4.0 License
+\usepackage[
+    type={CC},
+    modifier={by-nc-sa},
+    version={4.0},
+]{doclicense}
 
 % Acronyms
 \PassOptionsToPackage{printonlyused}{acronym}
@@ -142,6 +154,15 @@
 
 % List items
 \usepackage{enumitem}
+
+% Define a new list environment "requirements" with labels R1, R2, …
+\newlist{requirements}{enumerate}{1}
+\setlist[requirements]{
+  label=(R\arabic*),   % Label each item as R1, R2, etc.
+  ref=(R\arabic*),     % Use the same format when referencing
+  leftmargin=*,        % Adjust left margin (or set a fixed value)
+  align=left           % Ensure the labels are left-aligned
+}
 
 % Load classicthesis style
 %\usepackage{scrhack}
@@ -175,42 +196,10 @@
 %]{MinionPro}
 %\linespread{1.06}
 
-%
-% Customize colors
-%
-\definecolor{chapter-color}{cmyk}{1, 0.50, 0, 0.25}
-\definecolor{link-color}{cmyk}{1, 0.50, 0, 0.25}
-\definecolor{cite-color}{cmyk}{0, 0.7, 0.9, 0.2}
-\definecolor{codegreen}{rgb}{0,0.6,0}
-\definecolor{codegray}{rgb}{0.5,0.5,0.5}
-\definecolor{codepurple}{rgb}{0.58,0,0.82}
-\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
-\definecolor{codebgcolor}{RGB}{129, 139, 152}
-\definecolor{codehighlightcolor}{RGB}{255, 230, 153}
-%\definecolor{codegreen}{RGB}{0, 153, 0}
-%\definecolor{codegray}{RGB}{127, 127, 127}
-\definecolor{codeblue}{RGB}{102, 214, 237}
-\definecolor{codekeyword}{RGB}{249, 36, 114}
-\definecolor{codecomment}{RGB}{127, 127, 127}
-\definecolor{backcolor}{RGB}{242, 242, 235}
-\definecolor{linkcolor}{RGB}{102, 0, 0}
-\definecolor{corange}{RGB}{255, 70, 0}
-\definecolor{cyellow}{RGB}{209, 153, 0}
-\definecolor{cblue}{RGB}{64, 128, 255}
-\definecolor{cbrown}{RGB}{153, 102, 51}
-\definecolor{cpink}{RGB}{255, 0, 255}
-\definecolor{cred}{RGB}{255, 64, 0}
-\definecolor{cgreen}{RGB}{0, 191, 0}
-\definecolor{clightblue}{RGB}{191, 217, 255}
-\definecolor{cturquois}{RGB}{0, 255, 255}
-\definecolor{cpurple}{RGB}{128, 0, 255}
-\definecolor{clightgreen}{RGB}{175, 255, 175}
-\definecolor{clightgray}{RGB}{211, 211, 211}
-\definecolor{clightpink}{RGB}{255, 175, 255}
-\definecolor{cdarkblue}{RGB}{0, 0, 255}
-\definecolor{cdarkred}{RGB}{255, 0, 0}
-\definecolor{cdarkgreen}{RGB}{0, 255, 0}
+\usepackage{makecell}%
 
+% Customize colors
+\input{preamble/colors}
 
 % Hyperref
 \usepackage{bookmark}
@@ -283,23 +272,11 @@
   \endgroup
 }
 
-% Inline code
-% see https://tex.stackexchange.com/a/568900
-\usepackage[most]{tcolorbox}
-\tcbset{
-  on line,
-  boxsep=2pt,
-  left=0pt,
-  right=0pt,
-  top=0pt,
-  bottom=0pt,
-  colframe=white,
-  colback=codebgcolor!12,
-  highlight math style={enhanced}
-}
-%\def\code#1{\tcbox{\texttt{#1}}}
-\def\code#1{\tcbox{\fontfamily{qcr}\selectfont #1 }}
-%\def\code#1{\tcbox{\mintinline[fontsize=\small]{text}{#1}}} % creates a intermediate file for EVERY \code command
+% Footnotes in tables
+\usepackage{threeparttable}
+
+% Custom commands
+\input{preamble/commands}
 
 % Put pages on A4 w/ crop marks
 %\usepackage[a4,center,cam]{crop}
@@ -334,7 +311,38 @@
 %%%%%%%%%%%%%%%%%%%%%%%
 
 % for includestandalone and its tikz pictures
-\usepackage{standalone}
+\usepackage[mode=buildnew]{standalone}
 
 % To add code listing into footnotes, use \cprotect\footnote{blabla}
 %\usepackage{cprotect}
+
+%%%%%%%%%%%%%%%%
+% amsthm BEGIN %
+%%%%%%%%%%%%%%%%
+
+\usepackage{amsthm}
+\theoremstyle{plain} % boldface title, italicized body.
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}{Theorem}[section]
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{example}{Example}[section]
+\newtheorem{conj}{Conjecture}[section]
+\newtheoremstyle{convention}% name of the style to be used
+  {\topsep}% measure of space to leave above the theorem. E.g.: 3pt
+  {\topsep}% measure of space to leave below the theorem. E.g.: 3pt
+  {}% name of font to use in the body of the theorem
+  {0pt}% measure of space to indent
+  {\bfseries}% name of head font
+  {.}% punctuation between head and body
+  { }% space after theorem head; " " = normal interword space
+  {\thmnote{#3}}
+\theoremstyle{convention} % boldface title, roman body.
+\newtheorem*{convention}{} % * creates a theorem environment that is not numbered and not labeled
+\theoremstyle{remark} % italicized title, roman body.
+\newtheorem*{remark}{Remark} % * creates a theorem environment that is not numbered
+
+%%%%%%%%%%%%%%%%
+% amsthm END   %
+%%%%%%%%%%%%%%%%

@@ -1,33 +1,52 @@
 %!TEX root = ../../../thesis.tex
 
 \chapter{Developing in openQxD}
-\label{ch:p1:solver}
+\label{ch:p1:develop}
+
+% \dictum[Linus Torvalds]{%
+%   Talk is cheap. Show me the code. }%
+% \vskip 1em
+
+\dictum[Donald Knuth]{%
+  Programming is the art of telling another human being what one wants the computer to do. }%
+\vskip 1em
 
 \worktodo{Restructure a bit, separate into: general description of the interface (essentially the previous chapter) (side openqxd, side QUDA), how is the interface integrated into openqxd, how to port an existing program, how to write a new program}
 
-This section describes how to port an existing program within the framework of openQxD to leverage the solvers available through the new interface to QUDA from the viewpoint of an openQxD developer.
+\readit{1}
 
-% A main program in openQxD that wants to leverage QUDAs solvers may be changed in the following way.
-In order to use QUDA in openQxD, we require to include the necessary header files that provide the interface to QUDA
+\tldr{develop intro}
+This section describes how to easily port an existing program within the framework of \openqxd to use the solvers available through the interface to \quda from the viewpoint of an \openqxd application level developer.
+
+\section{Overview}
+
+\tldr{basic header inclusion}
+% A main program in \openqxd that wants to leverage QUDAs solvers may be changed in the following way.
+In order to use \quda in \openqxd, we require to include the necessary header files that provide the interface to \quda
 \begin{minted}[]{c}
 #ifdef QUDA_INTERFACE
 #include "quda_utils.h"
 #endif /* QUDA_INTERFACE */
 \end{minted}
-and link it with the compiled QUDA library. Details on how to write a \code{Makefile} to link and compile against QUDA are discussed in \cref{ch:p1:building}. We add the compile time flag \code{QUDA\_INTERFACE} for convenience, such that the user can enable or disable QUDA interfacing at wish.
+and link to \code{libquda.so}.
+Details on how to write a \code{Makefile} to link and compile against \quda are discussed in \cref{ch:appendix:building}.
+We add the compile time flag \code{QUDA\_INTERFACE} for convenience, such that one can enable or disable \quda interfacing at wish.
+For a description of the provided functions in \code{quda\_utils.h} please refer to \cref{sec:interface:openqxd}.
 
-In this example \code{quda\_utils.h} is a header file in openQxD that provides the two functions
-\begin{minted}[]{c}
-openQCD_QudaInitArgs_t quda_init(char *infile, FILE *logfile);
-void quda_finalize(void);
-\end{minted}
-The first function, \code{quda\_init()}, takes two arguments. The \code{infile} argument takes a path to an input file, where the interface expects the settings and solver configurations to be present. This is handed over to the interface code within QUDA and it is also parsed there. For the contents of the input file refer to \cref{sec:running:infile}. The second argument, \code{logfile}, point to a file descriptor of an already opened logfile handle. This specifies where QUDA should log its output to and this usually points to the same logfile as is used in the program itself (can be \code{stdout}).
-The return struct of the function can be ignored (it is used in some of the tests). The function initializes a struct that describes the lattice setup such as boundary conditions (return value of \code{bc\_parms()}), Dirac parameters (return value of \code{dirac\_parms()}), gauge group (\code{flds\_parms()}), local lattice dimensions, process grid and its mapping to MPI ranks, process block grid, pointers to the gauge and clover fields. All these structs have to be set before calling \code{quda\_init()}. This information is passed to QUDA by calling \code{openQCD\_qudaInit()} in \code{quda\_openqcd\_interface.h}, which itself initializes the communication grid (and arranges the ranks as needed by the boundary conditions). QUDA is then initialized by calling \code{initQuda()}.
+% In this example \code{quda\_utils.h} is a header file in \openqxd that provides the two functions
+% \begin{minted}[]{c}
+% openQCD_QudaInitArgs_t quda_init(char *infile, FILE *logfile);
+% void quda_finalize(void);
+% \end{minted}
 
-The second function, \code{quda\_finalize()}, requires no arguments and returns nothing. It is meant to be called right before the host application closes its logfile handle, since this function will write a summary to the logfile (if verbosity is at least \code{QUDA\_SUMMARIZE}).
+% The first function, \code{quda\_init()}, takes two arguments. The \code{infile} argument takes a path to an input file, where the interface expects the settings and solver configurations to be present. This is handed over to the interface code within QUDA and it is also parsed there. For the contents of the input file refer to \cref{sec:running:infile}. The second argument, \code{logfile}, point to a file descriptor of an already opened logfile handle. This specifies where QUDA should log its output to and this usually points to the same logfile as is used in the program itself (can be \code{stdout}).
+% The return struct of the function can be ignored (it is used in some of the tests). The function initializes a struct that describes the lattice setup such as boundary conditions (return value of \code{bc\_parms()}), Dirac parameters (return value of \code{dirac\_parms()}), gauge group (\code{flds\_parms()}), local lattice dimensions, process grid and its mapping to MPI ranks, process block grid, pointers to the gauge and clover fields. All these structs have to be set before calling \code{quda\_init()}. This information is passed to QUDA by calling \code{openQCD\_qudaInit()} in \code{quda\_openqcd\_interface.h}, which itself initializes the communication grid (and arranges the ranks as needed by the boundary conditions). QUDA is then initialized by calling \code{initQuda()}.
 
-A usual host application ported to use the QUDA interface may look like \cref{lst:example_program}. Note that the only required parts are the highlighted lines, the rest is standard.
+% The second function, \code{quda\_finalize()}, requires no arguments and returns nothing. It is meant to be called right before the host application closes its logfile handle, since this function will write a summary to the logfile (if verbosity is at least \code{QUDA\_SUMMARIZE}).
 
+\tldr{main program example}
+A usual application ported to use the \quda interface may look like \cref{lst:example_program}. Note that the only additional required parts are highlighted, the rest is standard.
+This makes all solvers in \quda accessible in \openqxd.
 \begin{codelisting}
 \begin{minted}[highlightlines={3-5,21-23,27-29}]{c}
 [...]
@@ -71,8 +90,30 @@ int main(int argc, char *argv[])
 \label{lst:example_program}
 \end{codelisting}
 
-A paradigm that occurs quite often when writing applications in openQxD is a code snippet that dispatches the solvers. Such a function could easily be ported to utilize QUDAs solvers as well. This could look like the function \code{solve()} in \cref{lst:example_solver}, again the relevant parts are highlighted. If we build without the flag \code{QUDA\_INTERFACE}, the highlighted parts are removed and the code falls back to the standard function that dispatches the available solvers present in openQxD. With the flag set, we enable a new solver type \code{QUDA} and if the input file provides a solver of type \code{QUDA}, the function in the snippet will offload the solve by calling the interface function \code{openQCD\_qudaInvert()}. The variable \code{id} in the code snippet is the solver identifier from the input file. It has to be passed to the interface function, because there could be multiple solver definitions, some offloaded, some don't. The snippet assumes that the input file has been parsed already by \code{read\_solver\_parms()}.
+% \tldr{all wilson type solver available, incl multigrid}
+% This makes all solvers in \quda accessible.
+% The interface makes all variants of the iterative solver algorithms in the \quda library for Wilson fermions accessible in \openqxd, including the conjugate gradient (CG), generalized conjugate residuals (GCR) and the adaptive multi-grid preconditioner (MG)~\cite{Babich:2010qb} which is similar to the inexact deflation method implemented natively in \openqxd and many more.
 
+\section{Accessing the solver}
+\label{sec:develop:solver}
+
+\tldr{solve function snippet}
+A paradigm that occurs quite often when writing applications in \openqxd is a code snippet that dispatches to the correct solver.
+Such a function could easily be ported to dispatch to \qudas solvers as well.
+That could look like the function \code{solve()} in \cref{lst:example_solver}, again the relevant parts are highlighted.
+
+\tldr{same signature}
+We reiterate that the solver interface function(s) have the same signature as solver calls in \openqxd.
+It was intentionally designed this way to allow seamless integration in such use cases.
+
+\tldr{compile time constant}
+If we build without the flag \code{QUDA\_INTERFACE}, the highlighted parts are removed and the code falls back to the standard function that dispatches the available solvers present in \openqxd
+\footnote{If then called with a \quda solver, it will gracefully exit with a message \code{Unknown solver QUDA}.}.
+With the flag set, we enable a new solver type \code{QUDA}.
+If the input file provides a solver of that type, the function in the snippet will offload the solve by calling the interface function \code{openQCD\_qudaInvert()}.
+The variable \code{id} in the code snippet is the solver identifier from the input file.
+It has to be passed to the interface function, because there could be multiple solver definitions; possibly with some offloaded, some not.
+The snippet assumes that the input file has been parsed already by \code{read\_solver\_parms()}.
 \begin{codelisting}
 \begin{minted}[highlightlines={21-26}]{c}
 /**
@@ -108,53 +149,245 @@ void solve(int id, spinor_dble *source, spinor_dble *solution, int *status)
   [...]
 }
 \end{minted}
-\caption{Example function to dispatch to the right solver. The call to the solver in QUDA is incorporated.}
+\caption{Example function to dispatch to the right solver. The call to the solver in \quda is incorporated.}
 \label{lst:example_solver}
 \end{codelisting}
 
-The interface function
-\begin{minted}[]{cpp}
-double openQCD_qudaInvert(int id, double mu, void *source, void *solution,
-                          int *status);
-\end{minted}
-takes 5 arguments which will be discussed now. The function solves the currently loaded and configured Clover-Wilson Dirac operator, i.e. the linear system of equations $D \psi = \eta$. All fields passed and returned are host (CPU) fields in openQxD order. The arguments are:
-\begin{itemize}
-  \item \code{id}: The solver identifier in the input file, i.e. \code{Solver \#}. The input file is the one which was given to \code{quda\_init()}.
-  \item \code{mu}: In order to mimic the behavior of the openQCD solvers (e.g. \code{tmcg}, \code{sap\_gcr}, \code{dfl\_sap\_gcr}), the invert-function accepts a twisted mass parameter \code{mu} explicitly.
-  \item \code{source}: The source spinor field $\eta$ given as a regular openQCD array of \code{spinor\_dble} that might have been allocated and reserved using \code{alloc\_wsd()} and \code{reserve\_wsd()} respectively. This field has to be allocated on the CPU and might be initialized as a point or random source when calling the function.
-  \item \code{solution}: The solution spinor field $\psi$ as an allocated \code{spinor\_dble}, see \code{source}.
-  \item \code{status}: If the solver is able to solve the Dirac equation to the desired accuracy (see \code{invert\_param->tol}), then \code{status} reports the total number of iteration steps (see \code{invert\_param->iter}). A value of -1 indicates that the solver failed.
+%\subsection{The synchronous solver interface}
+%\label{sec:develop:sync:way}
+
+% The interface function
+% \begin{minted}[]{cpp}
+% double openQCD_qudaInvert(int id, double mu, void *source, void *solution,
+%                           int *status);
+% \end{minted}
+% takes 5 arguments which will be discussed now. The function solves the currently loaded and configured Clover-Wilson Dirac operator, i.e. the linear system of equations $D \psi = \eta$. All fields passed and returned are host (CPU) fields in openQxD order. The arguments are:
+% \begin{itemize}
+%   \item \code{id}: The solver identifier in the input file, i.e. \code{Solver \#}. The input file is the one which was given to \code{quda\_init()}.
+%   \item \code{mu}: In order to mimic the behavior of the openQCD solvers (e.g. \code{tmcg}, \code{sap\_gcr}, \code{dfl\_sap\_gcr}), the invert-function accepts a twisted mass parameter \code{mu} explicitly.
+%   \item \code{source}: The source spinor field $\eta$ given as a regular openQCD array of \code{spinor\_dble} that might have been allocated and reserved using \code{alloc\_wsd()} and \code{reserve\_wsd()} respectively. This field has to be allocated on the CPU and might be initialized as a point or random source when calling the function.
+%   \item \code{solution}: The solution spinor field $\psi$ as an allocated \code{spinor\_dble}, see \code{source}.
+%   \item \code{status}: If the solver is able to solve the Dirac equation to the desired accuracy (see \code{invert\_param->tol}), then \code{status} reports the total number of iteration steps (see \code{invert\_param->iter}). A value of -1 indicates that the solver failed.
+% \end{itemize}
+
+\tldr{many modes to access solver}
+There are multiple modes on how the solver interface can be operating for maximal flexibility for the programmer.
+%They will be discussed in the following:
+They target different motives and should be chosen according to the needs:
+\begin{itemize}[leftmargin=77pt]
+  \item[\Cref{sec:develop:sync:way}:]    Ideal for new programs or programs using \emph{only} \quda solvers.
+  \item[\Cref{sec:develop:openqcd:way}:] Ideal to interface existing programs.
+  \item[\Cref{sec:develop:mrhs:way}:]    Ideal for workloads with multiple batched solves.
+  \item[\Cref{sec:develop:async:way}:]   Ideal for programs with alternating CPU-GPU workload.
 \end{itemize}
 
-There are two main modes on how this function can be operating for maximal flexibility for the programmer.
+\subsection{The simple way}
+\label{sec:develop:sync:way}
 
+\tldr{simplest mode, dont care mode}
+The solver function \code{openQCD\_qudaInvert} can be safely called right after \quda was initialized by \code{quda\_init()}. It will itself parse the input parameters from the input file, transfer the gauge fields and generate or transfer the clover field if necessary. The interface code holds information about the relevant parameters for the Dirac operator and whether the fields are up-to-date or not. Namely these are
+\begin{itemize}
+  \item whether the gauge field is in sync or not,
+  \item whether the clover field is in sync or not,
+  \item \code{kappa/m0}: the (inverse) mass of the current flavor,
+  \item \code{su3csw}: the SW-coefficient for the $SU(3)$ clover term,
+  \item \code{u1csw}: the SW-coefficient for the $U(1)$ clover term,
+  \item \code{qhat}: the inverse charge of the current flavor.
+\end{itemize}
+At the time of calling the solver function, if the interface detects a change in one or multiple of these parameters on the side of \openqxd, a synchronization of parameters and regeneration or re-transfer of the gauge and/or clover fields is triggered.
+This mode might be useful for new programs that do not plan to use solvers in \openqxd anymore.
+
+\subsection{The \openqcd way}
+\label{sec:develop:openqcd:way}
+
+\tldr{mode for legacy openqxd integration}
+Application-level developers and most existing programs in \openqxd are very used to a standard workflow as
 \begin{enumerate}
-  \item{The function can be safely called right after QUDA was initialized by \code{quda\_init()}. It will itself parse the input parameters from the input file, transfer the gauge fields and generate or transfer the clover field if necessary. The interface code holds information about the relevant parameters for the Dirac operator and whether the fields are up-to-date or not. Namely these are
-  \begin{itemize}
-    \item whether the gauge field is in sync or not,
-    \item whether the clover field is in sync or not,
-    \item \code{kappa/m0}: the (inverse) mass of the current flavor,
-    \item \code{su3csw}: the SW-coefficient for the $SU(3)$ clover term,
-    \item \code{u1csw}: the SW-coefficient for the $U(1)$ clover term,
-    \item \code{qhat}: the inverse charge of the current flavor.
-  \end{itemize}
-  If the interface detects a change in one or multiple of these parameters on the side of openQxD, a synchronization of parameters and regeneration or retransfer of the gauge and/or clover fields is triggered.}
-  \item{Developers using openQxD are very used to a standard workflow as 1) parsing the input file for parameters and solvers, 2) printing the parsed parameters to the logfile and 3) do some logic (solving the Dirac equation for instance). To support this programming paradigm, we made the interface flexible. In a second mode, the user can work in the same way as with legacy openQxD code. The QUDA interface is fully integrated into the relevant core components of the openQxD codebase. This means that the legacy functions
-  \begin{minted}[]{c}
-void read_solver_parms(int isp);
-void print_solver_parms(int *isap,int *idfl);
-void write_solver_parms(FILE *fdat);
-void check_solver_parms(FILE *fdat);
-  \end{minted}
-  work with QUDA solvers out of the box. The last two functions required no modifications. For this to work, we wrote two interface functions
-  \begin{minted}[]{c}
-void *openQCD_qudaSolverGetHandle(int id);
-int openQCD_qudaSolverGetHash(int id);
-  \end{minted}
-  The first function returns a pointer to the solver context, i.e. pointing to the corresponding \code{QudaInvertParam} struct which configures the solver. The seconds function returns a hash from the relevant subset of members of the \code{QudaInvertParam} struct. This is to be able to write QUDA solver parameters to disk using \code{write\_solver\_parms()} when a run has finished and to detect if settings have changed in \code{check\_solver\_parms()} when a run is restarted or continued. This is common practice in openQxD and fully supported by the interface.
-  }
+  \item parsing and validating the input file for parameters (including solvers),
+  \item printing the parsed parameters to the log file,
+  \item comparing solver parameters to stored ones from previous runs,
+  \item store parsed solver parameters to disk and
+  \item do some logic (solving the Dirac equation for instance).
 \end{enumerate}
-We refer to \cref{sec:running:solver,sec:running:multgrid} for an explanation on how the QUDA interface code expects the input file to look like.
+
+To support this programming paradigm, we made the interface flexible. % in the sense that the user can work in the same way as with legacy \openqxd code.
+It is fully integrated into the relevant core components of the \openqxd, see \cref{sec:interface:legacy}.
+This means that the programmer can just use the functions \code{read\_solver\_parms} to read solver sections from the input file, \code{print\_solver\_parms} to print information about parsed the solvers, \code{write\_solver\_parms} to write solver settings to disk and \code{check\_solver\_parms} to compare solver setups.
+All these functions work with \quda solvers as well.
+For more details about these function see \cref{sec:interface:legacy}.
+We refer to \cref{sec:running:solver,sec:running:multgrid} for an explanation on how the \quda interface code expects the input file to look like.
+
+\subsection{The multiple right-hand sides way}
+\label{sec:develop:mrhs:way}
+
+\tldr{simple mrhs mode}
+If many repeated solves of the same Dirac equation are needed, they can be batched in stacks of \code{num\_src} source and solution fields.
+As described in \cref{sec:interface:solver:mrhs}, the batched fields can be solved all at once by improving memory access patterns at the cost of additional memory requirements.
+Every batched source spinor generates its own Krylov subspace leading to a multiplication of the required memory amount by a factor \code{num\_src}.
+
+\tldr{mrhs also simple + legacy}
+For the multiple right-hand sides solver kernel the same concepts as for the standard kernel hold as it can be called as described before in \cref{sec:develop:sync:way,sec:develop:openqcd:way}.
+
+\tldr{mrhs example}
+A simple program using this solver kernel might look as \cref{lst:develop:mrhs}.
+\begin{codelisting}
+\begin{minted}[]{c}
+for (int i = 0; i < Nsrc; ++i) {
+  for (int j = 0; j < 12; ++j) {
+    setup_source(j, sources[j]);
+  }
+  // num_src = 12
+  openQCD_qudaInvertMultiSrc(id, mu, sources, solutions, states, residuals);
+  [...]
+}
+\end{minted}
+\caption{Example code employing a solver with \num{12} right-hand sides as compared to a single RHS in \cref{lst:develop:serial}.}
+\label{lst:develop:mrhs}
+\end{codelisting}
+
+\subsection{The asynchronous way}
+\label{sec:develop:async:way}
+
+%\worktodo{most of this section should probably go to interface}
+
+\tldr{Async motivation, concept}
+Assume a scenario where the programmer wants to evaluate observables and contractions are implemented as MPI and/or \openmp code on the CPU, whereas inversions are offloaded to \quda.
+The timeline profile of such a program would look like \cref{fig:develop:serial}.
+To optimize such a scenario, we have implemented asynchronous interface functions for the solver, described in\cref{sec:interface:solver:async}.
+That is, to enable overlapping of contraction code (or any other arbitrary code) on the CPU with solver calls on the GPU, see \cref{fig:develop:pipelining}.
+\begin{figure}
+  \includestandalone[width=\linewidth]{\dir/img/serial}
+  \caption{Serial timeline profile of a program where solves are offloaded to \quda on the GPU, whereas contractions are computed within \openqxd on the CPU.}
+  \label{fig:develop:serial}
+\end{figure}
+\begin{figure}
+  \includestandalone[width=\linewidth]{\dir/img/pipelining}
+  \caption{A timeline profile of a program issuing asynchronous calls to the solver, where after a warm-up phase an overlapping pattern of GPU and CPU work arises.}
+  \label{fig:develop:pipelining}
+\end{figure}
+% This is enabled by spawning a worker thread for each MPI rank that enters \quda and executes kernels, see \cref{fig:develop:async}. The main thread will stay on the CPU and during the time of the asynchronous operation it should communicate using communicator 1, setup such that all the main threads are part of, but not the worker threads. The worker threads on the other hand will communicate using communicator 2 that includes all worker threads, but not the main threads. By this MPI calls by the main threads do not interfere with possibly concurrent MPI calls of the worker threads allowing seamless concurrent operation on the CPU and GPU\footnote{We note that the global communicator \code{MPI\_COMM\_WORLD} provided by MPI to contain all processes will not work as expected in the above scenario and should be avoided, because by its definition it will contain the main as well as the worker threads. Communication using this communicator will most certainly error or misbehave on strict MPI implementations.}. Whatever communicator was active before the asynchronous calls may be used again after the threads have joined.
+% After work is done, the worker threads are joined by the main thread to ensure proper cleanup. They only exist between the asynchronous solver calls start and wait discussed in \cref{sec:develop:async:start,sec:develop:async:wait}.
+% \begin{figure}
+%   \includestandalone[width=\linewidth]{\dir/img/async}
+%   \caption{Thread spawn and join concept for the asynchronous solver interface. All MPI ranks spawn their individual worker thread which interacts with \quda and communicates in the communicator that is setup to contain all worker threads. The main threads return immediately back to the CPU code and communicate using their dedicated communicator.}
+%   \label{fig:develop:async}
+% \end{figure}
+
+\subsubsection{A synchronous example}
+
+\tldr{serial example}
+A serial program might look as \cref{lst:develop:serial}.
+A simple loop computing some inversions (\code{Nsolv} in the code might be set to \num{12} for a point source for instance) and a subsequent contraction of the obtained solutions.
+We assume the \code{contract} function to compute an observable using the propagators as input and to store the result to disk.
+This is repeated \code{Nsrc} times for different source spinors.
+However this coding pattern corresponds to \cref{fig:develop:serial} where we see an alternating idling pattern for the CPU and the GPU.
+This does not fully utilize the available resources.
+\begin{codelisting}
+\begin{minted}[]{c}
+for (int i = 0; i < Nsrc; ++i) {
+  for (int j = 0; j < Nsolv; ++j) {
+    residual = openQCD_qudaInvert(id, mu, source[j], solution[j], status);
+  }
+  contract(i, solution, ...);
+}
+\end{minted}
+\caption{Example code employing a serial timeline corresponding to \cref{fig:develop:serial}.}
+\label{lst:develop:serial}
+\end{codelisting}
+
+% \subsubsection{Going asynchronous}
+
+% A program as \cref{lst:develop:serial} can be easily rewritten into one that uses the asynchronous solver interface. This consists of four functions \cref{lst:develop:async}, instead of one for the synchronous interface.
+% \begin{codelisting}
+% \begin{minted}[]{c}
+% void openQCD_qudaInvertAsyncSetup(int id, double mu);
+% void openQCD_qudaInvertAsyncDispatch(void *source, void *solution, int *status);
+% MPI_Comm openQCD_qudaInvertAsyncStart(OpenQCDSolveType type);
+% void openQCD_qudaInvertAsyncWait(double *residual);
+% \end{minted}
+% \caption{The asynchronous solver interface functions.}
+% \label{lst:develop:async}
+% \end{codelisting}
+% They are split into a setup, dispatch, start and wait procedure and have to be called in that order.
+
+% \subsubsection{Setup}
+
+% The setup function, \code{openQCD\_qudaInvertAsyncSetup}, takes as arguments everything that might trigger transfers or updates of parameters; a solver identifier and the twisted mass parameter as discussed in \cref{sec:develop:sync:way}. This function will trigger necessary transfers or generation of fields and multigrid setups, such that a subsequent solver call does not trigger any setup or synchronization of \openqxd and \quda anymore.
+
+% \subsubsection{Dispatch}
+
+% The dispatch function, \code{openQCD\_qudaInvertAsyncDispatch}, takes the remaining subset of arguments of the synchronous solver call, namely the source and solution spinors and a status variable. This function returns immediately, since all it does is adding a solve to the end of a worker queue. The function can be called many times successively with different source and solutions to register multiple solves. They will be worked though in order of calling this function.
+
+% \subsubsection{Start}
+% \label{sec:develop:async:start}
+
+% The start function, \code{openQCD\_qudaInvertAsyncStart}, takes one argument which describes how the registered solves should be solved. This can be either \code{OPENQCD\_SOLVE\_SERIAL} implying to work through the queue in consecutive order, one solve at a time, or \code{OPENQCD\_SOLVE\_MRHS} to solve all registered solves concurrently calling the multiple right-hand sides solver in \quda\footnote{This is not yet available in the interface.}. Every rank entering this function will spawn a worker thread using \code{pthread\_create} that enters the solver in \quda in place of the main thread. The main thread will exit the function immediately after spawning the worker thread and may continue executing code on the CPU. If this code involves MPI calls, the programmer must use the MPI communicator returned by the start function instead of a communicator that was active before entering this function. The returned communicator will properly include all the main threads, but not the worker threads. The worker threads may do their own MPI communication in \quda as well, but using a different MPI communicator to not clash with the communication of the main threads. This is only possible if MPI was initialized with this level of thread support\footnote{This is usually the highest level of thread support, \code{MPI\_THREAD\_MULTIPLE}. The MPI implementation must ensure that the MPI functions are thread safe which will degrade their efficiency. Not all MPI implementations support such a high level of thread support. The interface code will gracefully error if the required thread support is not available by the MPI implementation.}. The \quda interface provides an initialization function called \code{quda\_mpi\_init} that can be used in place of \code{MPI\_Init}.
+
+% \subsubsection{Wait}
+% \label{sec:develop:async:wait}
+
+% Finally, the wait function, \code{openQCD\_qudaInvertAsyncWait} will instruct the main threads to wait to the worker threads to finish and reap them using \code{pthread\_join}. If the worker threads have already finished when the main thread enters the function it will just collect the results of the worker threads. These are the residuals, the status variable and the altered solution spinor. Thus, when leaving the wait function, the solves have finished and output variables are as if the solver was called synchronously. This gives the programmer the opportunity to perform work on the CPU in between the start and the wait function.
+
+\subsubsection{An asynchronous example}
+
+\tldr{async example}
+A program as \cref{lst:develop:serial} can be easily rewritten into one that uses the asynchronous solver interface.
+This may look as in \cref{lst:develop:pipelining}.
+For function descriptions, please refer to \cref{sec:interface:solver:async}.
+We can clearly identify the warm-up phase as the first iteration of the outer loop, and the wind-down phase as the finishing contraction in the last line.
+Between we see the filled pipeline which solves the current set of sources and contracts the last set of solutions concurrently.
+Notice that the contraction between the start and wait function must use the returned MPI communicator \code{comm}\footnote{We note that the global communicator \code{MPI\_COMM\_WORLD} provided by MPI to contain all processes will not work as expected in the above scenario between the start and wait functions and should be avoided, because by definition all threads belong to this communicator. Communication using this communicator will most certainly error or misbehave on strict MPI implementations.}.
+Whatever communicator contained all ranks before the asynchronous calls (including \code{MPI\_COMM\_WORLD}) may safely be used again after the threads have joined, i.e. after the wait function returned.
+\begin{codelisting}
+\begin{minted}[]{c}
+openQCD_qudaInvertAsyncSetup(id, mu);
+for (int i = 0; i < Nsrc; ++i) {
+  for (int j = 0; j < Nsolv; ++j)
+    openQCD_qudaInvertAsyncDispatch(source[j], solution[j], status[j]);
+
+  comm = openQCD_qudaInvertAsyncStart();
+
+  if (i != 0) /* i==0 -> warm-up */
+    contract(i, last_solution, comm, ...);
+
+  openQCD_qudaInvertAsyncWait(residuals);
+
+  for (int j = 0; j < Nsolv; ++j)
+    flip(last_solution[j], solution[j]); /* flips pointers */
+}
+contract(i, last_solution, MPI_COMM_WORLD, ...); /* wind-down */
+\end{minted}
+\caption{Example code employing a pipelining timeline corresponding to \cref{fig:develop:pipelining}.}
+\label{lst:develop:pipelining}
+\end{codelisting}
+
+% \begin{enumerate}
+%   \item{The function can be safely called right after QUDA was initialized by \code{quda\_init()}. It will itself parse the input parameters from the input file, transfer the gauge fields and generate or transfer the clover field if necessary. The interface code holds information about the relevant parameters for the Dirac operator and whether the fields are up-to-date or not. Namely these are
+%   \begin{itemize}
+%     \item whether the gauge field is in sync or not,
+%     \item whether the clover field is in sync or not,
+%     \item \code{kappa/m0}: the (inverse) mass of the current flavor,
+%     \item \code{su3csw}: the SW-coefficient for the $SU(3)$ clover term,
+%     \item \code{u1csw}: the SW-coefficient for the $U(1)$ clover term,
+%     \item \code{qhat}: the inverse charge of the current flavor.
+%   \end{itemize}
+%   If the interface detects a change in one or multiple of these parameters on the side of openQxD, a synchronization of parameters and regeneration or retransfer of the gauge and/or clover fields is triggered.}
+%   \item{Developers using openQxD are very used to a standard workflow as 1) parsing the input file for parameters and solvers, 2) printing the parsed parameters to the logfile and 3) do some logic (solving the Dirac equation for instance). To support this programming paradigm, we made the interface flexible. In a second mode, the user can work in the same way as with legacy openQxD code. The QUDA interface is fully integrated into the relevant core components of the openQxD codebase. This means that the legacy functions
+%   \begin{minted}[]{c}
+% void read_solver_parms(int isp);
+% void print_solver_parms(int *isap,int *idfl);
+% void write_solver_parms(FILE *fdat);
+% void check_solver_parms(FILE *fdat);
+%   \end{minted}
+%   work with QUDA solvers out of the box. The last two functions required no modifications. For this to work, we wrote two interface functions
+%   \begin{minted}[]{c}
+% void *openQCD_qudaSolverGetHandle(int id);
+% int openQCD_qudaSolverGetHash(int id);
+%   \end{minted}
+%   The first function returns a pointer to the solver context, i.e. pointing to the corresponding \code{QudaInvertParam} struct which configures the solver. The seconds function returns a hash from the relevant subset of members of the \code{QudaInvertParam} struct. This is to be able to write QUDA solver parameters to disk using \code{write\_solver\_parms()} when a run has finished and to detect if settings have changed in \code{check\_solver\_parms()} when a run is restarted or continued. This is common practice in openQxD and fully supported by the interface.
+%   }
+% \end{enumerate}
+% We refer to \cref{sec:running:solver,sec:running:multgrid} for an explanation on how the QUDA interface code expects the input file to look like.
 
 % The header file \code{quda\_openqcd\_interface.h} provides API functions to set up, invoke and destroy the solver context \footnote{Notice that these function names might be subject of change in the near future.}.
 
@@ -190,12 +423,44 @@ We refer to \cref{sec:running:solver,sec:running:multgrid} for an explanation on
 
 % When the solver is not needed anymore, the data structs can be deallocated by calling the destroy function \code{openQCD\_qudaSolverDestroy()}, which also takes the solver handle as its only argument.
 
-Finally, to destroy the QUDA context, we call the finalize function
-\begin{minted}[]{cpp}
-void openQCD_qudaFinalize(void);
-\end{minted}
-which deallocates all the solvers, eigensolvers and finalizes QUDA by calling \code{endQuda()}. Usually, this function doesn't have to be called explicitly, but one should rather call \code{quda\_finalize()}, which itself calls this function.
+%\section{Finalizing}
 
-This interface makes all variants of the iterative solver algorithms in the QUDA library for Wilson fermions accessible in openQxD, including the conjugate gradient (CG), generalized conjugate residuals (GCR) and the adaptive multi-grid preconditioner (MG)~\cite{Babich:2010qb} which is similar to the inexact deflation method implemented natively in openQxD and many more.
+% Finally, to destroy the QUDA context, we call the finalize function
+% \begin{minted}[]{cpp}
+% void openQCD_qudaFinalize(void);
+% \end{minted}
+% which deallocates all the solvers, eigensolvers and finalizes QUDA by calling \code{endQuda()}. Usually, this function doesn't have to be called explicitly, but one should rather call \code{quda\_finalize()}, which itself calls this function.
 
-\worktodo{maybe discuss stuff in \code{quda\_openqcd\_interface.h}}
+% This interface makes all variants of the iterative solver algorithms in the QUDA library for Wilson fermions accessible in openQxD, including the conjugate gradient (CG), generalized conjugate residuals (GCR) and the adaptive multi-grid preconditioner (MG)~\cite{Babich:2010qb} which is similar to the inexact deflation method implemented natively in openQxD and many more.
+
+\section{Limits}
+
+\tldr{Forced field transfers for solver kernels}
+Currently there are some limits regarding the interface.
+Irrespective of how the solver is called, source fields will always be transferred to the GPU and solution fields be transferred back.
+A field transfer consists of data reordering and memory copy between host and device.
+Reordering can be configured to happen either on the host or on the device.
+In any case further memory copying is introduced.
+These transfers -- as of now -- cannot be disabled.
+In a future scenario where we may want to further process the fields on GPU after the solver call, it will be inefficient to perform unnecessary transfers between all kernels.
+A conceptual solution to this problem is outlined in \cref{ch:p1:memory}.
+
+\tldr{Forced field transfers for all kernels}
+The same holds for some of the other kernels, like the Dirac operator or the $\gamma$-matrix application.
+Current versions of these kernels are just for illustration and testing purposes and should not be used in a production code.
+Since they transfer fields back and fourth and are themselves very lightweight as opposed to the solver kernel, these kernels are highly inefficient; the largest fraction of their runtime will be spent in the field transfers.
+Although some of them have versions which do not trigger transfers and operate directly on device fields.
+These serve as proof of concept examples to pave the ground for a possible continuation of developments in terms of \cref{ch:p1:memory}.
+
+% Currently, there are some limits and known issues regarding the interface. The most important one is that we have one instance of \quda per rank, i.e. the number of ranks and the number of \quda instances are in one-to-one correspondence. This limits applications that consists of a fixed CPU part utilizing inversions via GPU. An example of such a program would be a observable contraction code, that performs many inversions on the GPU and contracts its results on the CPU (see \cref{fig:develop:serial,lst:develop:serial}). Such programs have an alternating CPU-GPU pattern. The CPU code usually strong scales well with the number of ranks, so one should fill up all the CPU cores with processes. However on modern clusters we usually have 1-8 GPUs per node, but the number of CPU cores per node is significantly higher in the regime $\bigO(100)$. Currently these are the solutions for that problem (in order of increasing configuration or implementation effort)
+% \begin{enumerate}
+%   \item Using as many cores as possible and running with NVIDIAs Multi-Process Service (MPS). There is some non-negligible overhead that comes with MPS. The limit of processes per MPS instance is \num{48}.
+%   \item Using multi-instance GPUs (MIG). However that might not be available on all clusters, since it has to be setup in BIOS. The limit of instances per GPU is \num{7}.
+%   \item Using the asynchronous solver interface to overlap solves with work on the CPU.
+%   \item Rewriting the CPU part of the code to use openMP threads. By this one could use as many ranks as GPUs participating in the calculation and easily fill up the remaining cores with threads.
+%   \item \worktodo{TODO: use multi-lattice, but adds overhead in shoveling fields (spinor, clover, gauge) from lattice A to lattice B and vice versa}
+%   \item \worktodo{TODO: contraction on the GPU}
+% \end{enumerate}
+
+
+% \worktodo{maybe discuss stuff in \code{quda\_openqcd\_interface.h}}

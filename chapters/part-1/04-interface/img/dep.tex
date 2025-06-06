@@ -1,0 +1,124 @@
+\documentclass{standalone}
+\usepackage{quiver}
+\usepackage[most]{tcolorbox}
+\usepackage{xcolor}
+
+\input{preamble/colors.tex}
+\input{preamble/commands.tex}
+\input{preamble/symbols.tex}
+
+\newcommand{\edge}[1]{#1}
+\newcommand{\head}[1]{\textbf{\underline{#1}}}
+
+\usetikzlibrary{fit, positioning, decorations.pathreplacing, shapes.geometric, arrows}
+
+\tikzstyle{process} = [rectangle,
+minimum width=60pt,
+minimum height=30pt,
+text centered,
+align=center,
+draw=black,
+fill=codebgcolor!12]
+
+\tikzstyle{grid} = [rectangle,
+minimum width=60pt,
+minimum height=30pt,
+text centered,
+text opacity=0, % comment to see all the cells
+align=center]
+
+\tikzstyle{arrow} = [thick,->,>=stealth]
+
+\begin{document}
+
+\begin{tikzpicture}[node distance=20pt, auto]
+
+\node (A0) [grid]              {A0};
+\node (A1) [grid, below=of A0] {A1};
+\node (A2) [grid, below=of A1] {A2};
+\node (A3) [grid, below=of A2] {A3};
+\node (A4) [grid, below=of A3] {A4};
+\node (A5) [grid, below=of A4] {A5};
+
+\node (B0) [grid, right=of A0] {B0};
+\node (B1) [grid, below=of B0] {B1};
+\node (B2) [grid, below=of B1] {B2};
+\node (B3) [grid, below=of B2] {B3};
+\node (B4) [grid, below=of B3] {B4};
+\node (B5) [grid, below=of B4] {B5};
+
+\node (C0) [grid, right=of B0] {C0};
+\node (C1) [grid, below=of C0] {C1};
+\node (C2) [grid, below=of C1] {C2};
+\node (C3) [grid, below=of C2] {C3};
+\node (C4) [grid, below=of C3] {C4};
+\node (C5) [grid, below=of C4] {C5};
+
+\node (D0) [grid, right=of C0] {D0};
+\node (D1) [grid, below=of D0] {D1};
+\node (D2) [grid, below=of D1] {D2};
+\node (D3) [grid, below=of D2] {D3};
+\node (D4) [grid, below=of D3] {D4};
+\node (D5) [grid, below=of D4] {D5};
+
+\node (E0) [grid, right=of D0, xshift=75pt] {E0};
+\node (E1) [grid, below=of E0] {E1};
+\node (E2) [grid, below=of E1] {E2};
+\node (E3) [grid, below=of E2] {E3};
+\node (E4) [grid, below=of E3] {E4};
+\node (E5) [grid, below=of E4] {E5};
+
+\node (F0) [grid, right=of E0] {F0};
+\node (F1) [grid, below=of F0] {F1};
+\node (F2) [grid, below=of F1] {F2};
+\node (F3) [grid, below=of F2] {F3};
+\node (F4) [grid, below=of F3] {F4};
+\node (F5) [grid, below=of F4] {F5};
+
+\node (G0) [grid, right=of F0] {G0};
+\node (G1) [grid, below=of G0] {G1};
+\node (G2) [grid, below=of G1] {G2};
+\node (G3) [grid, below=of G2] {G3};
+\node (G4) [grid, below=of G3] {G4};
+\node (G5) [grid, below=of G4] {G5};
+
+\node (N1) [process] at (A5) {$m_0, c_{\text{SW}}$};
+\node (N2) [process] at (B5) {$\hat{q}$};
+\node (N3) [process] at (B2) {\edge{Clover field}};
+\node (N4) [process] at (C4) {\edge{Gauge field\\U(1)}};
+\node (N5) [process] at (D4) {\edge{Gauge field\\SU(3)}};
+\node (N6) [process] at (D3) {\edge{Gauge field\\SU(3)/U(3)}};
+\node (N7) [process] at (D1) {\edge{Dirac operator}};
+
+\node (N8) [process] at (E0) {\edge{Multigrid\\instance 1\\$\hat{q}, m_0, c_{\text{SW}}$}};
+\node (N9) [process] at (F0) {\edge{Multigrid\\instance 2\\$\hat{q}, m_0, c_{\text{SW}}$}};
+\node (N10) [process] at (E1) {\edge{Dirac operator}};
+\node (N11) [process] at (G2) {\edge{Clover field\\$\hat{q}, m_0, c_{\text{SW}}$}};
+\node (N12) [process] at (E3) {\edge{Gauge field\\SU(3)/U(3)\\$\hat{q}, m_0, c_{\text{SW}}$}};
+
+\node[draw, dashed, inner sep=10pt, label={above:\head{openQxD}}] (group) 
+  [fit={(N1) (N2) (N3) (N4) (N5) (N6) (N7) (A0) (D0)}] {};
+
+\node[draw, dashed, inner sep=10pt, label={above:\head{QUDA}}] (group) 
+  [fit={(N8) (N9) (N10) (N11) (N12) (E5) (G5)}] {};
+
+\draw [arrow] (N1) -- (N3);
+\draw [arrow] (N2) -- (N3);
+\draw [arrow] (N2) -- (N4);
+\draw [arrow] (N4) -- (N6);
+\draw [arrow] (N5) -- (N6);
+\draw [arrow] (N6) -- (N3);
+\draw [arrow] (N3) -- (N7);
+\draw [arrow] (N6) -- (N7);
+
+\draw [arrow] (N12) -- (N10);
+\draw [arrow] (N11) -- (N10);
+\draw [arrow] (N10) -- (N8);
+\draw [arrow] (N10) -- (N9);
+
+\draw [arrow,dashed] (N3) -- node{transfer} (N11);
+\draw [arrow]        (N6) -- node{transfer} (N12);
+\draw [arrow,dashed] (N12) -- node{generate} (N11);
+
+\end{tikzpicture}
+\end{document}

@@ -1,0 +1,158 @@
+
+\newcommand{\ie}{i.\,e.\xspace}
+\newcommand{\Ie}{I.\,e.\xspace}
+\newcommand{\eg}{e.\,g.\xspace}
+\newcommand{\Eg}{E.\,g.\xspace}
+
+\newcommand{\quda}{QUDA\xspace}
+\newcommand{\Quda}{QUDA\xspace}
+\newcommand{\qudas}{QUDAs\xspace}
+\newcommand{\Qudas}{QUDAs\xspace}
+\newcommand{\openqxd}{openQxD\xspace}
+\newcommand{\openqcd}{openQCD\xspace}
+\newcommand{\Openqxd}{OpenQxD\xspace}
+\newcommand{\Openqcd}{OpenQCD\xspace}
+\newcommand{\bigO}{\mathcal{O}}
+\newcommand{\observable}[1]{\mathcal{#1}}
+\newcommand{\NULL}{NULL\xspace}
+\newcommand{\posix}{posix\xspace}
+\newcommand{\Posix}{Posix\xspace}
+
+\newcommand{\txyz}{txyz\xspace}
+\newcommand{\xyzt}{xyzt\xspace}
+
+\newcommand{\QED}[1]{QED$_\text{#1}$\xspace}
+\newcommand{\QEDC}{\QED{C}}
+
+\newcommand{\lat}[1]{\Lambda_{\text{#1}}}
+\newcommand{\RCstar}{RC$^{\star}$\xspace}
+\newcommand{\Cstar}{C$^{\star}$\xspace}
+\newcommand{\CstarHeading}{C\texorpdfstring{$^{\star}$}{*}\xspace}
+
+\newcommand{\x}{×\xspace}
+
+\newcommand{\ggrp}[2]{#1(#2)}
+\newcommand{\liealg}[2]{\mathfrak{#1}(#2)}
+
+\newcommand{\cswsu}[1]{c_{\text{SW}}^{\ggrp{SU}{#1}}}
+\newcommand{\cswu}[1]{c_{\text{SW}}^{\ggrp{U}{#1}}}
+
+\newcommand{\Dw}{{D_{\mathrm{w}}}}
+
+\newcommand{\openmp}{openMP\xspace}
+\newcommand{\Openmp}{OpenMP\xspace}
+
+\newcommand{\openmpi}{openMPI\xspace}
+\newcommand{\Openmpi}{OpenMPI\xspace}
+
+\newcommand*\dd{\mathop{}\!\mathrm{d}}
+\newcommand*\DD{\mathop{}\!\mathcal{D}}
+
+\newcommand{\spinhalf}{spin-$\frac{1}{2}$\xspace}
+\newcommand{\Nst}{N_{\text{st}}} % number of stochastic sources
+\newcommand{\Nc}{N_{\text{c}}} % number of eigenmodes sources
+\newcommand{\id}{\mathbb{1}} % identity matrix
+
+\newcommand{\Lt}{L_0} % extent in time
+\newcommand{\Lx}{L_1} % extent in x-direction
+\newcommand{\Ly}{L_2} % extent in y-direction
+\newcommand{\Lz}{L_3} % extent in z-direction
+
+\newcommand{\vect}[1]{\vec{#1}}
+%\newcommand{\vect}[1]{\mathbf{#1}}
+
+\newcommand{\exptime}{\left\{ 0, \ldots \Lt-1 \right\}}  % explicit temportal lattice set
+\newcommand{\expspin}{\left\{ 0, \ldots N_s-1 \right\}}  % explicit spin index set
+\newcommand{\expcolor}{\left\{ 0, \ldots \Nc-1 \right\}} % explicit color index set
+\newcommand{\expspace}{\left\{ \vect{x} = (x_1,x_2,x_3) \in \mathbb{N}^3 \; \middle| \; 0 \leq x_i < L_i \right\}}
+
+%\newcommand{\ispin}{\text{spin}} % spin index set
+%\newcommand{\icol}{\text{color}} % color index set
+%\newcommand{\ilat}{\text{lattice}} % lattice index set
+%\newcommand{\ispace}{\text{space}} % spatial lattice index set
+\newcommand{\stime}{\{ 0, \ldots \Lt-1 \}} % lattice time set explicit
+
+\newcommand\vslattice{\mathcal{V}}  % lattice vector space
+
+% notation for coarse objects; hat or widehat
+\usepackage{xparse} % loads expl3
+\ExplSyntaxOn
+\NewDocumentCommand{\coarse}{m}{ % coarse operator
+    \int_compare:nTF { \tl_count:n { #1 } > 1 }
+        { \widehat{#1} }
+        { \hat{#1} }
+}
+\ExplSyntaxOff
+
+\newcommand{\restrictor}{R}       % restrictor
+\newcommand{\prolongator}{T}      % prolongator
+
+\newcommand{\tslice}[1]{\langle {#1} \rangle} % time slice notation for stochastic estimator
+
+\newcommand{\lattice}{\mathbb{L}}       % represents the lattice
+\newcommand{\idxset}{\mathcal{I}}       % all lattice indices
+\newcommand{\idxspace}{\Sigma}          % spatial lattice set
+\newcommand{\idxtime}{\mathcal{T}}      % temporal lattice set
+\newcommand{\idxspacetime}{\Lambda}     % spacetime lattice set
+\newcommand{\idxspin}{\Xi}              % spin index set
+\newcommand{\idxcolor}{\mathfrak{C}}    % color index set
+\newcommand{\idxchiral}{\mathfrak{X}}   % chirality index set
+
+\newcommand{\cexpcolor}{\left\{ 0, \ldots \coarse{\Nc}-1 \right\}}
+
+% spinor product, scalar product
+\newcommand{\sprod}[2]{\left({#1}, {#2}\right)} % (A, B)
+%\newcommand{\sprod}[2]{\langle #1, #2 \rangle)} % <A, B>
+%\usepackage{braket}
+%\newcommand{\sprod}[2]{\braket{#1}{#2}} % <A | B>
+
+\newcommand{\evec}{\xi} % symbol for the eigen spinors
+
+
+% propagator
+\newcommand{\prop}{S}
+%\newcommand{\prop}{D^{-1}}
+
+
+\newcommand{\opxy}[3]{{#1}_{[{#2} ; {#3}]}} % Op_{[x;y]}
+\newcommand{\propxy}[2]{\opxy{\prop}{#1}{#2}} % S_{[x;y]}
+%\newcommand{\propxyab}[6]{{\prop_{[{#1};{#2}]}}_{[{#3} {#4}] \atop [{#5} {#6}]}}
+\newcommand{\propxyab}[6]{\prop_{\begin{smallmatrix}
+[{#1} ; {#2}] & [{#3} {#4}] \\
+              & [{#5} {#6}]
+\end{smallmatrix}}}
+\newcommand{\fieldx}[2]{{#1}[{#2}]}
+\newcommand{\fieldxaa}[4]{{{#1}[{#2}]}_{\begin{smallmatrix}
+[{#3}] \\
+[{#4}]
+\end{smallmatrix}}}
+
+\newcommand{\vspan}[1]{\text{span} \left\{ {#1} \right\}}
+
+\newcommand\subsetsim{\mathrel{%
+  \ooalign{\raise0.2ex\hbox{$\subset$}\cr\hidewidth\raise-0.8ex\hbox{\scalebox{0.9}{$\sim$}}\hidewidth\cr}}}
+
+\newcommand{\gramschmidt}[1]{\mathcal{G}\mathcal{S}\left( {#1} \right)}
+
+\newcommand{\Nlvl}{N_{\text{lvl}}} % number of multigrid levels
+\newcommand{\lvl}{\ell} % level l
+\newcommand{\onlvl}[2]{{#1}^{({#2})}}
+%\newcommand{\onlvl}[2]{{#1}_{L_{#2}}}
+\newcommand{\Ln}[1]{\text{$\mathrm L #1$}}
+
+% cf. -> compare
+\newcommand{\cf}{cf.\xspace}
+
+\newcommand{\Nf}{N_f} % number of flavors
+\newcommand{\Nconf}{N} % number of configs
+\newcommand{\Niter}{N_{\text{it}}} % number of configs
+\newcommand{\Nrhs}{N_{\text{rhs}}} % number of right hand sides
+
+\newcommand{\ratio}{\Phi} % ratio of fine / coarse inversion
+\newcommand{\cost}{\text{cost}} % symbol for cost
+\newcommand{\iter}{\text{iter}} % symbol for iteration count
+\newcommand{\mem}{\text{mem}} % symbol for memory bandwidth
+\newcommand{\speedup}{\text{Sp}} % symbol for speedup
+\newcommand{\sizeof}{\text{sizeof}}
+
+

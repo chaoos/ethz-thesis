@@ -1,0 +1,54 @@
+%\documentclass{scrartcl}
+\documentclass{standalone}
+\usepackage{tikz,ifthen}
+\usetikzlibrary{snakes}
+
+\input{preamble/colors.tex}
+\input{chapters/part-1/05-developing/include/style.tex}
+
+\begin{document}
+\begin{tikzpicture}
+
+\node[plain] (gpu) at (0pt, 20pt) {GPU};
+\node[plain] (cpu) at (0pt, 0pt)  {CPU};
+
+\node[solve] (solve1) at (gpu.east) {solve \#1};
+\node[contr] (contr1) at ([yshift=-20pt] solve1.east) {contract \#1};
+
+\node[solve] (solve2) at (solve1.east) {solve \#2};
+\node[contr] (contr2) at ([yshift=-20pt] solve2.east) {contract \#2};
+
+\node[solve] (solve3) at (solve2.east) {solve \#3};
+\node[contr] (contr3) at ([yshift=-20pt] solve3.east) {contract \#3};
+
+\draw [
+    thick,
+    decoration={
+        brace,
+        mirror,
+        raise=0.5cm
+    },
+    decorate
+] (cpu.east) -- (contr1.west) 
+node [pos=0.5,anchor=north,yshift=-15pt] {warm-up phase}; 
+
+\draw [
+    thick,
+    decoration={
+        brace,
+        mirror,
+        raise=0.5cm
+    },
+    decorate
+] (contr3.west) -- (contr3.east) 
+node [pos=0.5,anchor=north,yshift=-15pt] {wind-down phase}; 
+
+\draw[thick,->] ([xshift=-10pt] solve1.south west) -- ([xshift=20pt] contr3.north east) node[right]{t};
+
+\draw[thin,-] (solve1.north west) -- ([yshift=-20pt] solve1.south west);
+\draw[thin,-] (solve2.north west) -- ([yshift=-20pt] solve2.south west);
+\draw[thin,-] (solve3.north west) -- ([yshift=-20pt] solve3.south west);
+\draw[thin,-] (solve3.north east) -- ([yshift=-20pt] solve3.south east);
+
+\end{tikzpicture}
+\end{document}

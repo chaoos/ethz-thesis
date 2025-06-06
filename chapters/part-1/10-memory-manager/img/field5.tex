@@ -1,0 +1,35 @@
+\documentclass{standalone}
+
+\usepackage{tikz}
+\usepackage{amsmath}
+\usepackage{makecell}%
+
+\usetikzlibrary{arrows}
+\usetikzlibrary{decorations.pathreplacing}
+\usetikzlibrary{shapes.arrows, fadings}
+
+% definition of all the colors
+\usepackage{xcolor}
+\input{preamble/colors.tex}
+\input{preamble/commands.tex}
+
+\begin{document}
+
+\begin{tikzpicture}
+
+%\draw[help lines] (-0.1,-0.1) grid[step=.5] (10.1,2.1);
+\draw[help lines] (-0.1,-0.1) (10.1,2.1);
+
+\draw[thick,|-|] (1,1) -- (9,1);
+\draw[thin,<-] (1,0.8) --  node[below=1mm]{\makecell[c]{\code{0xA}}} (1,0.5);
+\draw[thin,<-] (9,0.8) --  node[below=1mm]{\makecell[c]{\code{0xA+NSPIN}}} (9,0.5);
+
+\draw[cyellow,<-] (4,0.8) --  node[below=1mm]{\makecell[c]{\textcolor{cyellow}{access @ address \code{0xB}}}} (4,0.5);
+
+\fill[fill=cblue, path fading=south,rounded corners] (1,0.75) rectangle (9,1.25);
+\draw [decorate,decoration={brace,amplitude=5pt,raise=4ex},color=cblue]
+  (1,0.8) -- (9,0.8) node[midway,yshift=3em]{\textcolor{cblue}{Memory protection}};
+
+\end{tikzpicture}
+
+\end{document}

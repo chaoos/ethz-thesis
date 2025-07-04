@@ -20,3 +20,5 @@ ${PYTHON} ${PPATH}/corr_var.py -v -N5 --fold \
 	--names 'Stochastic estimator' 'L0: $i=1 \; (N_s=1)$' 'L0: $i=3 \; (N_s=2)$' 'L0: $i=1 \; (N_s=1)$' 'L0: $i=3 \; (N_s=2)$' \
 	-a 0.0658 --nsrc 1 --ylim 1e-15 1e-6 #--nconfigs 3
 
+
+

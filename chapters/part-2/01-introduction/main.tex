@@ -79,8 +79,13 @@ The signal of that correlator clearly does not deteriorate as time increases.
 For baryon correlators where $E_0 = m_{b}$ the baryon mass, we find $E_{\text{noise}} = 3/2 m_{\pi}$.
 Since baryon masses are in the regime of one or multiple GeV and the pion masses are about \SI{135}{\mega \eV}, we observe a signal loss already early in the decay.
 
+\section{Variance reduction methods}
+
+We will briefly review different variance reduction methods in this section.
+Some of them approach the problem from a different perspective or are targeting other classes of observables.
+
 \tldr{multi-level integration}
-This fundamental restriction on correlation functions led to the development of algorithms employing integration techniques with multiple levels.
+The fundamental restriction on correlation functions discussed above led to the development of algorithms employing integration techniques with multiple levels.
 Such multi-level algorithms use domain decomposition into overlapping blocks to split the lattice into domains, write the action in terms of contributions from domains which finally leads to a factorization of the observable itself.
 Each factor depends on a different set of gauge fields with support only on the domain of the decomposed lattice.
 If applied appropriately, they lead to exponential signal-to-noise suppression in the prefactor of $e^{-(E_0 - E_{\text{noise}}/2)t}$, circumventing the Parisi-LePage argument.
@@ -211,6 +216,8 @@ This is to be expected, since the variance in disconnected diagrams stems from t
 % 		* REF:  [Kuberski 2312.13753, Borsanyi et al. 1711.04980]
 % 	* CAA: Covariant Approximation Averaging: generalization of AMA/LMA/translation average into general symmetries of the observable which we can average over for improved estimators, essentially a recipe to design improved estimators.
 
+\section{Low-mode averaging}
+
 \tldr{LMA original and usages}
 We will now discuss the method of low-mode averaging~\cite{Neff_2001,DeGrand_2004,Giusti_2004,} (LMA) and some of its many variants which this document is based upon.
 It decomposed the quark propagator $D^{-1}$ into a truncated spectral decomposition and a remainder.
@@ -224,7 +231,7 @@ The method usually comes with two tasks, both of which are computationally expen
 First, one has to determine a certain number of eigenmodes of the (Hermitian) Dirac operator.
 This number heavily depends on the lattice volume, the physical quantity of interest and the variance reduction goal.
 Obviously the more modes involved, the better the outcome.
-The number of low modes required for constant variance reduction is proportional to the lattice volume for a fixed quantity, because the size of the low-mode subspace is proportional to the lattice volume~~\cite{banks1980}.
+The number of low modes required for constant variance reduction is proportional to the lattice volume for a fixed quantity, because the size of the low-mode subspace is proportional to the lattice volume~\cite{banks1980}.
 Therefore the computational work to determine the low-mode subspace scales quadratic in the lattice volume, which we will refer to as \emph{$V^{2}$-problem}~\cite{Luescher2007}.
 This fact makes LMA on large-scale physical point lattices prohibitively expensive.
 On recent high-precision determinations of the HVP contribution to the muon $g-2$ this number is driven to the limit of affordability; \numrange{1000}{6000}~\cite{Djukanovic:2024cmq,RBC_2024,bmw_2024,Aubin:2022hgm} with varying satisfaction.
@@ -250,7 +257,7 @@ The remainder of this part is structured as follows.
 \Cref{ch:p2:2pt-corr} introduces the main observable of interest -- the connected leading-order HVP of the muon $g-2$.
 Continuing with \cref{ch:p2:subspace-deflation}, we generalize the concept of low-mode averaging to arbitrary subspaces, whereas in \cref{ch:p2:lc} a method to approximately determine the low mode subspace used in solver preconditioning is shown.
 These pieces are put together in \cref{ch:p2:multigrid} to construct a variance reduction method called \emph{multigrid low-mode averaging}, which we will show, solves both the cross-term and the $V^{2}$-problem.
-In \cref{ch:p2:numerics}, we show it in action and provide numerical evidence for its flat volume dependence.
+In \cref{ch:p2:numerics}, we show it in action applied to the LO-HVP and provide numerical evidence for its flat volume dependence.
 This part is closed in \cref{ch:p2:chirality} with theoretical considerations about chirality.
 
 \worktodo{solvers and preconditioning}

@@ -1,6 +1,29 @@
-\chapter{Appendix}
-\label{ch:appendix:E}
+\chapter{License and Availability}
+\label{ch:appendix:license}
 
-\worktodo{empty}
+\dictum[Richard Stallman]{%
+  Free software is a matter of liberty, not price. To understand the concept, you should think of ``free'' as in ``free speech'', not as in ``free beer''.}%
+\vskip 1em
 
-Here be dragons.
+\readit{1}
+
+\worktodo{Reproducibility and Software Availability: code availability, licence, compilers, ...}
+
+\doclicenseThis
+
+\section{Code availablility}
+
+All code produced for \cref{part:gpu} of this thesis is licenced under the GNU General Public License (GPL), either version 2 of the License, or any later version.
+The interface code implemented in \openqxd can be found in the Gitlab repository~\cite{gitlab:openqxd-devel}, under the branch name \code{main-thesis-release}.
+The related interface code in \quda can be found in the GitHub repository~\cite{github:quda:chaoos} under the branch name \code{tree/feature/openqxd}.
+Both merge-requests are currently under review.
+
+All code produced for \cref{part:variance} of this thesis is licenced under the GNU General Public License (GPL), either version 2 of the License, or any later version.
+The code implemeting the mulrgrid low-mode averaging method in \openqxd can be found in the Gitlab repository~\cite{gitlab:openqxd-devel}, under the branch name \code{34-lma-scheme}.
+
+\section{Data availablility}
+
+All data produced can be found under ref.~\cite{online:zenodo}.
+A description of the datasets and structure of the data can be found on the Zenodo page.
+
+%\worktodo{jsons and HDF5 files, maybe zenodo}

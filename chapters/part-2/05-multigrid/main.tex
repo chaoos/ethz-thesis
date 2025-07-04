@@ -5,7 +5,7 @@
   It is a tale told by an idiot, full of sound and fury signifying nothing. }%
 \vskip 1em
 
-\readit{1}
+\readit{2}
 
 \worktodo{
 * Multigrid
@@ -29,11 +29,13 @@ D \psi = \eta \;,
 \end{equation}
 possibly for many different right-hand sides $\eta$.
 A suitable class of iterative solvers for this kind of problem are Krylov subspace solvers~\cite{krylov1931numerical,book:saad2003iterative}.
-We will additionally assume the Dirac operator $D$ to be close to singular, i.e. having a large condition number.
+We will additionally assume the Dirac operator $D$ to be non-normal, non-Hermitian\footnote{More important properties of the Wilson and Wilson-Clover Dirac operator will be delayed to \cref{ch:p2:chirality}.} and close to singular, i.e. having a large condition number.
 This is a scenario that occurs often in simulations in the chiral regime, where chiral symmetry is spontaneously broken.
-The presence of low eigenvalues poses problems when it comes to numerical inversion.
-Then the error of the iterative solution is dominated by the low-mode contributions of the operator $D$ which converge the slowest or stall entirely.
-This can be easily seen, because the iterative solution $\psi$ from a Krylov solver is an implicitly generated polynomial of finite degree $n$ in the operator whose coefficients depend on the right-hand side $\eta$.
+The presence of eigenvalues near the complex origin (in the former called \emph{low modes} or \emph{near-null vectors}) pose problems when it comes to numerical inversion.
+The error of the iterative solution is then dominated by the low-mode contributions of the operator $D$ which converge the slowest or stall entirely.
+This can be easily seen, from the iterative solution $\psi$ from a Krylov solver, that is an implicitly generated polynomial of finite degree $n$ in the operator whose coefficients depend on the right-hand side $\eta$.
+
+\tldr{show explicitly the low mode contributions}
 Let us assume for simplicity that the operator is the Hermitian Dirac operator $Q = \gamma^{5}D$, then the polynomial applied to the right-hand side is
 \begin{equation}
 \psi = Q^{-1} \eta \approx \mathcal{P}_{n}^{(\eta)}(Q) \eta \;,
@@ -46,27 +48,34 @@ If we only keep the highest order term of the polynomial and write $\eta$ as lin
 \approx \sum_{i=0} \alpha_i Q^{n} \evec_i + \bigO\left(Q^{n-1}\right)
 = \sum_{i=0} \alpha_i \lambda_i^{n} \evec_i + \bigO\left(Q^{n-1}\right) \;.
 \end{eqnarray}
-The lowest mode components of the solution vector are suppressed the most, whereas the high mode components are amplified.
-This is a peculiarity of Krylov solvers, as they generate a solution in the span of the Krylov subspace~\cite{wright2006numerical,simoncini2003theory}
+The lowest mode components of the solution vector are suppressed, whereas the high mode components are amplified.
+This is a peculiarity of Krylov solvers, as they generate a solution in the Krylov subspace~\cite{wright2006numerical,simoncini2003theory}
 \begin{equation}
-\mathcal{K}_n(Q, \eta) = \{ \eta, Q \eta, Q^{2} \eta, \ldots, Q^{n} \eta \} \;.
+\mathcal{K}_n(Q, \eta) = \vspan{ \eta, Q \eta, Q^{2} \eta, \ldots, Q^{n} \eta } \;,
 \end{equation}
+whereas the vectors $Q^{m} \eta$ have suppressed low mode components for large $m$.
+
+% The Dirac operator is a nearest neighbor stencil.
+% In every iteration it is applied to the current solution vector.
+% Information in the current solution vector on a certain lattice site is slowly propagates through the lattice; one site in each direction per iteration.
+% Low modes are associated with long-range interactions
 
 \tldr{instead: amplify low-mode components}
 In order to complement a Krylov solver, the above analysis shows that a preconditioner for ill-conditioned systems should preferably amplify and not suppress the low-mode components of the solution vector.
-This is sometimes referred to as critical soling down near the chiral limit in solver context.
+In the context of solvers, this is sometimes referred to as critical soling down near the chiral limit.
 
 \subsection{\texorpdfstring{$V^{2}$}{V2}-problem}
 \label{sec:mg:V2:problem}
 
 \tldr{V2 problem of solvers, determining null vectors}
 Related to the problem in the near chiral limit is the $V^{2}$ problem~\cite{Luescher2007} which we have already touched in \cref{ch:p2:introduction} when reviewing the variance reduction method low-mode averaging.
-It states that the dimension of the low mode subspace scales linear in the volume of the lattice \cite{banks1980}.
+It states that the dimension of the low mode subspace scales linear in the volume of the lattice~\cite{banks1980}.
 This is the main motivation behind preconditioning methods such as multigrid~\cite{Babich:2010qb}.
-The idea is to generate an approximate subspace having large overlaps with the true low mode subspace, but it cheap to obtain.
-This is not possible with traditional low mode deflation methods.
+The idea is to generate an approximate subspace having large overlaps with the true low mode subspace, but is comparably cheap to obtain.
+This is not possible with traditional low mode deflation methods, as their cost, memory and storage requirements scale as $\bigO(V^{2})$.
+This is a variant of critical slowing down.
 The property of local coherence (\cref{ch:p2:lc}) is crucial for a computationally cheap generation of such a subspace.
-For this type of preconditioning one generates approximate low mode vectors by either solving the homogeneous system with $\eta=0$
+For this type of preconditioning one generates approximate low mode vectors by either solving the homogeneous system\footnote{The homogeneous system has no solution if $D$ is invertible. One runs a fixed number of iterations of some solver, for instance BiCGSTAB. The produced solution is then rich in low modes, i.e. the slow-to-converge directions.} with $\eta=0$
 \begin{equation}
 D \evec = 0 \;,
 \end{equation}{}
@@ -75,7 +84,7 @@ or inverse iterate a random right-hand side $\eta$
 \evec = \left( D^{-1} \right)^{m} \eta \;.
 \end{equation}
 Both are done to very low precision, where $m$ is \numrange{5}{10}.
-The numerical precision of these modes is in the regime \num{0.1}.
+The numerical precision of such modes is in the regime \num{0.1}.
 
 \tldr{bootstrap set, MG left preconditioning, smoothing}
 The setup phase consist of a definition of a bootstrap set $\mathcal{B}$ that consists of $\Nc = 10-30$ approximate low modes and a description of a coarse lattice and spin degrees of freedom as in \cref{eq:coarse:lattice,sec:lc:spin} respectively.
@@ -166,7 +175,7 @@ Smoothing usually consists of a few steps of a local solver, for instance a GCR 
 The effect is a reduction of the high mode components of the solution vector, since multigrid only affects the low mode components.
 It suffices for the solver to be block local, since the high modes have high frequencies -- they do not require global information to reduce in every step.
 Local solvers strong scale ideally, because of the suppressed communication and locality and they can run on all blocks in parallel.
-Such solvers are sometimes referred to as \emph{communication-avoiding} solvers, for example CA-GCR.
+Such solvers are sometimes referred to as \emph{communication-avoiding} solvers~\cite{naumov2016s}, for example CA-GCR.
 
 \tldr{Illustration of post smoothing}
 Pre-smoothing aims to reduce the high frequency components of the current error before restricting, whereas post-smoothing aims to dampen those high frequency modes introduced during interpolation.
@@ -178,6 +187,25 @@ See \cref{fig:post:smoothing} for an illustration of the effect of post-smoothin
     \includegraphics[width=0.9\linewidth]{\dir/img/post_smoothing}
     \caption{The effect of post-smoothing. The prolongation of the solution vector after a coarse-grid solve might look similar to the blue line in the right panel. Post-smoothing has the effect of filing off the edges of the staircase-shaped prolonged solution as depicted by the yellow line in the left panel. The prolonged error correction is then closer to the actual solution on the finer level (dashed gray line in both panels) and thus of higher quality.}
     \label{fig:post:smoothing}
+\end{figure}
+
+\subsection{Summary}
+
+\tldr{intuitive argument}
+Preconditioning as described above can be seen through the following intuitive argument.
+The Dirac operator is a nearest neighbor stencil.
+In every iteration it is applied to the current solution vector.
+Information in the current solution vector on a certain lattice site slowly propagates through the lattice; one site per iteration in each direction.
+Even though the coarse Dirac operator is still nearest neighbor, information on the coarse grid travels faster through the lattice, because sites are further apart (i.e. one coarse grid hop corresponds to multiple fine-grid hops).
+This enhances non-local information exchange on the lattice with fewer iterations on the coarse grid.
+Additionally the coarse grid is constructed from approximate low modes which are associated to long-range interactions allowing long-distance propagation of information.
+This concept is illustrated in \cref{fig:coarse:stencil}.
+
+\begin{figure}
+\centering
+\includestandalone[width=0.9\linewidth]{\dir/img/long_distance}
+\caption{Illustration that the coarse grid Dirac stencil transports information further through the lattice. Upper left: Dirac stencil on a $6 \times 6$ lattice connecting nearest neighbors. Instead we could restrict the vector to the coarse $3 \times 3$ grid, apply the coarse Dirac stencil (bottom center) and prolong back. The result is a longer range interaction (upper right). The information transfer is restricted to the coarse degrees of freedom, i.e. the low modes of the fine grid which in turn are associated to long-range interactions. Therefore not \emph{all} information has propagated, but the most relevant information has.}
+\label{fig:coarse:stencil}
 \end{figure}
 
 \section{Multigrid propagator}
@@ -200,7 +228,7 @@ We will generalize this equation in a recursive way by applying it repeatedly to
 \subsection{Recursive notation}
 
 \tldr{all can be formulated recursively}
-Before we continue, we will formulate multigrid recursively and shift in notation by defining the $\lvl$-th recursive coarse Dirac operator as coarsening of the $(\lvl-1)$-th coarse Dirac operator\footnote{The notation with the hat is clean and concise, but not suitable for multiple levels -- $\hat{\hat{\hat{D}}}$.}
+Before we continue, we will formulate multigrid recursively and shift in notation by defining the $\lvl$-th recursive coarse Dirac operator as coarsening of the $(\lvl-1)$-th coarse Dirac operator\footnote{The notation with the hat is clean and concise, but as in real life, wearing multiple hats is awkward -- $\hat{\hat{\hat{D}}}$.}
 \begin{equation}
 \onlvl{D}{\lvl} = \onlvl{\restrictor}{\lvl-1} \onlvl{D}{\lvl-1} \onlvl{\prolongator}{\lvl-1} \;,
 \qquad
@@ -228,7 +256,7 @@ We therefore have analogous to \cref{eq:mg:prop:decomp:2lvl} the full propagator
 + \onlvl{\prolongator}{\lvl} \left( \onlvl{D}{\lvl+1} \right)^{-1} \onlvl{\restrictor}{\lvl} \;,
 \end{equation}
 with $\lvl=0$ being exactly equal to \cref{eq:mg:prop:decomp:2lvl}.
-For convenience we define the inter-grid operators moving data directly between levels $0$ and $\lvl > 0$
+For convenience we define the compound inter-grid operators moving data directly between levels $0$ and $\lvl > 0$
 \begin{align}
 \onlvl{\mathcal{\restrictor}}{\lvl}
 = \onlvl{\restrictor}{\lvl-1} \cdots \onlvl{\restrictor}{0}
@@ -250,7 +278,7 @@ The recursive notation is depicted in \cref{fig:recursive:nesting}.
 \end{figure}
 
 \tldr{smoothing in recursive notation more powerful}
-In this notation a pre- and post-smoother can be added to every level separately by extending the restrictors and prolongators,
+In this notation pre- and post-smoother can be added to every level separately by extending the restrictors and prolongators,
 \begin{align}
 \onlvl{\restrictor}{\lvl} &\longrightarrow \onlvl{\restrictor}{\lvl} \onlvl{F}{\lvl}_{\text{pre}} \;, \\
 \onlvl{\prolongator}{\lvl} &\longrightarrow \onlvl{F}{\lvl}_{\text{post}} \onlvl{\prolongator}{\lvl} \;,
@@ -265,10 +293,10 @@ with smoother acting on level $\lvl$,
 
 \tldr{N-lvl MG prop decomposition}
 Now, we are ready to discuss a propagator decomposition using $\Nlvl$ of multigrid.
-A general decomposition into $\Nlvl$ levels as in \cref{eq:mg:prop:decomp:2lvl} can now be obtained by repeatedly plugging \cref{eq:mg:rec:prop:decomp:onlvl} into the full propagator $\prop=D^{-1}$.
+A general decomposition into $\Nlvl$ levels as in \cref{eq:mg:prop:decomp:2lvl} can be obtained by repeatedly plugging \cref{eq:mg:rec:prop:decomp:onlvl} into the full propagator $\prop=D^{-1}$.
 With the notation from the previous section, we obtain a decomposition as
 \begin{equation} \label{eq:mg:rec:prop:decomp:main}
-\prop = \sum_{\lvl=0}^{\Nlvl-1} \prop_{\lvl}
+\prop = \sum_{\lvl=0}^{\Nlvl-1} \prop_{\lvl} \;,
 \end{equation}
 into differences on the inner levels $\lvl < \Nlvl-1$,
 \begin{equation} \label{eq:mg:rec:prop:decomp:inner:lvl}
@@ -298,7 +326,7 @@ This is recursive coarsening as described above.
 Clearly the second level can also be obtained by coarsening directly level \num{0} instead of level \num{1}, by defining a block of size $b_{\mu} = 8$ with respect to level \num{0}, instead of level \num{1}.
 These are two strategies to obtain the same.
 We either coarsen recursively or always relative to level \num{0}.
-The former strategy results in lattices which are always nestings of each other.
+The former strategy results in lattices which are always nestings of each other as depicted in \cref{fig:recursive:nesting}.
 The latter one allows more freedom in defining levels, which might not always be valid coarsenings of each other.
 To catch up on the example above, instead of defining the second level as described, we could define it with a block size of $\onlvl{b}{2}_{\mu} = 6$, not with respect to the previous level, but with respect to level \num{0}.
 This would result in a coarse lattice of size $\onlvl{L}{2}_{\mu} = 48 / 6 = 8$ which is still coarser than level \num{1} with $\onlvl{L}{1}_{\mu} = 12$, but cannot be obtained as direct coarsening of level \num{1}, because \num{12} is not a multiple of \num{8}.
@@ -307,7 +335,7 @@ This would result in a coarse lattice of size $\onlvl{L}{2}_{\mu} = 48 / 6 = 8$ 
 Such a scenario might not be meaningful in a solver preconditioning scenario, where inter-grid data movement among subsequent levels is crucial for overall performance.
 In terms of a propagator decomposition it indeed makes sense, not only because it provides more flexibility to fine-tune the evaluation of an observable as seen later, but also because we usually move data from and to level \num{0} and other levels.
 The two variants also differ when it comes to smoothing.
-The recursive variant allows control of pre- and post-smoother between all levels separately, whereas the other variant only allows a pre- and post-smoothing step on level \num{0}.
+The recursive variant allows control of pre- and post-smoother between all levels separately, whereas the other variant only allows pre- and post-smoothing on level \num{0}.
 
 \tldr{we use loop variant in implementation}
 Implementation effort as well as performance of the two variants clearly differ and we will not discuss them further.
@@ -332,7 +360,7 @@ We are now equipped to formulate a novel variance reduction method to evaluate $
 The method is expected to be beneficial whenever low-mode averaging is beneficial.}
 
 \tldr{n-pt function decomposition, grouping and illustration}
-We will use the decomposition of the quark propagator established in the last section, resulting in a hierarchical $\Nlvl$-level scheme which naturally arises from the nested decomposition of the fine-grid lattice.
+We will use the decomposition of the quark propagator established in the last section, resulting in a hierarchical $\Nlvl$-level scheme which naturally arises from the hierarchical decomposition of the fine-grid lattice.
 For generality we will start with a general connected $n$-point function
 \begin{equation} \label{eq:Cxyz}
 C(x_1;x_2;\ldots;x_n) = \tr \left\{
@@ -425,7 +453,7 @@ The fact that the coarse Dirac operators have exactly the same sparsity structur
 \section{Two-point connected correlator}
 
 \tldr{2-pt example simplified heavily}
-We will continue with the connected bare isovector vector current correlator in the time-momentum representation already touched upon in \cref{sec:2pt-corr,eq:G:corr:connected} -- out target observable.
+We will continue with the connected bare isovector vector current correlator in the time-momentum representation already touched upon in \cref{sec:2pt-corr,eq:G:corr:connected} -- our target observable.
 Although the decomposition can be applied to any $n$-point function as seen above.
 For a two-point function the formulas simplify heavily.
 We have the full correlator
@@ -468,7 +496,7 @@ Clearly for every sample of the fine-grid \Ln{0}-term we have to solve the full 
 Solving the coarse system is significantly cheaper than solving the fine-grid system if the subspace was chosen properly.
 This is, if the coarse dimension is much smaller than the fine one, $\dim_{\mathbb{C}}(\coarse{\vslattice}) \ll \dim_{\mathbb{C}}(\vslattice)$.
 Our strategy will be as follows: the expensive \Ln{0}-term will be evaluated with as few as possible sources, for instance \numrange{1}{10}, whereas the cheap \Ln{1}-term will be sampled with many sources, say \numrange{100}{1000}.
-We will present different estimators for the level contributions, but every estimator that is valid for fine-grid correlator can be safely used on coarse levels.
+We will present different estimators for the level contributions, but every estimator that is valid on the fine-grid correlator can be safely used on coarse levels.
 
 \subsection{Point-source estimator on level $k$}
 
@@ -693,7 +721,7 @@ It is straightforward to generalize to other source types.
 
 \tldr{sources cascade down, but not up}
 We want to emphasize that a stochastic sample of level $\lvl$ also requires solves on all coarser levels.
-However this gives us a stochastic sample on that level too.
+However this gives us a stochastic sample on all coarser levels too.
 We may use the same stochastic source as sample on multiple levels, since these are independent traces.
 
 % \begin{align}
@@ -768,10 +796,13 @@ G_{\Ln{(\Nlvl-1)}}(t)
 	\fieldx{\onlvl{\Gamma_2}{\Nlvl-1}}{t+y_0}
 \right\} \;.
 \end{multline}
-The $\Gamma$-matrices are defined as in \cref{eq:coarse:index} as coarsened operators with the time extent as open index, i.e. defined with a partial trace over space $\idxspace$, color $\idxcolor$ and spin $\idxspin$, explicitly
+The $\Gamma$-matrices are defined as in \cref{eq:coarse:index} as coarsened operators with the time extent as open index, i.e. defined with a partial trace over space $\idxspace$, color $\idxcolor$ and spin $\idxspin$, but not time, see \cref{eq:partial:trace}.
+Explicitly
 \begin{equation} \label{eq:gamma:partial:trace}
 \left( \onlvl{\Gamma_k}{\Nlvl-1} \right)_{ij} = \tr_{\idxspace \times \idxspin \times \idxcolor} \left( \Gamma_k \phi_j \phi_i^\dagger \right) \;.
 \end{equation}
+
+\tldr{compare to full-vol averaged corr}
 The trace in \cref{eq:mglma:coarsest:exact} is over all coarse degrees of freedom present on the coarse grid.
 The fine-grid spacetime dependency in the trace is shifted into the coarse $\Gamma$-matrices making a full lattice volume average straightforward.
 Let us compare this form with the full lattice volume averaged correlator $\lvert \Omega \lvert = \lvert \idxspacetime \lvert$ on the fine grid,
@@ -786,7 +817,7 @@ Let us compare this form with the full lattice volume averaged correlator $\lver
 \end{equation}
 We see that it has exactly the same form, just with some replacements.
 The fine-grid $\Gamma$-matrices are replaced with the coarse ones, the fine-grid inverse Dirac operator $\prop=D^{-1}$ is replaced with the coarse one $(\onlvl{D}{\Nlvl-1})^{-1}$ and finally the trace over color, spin and space is replaced by a trace over coarse color, spin and space.
-Note that the original fine-grid trace over color, spin and space is done on the $\Gamma$-matrices \cref{eq:gamma:partial:trace}.
+Note that the original fine-grid trace over color, spin and space is performed on the $\Gamma$-matrices \cref{eq:gamma:partial:trace}.
 However, the term is calculated exactly and averaged over the full spacetime volume, its variance will be minimal, i.e. the gauge variance of that level.
 
 \tldr{LMA does exact coarsest lvl, but without blocking}
@@ -810,7 +841,7 @@ G_{\Ln{1}}(t)
 (\coarse{Q}^{-1})_{[mn]}
 \left( \fieldx{\coarse{\gamma^{5} \Gamma_2}}{t+y_0} \right)_{[nk]} \;.
 \end{equation}
-Using the fact that in case of low-mode averaging the coarse Hermitian Dirac operator $\coarse{Q}$ is diagonal with eigenvalues along its diagonal and reversing the definition of the coarse $\gamma$-matrices as in \cref{eq:coarse:index};
+Using the fact that in case of low-mode averaging the coarse Hermitian Dirac operator $\coarse{Q}$ is diagonal with eigenvalues along its diagonal, $(\coarse{Q}^{-1})_{[kl]} = \delta_{kl} \lambda_k^{-1}$, and reversing the definition of the coarse $\Gamma$-matrices as in \cref{eq:coarse:index};
 \begin{multline}
 G_{\Ln{1}}(t)
 = \frac{1}{\lvert \idxspacetime \rvert} \sum_{y_0=0}^{L_0-1} \sum_{k,m}
@@ -834,11 +865,11 @@ G_{\Ln{1}}(t)
 	\fieldx{\phi_k}{t+y_0,\vect{x}}
 } \,,
 \end{multline}
-we readily find \cref{eq:Gconn:eigen-eigen} identically with the bootstrap vectors chosen as low modes $\phi_i = \evec_i$ as is done in an LMA scenario.
+we readily find \cref{eq:Gconn:eigen-eigen} identically, with the bootstrap vectors chosen as low modes $\phi_i = \evec_i$ as is done in an LMA scenario.
 
 \tldr{terminating lvl is LMA}
 In fact even in a multigrid scenario with more than \num{2} levels, one has the freedom to choose the coarsest lattice to be trivial resulting in a final layer of traditional low-mode averaging.
-Even though such a layer does add only negligible cost, it is only useful for small enough lattices as we will see later.
+Even though such a layer does add only negligible cost, it is only useful for small enough lattices as we will see in the numerical study \cref{ch:p2:numerics}.
 
 \subsection{$V^2$ problem of LMA}
 
@@ -861,7 +892,8 @@ Low-mode error components in the iterative solution are treated by solving the c
 \tldr{summary MG as prop decomposition}
 The quark propagator (the inverse of the Dirac operator) can be decomposed into a contribution along the multigrid subspace and a remainder.
 This can be repeated recursively, leading to a decomposition of an arbitrary $n$-point function into $\Nlvl$ multigrid level contributions in a natural way.
-Every level can then be evaluated individually with a different evaluation strategy.
+Every level can be evaluated individually with a different evaluation strategy.
+Low-mode averaging is a trivial special case of this decomposition.
 
 % \worktodo{
 % 	* Krylov solvers supress low mode contributions

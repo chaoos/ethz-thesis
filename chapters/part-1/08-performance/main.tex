@@ -31,7 +31,7 @@ This chapter will present performance assessments of the various implementations
 The goal is to determine production readiness of the code to run on current accelerator-based super-computing centers, mainly targeting good performance on the very recent GH200 node at CSCS~\cite{fusco2024}.
 All machines involved in data taking are specified in \cref{sec:perf:hardware}.
 The physics program of the \RCstar collaboration is centered around lattices with \Cstar boundary conditions and occasionally periodic ones.
-Thus we ran performance tests on lattices specified in \cref{sec:perf:ensembles}.
+Thus we ran performance tests on lattices specified in \cref{sec:perf:ensembles}, where the methodology is discussed in \cref{sec:perf:methodology}.
 Among the investigated features were the contributions of the dual process grid (\cref{sec:perf:dual}), the efficiency of the asynchronous solver with concurrent workload on the CPU (\cref{sec:perf:solver:async}), the blocked solver acting on multiple RHS at the same time (\cref{sec:perf:solver:mrhs}), asymptotic scaling behavior of the Dirac operator (\cref{sec:perf:dop}) and a production multigrid solver (\cref{sec:perf:solver}).
 
 \section{Hardware specifications}
@@ -40,7 +40,7 @@ Among the investigated features were the contributions of the dual process grid 
 \newcommand{\datataking}[1]{The data was taken on \emph{#1}, see \cref{sec:perf:hardware}.}
 
 \tldr{machine we ran on}
-The performance measures that follow are obtained on the machines
+The performance measures that follow were obtained on the machines
 \begin{itemize}
     \item \emph{Daint-Alps} at CSCS, Switzerland, 4\x NVIDIA\textsuperscript{\textregistered} Grace @ 3GHz (72 Arm Neoverse V2 cores), 4\x 128GB LPDDR memory, 4\x NVIDIA\textsuperscript{\textregistered} Tesla\textsuperscript{\textregistered} H100 (96GB HBM2 memory)
     \item \emph{Leonardo Booster} at CINECA, Italy, 1\x Intel\textsuperscript{\textregistered} Xeon\textsuperscript{\textregistered} Platinum 8358 @ 2.6 GHz (32 cores, Icelake), 8\x 64 GB DDR4-3200 memory, 4\x NVIDIA\textsuperscript{\textregistered} Ampere A100 (64GB HBM2 memory)~\cite{leonardo:booster}
@@ -53,7 +53,7 @@ The performance measures that follow are obtained on the machines
 \label{sec:perf:ensembles}
 
 \tldr{lattices we ran on}
-The performance measures that follow are obtained using the ensembles described in \cref{tab:perf:ensembles}.
+The performance measures that follow were obtained using the ensembles described in \cref{tab:perf:ensembles}.
 \begin{table}[htbp]
 \centering
 \begin{tabular}{cccccc}
@@ -481,11 +481,16 @@ Wrapping up the performance section, we conclude that on a cluster with GH200 no
 However, performing runs with more than \num{32} GH200 nodes is not advisable, because then we are clearly in the bad strong scaling region, unless we study larger lattices as the ones considered or increase the number of RHSs substantially.
 In a field where the total problem size naturally grows with the available compute power, good weak scaling makes our software stack future proof.
 The fact that the largest lattice considered strong scales up to \num{512} GPUs indicates that the code is ready for the exascale.
+
 %On the other side, evaluating observables usually consists of computations on $\bigO(1000)$ independent gauge field configurations.
 %Solving the Dirac equation on all configs of an ensemble can easily be done embarrassingly parallel with one job of size \numrange{8}{16} nodes per config and a RHS batch size of \numrange{4}{32}.
 
 Computations on the CPU can efficiently be overlapped with concurrent solves on the GPU, if power supply of the machine allows it as proven on \emph{Leonardo Booster}.
 Finally, for maximizing node utilization of CPU workloads, it can conveniently be scaled out within the node by using the dual process grid adding negligible performance overhead.
+
+The inherent challenging strong scaling of multigrid is not a big problem for multiple reasons.
+First, we have now many tools available to mitigate it, such as overlapping multigrid solves with computations on the CPU or solving an array of RHSs in one batch.
+Second, in reality the only relevant metric usually boils down to time or energy to solution.
 
 The data still shows some non-negligible contributions of H2D and D2H transfers (red and green in \cref{fig:dual:bar}).
 In future developments, the H2D transfers could be eliminated to a large extent by setting up the source vector directly on the GPU, specially when dealing with random or point sources.

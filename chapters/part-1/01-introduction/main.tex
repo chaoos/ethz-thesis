@@ -69,14 +69,14 @@
 }
 
 \tldr{ML dictates HPC trends -> GPU}
-In the last few years modern hardware in supercomputing centers experienced a paradigm shift away from classical monolithic general-purpose CPU architectures towards high throughput and massively parallel GPU accelerators~\cite{online:top500,khan2021analysis,Satoshi:2009,Navarro:2014}.
+In the last few years, modern hardware in supercomputing centers experienced a paradigm shift away from classical monolithic general-purpose CPU architectures towards high throughput and massively parallel GPU accelerators~\cite{online:top500,khan2021analysis,Satoshi:2009,Navarro:2014}.
 These are substantially different machines targeted at specific problem classes.
 Namely the computational challenges that come with large machine learning and artificial intelligence (ML/AI) workloads required for instance for large language models -- one of the biggest consumers of high performance computing (HPC) and the main influencers of new hardware developments and trends in the area of scientific computing.
 The ML/AI community has pushed hardware manufacturers to build specialized integrated circuits directly aiming at their problems.
 An example of such a new hardware development that entered the GPU is the tensor core \cite{markidis2018nvidia,10.1007/978-3-030-10549-5_35} -- a hardware unit to perform small dense matrix multiply-accumulate operations.
 
 \tldr{ML is dense GEMM, multi-GPU, mem-bound, training is markov chain}
-A typical machine learning pipeline consists of about 90-95 \% of linear algebra in the form of mostly memory bandwidth limited dense large matrix-matrix or matrix-vector multiplications (GEMM, GEMV) and a small remainder of about 5-10 \% non-linear activation functions which are usually compute bound, because they often involve transcendental functions\footnote{The larger the large language models the more the linear algebra part dominates.}\footnote{GEMMs may become compute bound on high-bandwidth memory (HBM) and datatypes where no tensor cores are available~\cite{fusco2024}.}.
+A typical machine learning pipeline consists of about 90-95 \% linear algebra in the form of memory bandwidth limited dense large matrix-matrix or matrix-vector multiplications (GEMM, GEMV) and a small remainder of about 5-10 \% non-linear activation functions which are usually compute bound, because they often involve transcendental functions\footnote{The larger the large language models the more the linear algebra part dominates.}\footnote{GEMMs may become compute bound on high-bandwidth memory (HBM) and datatypes where no tensor cores are available~\cite{fusco2024}.}.
 These GEMMs may have multiple thousands of rows and columns and are tiled into many sub-matrices to fit the tensor cores~\cite{novikov2015tensorizing}.
 Memory requirements are proportional to the number of parameters which may go into the trillions for very large models~\cite{isaev2023}.
 Since the training steps are comparable to a Markov chain, ML pipelines need to scale out and utilize hundreds of GPUs concurrently to be able to process in a reasonable time.
@@ -85,8 +85,8 @@ Since the training steps are comparable to a Markov chain, ML pipelines need to 
 Originally designed for efficient parallel real-time graphics rendering, GPUs are well-suited for this class of problems, since they have higher memory throughput than CPUs.
 They were designed with a wider memory bus at the cost of latency, heavily optimized for high throughput and sequential memory access as opposed to CPUs which are optimized for random memory access and low latency.
 The GPU is a latency hiding machine using caches with a less stringent cache coherency protocol than the CPU.
-Explicit synchronization though memory barriers might be triggered manually by the developer to enforce all threads to see the same memory.
-While CPUs have powerful individual cores capable of branch prediction and high single-thread performance, GPUs have thousands of lightweight threads with limited control flow handling not efficient for frequent branching and thread divergence.
+Explicit synchronization through memory barriers might be triggered manually by the developer to enforce all threads to see the same memory.
+While CPUs have powerful individual cores capable of branch prediction and high single-thread performance, GPUs have thousands of lightweight threads with limited control flow handling, not efficient for frequent branching and thread divergence.
 The loose cache coherency protocol, the wider memory bus, the reduced memory hierarchy depth and the highly parallel execution model -- featuring both SIMD (Single Instruction, Multiple Data) and SIMT (Single Instruction, Multiple Threads) -- make GPUs well-suited for many computational scientific tasks, such as machine learning, data analytics, and large-scale simulations.
 
 %However, this class of problems is suited well for processing on GPUs, since they have higher memory bandwidth than CPUs, because they were designed with a wider memory bus at the cost of latency, heavily optimized for sequential memory access and high throughput.
@@ -105,21 +105,14 @@ on GPU accelerators utilizing modern clusters.
 Most lattice simulations consist of two parts with slightly different computational motives; sampling of gauge fields and evaluation of observables.
 However, both are dominated by repeated solves of the Dirac equation.
 For gauge field sampling, the gauge field defining the Dirac operator might change from solve to solve.
-On the other hand in case of observable evaluation, the gauge field does not change too frequently meaning that the same linear system of equations has to be solved for possibly thousands of right-hand sides.
+On the other hand in case of observable evaluation, the gauge field does not change too frequently, meaning that the same linear system of equations has to be solved for possibly thousands of right-hand sides.
 The goal of this work is to offload solves in the context of observable evaluation to the accelerator.
 
-\tldr{theory: high-precision lattice is +QED}
-Further motivation for such an undertaking come from recent theoretical determinations of the hadronic vacuum polarization contribution (HVP) to the Muon g-2 which target sub-percent precision on the resulting quantity~\cite{RBC_2024, bmw_2017, Djukanovic:2024cmq, bmw_2024, milc_gm2, ExtendedTwistedMass:2022jpw, FermilabLattice:2024yho,snowmass:2020,snowmass:2025}.
-This poses major challenges for a number of conceptual and computational reasons.
-High precision determinations of gold-plated hadronic quantities like the mentioned one require us to consider quantum electrodynamic (QED) effects, because their contribution to the observable exceed the sub-percent.
-This can be done perturbatively in a QCD only simulation in the observable evaluation phase~\cite{deDivitiis:2011eh,deDivitiis:2013xla} or by dynamically simulating both theories QCD+QED in the gauge field sampling phase~\cite{Lucini:2015,10.1143/PTP.120.413,PhysRevLett.117.072002,Blum:2017cer,Feng:2018qpx}.
-
-\tldr{our theory approach: we do QCD+QEDC + Cstar boundaries}
-The approach of the \RCstar collaboration for high precision lattice determinations is to non-perturbatively simulate QCD+QED directly in the Hybrid Monte Carlo algorithm when sampling gauge fields. This is accomplished through the use of \Cstar spatial boundary conditions~\cite{cstar:Wiese1992,cstar:Polley1993,cstar:Kronfeld1991,cstar:Kronfeld1993}, which respect locality and Gauss's law at the same time reducing finite-size effects compared to periodic boundaries or other lattice QED formulations. This approach allows a local and gauge-invariant formulation of QED in a finite volume.
+\worktodo{check if this still has a roter faden, because I removed theory: high-precision lattice is +QED and our theory approach: we do QCD+QEDC + Cstar boundaries}
 
 \tldr{our CPU approach (up to now): we did this on CPU, MPI}
 Our codebase, \openqxd~\cite{openqxd,gitlab:openqxd}, extends the widely used \openqcd-1.6 package~\cite{online:openqcd}, which supports the $O(a)$-improved Wilson fermion discretization (from now on, we will refer to these codebases simply as \openqxd and \openqcd, respectively).
-\Openqxd extends \openqcd by allowing the dynamic simulation of QCD together with QED by employing \Cstar boundary conditions.
+\Openqxd allows the dynamic simulation of QCD together with QED by employing \Cstar boundary conditions.
 These features make \openqxd a versatile tool for achieving higher levels of precision.
 The codebase is designed for efficient parallel execution on pure-MPI CPU-based supercomputing architectures.
 In order to make \openqxd run on modern GPU-based clusters, we have many options.
@@ -133,13 +126,13 @@ With a pure-MPI code as basis, investigating this possibility resulted in disapp
 \tldr{alternative: existing solver suite}
 Plenty of Krylov solver suites with efficient implementations on various GPU architectures exist~\cite{doi:10.1177/1094342016646844,7529929,866,816,833,KNIBBE2011281,ganesan2020sparshamglibraryhybridcpugpu,anzt2017preconditioned}.
 Nevertheless an efficient implementation of the Dirac stencil is crucial for such libraries to perform well.
-Often these general solver suites are not on eye level with state-of-the-art domain-specific solvers highly optimized for lattice QCD and its unusual stencil operator.
-These suites often take the operator in terms of a sparse matrix format or a stencil formulation that does not allow fine grained control.
+Often these general solver suites are not on eye level with state-of-the-art domain-specific solvers that are highly optimized for lattice QCD and its unusual stencil operator.
+These suites often take the operator in terms of a sparse matrix format, a matrix-free form or a stencil formulation that does not allow fine grained control.
 The way the gauge field is represented and applied is crucial for the performance of a matrix-vector operation.
-Precondition methods like multigrid lack comparable implementations for general problems compared to ones optimized for the various discretizations of the lattice Dirac operator.
+Precondition methods like multigrid lack comparable implementations for general problems, in contrast to the ones optimized for the various discretizations of the lattice Dirac operator.
 
 \tldr{alternative: own CUDA/HIP implementation}
-Another alternative would be to change \openqxd's memory layouts to ones more favorable for GPUs and incorporate GPU code in terms of CUDA and/or HIP runtime calls directly into the core components of the application. Certainly this would be the cleanest solution without any external dependencies, but the intrusions into the core components will be non-trivial and breaking the CPU code unless one maintains two versions. The effort of such an undertaking will be high and results can be expected only late in the development process, optimized code even only at the end.
+Another alternative would be to change \openqxd's memory layouts to ones more favorable for GPUs and incorporate GPU code in terms of CUDA and/or HIP runtime calls directly into the core components of the application. Certainly this would be the cleanest solution without any external dependencies, but the intrusions into core components will be non-trivial and breaking the CPU code unless one maintains two versions. The effort of such an undertaking will be enormous and results can be expected only late in the development process, optimized code even only at the end.
 
 \tldr{computationally: We do this now with solves to QUDA}
 Among the various possibilities for GPU-accelerating lattice QCD calculations, we choose to interface \openqxd with the \quda library~\cite{QUDApaper,Babich:2011np,Clark:2016rdz} -- a lattice QCD library which provides optimized algorithms for NVIDIA and AMD GPUs, including an efficient iterative solver for the Dirac equation as well as a state-of-the-art multigrid preconditioning tailored for lattice QCD.
@@ -158,8 +151,8 @@ Further developments go into direction of a CUDA/HIP porting of large parts of t
 Development is still in progress in a private GitHub repository and a release date is not communicated yet, a status report can be found in ref.~\cite{online:openqcdongpu}.
 
 \tldr{review: tmlqcd}
-The software package tmLQCD~\cite{jansen2009} already went the path we did by coupling to \quda.
-They offload solves of the Dirac equation, but in the meantime also large parts of the Hybrid Monte Carlo (HMC) algorithms as of writing this document~\cite{Kostrzewa:2022,Finkenrath:2023,Garofalo:2025}.
+Developers of the software package tmLQCD~\cite{jansen2009} already went the path we did by coupling to \quda.
+They offload solves of the Dirac equation, but in the meantime large parts of the Hybrid Monte Carlo (HMC) algorithm are offloaded too~\cite{Kostrzewa:2022,Finkenrath:2023,Garofalo:2025}.
 
 \tldr{review: grid}
 Grid~\cite{Boyle:2015,github:grid} is mainly targeted at domain wall and Möbius fermions, but simulations of Wilson-Clover fermions are supported too~\cite{Richtmann:2019}.
@@ -171,7 +164,7 @@ Chroma~\cite{Edwards:2004sx} was developed and optimized for CPU based machines~
 
 \tldr{review: milc}
 MILC~\cite{github:milc,online:milc} is used for dynamical simulations of staggered and HISQ fermions.
-It is interfaced to \quda and Grid.
+It is interfaced to both \quda and Grid.
 
 %   tmLQCD
 %   GRID
@@ -203,10 +196,12 @@ We are interested in solving the lattice Dirac equation~\cref{eq:dirac:equation}
 %The system of linear equations of interest is the Dirac equation on the lattice~\cref{eq:dirac:equation}.
 It is the most time intensitve kernel given many right-hand sides $\eta$.
 Offloading this kernel allows us to retain the functionality of existing applications while interfacing only a minimal set of parameters.
-The interface needs to transmit field data from one applicaprocess of interfacing tion to the other.
+The interface needs to transmit field data from one application to the other.
 Different conventions, memory layouts, data types, precisions, storage formats, freedom in $\gamma$-basis choice, boundary conditions and many more have to be taken into account when designing an interface.
-The work that will follow concentrates on the measurement part of the workflow, i.e. offloading of solves of the Dirac equation.
+The work hereafter concentrates on the measurement part of the workflow, i.e. offloading of solves of the Dirac equation.
 Although the gauge fields are periodically updated along the Markov chain, in the measurement part of the workflow they are kept fixed.
+
+%process of interfacing 
 
 % The solution of this system for many right-hand sides $\eta$ is the most time
 % intensive kernel of the Monte Carlo algorithm, whose correctness can be
@@ -227,8 +222,10 @@ Although the gauge fields are periodically updated along the Markov chain, in th
 \tldr{remainder of the part}
 The rest of this part is arranged as follows.
 %The remainder of this chapter introduces the theoretical background for QCD and QCD+QED lattice simulations. 
-\Cref{ch:p1:openqxd,ch:p1:quda} introduce the \openqxd and \quda codebases, their design choices, memory layouts and other features relavant for this work.
-\Cref{ch:p1:interface}, the main piece of this part, details the process of interfacing \openqxd with the \quda library: it discusses the modifications to the memory layout of lattice fields, the implementation of $C^\star$ boundary conditions in \quda, the extension of \quda to handle QCD+QED simulations and the various ways to access the interface.
+\Cref{ch:p1:openqxd,ch:p1:quda} introduce the \openqxd and \quda codebases, their design choices, memory layouts and other features relevant for this work.
+\Cref{ch:p1:interface}
+, the main piece of this part,
+details the process of interfacing \openqxd with the \quda library: it discusses the modifications to the memory layout of lattice fields, the implementation of $C^\star$ boundary conditions in \quda, the extension of \quda to handle QCD+QED simulations and the various ways to access the interface.
 \Cref{ch:p1:develop} describes the steps needed to call \quda solvers in various scenarios from within \openqxd, that is initialization, parameter setup, error handling, and finalization.
 %\Cref{ch:p1:building} explains how to build \openqxd with \quda support.
 %The \quda solver expects the input file to describe various solver parameters. How this may look like is described in \cref{ch:p1:running}.

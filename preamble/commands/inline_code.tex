@@ -6,7 +6,9 @@
 \tcbset{
   codebase/.style={
     enhanced,
-    fontupper=\vphantom{Ägpyj}\fontfamily{qcr}\selectfont,
+    %fontupper=\vphantom{Ägpyj}\fontfamily{qcr}\selectfont,
+    %fontupper=\vphantom{Ägpyj}\ttfamily,
+    fontupper=\vphantom{Ägpyj}\fontfamily{pcr}\selectfont,
     colframe=white,
     frame style={opacity=0},
     colback=codebgcolor!12,
@@ -21,13 +23,15 @@
 \newtcbox{\eqcodebox}{codebase,    equal height group=B}
 \newtcbox{\fncodebox}{codebase,    equal height group=C}
 \newtcbox{\codebreakbox}{codebase, equal height group=D}
+\newtcbox{\capcodebox}{codebase,   equal height group=E}
 
 %\def\code#1{\codebox{\texttt{#1}}}
 %\def\code#1{\codebox{\mintinline[fontsize=\small]{text}{#1}}} % creates a intermediate file for EVERY \code command
 
-\def\code#1{\codebox{#1}} % original
+\def\code#1{\codebox{#1}} % regular inline code in main text, original
 \def\eqcode#1{\eqcodebox{#1}} % original
-\def\fncode#1{\fncodebox{#1}} % footnote code original
+\def\fncode#1{\fncodebox{#1}} % footnote code
+\def\capcode#1{\capcodebox{#1}} % caption code
 
 % for inline \code{blabla} pieces that extend over the line break. This to manually break the line. Replace \code{bla} with \codebreak{bla} in those cases
 \def\codebreak#1{\linebreak \codebreakbox{#1}}

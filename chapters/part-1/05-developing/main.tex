@@ -108,7 +108,7 @@ It was intentionally designed this way to allow seamless integration in such use
 
 \tldr{compile time constant}
 If we build without the flag \code{QUDA\_INTERFACE}, the highlighted parts are removed and the code falls back to the standard function that dispatches the available solvers present in \openqxd
-\footnote{If then called with a \quda solver, it will gracefully exit with a message \code{Unknown solver QUDA}.}.
+\footnote{If then called with a \quda solver, it will gracefully exit with a message \capcode{Unknown solver QUDA}.}.
 With the flag set, we enable a new solver type \code{QUDA}.
 If the input file provides a solver of that type, the function in the snippet will offload the solve by calling the interface function \code{openQCD\_qudaInvert()}.
 The variable \code{id} in the code snippet is the solver identifier from the input file.
@@ -336,7 +336,7 @@ This may look as in \cref{lst:develop:pipelining}.
 For function descriptions, please refer to \cref{sec:interface:solver:async}.
 We can clearly identify the warm-up phase as the first iteration of the outer loop, and the wind-down phase as the finishing contraction in the last line.
 Between we see the filled pipeline which solves the current set of sources and contracts the last set of solutions concurrently.
-Notice that the contraction between the start and wait function must use the returned MPI communicator \code{comm}\footnote{We note that the global communicator \code{MPI\_COMM\_WORLD} provided by MPI to contain all processes will not work as expected in the above scenario between the start and wait functions and should be avoided, because by definition all threads belong to this communicator. Communication using this communicator will most certainly error or misbehave on strict MPI implementations.}.
+Notice that the contraction between the start and wait function must use the returned MPI communicator \code{comm}\footnote{We note that the global communicator \fncode{MPI\_COMM\_WORLD} provided by MPI to contain all processes will not work as expected in the above scenario between the start and wait functions and should be avoided, because by definition all threads belong to this communicator. Communication using this communicator will most certainly error or misbehave on strict MPI implementations.}.
 Whatever communicator contained all ranks before the asynchronous calls (including \code{MPI\_COMM\_WORLD}) may safely be used again after the threads have joined, i.e. after the wait function returned.
 \begin{codelisting}
 \begin{minted}[]{c}

@@ -1,29 +1,87 @@
-\chapter{License and Availability}
-\label{ch:appendix:license}
+\chapter{Symmetry metrices}
+\label{ch:appendix:symmetries}
+\label{ch:appendix:D}
 
-\dictum[Richard Stallman]{%
-  Free software is a matter of liberty, not price. To understand the concept, you should think of ``free'' as in ``free speech'', not as in ``free beer''.}%
-\vskip 1em
+In order to quantify the symmetry of the numerical range of an operator we have implemented a metric; the intersection-over-union (IoU).
+Assume we have a continuous subset set of complex numbers $S \subseteq \mathbb{C}$ and a reflection operator $\mathcal{R} \colon z \mapsto \mathcal{R}(z)$ and $\mathcal{R}(S) = \{ \mathcal{R}(z) \mid z \in S \} $.
+We define the asymmetry score for continuous sets as
+\begin{equation} \label{eq:asymmetry:score:cont}
+M_c(\mathcal{R}; S)
+= 1-
+\frac{\area{ S \cap \mathcal{R}(S) }}
+     {\area{ S \cup \mathcal{R}(S) }}
+\in \left[ 0, 1 \right] \;.
+\end{equation}
+An asymmetry score of \num{0} implies perfect symmetry, whereas \num{1} indicates no symmetry.
 
-\readit{1}
+For the spectrum which is a point set, we have a different metric.
+Assume we have a point set $S = \{s_1, \ldots, s_n\} \subset \mathbb{C}$ and a set of non-negative real errors $E = \{e_1, \ldots, e_n\}$ such that $s_i$ has error $e_i$ on its real and imaginary parts.
+We define the asymmetry score for point-sets as
+\begin{align} \label{eq:asymmetry:score:pt}
+M_p(\mathcal{R}; S) &= \frac{1}{n} \sum_{i=1}^{n} \delta(i)
+\in \left[ 0, 1 \right] \;, \\
+\delta(i) &=
+\begin{cases}
+    0 & \text{if } \exists j \colon \norm{s_i - \mathcal{R}(s_j)}_{\infty} \leq e_i+e_j \\
+    1 & \text{otherwise}
+\end{cases}
+\end{align}
+where the norm is defined as
+\begin{equation}
+\norm{z - w}_{\infty} \coloneq \max(\Re(z - w), \Im(z - w)) \;.
+\end{equation}
+Thus for every point in $S$, if its error rectangle does not overlap with the error rectangle of any point in $R(S)$, we count $1$ to the score.
 
-\worktodo{Reproducibility and Software Availability: code availability, licence, compilers, ...}
+\Cref{tab:asymmetry:scores} shows asymmetry scores for various numerical ranges and spectral hulls determined numerically.
+We see high degrees of symmetry about the real axis for all operators that preserve chirality.
+%Even the case \case{1} showsOn the other hand, the symmetry can only be verified up to the precision of eigenvalue determination for the operators with an analytical symmetry.
+Underlined scores correspond to analytical perfect symmetries.
+Broken symmetries shows themselves as symmetry scores larger than eigenvalue precision.
 
-\doclicenseThis
-
-\section{Code availablility}
-
-All code produced for \cref{part:gpu} of this thesis is licenced under the GNU General Public License (GPL), either version 2 of the License, or any later version.
-The interface code implemented in \openqxd can be found in the Gitlab repository~\cite{gitlab:openqxd-devel}, under the branch name \code{main-thesis-release}.
-The related interface code in \quda can be found in the GitHub repository~\cite{github:quda:chaoos} under the branch name \code{tree/feature/openqxd}.
-Both merge-requests are currently under review.
-
-All code produced for \cref{part:variance} of this thesis is licenced under the GNU General Public License (GPL), either version 2 of the License, or any later version.
-The code implemeting the mulrgrid low-mode averaging method in \openqxd can be found in the Gitlab repository~\cite{gitlab:openqxd-devel}, under the branch name \code{34-lma-scheme}.
-
-\section{Data availablility}
-
-All data produced can be found under ref.~\cite{online:zenodo}.
-A description of the datasets and structure of the data can be found on the Zenodo page.
-
-%\worktodo{jsons and HDF5 files, maybe zenodo}
+\begin{table}
+\begin{tabular}{c|ccc}
+\toprule
+\multicolumn{1}{c}{Operator} &
+\multicolumn{1}{c}{Symmetry $\mathcal{R}$} &
+\multicolumn{1}{c}{$M_c(\mathcal{R}; W(D))$} &
+\multicolumn{1}{c}{$M_p(\mathcal{R}; \sigma(D))$} \\
+\midrule
+Wilson              & real axis                             & \ut{$1.2 \times 10^{-5}$}{1.225428429696418e-05} 
+                                                            & \ut{0.027}{0.02734375} \\
+(fine)              & center point                          & \ut{$1.0 \times 10^{-5}$}{1.0178085134593395e-05}
+                                                            & \nt{0.293}{0.29296875} \\
+\midrule
+Wilson-Clover       & real axis                             & \ut{$1.1 \times 10^{-5}$}{1.1129247529217956e-05}
+                                                            & \ut{0.037}{0.03676470588235292} \\
+(fine)              & center point                          & \nt{$0.070$}{0.06978011204544077}
+                                                            & \nt{0.529}{0.5294117647058824} \\
+\midrule
+% \case{1}, $4^{4}$   & real axis                             & \nt{$0.015$}{0.015392394837683288}
+%                                                             & \nt{0.488}{0.4878048780487805} \\
+% (coarse)            & center point                          & \nt{$0.028$}{0.02801502185149307}
+%                                                             & \nt{1.0}{1.0} \\
+% \midrule
+% \case{2}, $4^{4}$   & real axis                             & \ut{$4.2 \times 10^{-9}$}{4.263768560441861e-09}
+%                                                             & \ut{0.1}{0.09999999999999998} \\
+% (coarse)            & center point                          & \nt{$0.014$}{0.013976043931514748}
+%                                                             & \nt{1.0}{1.0} \\
+% \bottomrule
+\case{1}, $6^{4}$   & real axis                             & \nt{0.013}{0.012689731798519066}
+                                                            & \nt{0.326}{0.32558139534883723} \\
+(coarse)            & center point                          & \nt{0.031}{0.03147742194608616}
+                                                            & \nt{0.651}{0.6511627906976745} \\
+\midrule
+\case{2}, $6^{4}$   & real axis                             & \ut{$1.1 \times 10^{-8}$}{1.0991055066078559e-08}
+                                                            & \ut{0.063}{0.0625} \\
+(coarse)            & center point                          & \nt{0.031}{0.03144572737373563}
+                                                            & \nt{1.0}{1.0} \\
+\bottomrule
+\end{tabular}
+\caption{
+Asymmetry scores \cref{eq:asymmetry:score:cont,eq:asymmetry:score:pt} for numerical ranges (third column) and spectra (fourth column).
+For the underlined quantities, we expect \num{0} from the analytical studies above.
+The numerical range eigenvalues were determined up to $10^{-6}$ and the spectral hull eigenvalues only up to $10^{-1}$.
+We see good agreement with theory up to numerical precision.
+}
+\label{tab:asymmetry:scores}
+\end{table}

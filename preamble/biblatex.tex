@@ -94,3 +94,11 @@
     \cite{#1}%
   \end{refcontext}%
 }
+
+\newcommand{\nociteOwn}[1]{%
+  \begin{refcontext}[labelprefix=P]{refcatOwn}%
+    \assignrefcontextentries[labelprefix=P]{#1}%
+    \addtocategory{catOwn}{#1}%
+    \nocite{#1}%
+  \end{refcontext}%
+}

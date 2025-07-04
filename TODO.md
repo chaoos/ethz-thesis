@@ -2,7 +2,7 @@
 
 * [x] methodology of part2 measurements
 * [ ] strong scaling with many RHS
-* [ ] abstracts
+* [x] abstracts
 * [x] declaration of originality
 * [x] ackowledgements
 * [x] appendix: data availability
@@ -16,6 +16,9 @@
 * [x] caption of figures in part 2: add ref to MGLMA paper, where they are taken.
 * [ ] read through once, add \readit{n} to chapter headers, where n is the number of times read through it; continue at "Exact estimator on coarsest level"
 * [ ] "full correlator" -> "Euclidean time correlator" everywhere
+* [ ] Ns, \hat{Ns}, same for Nc
+* [ ] "MG LMA" -> "MG-LMA"
+* [ ] check evans and steves presentations
 
 <!-- Funny quote
 // If this code works, it was written by Paul DiLascia. If not, I don't know

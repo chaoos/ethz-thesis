@@ -28,7 +28,7 @@ The codebase heavily relies on C++ features such as operator overloading and tem
 As an introductory example, we provide the call stack of the function \code{gamma5} in \cref{fig:quda:gamma5}. The function applies the $\gamma^5$ matrix to an input spinor and writes the result to an output spinor. The function itself is just a wrapper around \code{ApplyGamma} which itself calls the instantiation of the functor \code{GammaApply}. \code{GammaApply} calls its \code{apply} method in its constructor triggering tuning for the \code{Gamma} functor. Finally in the tuning kernels, the \code{launch\_device} call dispatches to the correct backend and finally instructs the runtime API to launch the kernel, for instance via \code{cudaLaunchKernel} in case of CUDA. That executes the previously packed device function which ultimately instantiates the \code{Gamma} functor and then calls it via its function-call operator.
 \begin{figure}
   \includestandalone[width=\linewidth]{\dir/img/gamma5}
-  \caption{Call graph of the \code{gamma5} function in \quda as an example of how kernels are abstracted from the backends. This function acts on fields already transferred to \quda, thus there is no gamma basis transformation.}
+  \caption{Call graph of the \capcode{gamma5} function in \quda as an example of how kernels are abstracted from the backends. This function acts on fields already transferred to \quda, thus there is no gamma basis transformation.}
   \label{fig:quda:gamma5}
 \end{figure}
 %The codebase heavily utilizes the template engine of C++.
@@ -55,7 +55,7 @@ After some instantiation of template parameters such as the floating point preci
 The remainder of the diagram after the last point indicated by \code{...} is very similar to the call graph of \code{gamma5}, \cref{fig:quda:gamma5}.
 \begin{figure}
   \includestandalone[width=\linewidth]{\dir/img/copy}
-  \caption{Copy process triggered by equating two fields of type \code{ColorSpinorField}.}
+  \caption{Copy process triggered by equating two fields of type \capcode{ColorSpinorField}.}
   \label{fig:quda:copy}
 \end{figure}
 

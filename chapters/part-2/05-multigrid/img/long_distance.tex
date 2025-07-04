@@ -1,0 +1,96 @@
+\documentclass{standalone}
+
+\usepackage{tikz}
+\usetikzlibrary {arrows.meta,calc} 
+
+\newcommand{\rotate}[2] {
+    \pgftransformcm{1.0}{0.0}{0.4}{0.5}{\pgfpoint{#1cm}{#2cm}}
+}
+
+\newcommand{\drawDots}[3] {
+\begin{scope}
+    \foreach \x in {0,#1,...,#2} {
+        \foreach \y in {0,#1,...,#2} {
+            \fill[color=#3] (\x,\y) circle (0.1);
+        };
+    };
+\end{scope}
+}
+
+\newcommand{\drawPlate}[4] {
+    \draw[rounded corners, color=#1!100, fill=#1!5, thin] (#2,#2) rectangle (#3,#3)
+        node[rotate=90, above right] {#4};
+}
+
+\newcommand{\drawGrid}[4] {
+    \draw [#1,step=#2] (#3,#3) grid (#4,#4);
+}
+
+\newcommand{\drawStencil}[4] {
+    \fill[color=#1] (#2,#3) circle (0.15);
+    \pgfmathparse{#3 + #4}
+    \let\y\pgfmathresult
+    \draw[line width=1mm, #1] (#2,#3) -- (#2,\y);
+
+    \pgfmathparse{#2 + #4}
+    \let\x\pgfmathresult
+    \draw[line width=1mm, #1] (#2,#3) -- (\x,#3);
+
+    \pgfmathparse{#3 - #4}
+    \let\y\pgfmathresult
+    \draw[line width=1mm, #1] (#2,#3) -- (#2,\y);
+
+    \pgfmathparse{#2 - #4}
+    \let\x\pgfmathresult
+    \draw[line width=1mm, #1] (#2,#3) -- (\x,#3);
+}
+
+\input{preamble/colors.tex}
+\input{preamble/commands.tex}
+\input{preamble/symbols.tex}
+
+\colorlet{colorL0}{myorange}
+\colorlet{colorL1}{mygreen}
+
+\usepackage{graphicx} % for \rotatebox
+
+\begin{document}
+\pagestyle{empty}
+
+\rotatebox{-90}{%
+\begin{tikzpicture}
+
+\begin{scope}
+    \drawPlate{colorL0}{-0.5}{5.5}{}
+    \drawGrid{colorL0!70}{1}{-0.5}{5.5}
+    \drawDots{1}{5}{colorL0!100}
+    \drawStencil{red}{2}{2}{1}
+\end{scope}
+
+\draw [-{Latex[length=2mm]}, dashed] (6.0,2.5) to node [below,rotate=90] {$\restrictor$} (9.5,6.0);
+
+\begin{scope}[xshift=7.0cm,yshift=7.0cm]
+    \drawPlate{colorL1}{-0.5}{5.5}{}
+    \begin{scope}[yshift=0.5cm,xshift=0.5cm]
+        \drawGrid{colorL1!70}{2}{-1}{5}
+        \drawDots{2}{5}{colorL1!100}
+        \drawStencil{red}{2}{2}{2}
+    \end{scope}
+\end{scope}
+
+\draw [-{Latex[length=2mm]}, dashed] (9.5,13.0) to node [below,rotate=90] {$\prolongator$} (6.0,16.5);
+
+\begin{scope}[yshift=14.0cm]
+    \drawPlate{colorL0}{-0.5}{5.5}{}
+    \drawGrid{colorL0!70}{1}{-0.5}{5.5}
+    \drawDots{1}{5}{colorL0!100}
+    \drawStencil{red}{2}{2}{2}
+    \drawStencil{red}{2}{3}{2}
+    \drawStencil{red}{3}{2}{2}
+    \drawStencil{red}{3}{3}{2}
+\end{scope}
+
+\end{tikzpicture}%
+}
+
+\end{document}

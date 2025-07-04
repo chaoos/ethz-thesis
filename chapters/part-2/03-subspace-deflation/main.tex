@@ -59,9 +59,9 @@ We note, the Dirac operator which is an endomorphism on this Hilbert space, $D \
 \section{Subspace definition}
 
 \tldr{arbitrary ONB}
-We want to formalize and generalize the idea of low-mode averaging from the previous chapter to an arbitrary orthonormal basis of $N$ spinor fields $\phi_{i} \in \mathcal{B}$ spanning an arbitrary subspace $\text{span}(\mathcal{B}) \subseteq \vslattice$ of the fine grid lattice Hilbert space $\vslattice = \mathbb{C}^d$.
+We want to formalize and generalize the idea of low-mode averaging from the previous chapter to an arbitrary orthonormal basis of $N$ spinor fields $\phi_{i} \in \mathcal{B}$ spanning an arbitrary subspace $\vspan{\mathcal{B}} \subseteq \vslattice$ of the fine grid lattice Hilbert space $\vslattice = \mathbb{C}^d$.
 %The vector space of spinor fields spanned by the fine-grid lattice $\lattice = \mathbb{C}^d$ will be denoted by $\vslattice$, implying $\text{span}(\mathcal{B}) \subseteq \vslattice$.
-The space $\text{span}(\mathcal{B})$ is isomorphic to a Hilbert space $\coarse{\vslattice}$ of dimension $N$.
+The space $\vspan{\mathcal{B}}$ is isomorphic to a Hilbert space $\coarse{\vslattice}$ of dimension $N$.
 In accordance to \cref{sec:lattice:definition}, for now we define the dimension over the complex numbers of the subspace as $\coarse{d} = \dim_{\mathbb{C}}(\coarse{\vslattice})$, whereas the dimension of the fine space $\vslattice$ is $d = \dim_{\mathbb{C}}(\vslattice)$.
 The choice of the basis fields and its implications will be discussed later.
 
@@ -95,7 +95,7 @@ T \coarse{\psi} &= \sum_{i=0}^{N-1} \coarse{\psi}_{[i]} \phi_{i} \;. &
 The prolongator is related to the restrictor by Hermiticity $T = R^{\dagger}$.
 Therefore the restrictor is a $\coarse{d} \times d$ matrix, whereas the prolongator is a $d \times \coarse{d}$ matrix.
 We can build the concatenation of the two and obtain the $d \times d$ Hermitian projector $P$ projecting spinor fields to the space parallel to the $\phi_{i}$,
-\begin{equation}
+\begin{equation} \label{eq:P}
 P = \prolongator \restrictor \colon \vslattice \longrightarrow \vslattice \;,
 \qquad
 P^{2} = P = P^{\dagger} \;.
@@ -127,15 +127,16 @@ We will discuss these choices later.
 A subset of indices may be left open, such as $\fieldx{\coarse{K}}{x}$ or $\fieldx{\coarse{K}}{x_0}$ indicating a partial trace in \cref{eq:coarse:index}.
 
 \tldr{partial trace definition}
-We define the partial trace as follows.
+We define the \emph{partial trace} as follows.
 Assuming two finite-dimensional Hilbert spaces, $\mathcal{H}_A$ and $\mathcal{H}_B$, we define the partial trace as the completely positive, trace preserving map (CPTPM) acting on the endomorphisms of the tensor product, yielding an endomorphism on the remaining Hilbert space,
-\begin{align}
+\begin{align} \label{eq:partial:trace}
 \begin{aligned}
 \tr_B \colon \text{End}(\mathcal{H}_A \otimes \mathcal{H}_B) &\longrightarrow \text{End}(\mathcal{H}_A) \;, \\
 O &\longmapsto \tr(O) = \sum_{i} ( \id_A \otimes \psi_i )^{\dagger} O ( \id_A \otimes \psi_i ) \;,
 \end{aligned}
 \end{align}
 where $\{\psi_i\}_i$ is an orthonormal basis of $\mathcal{H}_B$ and $\id_A$ is the identity operator on $\mathcal{H}_A$.
+When the subscript is absent, we implicitly trace out all degrees of freedom resulting in a number; $\tr \colon \text{End}(\mathcal{H}) \longrightarrow \mathbb{C}$.
 
 \tldr{open indices}
 Thus if in \cref{eq:coarse:index} the partial trace is taken, the index is absent in the trace on the right hand side.

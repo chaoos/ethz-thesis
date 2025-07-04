@@ -1,4 +1,4 @@
-\chapter{Muon $g-2$}
+\chapter{Two-point correlator}
 \label{ch:p2:2pt-corr}
 
 \readit{1}
@@ -16,150 +16,156 @@
 
 %\section{g-2}
 
-\worktodo{
-* motivate g-2, amu
-* derive amu = int ...
-* show cake-diagram of HVP contribution to total error, connected contribution to HVP -> motivate observable
-* focus on two-point connected vector correlator
-}
+% \worktodo{
+% * motivate g-2, amu
+% * derive amu = int ...
+% * show cake-diagram of HVP contribution to total error, connected contribution to HVP -> motivate observable
+% * focus on two-point connected vector correlator
+% }
 
-In search of new fundamental physics, lattice field theory can non-perturbatively predict physical quantities using first principles to directly probe the standard model (SM) of particle physics.
-This is to search for indirect proofs of its validity.
-A strong-enough tension with an experimental quantity would proof the standard model is not sufficient to describe fundamental interactions.
-One hopes to find an observable where physics not described by the standard model has non-negligible influence in its value.
-One such quantity which became very prominent in the last years is the the anomalous magnetic moment of the muon, whose beyond the standard model (BSM) effects might arise from unknown virtual particles outside the energy range of modern particle colliders.
-For many years now, it is a promising candidate and gave hints for BSM physics, because of its longstanding tension between the SM prediction and experiment of about $3-4 \sigma$ \cite{snowmass:2020} very close to a discovery.
-Although current results seem to relax the tension, but they introduce new puzzles from tensions between data-driven and lattice determinations~\cite{snowmass:2025}.
-Light may be shed on those questions by decreasing error bars from both theory and experiments resulting in a resolution or tightening of the tension and ultimately a better understanding of nature.
-Dominant sources of error come from the leading order (LO) hadronic vacuum polarization (HVP) term at order $\bigO(\alpha^{2})$ and the subdominant hadronic light-by-light scattering (HLbL) term at order $\bigO(\alpha^{3})$.
-%It seems to be promising candidate to lead to an indirect evidence for beyond the standard model (BSM) physics.
+% In search of new fundamental physics, lattice field theory can non-perturbatively predict physical quantities using first principles to directly probe the standard model (SM) of particle physics.
+% This is to search for indirect proofs of its validity.
+% A strong-enough tension with an experimental quantity would proof the standard model is not sufficient to describe fundamental interactions.
+% One hopes to find an observable where physics not described by the standard model has non-negligible influence in its value.
+% One such quantity which became very prominent in the last years is the the anomalous magnetic moment of the muon, whose beyond the standard model (BSM) effects might arise from unknown virtual particles outside the energy range of modern particle colliders.
+% For many years now, it is a promising candidate and gave hints for BSM physics, because of its longstanding tension between the SM prediction and experiment of about $3-4 \sigma$ \cite{snowmass:2020} very close to a discovery.
+% Although current results seem to relax the tension, but they introduce new puzzles from tensions between data-driven and lattice determinations~\cite{snowmass:2025}.
+% Light may be shed on those questions by decreasing error bars from both theory and experiments resulting in a resolution or tightening of the tension and ultimately a better understanding of nature.
+% Dominant sources of error come from the leading order (LO) hadronic vacuum polarization (HVP) term at order $\bigO(\alpha^{2})$ and the subdominant hadronic light-by-light scattering (HLbL) term at order $\bigO(\alpha^{3})$.
+% %It seems to be promising candidate to lead to an indirect evidence for beyond the standard model (BSM) physics.
 
-\section{The anomalous magnetic moment}
+% \section{The anomalous magnetic moment}
 
-Due to their charge, leptons create a magnetic field around them leading to a magnetic dipole moment.
-A classical charged point particle moving on a circular orbit generates a dipole magnetic moment $\vect{\mu}$ that is proportional to its orbital angular momentum $\vect{L}$ by
-\begin{equation}
-\vect{\mu} = \frac{q e}{2 m} \vect{L}.
-\end{equation}
-where $e$ is the elementary charge, $q$ and $m$ are the integer charge and mass of the particle.
-In quantum mechanics angular momenta $\vect{L}$ are quantized and for a \spinhalf particle we may replace the angular momentum operator $\vect{L}$ by the spin angular momentum $\vect{S}$ which contributes to the angular momentum and is quantized in steps of size $\hbar/2$.
-Therefore we find for the magnetic moment of a \spinhalf particle
-\begin{equation}
-\vect{\mu} = g \frac{q e}{2 m} \vect{S}.
-\end{equation}
-We have sneaked in a dimensionless proportionality factor $g$ here.
-Classically we would clearly expect $g=1$ if spin behaved like angular momentum.
-However, when interacting with an electromagnetic field, the relativistic treatment leads to an additional term that doubles the expected magnetic moment.
-This magnetic moment can be characterized in terms of the dimensionless Landé g-factor also known as the gyro-magnetic ratio, parametrized by $g$ in the formula above.
-In 1928, Dirac formulated the Dirac equation for relativistic \spinhalf particles and derived their magnetic moment~\cite{dirac1928quantum}.
-He obtained the g-factor to be $g=2$ exactly.
-This result is independent of the mass and holds for every fundamental \spinhalf particle including the electron, muon, tauon and even the quarks\footnote{It does not hold for composite \spinhalf particles like the proton or neutron because they are not point-like; an assumption in Dirac's derivation.}.
-The anomalous magnetic moment is defined as the deviation of the g-factor from its tree level result encoding the effects of relativistic quantum field theory,
-\begin{equation}
-a_{\ell} = \frac{g_{\ell}-2}{2}.
-\end{equation}
-The one-loop correction to the electron $a_{e} = \frac{\alpha}{2 \pi}$ was already calculated analytically in 1948 by Schwinger~\cite{Schwinger:1948}.
-Impressive advancements of higher order corrections up to $\bigO(\alpha^{5})$ (i.e. to tenth order in $e$!) have been carried out since then for the electron~\cite{laporta1996analytical,PhysRevLett.109.111807,PhysRevD.91.033006,nio2015qed}.
+% Due to their charge, leptons create a magnetic field around them leading to a magnetic dipole moment.
+% A classical charged point particle moving on a circular orbit generates a dipole magnetic moment $\vect{\mu}$ that is proportional to its orbital angular momentum $\vect{L}$ by
+% \begin{equation}
+% \vect{\mu} = \frac{q e}{2 m} \vect{L}.
+% \end{equation}
+% where $e$ is the elementary charge, $q$ and $m$ are the integer charge and mass of the particle.
+% In quantum mechanics angular momenta $\vect{L}$ are quantized and for a \spinhalf particle we may replace the angular momentum operator $\vect{L}$ by the spin angular momentum $\vect{S}$ which contributes to the angular momentum and is quantized in steps of size $\hbar/2$.
+% Therefore we find for the magnetic moment of a \spinhalf particle
+% \begin{equation}
+% \vect{\mu} = g \frac{q e}{2 m} \vect{S}.
+% \end{equation}
+% We have sneaked in a dimensionless proportionality factor $g$ here.
+% Classically we would clearly expect $g=1$ if spin behaved like angular momentum.
+% However, when interacting with an electromagnetic field, the relativistic treatment leads to an additional term that doubles the expected magnetic moment.
+% This magnetic moment can be characterized in terms of the dimensionless Landé g-factor also known as the gyro-magnetic ratio, parametrized by $g$ in the formula above.
+% In 1928, Dirac formulated the Dirac equation for relativistic \spinhalf particles and derived their magnetic moment~\cite{dirac1928quantum}.
+% He obtained the g-factor to be $g=2$ exactly.
+% This result is independent of the mass and holds for every fundamental \spinhalf particle including the electron, muon, tauon and even the quarks\footnote{It does not hold for composite \spinhalf particles like the proton or neutron because they are not point-like; an assumption in Dirac's derivation.}.
+% The anomalous magnetic moment is defined as the deviation of the g-factor from its tree level result encoding the effects of relativistic quantum field theory,
+% \begin{equation}
+% a_{\ell} = \frac{g_{\ell}-2}{2}.
+% \end{equation}
+% The one-loop correction to the electron $a_{e} = \frac{\alpha}{2 \pi}$ was already calculated analytically in 1948 by Schwinger~\cite{Schwinger:1948}.
+% Impressive advancements of higher order corrections up to $\bigO(\alpha^{5})$ (i.e. to tenth order in $e$!) have been carried out since then for the electron~\cite{laporta1996analytical,PhysRevLett.109.111807,PhysRevD.91.033006,nio2015qed}.
 
-\section{Which lepton?}
+% \section{Which lepton?}
 
-Since all virtual particles contribute to the magnetic moment, it can be argued~\cite{osti_4382322} that corrections $\delta a_{\ell}$ to the anomalous magnetic moment of leptons scale with the mass as
-\begin{equation}
-\delta a_{\ell} \sim \frac{m_{\ell}^{2}}{\Lambda^{2}},
-\end{equation}
-where $m_{\ell}$ is the mass of the lepton and $\Lambda$ is the energy scale where new physics appear, i.e. roughly the mass of a new unknown heavy virtual particle.
-This suggests that the anomalous magnetic moment of the heaviest known lepton, the tau with a mass of about \SI{1.8}{\GeV} (see \cref{tab:leptons}), should be the best candidate to lead to new physics.
-Admittedly the tau is very short lived with a lifetime of about \num{0.3} pico-seconds making it hard to access in experiments.
-Nevertheless it is being investigated~\cite{Fael:2013ij,BaBar:2015ard} as an alternative path to new physics.
-The lepton with the longest lifetime, the electron with a lifetime of many years is unfortunately very light and thus unlikely to produce heavy virtual particles.
-This leaves the muon with a lifetime accessible to nowadays experiments and a squared mass of about forty thousand times the one of the electron making it the most promising candidate for indirect new physics searches~\cite{jegerlehner2009muon}.
+% Since all virtual particles contribute to the magnetic moment, it can be argued~\cite{osti_4382322} that corrections $\delta a_{\ell}$ to the anomalous magnetic moment of leptons scale with the mass as
+% \begin{equation}
+% \delta a_{\ell} \sim \frac{m_{\ell}^{2}}{\Lambda^{2}},
+% \end{equation}
+% where $m_{\ell}$ is the mass of the lepton and $\Lambda$ is the energy scale where new physics appear, i.e. roughly the mass of a new unknown heavy virtual particle.
+% This suggests that the anomalous magnetic moment of the heaviest known lepton, the tau with a mass of about \SI{1.8}{\GeV} (see \cref{tab:leptons}), should be the best candidate to lead to new physics.
+% Admittedly the tau is very short lived with a lifetime of about \num{0.3} pico-seconds making it hard to access in experiments.
+% Nevertheless it is being investigated~\cite{Fael:2013ij,BaBar:2015ard} as an alternative path to new physics.
+% The lepton with the longest lifetime, the electron with a lifetime of many years is unfortunately very light and thus unlikely to produce heavy virtual particles.
+% This leaves the muon with a lifetime accessible to nowadays experiments and a squared mass of about forty thousand times the one of the electron making it the most promising candidate for indirect new physics searches~\cite{jegerlehner2009muon}.
 
-\begin{table}
-\begin{tabular}{ccc}
-\toprule
-Lepton $\ell$ & Mass & Lifetime [s] \\
-\midrule
-Electron &
-0.51099895069(16) eV~\cite{codata:2022} &
-\num{2.13965d11}~\cite{PhysRevLett.115.231802} \\
-\midrule
-Muon &
-105.6583755(23) MeV~\cite{codata:2022} &
-\num{2.1969811d-6}~\cite{beringer2012pdg,Patrignani_2016} \\
-\midrule
-Tau &
-1.77686(12) GeV~\cite{codata:2022,PhysRevD.98.030001} &
-\num{2.903d-13}~\cite{PhysRevD.98.030001} \\
-\bottomrule
-\end{tabular}
-\caption{\label{tab:leptons}
-Lepton masses and their mean lifetimes.}
-\end{table}
+% \begin{table}
+% \begin{tabular}{ccc}
+% \toprule
+% Lepton $\ell$ & Mass & Lifetime [s] \\
+% \midrule
+% Electron &
+% 0.51099895069(16) eV~\cite{codata:2022} &
+% \num{2.13965d11}~\cite{PhysRevLett.115.231802} \\
+% \midrule
+% Muon &
+% 105.6583755(23) MeV~\cite{codata:2022} &
+% \num{2.1969811d-6}~\cite{beringer2012pdg,Patrignani_2016} \\
+% \midrule
+% Tau &
+% 1.77686(12) GeV~\cite{codata:2022,PhysRevD.98.030001} &
+% \num{2.903d-13}~\cite{PhysRevD.98.030001} \\
+% \bottomrule
+% \end{tabular}
+% \caption{\label{tab:leptons}
+% Lepton masses and their mean lifetimes.}
+% \end{table}
 
-\section{Which contribution?}
+% \section{Which contribution?}
 
-As stated previously, the largest error contribution stems from the LO-HVP contribution to the anomalous magnetic momentum of the muon.
-As the current SM prediction~\cite{snowmass:2020} includes the data-driven result for this contribution, the next iteration of will most likely include its lattice determination.
-The reasons for this are manifold.
-The data-driven result -- in tension with the experimental value~\cite{Muong-2:2006rrc,Muong-2:2021ojo} -- is itself obtained using experimental data, namely from the cross-section $\sigma(e^{+} e^{-} \rightarrow \text{hadrons})$ as a function of the center of mass energy $\sqrt{s}$~\cite{davier:2017zfy,keshavarzi:2018mgv,colangelo:2018mtw,hoferichter:2019mqg,davier:2019can,keshavarzi:2019abf}.
-This is certainly not a first principles theory prediction, but was until recently the only one whose error was competitive with the experimental error estimations.
-Algorithmic, theoretic and computational advancements over the years made the quantity accessible in the framework of lattice QCD.
-It is thus to be expected that future Muon $g-2$ Theory Initiative releases will not only include a lattice result for the HVP as of now, but also make it part of the official consensus result.
-%whose error quickly become comparable to the data-driven approach.
-This work will focus on the leading order hadronic vacuum polarization contribution $a_{\mu}^{\text{LO-HVP}}$ to the muon $g-2$ which renders the most challenging contribution to reduce the variance of.
+% As stated previously, the largest error contribution stems from the LO-HVP contribution to the anomalous magnetic momentum of the muon.
+% As the current SM prediction~\cite{snowmass:2020} includes the data-driven result for this contribution, the next iteration of will most likely include its lattice determination.
+% The reasons for this are manifold.
+% The data-driven result -- in tension with the experimental value~\cite{Muong-2:2006rrc,Muong-2:2021ojo} -- is itself obtained using experimental data, namely from the cross-section $\sigma(e^{+} e^{-} \rightarrow \text{hadrons})$ as a function of the center of mass energy $\sqrt{s}$~\cite{davier:2017zfy,keshavarzi:2018mgv,colangelo:2018mtw,hoferichter:2019mqg,davier:2019can,keshavarzi:2019abf}.
+% This is certainly not a first principles theory prediction, but was until recently the only one whose error was competitive with the experimental error estimations.
+% Algorithmic, theoretic and computational advancements over the years made the quantity accessible in the framework of lattice QCD.
+% It is thus to be expected that future Muon $g-2$ Theory Initiative releases will not only include a lattice result for the HVP as of now, but also make it part of the official consensus result.
+% %whose error quickly become comparable to the data-driven approach.
+% This work will focus on the leading order hadronic vacuum polarization contribution $a_{\mu}^{\text{LO-HVP}}$ to the muon $g-2$ which renders the most challenging contribution to reduce the variance of.
 
-\section{The leading order HVP contribution}
-\label{sec:lo-hvp}
+% \section{The leading order HVP contribution}
+% \label{sec:lo-hvp}
 
-The goal of the Muon $g-2$ Theory Initiative is to reach a relative error contribution to the whole LO-HVP in the regime of a per mill.
-This poses an immense challenge theoretic, algorithmic and computational.
-Compared to hadronic scales the muon mass is small, implying the largest contribution to $a_{\mu}$ must come from large distances.
+% The goal of the Muon $g-2$ Theory Initiative is to reach a relative error contribution to the whole LO-HVP in the regime of a per mill.
+% This poses an immense challenge theoretic, algorithmic and computational.
+% Compared to hadronic scales the muon mass is small, implying the largest contribution to $a_{\mu}$ must come from large distances.
 
-The observable of interest in this part of the document is the connected two-point isovector vector current correlator in the time-momentum representation \cite{Bernecker:2011}.
-The local electromagnetic vector current is defined as
-\begin{align}
-j_{\mu}(x) = q \bar{\psi}(x) \gamma_{\mu} \psi(x),
-\quad
-\mu=0,1,2,3
-\end{align}
-where $q$ is the charge of the quark, $\psi$ is the Grassmann-valued quark spinor field and $\gamma_{\mu}$ exposes the quantum numbers of a vector particle. From this current, we can define the two-point function
-\begin{align} \label{eq:C_corr_xy}
-C_{\mu \nu}(x;y) = \langle j_{\mu}(x) j_{\nu}(y) \rangle,
-\end{align}
-with a source $y$ and a sink $x$.
-In order to relate this quantity to the energy states of the system, we perform the Fourier transform over the spatial components of the sink variable $x$, project to zero momentum, average over the spatial components of the current and exploit translation invariance of the expression by averaging over some (at this point unspecified) set of distinct source points $y \in \Omega$,
-\begin{align}
-%G_y(t) = - \frac{1}{3} \sum_{k=1}^{3} \int \dd^3 \vect{x} \; C_k(t + y_0, \vect{x}; y).
-C(x_0;y_0) = - \frac{1}{3 \lvert \Omega \rvert} \sum_{y \in \Omega} \sum_{k=1}^{3} \int \dd^3 \vect{x} \; C_{kk}(x; y).
-\end{align}
-Furthermore, the correlation function only depends on the time difference $t = x_0 - y_0$ and we finally define the Euclidean time correlator
-%where $t$ is the time difference between the two spacetime points $(t + y_0, \vect{x})$ and $y$.
-%We can exploit translation invariance of the expression and average over some points $y \in \Omega$,
-\begin{align} \label{eq:coor1}
-G(t) = - \frac{1}{3 \lvert \Omega \rvert} \sum_{y \in \Omega} \sum_{k=1}^{3} \int \dd^3 \vect{x} \; C_k(t+y_0, \vect{x}; y).
-\end{align}
+% The observable of interest in this part of the document is the connected two-point isovector vector current correlator in the time-momentum representation \cite{Bernecker:2011}.
+% The local electromagnetic vector current is defined as
+% \begin{align}
+% j_{\mu}(x) = q \bar{\psi}(x) \gamma_{\mu} \psi(x),
+% \quad
+% \mu=0,1,2,3
+% \end{align}
+% where $q$ is the charge of the quark, $\psi$ is the Grassmann-valued quark spinor field and $\gamma_{\mu}$ exposes the quantum numbers of a vector particle. From this current, we can define the two-point function
+% \begin{align} \label{eq:C_corr_xy}
+% C_{\mu \nu}(x;y) = \langle j_{\mu}(x) j_{\nu}(y) \rangle,
+% \end{align}
+% with a source $y$ and a sink $x$.
+% In order to relate this quantity to the energy states of the system, we perform the Fourier transform over the spatial components of the sink variable $x$, project to zero momentum, average over the spatial components of the current and exploit translation invariance of the expression by averaging over some (at this point unspecified) set of distinct source points $y \in \Omega$,
+% \begin{align}
+% %G_y(t) = - \frac{1}{3} \sum_{k=1}^{3} \int \dd^3 \vect{x} \; C_k(t + y_0, \vect{x}; y).
+% C(x_0;y_0) = - \frac{1}{3 \lvert \Omega \rvert} \sum_{y \in \Omega} \sum_{k=1}^{3} \int \dd^3 \vect{x} \; C_{kk}(x; y).
+% \end{align}
+% Furthermore, the correlation function only depends on the time difference $t = x_0 - y_0$ and we finally define the Euclidean time correlator
+% %where $t$ is the time difference between the two spacetime points $(t + y_0, \vect{x})$ and $y$.
+% %We can exploit translation invariance of the expression and average over some points $y \in \Omega$,
+% \begin{align} \label{eq:coor1}
+% G(t) = - \frac{1}{3 \lvert \Omega \rvert} \sum_{y \in \Omega} \sum_{k=1}^{3} \int \dd^3 \vect{x} \; C_k(t+y_0, \vect{x}; y).
+% \end{align}
 
-The LO-HVP contribution can then be written as~\cite{Bernecker:2011}
-\begin{equation}
-a_{\mu}^{\text{LO-HVP}} = 
-\left( \frac{\alpha}{\pi} \right)^{2}
-\int_{0}^{\infty} \dd t \; G(t) K(t; m_{\mu})
-\end{equation}
-where $K(t; m_{\mu})$ is a known analytic kernel function for the leading order depending on the time $t$ and the muon mass $m_{\mu}$ only and is given by
-\begin{align}
-K(t; m_{\mu}) &= 
-8 \pi^{2} \int_{0}^{\infty} \frac{\dd \omega}{\omega} f(\omega^{2}) \left[
-\omega^{2} t^{2} - 4 \sin^{2}\left(\frac{\omega t}{2}\right)
-\right],
-\end{align}
-with~\cite{Blum:2004cq}
-\begin{equation}
-f(\omega^{2}) = 
-\frac{m_{\mu}^{2} \omega^{2} Z^{3} (1 - \omega^{2} Z)}{1 + m_{\mu}^{2} \omega^{2} Z^{2}},
-\quad
-Z =
-- \frac{\omega^{2} - \sqrt{ \omega^{2} + 4 m_{\mu}^{2} \omega^{2} }}{ 2 m_{\mu}^{2} \omega^{2} }.
-\end{equation}
+% The LO-HVP contribution can then be written as~\cite{Bernecker:2011}
+% \begin{equation}
+% a_{\mu}^{\text{LO-HVP}} = 
+% \left( \frac{\alpha}{\pi} \right)^{2}
+% \int_{0}^{\infty} \dd t \; G(t) K(t; m_{\mu})
+% \end{equation}
+% where $K(t; m_{\mu})$ is a known analytic kernel function for the leading order depending on the time $t$ and the muon mass $m_{\mu}$ only and is given by
+% \begin{align}
+% K(t; m_{\mu}) &= 
+% 8 \pi^{2} \int_{0}^{\infty} \frac{\dd \omega}{\omega} f(\omega^{2}) \left[
+% \omega^{2} t^{2} - 4 \sin^{2}\left(\frac{\omega t}{2}\right)
+% \right],
+% \end{align}
+% with~\cite{Blum:2004cq}
+% \begin{equation}
+% f(\omega^{2}) = 
+% \frac{m_{\mu}^{2} \omega^{2} Z^{3} (1 - \omega^{2} Z)}{1 + m_{\mu}^{2} \omega^{2} Z^{2}},
+% \quad
+% Z =
+% - \frac{\omega^{2} - \sqrt{ \omega^{2} + 4 m_{\mu}^{2} \omega^{2} }}{ 2 m_{\mu}^{2} \omega^{2} }.
+% \end{equation}
+
+The observable of interest in this part is the the connected leading order hadronic vacuum polarization contribution (LO-HVP) to the anomalous magnetic moment of the muon as introduced in \cref{sec:intro:gm2}.
+The connected LO-HVP piece which dominates the error budget is itself a comparably simple observable, but suffers from the signal-to-noise ratio problem.
+The piece we calculate on the lattice is the Euclidean time correlator \cref{eq:coor1}, which in a post-processing phase enters the main integral for the connected LO-HVP contribution \cref{eq:a:mu:lohvp}.
+
+\worktodo{intro for this}
 
 \section{Two-point correlator}
 \label{sec:2pt-corr}
@@ -182,7 +188,7 @@ C_{\mu \nu}^{\text{disc}}(x;y) &=
 \tr \left\{ \propxy{y}{y} \gamma_{\nu} \right\},
 \end{align}
 where the trace is over color and spin indices.
-We will concentrate on the connected piece, that contributes about 98\% of the value of $a_{\mu}^{\text{LO-HVP}}$ and is still the largest source of error.
+As motivated in \cref{sec:intro:motivation}, we will concentrate on the connected (light-quark) piece, that contributes about 98\% of the value of $a_{\mu}^{\text{LO-HVP}}$ and 97\% to the variance (see \cref{fig:intro:a_mu:variances,fig:intro:a_mu:lohvp:variances} and ref.~\cite{snowmass:2025}).
 On the lattice the Fourier integral of the connected bare isovector vector correlator, \cref{eq:coor1}, turns into a sum over spatial lattice points and can be evaluated using the results in \cref{eq:C_corr_Dinv:connected} as
 \begin{equation} \label{eq:G:corr:connected}
 G^{\text{conn}}(t) =

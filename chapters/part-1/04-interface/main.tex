@@ -30,7 +30,7 @@ As a teasing example for such an API function, we consider the solver wrapper, w
 \begin{minted}[linenos=false]{cpp}
 void invertQuda(void *h_x, void *h_b, QudaInvertParam *param);
 \end{minted}
-Here, \code{h\_x} and \code{h\_b} are void pointers pointing to the host spinor fields in \openqxd order, i.e. base pointers to arrays of \code{spinor\_dble} structs, as described previously. The \code{QudaInvertParam} struct parametrizes the solver (see \code{quda.h} and \crefcite{QUDApaper} for details).
+Here, \code{h\_x} and \code{h\_b} are void pointers pointing to the host spinor fields in \openqxd order, i.e. base pointers to arrays of \code{spinor\_dble} structs, as described previously. The \code{QudaInvertParam} struct parametrizes the solver (see \code{quda.h} and ref.~\cite{QUDApaper} for details).
 
 \tldr{2nd header file for the interface}
 The interface for \openqxd provides a second header file \codebreak{quda\_openqcd\_interface.h} which contains convenient \openqxd-specific interface functions.
@@ -326,7 +326,7 @@ We choose to implement \Cstar boundary conditions in the same way as they are im
 When \quda initializes its communication grid topology, we specify the neighbors of each rank in all directions. This also respects the certain process placement when using \Cstar boundaries, see \cref{sec:interface:quda:init}. For \quda to setup communication among neighboring ranks, the function \code{comm\_rank\_displaced()} calculates the neighboring rank number given one of the (positive or negative) 8 directions (see its call graph \cref{fig:comm_rank_displaced}.).
 \begin{figure}
   \includestandalone[width=\linewidth]{\dir/img/comm_rank_displaced}
-  \caption{Call graph for the function \code{comm\_rank\_displaced}. Starting from the initialization function \code{quda\_init} in \openqxd, see \cref{sec:interface:openqxd:init} which calls the interface initialization functions, see \cref{sec:interface:quda:init}, calling the communication grid setup which itself calls the constructor of the \code{Communicator} class which finally sets the grid topology.}
+  \caption{Call graph for the function \capcode{comm\_rank\_displaced}. Starting from the initialization function \capcode{quda\_init} in \openqxd, see \cref{sec:interface:openqxd:init} which calls the interface initialization functions, see \cref{sec:interface:quda:init}, calling the communication grid setup which itself calls the constructor of the \capcode{Communicator} class which finally sets the grid topology.}
   \label{fig:comm_rank_displaced}
 \end{figure}
 The function reads the \code{cstar} property from the \code{Topology} struct that can take values \num{0}, \num{1}, \num{2} or \num{3} indicating the number of spatial directions with \Cstar boundaries, where \code{cstar=0} corresponds to its default value indicating periodic boundaries.
@@ -486,7 +486,7 @@ This is to allow different interface usage scenarios:
 \end{itemize}
 Clearly scenario 1) requires less memory than scenario 2) at the cost of updating the multigrid instance every time. However, a separate tracking of parameters and fields allows the user to flexibly work the way they prefer, without the interface imposing a programming paradigm.
 This was achieved by introducing an additional member in the \code{QudaInvertParam} struct that holds all these status information for every solver instance separately.
-The subspace of a multigrid instance is updated if at least on of the following statements is true:
+The subspace of a multigrid instance is updated if at least one of the following statements is true:
 \begin{itemize}
   \item The gauge field requires an update.
   \item The clover field requires an update.
@@ -525,7 +525,7 @@ It takes a solver identifier referring to the solver section of the input file t
 Its call graph is intricate, see \cref{fig:call_graph}.
 \begin{figure}
   \includestandalone[width=\linewidth]{\dir/img/call_graph}
-  \caption{Call graph of the \code{openQCD\_qudaSolverGetHandle} function. Solid lines imply the function will always call the function the arrow points to, dashed lines will call only if necessary. The graph divides into namespaces in \openqxd (top) to obtain latest parameters and revision counter, the interface (center) and \quda (bottom).}
+  \caption{Call graph of the \capcode{openQCD\_qudaSolverGetHandle} function. Solid lines imply the function will always call the function the arrow points to, dashed lines will call only if necessary. The graph divides into namespaces in \openqxd (top) to obtain latest parameters and revision counter, the interface (center) and \quda (bottom).}
   \label{fig:call_graph}
 \end{figure}
 It makes sure that all necessary preliminaries are fulfilled for kernels that act on gauge or clover fields.
@@ -886,7 +886,7 @@ The dual process grid can be specified in a second header file called \code{incl
 #define QUDA_L2 L2
 #define QUDA_L3 L3
 \end{minted}
-\caption{Excerpt of the file \code{include/quda\_global.h} describing the (second) dual process grid. Its default values are equal to the native process grid and local lattice sizes from \code{include/global.h}, compare \cref{lst:openqxd:global.h}.}
+\caption{Excerpt of the file \capcode{include/quda\_global.h} describing the (second) dual process grid. Its default values are equal to the native process grid and local lattice sizes from \capcode{include/global.h}, compare \cref{lst:openqxd:global.h}.}
 \label{lst:interface:quda_global.h}
 \end{codelisting}
 \end{figure}

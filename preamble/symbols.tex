@@ -51,6 +51,7 @@
 \newcommand{\spinhalf}{spin-$\frac{1}{2}$\xspace}
 \newcommand{\Nst}{N_{\text{st}}} % number of stochastic sources
 \newcommand{\Nc}{N_{\text{c}}} % number of eigenmodes sources
+\newcommand{\Ns}{N_{\text{s}}} % number of spin dof
 \newcommand{\id}{\mathbb{1}} % identity matrix
 
 \newcommand{\Lt}{L_0} % extent in time
@@ -60,6 +61,8 @@
 
 \newcommand{\vect}[1]{\vec{#1}}
 %\newcommand{\vect}[1]{\mathbf{#1}}
+
+\newcommand{\area}[1]{\text{Area}(#1)}
 
 \newcommand{\exptime}{\left\{ 0, \ldots \Lt-1 \right\}}  % explicit temportal lattice set
 \newcommand{\expspin}{\left\{ 0, \ldots N_s-1 \right\}}  % explicit spin index set
@@ -83,6 +86,9 @@
         { \hat{#1} }
 }
 \ExplSyntaxOff
+
+\newcommand{\nrad}[1]{\omega( #1 )}
+\newcommand{\inrad}[1]{\omega_{\text{min}}( #1 )}
 
 \newcommand{\restrictor}{R}       % restrictor
 \newcommand{\prolongator}{T}      % prolongator

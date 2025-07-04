@@ -1,6 +1,10 @@
 \chapter{Memory Management System}
 \label{ch:p1:memory}
 
+\dictum[Claude Shannon ]{%
+  Information: the negative reciprocal value of probability. }%
+\vskip 1em
+
 \readit{1}
 
 \tldr{mm intro}
@@ -87,7 +91,7 @@ functionA(spinor_dble *s) { ... }
 functionA(spinor_dble *s) { ... }
 #endif
 \end{minted}
-\caption{Different implementations of the same example function \code{functionA()}.}
+\caption{Different implementations of the same example function \capcode{functionA()}.}
 \label{lst:mm:pp_macros}
 \end{codelisting}
 
@@ -149,7 +153,7 @@ The \code{spinor\_info} struct holds information about the field such as
 	\item A status flag indicating whether the field is in sync between CPU and GPU (both hold the same data), the field on the CPU is newer (CPU code has manipulated the field, such that the GPU field is outdated), or the other way around. Here we have to be careful in a potential implementation. A field that is not in one of the three mentioned states should never occur. This would lead to inconsistency.
 	\item Other useful meta information, such as field size in bytes, precision, number of times the field was transferred for optimization purposes, etc.
 \end{itemize}
-For an implementation of the above field unification proposal only field allocation, deallocation, reservation and release functions need to be altered\footnote{Explicitly, these are \code{alloc\_wsd()}, \code{reserve\_wsd()}, \code{release\_wsd()} and their single precision variants.}.
+For an implementation of the above field unification proposal only field allocation, deallocation, reservation and release functions need to be altered\footnote{Explicitly, these are \capcode{alloc\_wsd()}, \capcode{reserve\_wsd()}, \capcode{release\_wsd()} and their single precision variants.}.
 Furthermore all legacy \openqxd function still work and operate on the base pointers in the same way as before.
 Functions that are offloaded to the GPU will take the same CPU base-pointers as the legacy function.
 They will navigate to the \code{spinor\_info} struct by pointer arithmetic, check if the field needs to be transferred and do so if required.
@@ -176,7 +180,7 @@ For this we need to introduce two concepts.
 
 \tldr{mprotect, posix, OS mechanism, page-alignment}
 \Posix-compliant operating systems offer system calls for protecting a region of previously allocated memory.
-The region must be page-aligned, meaning that the pointer pointing to the begin of the region has to be the beginning of a new page and the region has to end at the end of a page, i.e. the base pointer address and the size of the region in bytes have to be multiples of the page size\footnote{On most modern operating system the page size is \num{4096} bytes, if unknown it can be queried using the standard C library function \code{getpagesize()}.}.
+The region must be page-aligned, meaning that the pointer pointing to the begin of the region has to be the beginning of a new page and the region has to end at the end of a page, i.e. the base pointer address and the size of the region in bytes have to be multiples of the page size\footnote{On most modern operating system the page size is \num{4096} bytes, if unknown it can be queried using the standard C library function \capcode{getpagesize()}.}.
 Allocating page-aligned memory cannot be done using the usual portable standard C library wrapper for dynamic memory allocation, \code{malloc()} (which allocates 8-byte aligned memory), but rather \code{posix\_memalign()} or \code{mmap()}.
 However, when accessing a protected region of memory (by dereferencing a pointer) the operating system behaves as if we have never allocated the memory, i.e. it triggers a segmentation fault.
 
@@ -238,7 +242,7 @@ Now consider entering a legacy function on the CPU with this field.
 The function will access the data at some memory address in the protected region, \cref{fig:mm:field5:access}.
 \begin{figure}
   \includestandalone[width=\linewidth]{\dir/img/field5}
-  \caption{Accessing data at memory address \code{0xB}.}
+  \caption{Accessing data at memory address \capcode{0xB}.}
   \label{fig:mm:field5:access}
 \end{figure}
 Ultimately this will trigger a segmentation fault and we enter the previously registered signal handler.
@@ -269,7 +273,7 @@ With this we have four different actions caused by the triggers:
 
 \begin{figure}
   \includestandalone[width=\linewidth]{\dir/img/fsm}
-  \caption{The state diagram of a spinor field as explained in the main text. There are three main states; \code{IN\_SYNC} indicating that the field values are equal on CPU and GPU, \code{CPU\_NEWER} and \code{GPU\_NEWER} indicating that the CPU/GPU has changed the field and the other one is outdated respectively. The key indicated as \emph{pointer} denotes the address of the field on the GPU initialized to \code{nullptr}. The protection states whether the memory on the CPU is protected according to \cref{sec:mm:mprotect}. The arrows denote triggers that cause actions to change the state of the field. There are three different triggers: read-only (\emph{r}), write-only (\emph{w}) and read-and-write (\emph{rw}) on two devices: CPU and GPU. For instance an arrow with text \emph{GPU: w/rw} indicates that the state change is triggered if the \emph{GPU} either \emph{writes} to the field or \emph{reads and writes} to the field.}
+  \caption{The state diagram of a spinor field as explained in the main text. There are three main states; \capcode{IN\_SYNC} indicating that the field values are equal on CPU and GPU, \capcode{CPU\_NEWER} and \capcode{GPU\_NEWER} indicating that the CPU/GPU has changed the field and the other one is outdated respectively. The key indicated as \emph{pointer} denotes the address of the field on the GPU initialized to \capcode{nullptr}. The protection states whether the memory on the CPU is protected according to \cref{sec:mm:mprotect}. The arrows denote triggers that cause actions to change the state of the field. There are three different triggers: read-only (\emph{r}), write-only (\emph{w}) and read-and-write (\emph{rw}) on two devices: CPU and GPU. For instance an arrow with text \emph{GPU: w/rw} indicates that the state change is triggered if the \emph{GPU} either \emph{writes} to the field or \emph{reads and writes} to the field.}
   \label{fig:mm:fsm}
 \end{figure}
 

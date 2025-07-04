@@ -1,6 +1,8 @@
 \chapter{Summary}
 \label{ch:summary}
 
+\readit{1}
+
 % \dictum[Vincent van Gogh]{%
 %    \worktodo{I dream my painting and I paint my dream.} }
 % \vskip 1em
@@ -13,14 +15,14 @@
 
 While \cref{part:gpu,part:variance} address different aspects of high-precision lattice field theory, they ultimately pull in the same direction.
 The software developments in \cref{part:gpu} are clearly directly applicable to \cref{part:variance}.
-With access to a powerful multigrid solver on the GPU, all ingredients are there to substantially improve our modest implementation of multigrid low-mode averaging.
+With access to a powerful multigrid solver on the GPU, all ingredients are given to substantially improve our modest coarse-grid solver.
 
 We briefly revisit the objectives stated at the beginning in \cref{sec:intro:objectives}.
 \begin{itemize}
    \item \textbf{Interface to \quda}: The interface to the solver suite in \quda was implemented and is production ready. Several utilities are already utilizing the interface for inversions and are used in production. The developments led to a second round of funding in terms of a PASC project~\cite{online:pasc2025} aimed at a continuation of this work. For hybrid workloads, we have implemented the dual process grid enabling to scale out general remaining CPU-workload. The asynchronous solver allows heterogeneous computing and multiple right-hand sides solvers provide better strong scaling.
    \item \textbf{Performance assessment and benchmark}: All parts of the interface were benchmarked in isolation and together with other relevant components. The benchmarks show clearly that the code is ready for larger problem sizes. On intermediate problems, many ways to improve scaling behavior are present, like multiple right-hand sides or heterogeneous solvers.
    \item \textbf{CI/CD automated testing}: An automated testing pipeline covering all functionality provided by the interface was implemented in the development repository, running on local resources and on GH200 nodes at CSCS.
-   \item \textbf{Algorithmic development of variance reduction methods}: A new variance reduction method called multigrid low-mode averaging was introduced. It is inspired by multigrid, the powerful solver preconditioner, and low-mode averaging, the state-of-the-art method for high-precision determination of observables suffering from the signal-to-noise ratio. The number of required low modes is independent of the lattice volume as opposed to traditional LMA schemes, thus its overall computational cost scales linear in the volume, not quadratic anymore solving the $V^{2}$-problem. The method is specially powerful on large lattices, where traditional estimators break down.
+   \item \textbf{Algorithmic development of variance reduction methods}: A new variance reduction method called multigrid low-mode averaging was introduced. It is inspired by multigrid, the powerful solver preconditioner, and low-mode averaging, the state-of-the-art method for high-precision determination of observables suffering from the signal-to-noise ratio. The number of required low modes is independent of the lattice volume as opposed to traditional LMA schemes, thus its overall computational cost scales linear in the volume, not quadratic anymore solving the $V^{2}$-problem. The method is specially powerful on large physical lattices, where traditional estimators break down. An explicit demonstration on $\bigO(a)$-improved Wilson-Clover fermion was given.
    \item \textbf{Theoretic understanding of spectral properties of Dirac operators}: We formalized chirality on coarse subspaces, collected relevant results from the field of numerical ranges, studied spectral properties and variance contributions of coarse systems and proposed a sufficient condition for well conditioned coarse systems.
 \end{itemize}
 
@@ -33,7 +35,7 @@ The variance reduction method has to be studied on other lattice discretizations
 Candidates for interesting observables to further test and apply the method are baryon correlators, baryon and meson spectroscopy studies, nucleon form factors, spectral density studies, decay constants or matrix elements.
 
 Using the multigrid decomposition of the propagator, the determinant appearing in the gauge field generation could be decomposed as well.
-This might be an interesting application to continue.
+This might be an orthogonal interesting path for continuing research.
 
 And by this, I can only thank the reader for staying with me until the very end.
 At least for me, it was a wild ride!

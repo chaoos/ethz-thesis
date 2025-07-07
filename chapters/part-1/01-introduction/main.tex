@@ -111,7 +111,7 @@ The goal of this work is to offload solves in the context of observable evaluati
 \worktodo{check if this still has a roter faden, because I removed theory: high-precision lattice is +QED and our theory approach: we do QCD+QEDC + Cstar boundaries}
 
 \tldr{our CPU approach (up to now): we did this on CPU, MPI}
-Our codebase, \openqxd~\cite{openqxd,gitlab:openqxd}, extends the widely used \openqcd-1.6 package~\cite{online:openqcd}, which supports the $O(a)$-improved Wilson fermion discretization (from now on, we will refer to these codebases simply as \openqxd and \openqcd, respectively).
+Our codebase, \openqxd~\cite{openqxd,gitlab:openqxd}, extends the widely used \openqcd-1.6 package~\cite{online:openqcd} which supports the $O(a)$-improved Wilson fermion discretization (from now on, we will refer to these codebases simply as \openqxd and \openqcd, respectively).
 \Openqxd allows the dynamic simulation of QCD together with QED by employing \Cstar boundary conditions.
 These features make \openqxd a versatile tool for achieving higher levels of precision.
 The codebase is designed for efficient parallel execution on pure-MPI CPU-based supercomputing architectures.
@@ -152,7 +152,7 @@ Development is still in progress in a private GitHub repository and a release da
 
 \tldr{review: tmlqcd}
 Developers of the software package tmLQCD~\cite{jansen2009} already went the path we did by coupling to \quda.
-They offload solves of the Dirac equation, but in the meantime large parts of the Hybrid Monte Carlo (HMC) algorithm are offloaded too~\cite{Kostrzewa:2022,Finkenrath:2023,Garofalo:2025}.
+They offload solves of the Dirac equation but in the meantime large parts of the Hybrid Monte Carlo (HMC) algorithm are offloaded too~\cite{Kostrzewa:2022,Finkenrath:2023,Garofalo:2025}.
 
 \tldr{review: grid}
 Grid~\cite{Boyle:2015,github:grid} is mainly targeted at domain wall and Möbius fermions, but simulations of Wilson-Clover fermions are supported too~\cite{Richtmann:2019}.
@@ -198,7 +198,7 @@ It is the most time intensitve kernel given many right-hand sides $\eta$.
 Offloading this kernel allows us to retain the functionality of existing applications while interfacing only a minimal set of parameters.
 The interface needs to transmit field data from one application to the other.
 Different conventions, memory layouts, data types, precisions, storage formats, freedom in $\gamma$-basis choice, boundary conditions and many more have to be taken into account when designing an interface.
-The work hereafter concentrates on the measurement part of the workflow, i.e. offloading of solves of the Dirac equation.
+The work hereafter concentrates on the measurement part of the workflow, \ie offloading of solves of the Dirac equation.
 Although the gauge fields are periodically updated along the Markov chain, in the measurement part of the workflow they are kept fixed.
 
 %process of interfacing 

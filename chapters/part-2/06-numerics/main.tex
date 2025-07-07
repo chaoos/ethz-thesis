@@ -21,6 +21,10 @@
 
 \readit{2}
 
+\dictum[Claude Shannon]{%
+  Information: the negative reciprocal value of probability. }%
+\vskip 1em
+
 \worktodo{numerical study intro}
 
 The numerical study was carried out using $\Nf=2$ flavours of non-perturbative $\bigO(a)$-improved Wilson-Clover fermions all with the same bare quark masses and lattice parameters.
@@ -577,14 +581,13 @@ For instance, for conjugate gradient (CG) the number of iteration steps scales a
 \Niter \sim \bigO\left(\sqrt{\kappa(D)}\right) \log\left(\frac{1}{\epsilon}\right) \;,
 %\Niter \leq \frac{1}{2} \sqrt{\kappa(D)} \log\left(\frac{2}{\epsilon}\right) \;,
 \end{equation}
-where $\epsilon$ is the precision of the solution $\psi$ after $\Niter$ iterations and $\kappa(D)$ is the condition number of the operator $D$,
+where $\epsilon$ is the precision (relative residual) of the solution $\psi$ after $\Niter$ iterations $\epsilon = \norm{D \psi - \eta}/\norm{\eta}$ and $\kappa(D)$ is the condition number of the operator $D$,
 \begin{equation}
-\epsilon = \frac{\norm{D \psi - \eta}}{\norm{\eta}} \;,
-\qquad
-\kappa(D) = \frac{\lambda_{\text{max}}}{\lambda_{\text{min}}} \;,
+\kappa(D) = \frac{ \sigma_{max}(D) }{ \sigma_{min}(D) } \;,
 \end{equation}
-with $\lambda_{\text{max}}$ and $\lambda_{\text{min}}$ the smallest and largest magnitude eigenvalues of $D$.
-Even though for other Krylov subspace solvers there is no closed formula for the iteration count as for CG, the rule ``smaller condition number implies smaller iteration count'' is generally applicable.
+where $\sigma_{max}(D)$ and $\sigma_{min}(D)$ are the largest and smallest singular values of $D$.
+We set $\kappa(D) = \infty$ if $\sigma_{min}(D) = 0$.
+Even though for other Krylov subspace solvers there is no closed formula for the iteration count as for CG, the rule of thumb ``smaller condition number implies smaller iteration count'' is generally applicable.
 
 To empirically show this, we used the G7 ensemble, where we studied a 4-level scheme, thus \num{4} Dirac operators, all with different dimensions.
 Their approximate condition number as well as their iteration counts to solve a random right-hand side to a certain precision was plotted in \cref{fig:coarse:condition} as a function of the dimension over the complex numbers.

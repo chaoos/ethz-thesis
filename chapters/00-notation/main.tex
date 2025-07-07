@@ -1,5 +1,4 @@
 \chapter{Notation}
-\worktodo{todo}
 
 \section{Frequently used names}%
 \vskip -2em
@@ -47,6 +46,12 @@ $\sprod{\cdot}{\cdot}$ denotes the standard spinor product where by convention t
 \paragraph{Spinor norm.}
 The spinor norm is defined to be the one induced by the spinor product, $\norm{\psi} = \sqrt{\sprod{\psi}{\psi}}$.
 
+\paragraph{Hermitian transpose.}
+The conjugate transpose of a linear operator $A$ or a spinor $\psi$ is denoted with the dagger symbol $A^\dagger$, $\psi^\dagger$ and usually applies to all indices unless stated otherwise.
+
+\paragraph{Dirac adjoint.}
+The Dirac adjoint of a spinor $\psi$ is denoted by $\bar{\psi}$ and defined as $\bar{\psi} = \psi^\dagger i \gamma^0$.
+
 \section{Index notation}
 \label{sec:notation:index}
 
@@ -54,8 +59,6 @@ A vector $v$ may have multiple indices associated to it.
 With only one index unless stated otherwise, the $i$-th component of the vector $v$ will be denoted with a special subscript resembling array-notation as $v_{[i]}$.
 On the other hand, a regular super- or subscript as $v_i$ or $v^{i}$ will denote the $i$-th element of a list of vectors.
 By this we can easily write $v_{i [j]}$ denoting the $j$-th \emph{component} of the $i$-th \emph{vector}.
-An example carrying multiple indices is the propagator $S$. \worktodo{example of S}
-
 
 \paragraph{Spacetime indices.}
 Spacetime indices are denoted with Latin letters starting from $x, y, z, w, \ldots$
@@ -69,8 +72,46 @@ Lorentz indices are denoted with Greek letters starting from $\mu, \nu, \rho, \s
 \paragraph{Color indices.}
 Color indices are denoted with Latin letters starting from $a, b, c, \ldots$
 
+An example carrying multiple indices is the propagator $S$, for instance
+\begin{equation}
+\propxyab{x}{y}{\alpha}{\beta}{a}{b} \;.
+\end{equation}
+
+
 \section{$\gamma$-matrix basis}
 
-also gamma5 explicitely.
+We work in the Weyl basis,
+\begin{align} \label{eq:gamma:weyl:basis}
+\gamma_0 &=
+\begin{pmatrix}
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1 \\
+1 & 0 & 0 & 0 \\
+0 & 1 & 0 & 0
+\end{pmatrix} \;,
+&
+\gamma_1 &=
+\begin{pmatrix}
+0 & 0 & 0 & 1 \\
+0 & 0 & 1 & 0 \\
+0 & -1 & 0 & 0 \\
+-1 & 0 & 0 & 0
+\end{pmatrix} \;, \\
+\gamma_2 &=
+\begin{pmatrix}
+0 & 0 & 0 & -i \\
+0 & 0 & i & 0 \\
+0 & -i & 0 & 0 \\
+i & 0 & 0 & 0
+\end{pmatrix} \;,
+&
+\gamma_3 &=
+\begin{pmatrix}
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & -1 \\
+-1 & 0 & 0 & 0 \\
+0 & 1 & 0 & 0
+\end{pmatrix} \;,
+\end{align}
+but all conclusions drawn in this document hold for other choices too.
 
-\worktodo{conjugation, dagger and overbar}

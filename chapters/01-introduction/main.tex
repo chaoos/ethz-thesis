@@ -156,13 +156,14 @@ U_{\pm \mu}(x) = U_{\mp \mu}(x \pm \hat{\mu})^{\dagger} \;,
 where $\pm$ denotes the link in positive or negative $\mu$-direction, respectively.
 
 Such a Dirac operator introduces fermion doublers; unphysical poles in the fermion propagator $(D_{\text{naive}})^{-1}$.
-These correspond to particles that do not exist in continuum theory and the doublers make the operator ill-conditioned in general \worktodo{ref}, unsuitable for numeric studies.
+These correspond to particles that do not exist in continuum theory.
+%and the doublers make the operator ill-conditioned in general \worktodo{ref}, unsuitable for numerical studies.
 The Dirac operator can be extended by any term proportional to the lattice spacing $a$ or positive powers thereof; such a term will vanish when taking the continuum limit $a \to 0$.
 Wilson himself proposed a solution to the fermion doubling problem~\cite{PhysRevD.25.2649} resulting in the Wilson-Dirac operator
 \begin{equation} \label{eq:dirac:wilson}
 D_W[U] = D_{\text{naive}}[U] - \frac{a}{2} \sum_{\mu} D_{-\mu} D_{+\mu} \;.
 \end{equation}
-This Wilson-term removes the fermion doubler states by making their mass proportional to $1/a$.
+The additional Wilson-term proportional to $a$ removes the fermion doubler states by adding a term proportional to $1/a$ to their masses.
 Such states decouple in the continuum limit, but the term above breaks chiral symmetry and introduces $\bigO(a)$ discretization errors.
 Even more troubling, every discretization with the correct continuum limit and respecting locality, either comes with fermion doublers or breaks chiral symmetry.
 This is the famous Nielsen-Ninomiya no-go theorem~\cite{Nielsen:1980rz,Nielsen:1981xu}.
@@ -199,8 +200,8 @@ Q_{\mu \nu}(x)
 \end{equation}
 The term proportional to $c_\mathrm{sw}^{SU(3)}$ is called the clover- or SW-term and was proposed by Sheikholeslami and Wohlert~\cite{sw1985} as addition to the action.
 It is block-diagonal and following an effective field theory analysis it gives $\bigO(a)$ improvement à la Symanzik~\cite{symanzik1982,SYMANZIK1983} by tuning the algorithmic parameter non-perturbatively $c_\mathrm{sw}^{SU(3)}$ such that $\bigO(a)$ discretization effects vanish~\cite{LUSCHER1996365}.
-Furthermore, the clover-term has a positive impact on the numerical condition.
-\worktodo{check last sentence in chirality chapter}
+%Furthermore, the clover-term has a positive impact on the numerical condition.
+%\worktodo{check last sentence in chirality chapter}
 
 There are many alternative discretizations to the above.
 All deal differently with chiral symmetry on the lattice and the doubling problem.
@@ -405,10 +406,10 @@ A non-zero chiral condensate $\langle \bar{\psi} \psi \rangle = \langle \bar{\ps
 
 \tldr{regulator, renormalization, cont limit}
 For taking the continuum limit $a \to 0$, one needs to compute the observables of interest for several values of the lattice spacing $a$.
-The lattice spacing serves as a regulator of the theory; it makes divergent quantities finite by cutting off the divergent parts of integrals at the long (IR) and short (UV) distances, i.e. it removes divergences like $a^{-n}$ for some $n \geq 1$.
+The lattice spacing serves as a regulator of the theory; it makes divergent quantities finite by cutting off the divergent parts of integrals at the long (IR) and short (UV) distances, \ie it removes divergences like $a^{-n}$ for some $n \geq 1$.
 Naively taking the continuum limit will yield divergent results.
 On the other hand, results should not depend on the regulator and renormalization is the process of removing the dependency of the regulator from physical quantities.
-After renormalization the computed quantities still have lattice artifacts, i.e. terms proportional to powers of $a^{n}$ for some $n \geq 1$.
+After renormalization the computed quantities still have lattice artifacts, \ie terms proportional to powers of $a^{n}$ for some $n \geq 1$.
 These are finally removed by the (now finite) continuum limit $a \to 0$.
 Although, as the lattice spacing becomes finer, simulation cost increases dramatically.
 
@@ -504,7 +505,7 @@ The anomalous magnetic moment is defined as the deviation of the g-factor from i
 a_{\ell} = \frac{g_{\ell}-2}{2}.
 \end{equation}
 The one-loop correction to the electron $a_{e} = \frac{\alpha}{2 \pi}$ was already calculated analytically in 1948 by Schwinger~\cite{Schwinger:1948}.
-Impressive advancements of higher order corrections up to $\bigO(\alpha^{5})$ (i.e. to tenth order in $e$!) have been carried out since then for the electron~\cite{laporta1996analytical,PhysRevLett.109.111807,PhysRevD.91.033006,nio2015qed}.
+Impressive advancements of higher order corrections up to $\bigO(\alpha^{5})$ (\ie to tenth order in $e$!) have been carried out since then for the electron~\cite{laporta1996analytical,PhysRevLett.109.111807,PhysRevD.91.033006,nio2015qed}.
 
 \subsection{Which lepton?}
 
@@ -512,7 +513,7 @@ Since all virtual particles contribute to the magnetic moment, it can be argued~
 \begin{equation}
 \delta a_{\ell} \sim \frac{m_{\ell}^{2}}{\Lambda^{2}},
 \end{equation}
-where $m_{\ell}$ is the mass of the lepton and $\Lambda$ is the energy scale where new physics appear, i.e. roughly the mass of a new unknown heavy virtual particle.
+where $m_{\ell}$ is the mass of the lepton and $\Lambda$ is the energy scale where new physics appear, \ie roughly the mass of a new unknown heavy virtual particle.
 This suggests that the anomalous magnetic moment of the heaviest known lepton, the tau with a mass of about \SI{1.8}{\GeV} (see \cref{tab:leptons}), should be the best candidate to lead to new physics.
 Admittedly the tau is very short lived with a lifetime of about \num{0.3} pico-seconds making it hard to access in experiments.
 Nevertheless it is being investigated~\cite{Fael:2013ij,BaBar:2015ard} as an alternative path to new physics.
@@ -548,7 +549,7 @@ As the current SM prediction~\cite{snowmass:2020} includes the data-driven resul
 The reasons for this are manifold.
 The data-driven result -- in tension with the experimental value~\cite{Muong-2:2006rrc,Muong-2:2021ojo} -- is itself obtained using experimental data, namely from the cross-section $\sigma(e^{+} e^{-} \rightarrow \text{hadrons})$ as a function of the center of mass energy $\sqrt{s}$~\cite{davier:2017zfy,keshavarzi:2018mgv,colangelo:2018mtw,hoferichter:2019mqg,davier:2019can,keshavarzi:2019abf}.
 This is certainly not a first principles theory prediction, but was until recently the only one whose error was competitive with the experimental error estimations.
-Algorithmic, theoretic and computational advancements over the years made the quantity accessible in the framework of lattice QCD.
+Algorithmic, theoretical and computational advancements over the years made the quantity accessible in the framework of lattice QCD.
 It is thus to be expected that future Muon $g-2$ Theory Initiative releases will not only include a lattice result for the HVP as of now, but also make it part of the official consensus result.
 %whose error quickly become comparable to the data-driven approach.
 This work will focus on the leading order hadronic vacuum polarization contribution $a_{\mu}^{\text{LO-HVP}}$ to the muon $g-2$ which renders the most challenging contribution to reduce the variance of.
@@ -672,7 +673,7 @@ This can be done perturbatively in a QCD only simulation in the observable evalu
 
 \tldr{our theory approach: we do QCD+QEDC + Cstar boundaries}
 The approach of the \RCstar collaboration for high precision lattice determinations is to non-perturbatively simulate QCD+QED directly in the Hybrid Monte Carlo algorithm when sampling gauge fields.
-This is accomplished through the use of \Cstar spatial boundary conditions~\cite{cstar:Wiese1992,cstar:Polley1993,cstar:Kronfeld1991,cstar:Kronfeld1993}, that respect locality and Gauss' law, while at the same time reducing finite-size effects compared to periodic boundaries or other lattice QED formulations.
+This is accomplished through the use of \Cstar spatial boundary conditions~\cite{cstar:Wiese1992,cstar:Polley1993,cstar:Kronfeld1991,cstar:Kronfeld1993} which respect locality and Gauss' law, while at the same time reducing finite-size effects compared to periodic boundaries or other lattice QED formulations.
 This approach allows for a local and gauge-invariant formulation of QED in a finite volume.
 We will briefly introduce these boundaries and the dynamic incorporation of QED in the next two subsections.
 
@@ -681,18 +682,18 @@ We will briefly introduce these boundaries and the dynamic incorporation of QED 
 
 \tldr{intro cstar}
 Gauss' law prohibits dynamical simulations of charged particles in a finite box with periodic boundary conditions.
-A local\footnote{By locality we mean that the Dirac operator does not have interactions spanning the whole lattice, i.e. only nearest neighbor interactions.}, compact and gauge-invariant formulation of QED theory on the lattice can be provided by using C$^{\star}$ boundary conditions along spatial lattice extents~\cite{cstar:Wiese1992,cstar:Polley1993,cstar:Kronfeld1991,cstar:Kronfeld1993}.
+A local\footnote{By locality we mean that the Dirac operator does not have interactions spanning the whole lattice, \ie only nearest neighbor interactions.}, compact and gauge-invariant formulation of QED theory on the lattice can be provided by using C$^{\star}$ boundary conditions along spatial lattice extents~\cite{cstar:Wiese1992,cstar:Polley1993,cstar:Kronfeld1991,cstar:Kronfeld1993}.
 This theory is usually referred to as \QED{C}~\cite{Lucini:2015}.
 It has some useful advantages like no zero-modes of the gauge field or small finite-volume effects due to its locality, compared to other (non-local) QED formulations on the lattice.
 Disadvantages are its partial breaking of flavor conservation and continuum and infinite volume limits do not commute, although mixing effects are exponentially suppressed.
 
 \tldr{other QED lattice formulations and their pros/cons}
 Numerous alternative formulations of QED on the lattice exist.
-\QED{L}~\cite{BMW:2014pzb,10.1143/PTP.120.413} is local and removes the spatial zero modes of the photon~\cite{Lucini:2015}, but introduces potentially problematic non-localities in space, limits do not commute~\cite{Patella:2017fgk} and it has unphysical finite-volume effects.
+\QED{L}~\cite{BMW:2014pzb,10.1143/PTP.120.413} is local and removes the spatial zero modes of the photon~\cite{Lucini:2015} but introduces potentially problematic non-localities in space, limits do not commute~\cite{Patella:2017fgk} and it has unphysical finite-volume effects.
 Furthermore, the fully local and consistent formulation \QED{m}~\cite{PhysRevLett.117.072002} introduces a photon of non-zero mass $\gamma_m$, whose limit $\gamma_m \to 0$ does not commute with the other limits.
 \QED{TL}~\cite{Duncan:1996xy} is non-local in time and limits do not commute.
-\QED{SF}~\cite{Gockeler:1989wj} restricts the zero mode of the photon field which allows charged states to propagate, but is non-local in time.
-Infinite volume QED, QED$_{\infty}$~\cite{Asmussen:2016lse,Blum:2017cer,RBC_2018,Feng:2018qpx} subtracts \QED{L} long-range, power-law finite-volume effects proportional to $1/L$, but introduces non-localities.
+\QED{SF}~\cite{Gockeler:1989wj} restricts the zero mode of the photon field which allows charged states to propagate but is non-local in time.
+Infinite volume QED, QED$_{\infty}$~\cite{Asmussen:2016lse,Blum:2017cer,RBC_2018,Feng:2018qpx} subtracts \QED{L} long-range, power-law finite-volume effects proportional to $1/L$ but introduces non-localities.
 
 %~\cite{10.1143/PTP.120.413,PhysRevLett.117.072002,Blum:2017cer,Feng:2018qpx}.
 
@@ -753,14 +754,14 @@ The data points on the mirror lattice though are redundant, because no matter in
 By cleverly defining shifted boundary conditions on the extended lattice, one can thus get away with an extended lattice that is just twice as large as the physical one, irrespective of the number of spatial \Cstar directions.
 This is called the orbifold construction~\cite{openqxd} which is useful for implementations.
 Saying that \Cstar simulations are twice as expensive as periodic ones would still be ignorant to the many peculiarities of gauge field generation and observable evaluation.
-Such a comparison is highly non-trivial as has not been fully carried out as of today.\footnote{One has to consider the missing experience in tuning \Cstar simulations as opposed to periodic ones where the field has decades of experience, but also partial lack of theoretical foundation, differences in observable evaluation just to name a few. Also cost savings of incorporating QED dynamically, rather than perturbatively is not trivial to estimate. We will not even attempt.}.
+Such a comparison is highly non-trivial as has not been fully carried out as of today.\footnote{One has to consider the missing experience in tuning \Cstar simulations as opposed to periodic ones where the field has decades of experience but also partial lack of theoretical foundation, differences in observable evaluation just to name a few. Also cost savings of incorporating QED dynamically, rather than perturbatively is not trivial to estimate. We will not even attempt.}.
 
 \subsection{QCD+QED}
 
 \tldr{QED in Dop}
 For QCD+QED simulations, the Dirac operator \cref{eq:Dw} has to be modified to include electromagnetic interactions and it has to act on the pseudofermion doublet $(\psi, \bar{\psi})$ simultaneously.
 We will use the symbol $\psi$ in the following to represent the pseudofermion doublet field on the extended lattice.
-In addition to the \ggrp{SU}{3}-valued QCD gauge field $U_\mu(x)$, we have the compact \ggrp{U}{1}-valued QED gauge field $A_\mu(x)$, which when combined, results in a \ggrp{U}{3}-valued field $e^{i q A_\mu(x)} U_\mu(x)$ with $q$ the charge of a quark.
+In addition to the \ggrp{SU}{3}-valued QCD gauge field $U_\mu(x)$, we have the compact \ggrp{U}{1}-valued QED gauge field $A_\mu(x)$ which when combined, results in a \ggrp{U}{3}-valued field $e^{i q A_\mu(x)} U_\mu(x)$ with $q$ the charge of a quark.
 These links are produced by multiplying the \ggrp{U}{1} phase to the \ggrp{SU}{3} matrices.
 
 \tldr{QED SW term}
@@ -791,7 +792,7 @@ This is usually set to its tree-level improvement value \num{1}~\cite{RCstar22}.
 Its deviation from \num{1} is small due to small quantum corrections in the Abelian case, $c_\mathrm{sw}^{U(1)} = 1 + \bigO(\alpha_{em})$ with $\alpha_{em} \sim 1/137$ the electromagnetic coupling constant.
 
 \tldr{Full QCD+QED Wilson Clover Dop}
-Therefore the full QCD+QED Wilson-Clover Dirac operator applied to a pseudofermion field $\psi$ is
+Therefore, the full QCD+QED Wilson-Clover Dirac operator applied to a pseudofermion field $\psi$ is
 \begin{equation}
 \begin{aligned} \label{eq:Dw:QCD+QED}
 D_\mathrm{w} \psi(x) = \left( 4 + m \right) &\psi(x) + \frac{1}{2} \sum_{\mu=0}^3
@@ -952,7 +953,7 @@ As available pure-CPU compute resources are decreasing yearly, it is expected fo
 Enabling \openqxd to run on GPUs thus opens important doors for the \RCstar collaboration and lays crucial groundwork for future software developments.
 It is evident that HPC hardware continues to change\footnote{An example for a new hardware trend is the intelligence processing unit~\cite{ipu} (IPU) specially designed for machine learning workloads.}.
 As soon as the GPU is harvested in terms of efficient usage, the HPC community may continue with practicing heterogeneous computing -- it already does.
-Therefore we explored into this area as well.
+Therefore, we explored into this area as well.
 
 In current world politics, energy consumption is more important than ever.
 This obligates us as researchers to treat the resources we are allowed to use with extra care, specially in the field of computational lattice field theory -- one of the biggest consumers of HPC.
@@ -1016,7 +1017,7 @@ The main contributions of this thesis are as follows:
 
 \section{Structure of the thesis}
 
-This document is split into two parts which are to a large extent independent of each other, but pulling on the same rope.
+This document is split into two parts which are to a large extent independent of each other but pulling on the same rope.
 \Cref{part:gpu} deals with the advancements in software development, GPU porting and the interface to \quda.
 It deals with contributions \numrange{1}{5}.
 Its heart piece provides a documentation of the design choices, all the functionality that have entered the codebase, and finishes with an assessment of performance.

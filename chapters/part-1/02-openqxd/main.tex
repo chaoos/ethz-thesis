@@ -9,7 +9,7 @@
 %\newcommand{\Dw}{{D_{\mathrm{w}}}}
 
 \tldr{openqxd and openqcd intro}
-The \openqxd code~\cite{openqxd} is an extension of the state-of-the-art lattice QCD Markov Chain Monte Carlo code openQCD~\cite{online:openqcd,Luscher:2012av}, which complies to the C89 standard with MPI parallelization and has proven strong-scalability to hundreds of CPU-based nodes including specific optimizations for x86 architectures.
+The \openqxd code~\cite{openqxd} is an extension of the state-of-the-art lattice QCD Markov Chain Monte Carlo code openQCD~\cite{online:openqcd,Luscher:2012av} which complies to the C89 standard with MPI parallelization and has proven strong-scalability to hundreds of CPU-based nodes including specific optimizations for x86 architectures.
 Due to the extensive suite of legacy applications based on \openqcd as well as its renowned stability and reproducibility, our goal is to accelerate the code by offloading the solution to the Dirac equation \cref{eq:dirac:equation} to the GPU accelerator using the \quda library.
 
 % The Wilson-Clover Dirac operator $\Dw$ is a nearest-neighbor stencil operator
@@ -80,12 +80,12 @@ In the following, we discus the layouts of these fields and the way they are rep
 \label{sec:openqxd:index}
 
 \tldr{spacetime convention and ordering}
-Denoting the rank-local lattice extent in direction $\mu=0,1,2,3$ by $L_\mu \in \mathbb{N}$, we can write the lattice coordinate as a 4-vector, $x = (x_0,x_1,x_2,x_3)$, where $x_\mu \in \{ 0, \dots, L_\mu -1 \}$. \Openqxd puts time coordinate first $x = (t, \vec{x})$, which we refer to as (\txyz)-convention. From that we can create a lexicographical index
+Denoting the rank-local lattice extent in direction $\mu=0,1,2,3$ by $L_\mu \in \mathbb{N}$, we can write the lattice coordinate as a 4-vector, $x = (x_0,x_1,x_2,x_3)$, where $x_\mu \in \{ 0, \dots, L_\mu -1 \}$. \Openqxd puts time coordinate first $x = (t, \vec{x})$ which we refer to as (\txyz)-convention. From that we can create a lexicographical index
 \begin{equation} \label{eq:lexi}
 \Lambda(x, L) := L_3 L_2 L_1 x_0 + L_3 L_2 x_1 + L_3 x_2 + x_3.
 \end{equation}
 \Openqxd orders the indices in so called cache-blocks; a decomposition of the rank-local lattice into equal blocks of extent $B_\mu \in \mathbb{N}$ in direction $\mu$. Within a block, points are indexed lexicographically $\Lambda(b, B)$ as in \cref{eq:lexi}, but the $L_\mu$ replaced by $B_\mu$ and $x$ replaced by the block local Euclidean index $b$, such that $b_\mu = x_\mu \mod B_\mu \in \{ 0, \dots, B_\mu -1 \}$.
-Furthermore, the blocks themselves are indexed lexicographically within the rank-local lattice decomposition into blocks, i.e. $\Lambda(n, N_B)$, where we denote the number of blocks in direction $\mu$ as $N_{B,\mu} = L_\mu / B_\mu$, and the Euclidean index of the block as $n$, such that $n_\mu = \lfloor x_\mu / B_\mu \rfloor \in \{ 0, \dots, N_{B,i} -1 \}$.
+Furthermore, the blocks themselves are indexed lexicographically within the rank-local lattice decomposition into blocks, \ie $\Lambda(n, N_B)$, where we denote the number of blocks in direction $\mu$ as $N_{B,\mu} = L_\mu / B_\mu$, and the Euclidean index of the block as $n$, such that $n_\mu = \lfloor x_\mu / B_\mu \rfloor \in \{ 0, \dots, N_{B,i} -1 \}$.
 
 \tldr{even odd ordering}
 In addition, \openqxd employs even-odd ordering, that is all even-parity lattice points (those where the sum $\sum_{\mu=0}^3 x_\mu$ of the rank-local coordinate $x$ is even) come first followed by all odd-parity points.
@@ -174,7 +174,7 @@ typedef struct
 As can be seen, there is no enforcement of the matrices being $\ggrp{SU}{3}$ nor compression of the gauge field exploiting the gauge group symmetry. All \num{9} complex numbers are explicitly written out as row-major matrix. An advantage of such a storage model is that it can easily be extended to arbitrary gauge groups. This made implementing QCD+QED which has a gauge group of $\ggrp{U}{3}$ straightforward, see \cref{sec:openqxd:qcd+qed}. A clear downside is performance. By exploiting the Lie-algebra structure of $\liealg{su}{3}$, the gauge field could be stored with \num{8} real degrees of freedom instead. This would reduce the size of the struct to \num{8} floating point numbers instead of \num{18}. In memory bound kernels this would result in a speedup of about two.
 
 \tldr{gauge field index}
-The gauge field has indices $(x_{odd}, \pm \mu, a, b)$, where $x_{odd}$ is the lattice index (only odd points, $V_\mathrm{L}/2$ elements), $\mu \in \{\pm 0, \pm 1, \pm 2, \pm 3\}$ is the direction of the gauge link (in positive as well as negative direction, i.e., 8 possibilities) and $a,b$ parameterize the row and column of the $\ggrp{SU}{3}$-valued gauge link (row-major).
+The gauge field has indices $(x_{odd}, \pm \mu, a, b)$, where $x_{odd}$ is the lattice index (only odd points, $V_\mathrm{L}/2$ elements), $\mu \in \{\pm 0, \pm 1, \pm 2, \pm 3\}$ is the direction of the gauge link (in positive as well as negative direction, \ie 8 possibilities) and $a,b$ parameterize the row and column of the $\ggrp{SU}{3}$-valued gauge link (row-major).
 Thus, \openqxd stores the gauge links in all \num{8} directions at odd lattice points in contrast to most other common conventions which store \num{4} gauge links in positive directions for every lattice point.
 
 \section{The clover field}
@@ -214,7 +214,7 @@ typedef struct
 % \end{equation}
 
 % \tldr{clover field indices}
-% The clover field has indices $(x, \pm, i)$, where $x$ is the lattice index, $\pm \in \{+, -\}$ denotes the chirality (i.e. the upper ($+$) or lower ($-$) $6 \times 6$-block of the $12 \times 12$ clover matrix) and $i \in \{0, \dots, 35\}$ the $36$ non-zero real numbers needed to parametrize a $6 \times 6$ Hermitian matrix.
+% The clover field has indices $(x, \pm, i)$, where $x$ is the lattice index, $\pm \in \{+, -\}$ denotes the chirality (\ie the upper ($+$) or lower ($-$) $6 \times 6$-block of the $12 \times 12$ clover matrix) and $i \in \{0, \dots, 35\}$ the $36$ non-zero real numbers needed to parametrize a $6 \times 6$ Hermitian matrix.
 It is stored in a compressed form exploiting its symmetry and block diagonal form,
 \begin{equation}
 c_\mathrm{sw}^{SU(3)} \frac{i}{4} \sum_{\mu,\nu=0}^3 \sigma_{\mu \nu} \hat{F}_{\mu \nu}(x) =
@@ -238,7 +238,7 @@ u_0   & u_6 + iu_7 & u_8 + iu_9       & u_{10} + iu_{11} & u_{12} + iu_{13} & u_
 \end{equation}
 
 \tldr{clover field indices}
-The clover field has indices $(x, \pm, i)$, where $x$ is the lattice index, $\pm \in \{+, -\}$ denotes the chirality (i.e. the upper ($+$) or lower ($-$) $6 \times 6$-block of the $12 \times 12$ clover matrix).
+The clover field has indices $(x, \pm, i)$, where $x$ is the lattice index, $\pm \in \{+, -\}$ denotes the chirality (\ie the upper ($+$) or lower ($-$) $6 \times 6$-block of the $12 \times 12$ clover matrix).
 
 
 %\todo{Since the struct complex double is present in the spinor and gauge-field structs, I believe it is better for the listing to be split.}
@@ -268,7 +268,7 @@ This is called the orbifold construction, see \cref{fig:cstar:orbi}.
 In \openqxd the fermion field is defined on the extended lattice where the space-time lattice index determines whether we are on the physical or on the mirror lattice.
 The gauge fields are copied to the mirror lattice sites and charge conjugated.
 This implementation has advantages and disadvantages:
-it is simple to extend code that already operates on periodic fields, but the gauge fields are redundant in memory making an application of the Dirac operator roughly twice as expensive as it could be. %without further optimizations.
+it is simple to extend code that already operates on periodic fields but the gauge fields are redundant in memory making an application of the Dirac operator roughly twice as expensive as it could be. %without further optimizations.
 
 \section{QCD+QED}
 \label{sec:openqxd:qcd+qed}

@@ -292,7 +292,7 @@ Furthermore the performance of the solve on the GPU is only negligibly affected 
 \begin{figure}
     \centering
     \includegraphics[width=\linewidth]{\dir/img/async_leo_F7.A}
-    \caption{Contributions from different kernels a) to f) on the CPU to a Krylov solve on the GPU. Blue, yellow and green show the serial pipeline (see \cref{fig:develop:serial,lst:develop:serial}), whereas red, purple and brown show the overlapping pipeline (see \cref{fig:develop:async,lst:develop:async}) averaged over \num{10} solves. \datataking{Leonardo Booster}}
+    \caption{Contributions from different kernels a) to f) on the CPU to a Krylov solve on the GPU. Blue, yellow and green show the serial pipeline (see \cref{fig:develop:serial,lst:develop:serial}), whereas red, purple and brown show the overlapping pipeline (see \cref{fig:develop:pipelining,lst:develop:pipelining}) averaged over \num{10} solves. \datataking{Leonardo Booster}}
     \label{fig:async:F7:leo:bar}
 \end{figure}
 
@@ -324,7 +324,7 @@ As backed by the data in the plot, it is currently\footnote{The problem is known
 \begin{figure}
     \centering
     \includegraphics[width=\linewidth]{\dir/img/async_daint_alps_F7.A}
-    \caption{Contributions from different kernels a) to f) on the CPU to a Krylov solve on the GPU. Blue, yellow and green show the serial pipeline (see \cref{fig:develop:serial,lst:develop:serial}), whereas red, purple and brown show the overlapping pipeline (see \cref{fig:develop:async,lst:develop:async}) averaged over \num{10} solves. \datataking{Daint-Alps}}
+    \caption{Contributions from different kernels a) to f) on the CPU to a Krylov solve on the GPU. Blue, yellow and green show the serial pipeline (see \cref{fig:develop:serial,lst:develop:serial}), whereas red, purple and brown show the overlapping pipeline (see \cref{fig:develop:pipelining,lst:develop:pipelining}) averaged over \num{10} solves. \datataking{Daint-Alps}}
     \label{fig:async:F7:daint:bar}
 \end{figure}
 
@@ -335,7 +335,7 @@ As backed by the data in the plot, it is currently\footnote{The problem is known
 The multiple right-hand sides solver interface is discussed in \cref{sec:interface:solver:mrhs} and can be accessed as described in \cref{sec:develop:mrhs:way}.
 \Cref{fig:mrhs:tts} shows its speedup versus the number of right-hand sides.%, where all right-hand sides are solved simultaneously.
 The base case is a single right-hand side.
-The theoretic maximal speedup is around 1.75-2 \worktodo{proof}.
+The theoretical maximal speedup is around 1.75-2 \worktodo{proof}.
 On the small lattice A400 it clearly reached, but on the large lattice D300 not.
 This lies in the fact that the increase in data locality has a higher impact on small problems which are already in the bad strong scaling region as opposed to large ones.
 However, the speedup directly translates to cost efficiency.

@@ -10,15 +10,25 @@
 * [ ] asynch solver is a bit scattered around
 * [x] part1 intro end
 * [ ] consistency in notation of lattice size TxL^3 or L_0 L_1 ...
-* [ ] chirality: numerical range plots
+* [x] chirality: numerical range plots
 * [ ] overall summary?
 * [ ] publish zenodo
 * [x] caption of figures in part 2: add ref to MGLMA paper, where they are taken.
-* [ ] read through once, add \readit{n} to chapter headers, where n is the number of times read through it; continue at "Exact estimator on coarsest level"
+* [x] read through once, add \readit{n} to chapter headers, where n is the number of times read through it; continue at "Exact estimator on coarsest level"
 * [ ] "full correlator" -> "Euclidean time correlator" everywhere
 * [ ] Ns, \hat{Ns}, same for Nc
 * [ ] "MG LMA" -> "MG-LMA"
-* [ ] check evans and steves presentations
+* [x] check evans and steves presentations
+
+
+## Final things to check
+
+* [ ] No more red things
+* [ ] Line break layout of \code{} fragments
+* [ ] Captions and their figures on the same page
+* [ ] No unmet references
+* [ ] check all \code{} parts
+* [ ] Also in images/schemes!
 
 <!-- Funny quote
 // If this code works, it was written by Paul DiLascia. If not, I don't know

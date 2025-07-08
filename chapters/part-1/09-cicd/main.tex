@@ -80,9 +80,9 @@ The individual stages will be discussed separately in the following.
 \emph{All jobs in the prepare stage may run on official GitLab runners.}
 As the name suggests, this stage has some preparatory jobs, whose artifacts will be exposed to subsequent jobs.
 The job called \code{download-quda} downloads a copy of \quda from its official GitHub repository \cite{github:quda} via \code{git clone} and exposes it as artifact.
-We download the latest developments committed to the \code{develop} branch, i.e. their CI branch.
+We download the latest developments committed to the \code{develop} branch, \ie their CI branch.
 All subsequent tests that depend on this job, will use the newest available developments of \quda.
-Therefore we will notice breaking changes immediately.
+Therefore, we will notice breaking changes immediately.
 
 \subsubsection{The build stage}
 \label{sec:cicd:pipeline:gitlab:build}
@@ -151,14 +151,14 @@ They have names as
 \begin{minted}[linenos=false]{text}
 test-openqxd/quda-check<N>/<cuda_arch>-<bcs>
 \end{minted}
-where \code{<N>} is the number of the check we run, i.e. the check corresponds to \code{devel/quda/check<N>.c} which was built in the previous stage.
+where \code{<N>} is the number of the check we run, \ie the check corresponds to \code{devel/quda/check<N>.c} which was built in the previous stage.
 We briefly discuss the binaries:
 \begin{itemize}
-  \item \code{devel/quda/check1}: Checks the indexing functions of fields, i.e. the arrays \code{ipt[VOLUME]} and \code{iup[VOLUME][4]} (see \code{main/README.global}) against the pure function implementations in \quda, \code{openQCD\_qudaIndexIpt} and \code{openQCD\_qudaIndexIup} respectively. Afterwards the transfers of the gauge field to \quda and back are performed and compared two each other. Finally the plaquette on \quda and on \openqxd are computed and compared. This last test is done only with the $SU(3)$-valued gauge field, even if a QCD+QED lattice is given as input, since \quda is not capable of calculating the QCD+QED plaquette.
+  \item \code{devel/quda/check1}: Checks the indexing functions of fields, \ie the arrays \code{ipt[VOLUME]} and \code{iup[VOLUME][4]} (see \code{main/README.global}) against the pure function implementations in \quda, \code{openQCD\_qudaIndexIpt} and \code{openQCD\_qudaIndexIup} respectively. Afterwards the transfers of the gauge field to \quda and back are performed and compared two each other. Finally the plaquette on \quda and on \openqxd are computed and compared. This last test is done only with the $SU(3)$-valued gauge field, even if a QCD+QED lattice is given as input, since \quda is not capable of calculating the QCD+QED plaquette.
   \item \code{devel/quda/check2}: This check performs a host-to-device and device-to-host transfer of a spinor field and compares the two on the host. Further the norm function as well as the gamma matrix applications are compared to make sure the gamma basis is the same. Finally we compare the Wilson-Clover Dirac operator by acting on a random spinor field on both \openqxd and \quda and compare them.
   \item \code{devel/quda/check3}: We have implemented acceptance tests of solvers in \quda in this check. This means we call the solver in \quda according to its configuration from the input file provided to the executable. The relative residual of the yielded solution is checked explicitely against the Dirac operator in \openqxd and compared to the desired relative residual from the solver configuration. This tests the synchronous solver interface from \cref{sec:develop:sync:way} with multiple solver instances, one and multiple RHSs, with and without the dual process grid, all on a periodic and a \Cstar lattice.
   \item \code{devel/quda/check4}: Consists of a check of the eigensolver of \quda. This is currently not tested.
-  \item \code{devel/quda/check5}: This check consists of acceptance tests for the asynchronous solver interface from \cref{sec:develop:async:way}. It performs the same tests as \code{check3}, but with the asynchronous solver.
+  \item \code{devel/quda/check5}: This check consists of acceptance tests for the asynchronous solver interface from \cref{sec:develop:async:way}. It performs the same tests as \code{check3} but with the asynchronous solver.
   \item \code{extras/main/lowrnk/pbp}: This utility serves as an example on how to access the \quda solver via the traditional solver interface described in \cref{sec:develop:openqcd:way} and accepts solver configurations from \openqxd as well. This test verifies if both types of solvers can coexit properly.
 \end{itemize}
 
@@ -207,7 +207,7 @@ build-quda/uenv/daint-gh200:
   variables:
     UENV_RECIPE: ci/uenv-recipes/quda/daint-gh200
 \end{minted}
-We see that it simply extends the runner \code{.uenv-builder-daint-gh200}, which is provided by CSCS and included a few lines above.
+We see that it simply extends the runner \code{.uenv-builder-daint-gh200} provided by CSCS and included a few lines above.
 We also include a local file for global definitions, \code{ci/include/cscs/00-variables.yml}.
 Together with the global definitions we have some important variables that change the behavior of the aforementioned job:
 \begin{itemize}
@@ -222,11 +222,11 @@ It consists of a directory with several YAML-files:
 \begin{itemize}
   \item \code{config.yaml}: Description of the package, its name, brief description in a sentence and which Spack version to use.
   \item \code{compilers.yaml}: Description of the compilers for bootstrapping and the compiler to use when compiling all software and dependencies. This works as follows: the system compiler (usually a very old gcc) is used to compile the bootstrap compiler (usually a newer gcc). Then the bootstrap compiler is used to compile the compiler we want to use to compile our software stack (usually a recent gcc).
-  \item{\code{environments.yaml}: Description of the environment, i.e. \code{gcc-env.specs} list all Spack specs that should be compiled and installed, \code{gcc-env.mpi} is dictated by CSCS to be \code{cray-mpich} with CUDA enabled (CUDA-aware MPI), \code{gcc-env.variants} adds Spack variant modifiers to all packages that support them in the spec list. \code{gcc-env.views} configures the available views in the image. The view \code{spack} is always added to the image. The view \code{modules} is added if in \code{config.yaml} we set \code{modules: true}. The \code{openqxd} view is added in the \code{post-install} script. The specs contain a spec for \quda as
+  \item{\code{environments.yaml}: Description of the environment, \ie \code{gcc-env.specs} list all Spack specs that should be compiled and installed, \code{gcc-env.mpi} is dictated by CSCS to be \code{cray-mpich} with CUDA enabled (CUDA-aware MPI), \code{gcc-env.variants} adds Spack variant modifiers to all packages that support them in the spec list. \code{gcc-env.views} configures the available views in the image. The view \code{spack} is always added to the image. The view \code{modules} is added if in \code{config.yaml} we set \code{modules: true}. The \code{openqxd} view is added in the \code{post-install} script. The specs contain a spec for \quda as
   \begin{minted}[linenos=false]{text}
   quda@experimental +openqcd +multigrid +wilson +clover
   \end{minted}
-  which builds and installs \quda with the interface code. This is currently installed using the additional package description under \code{repo/} describing the \quda build and install procedures. \worktodo{change to develop}}
+  which builds and installs \quda with the interface code. This is currently installed using the additional package description under \code{repo/} describing the \quda build and install procedures.}
   \item \code{modules.yaml}: Description of the \code{modules} view if it was enabled in \code{config.yaml}. This is for legacy behavior if we want to generate Tcl\cite{online:tcl} or Lmod\cite{github:lmod} modules from the software given in the \code{gcc-env.specs} in \code{environments.yaml}. These can be loaded once the uenv is started.
   \item \code{post-install}: A post installation script that currently adds the \code{openqxd} view which specifies the environment variables required to build \openqxd.
   \item \code{repo/}: An additional repo path to add to Spack. Under this path currently lies the \quda package description until it is available in the official Spack repositories.
@@ -288,4 +288,4 @@ Testing directly on target infrastructure increases quality, robustness, stabili
 The direct deployment to CSCS simplifies the process of setup, compile and run in a production environment, since the steps of setting up the correct environment and properly compiling the code essentially vanish from the workflow.
 Deploying the whole software environment rather than just the code considerably increases reproducibility of simulations.
 
-\worktodo{AMD Mi300 runs?}
+%\worktodo{AMD Mi300 runs?}

@@ -88,7 +88,7 @@
 % https://q.uiver.app/#q=WzAsMjgsWzAsOCwiUXVkYUludmVydFBhcmFtIl0sWzIsOSwiY2xvdmVyXFxfb3JkZXIiXSxbMyw5LCJRVURBXFxfT1BFTlFDRFxcX0NMT1ZFUlxcX09SREVSIl0sWzUsOSwiT3BlblFDRE9yZGVyIl0sWzIsNywiZ2F1Z2VcXF9vcmRlciJdLFszLDcsIlFVREFcXF9PUEVOUUNEXFxfR0FVR0VcXF9PUkRFUiJdLFs1LDcsIk9wZW5RQ0RPcmRlciJdLFsyLDEzLCJnYW1tYVxcX2Jhc2lzIl0sWzMsMTMsIlFVREFcXF9PUEVOUUNEXFxfR0FNTUFcXF9CQVNJUyJdLFs1LDEyLCJOb25SZWxUb09wZW5xY2RCYXNpcyJdLFs1LDE0LCJPcGVucWNkVG9Ob25SZWxCYXNpcyJdLFsyLDUsImRpcmFjXFxfb3JkZXIgIl0sWzMsNSwiUVVEQVxcX09QRU5RQ0RcXF9ESVJBQ1xcX09SREVSIl0sWzAsMywiQ29sb3JTcGlub3JQYXJhbSJdLFsyLDMsImZpZWxkT3JkZXIgIl0sWzMsMywiUVVEQVxcX09QRU5RQ0RcXF9GSUVMRFxcX09SREVSIl0sWzUsMywiT3BlblFDRERpcmFjT3JkZXIiXSxbMSwwXSxbMSwxNV0sWzQsMF0sWzQsMTVdLFs2LDBdLFs2LDE1XSxbMCwxLCJwYXJhbVxcIHN0cnVjdHMiXSxbNSwxMSwiZ2FtbWFcXCBiYXNpc1xcIHRyYW5zZm9ybWF0aW9ucyJdLFs1LDEsInJlb3JkZXJcXCBjbGFzc2VzIl0sWzIsMSwibWVtYmVycyJdLFszLDEsImRlZmluZWRcXCBlbnVtcyJdLFsyLDMsImluc3RhbnRpYXRlcyIsMV0sWzEsMiwiPT0iLDEseyJzdHlsZSI6eyJib2R5Ijp7Im5hbWUiOiJub25lIn0sImhlYWQiOnsibmFtZSI6Im5vbmUifX19XSxbMCwxLCJtZW1iZXIiLDFdLFswLDQsIm1lbWJlciIsMV0sWzQsNSwiPT0iLDEseyJzdHlsZSI6eyJib2R5Ijp7Im5hbWUiOiJub25lIn0sImhlYWQiOnsibmFtZSI6Im5vbmUifX19XSxbNSw2LCJpbnN0YW50aWF0ZXMiLDFdLFswLDcsIm1lbWJlciIsMV0sWzcsOCwiPT0iLDEseyJzdHlsZSI6eyJib2R5Ijp7Im5hbWUiOiJub25lIn0sImhlYWQiOnsibmFtZSI6Im5vbmUifX19XSxbOCw5LCJpbnN0YW50aWF0ZXMiLDFdLFs4LDEwLCJpbnN0YW50aWF0ZXMiLDFdLFswLDExLCJtZW1iZXIiLDFdLFsxMSwxMiwiPT0iLDEseyJzdHlsZSI6eyJib2R5Ijp7Im5hbWUiOiJub25lIn0sImhlYWQiOnsibmFtZSI6Im5vbmUifX19XSxbMTIsMTMsImluc3RhbnRpYXRlcyIsMV0sWzEzLDE0LCJtZW1iZXIiLDFdLFsxNCwxNSwiPT0iLDEseyJzdHlsZSI6eyJib2R5Ijp7Im5hbWUiOiJub25lIn0sImhlYWQiOnsibmFtZSI6Im5vbmUifX19XSxbMTUsMTYsImluc3RhbnRpYXRlcyIsMV0sWzE3LDE4LCIiLDEseyJzdHlsZSI6eyJib2R5Ijp7Im5hbWUiOiJkb3R0ZWQifSwiaGVhZCI6eyJuYW1lIjoibm9uZSJ9fX1dLFsxOSwyMCwiIiwxLHsic3R5bGUiOnsiYm9keSI6eyJuYW1lIjoiZG90dGVkIn0sImhlYWQiOnsibmFtZSI6Im5vbmUifX19XSxbMjEsMjIsIiIsMSx7InN0eWxlIjp7ImJvZHkiOnsibmFtZSI6ImRvdHRlZCJ9LCJoZWFkIjp7Im5hbWUiOiJub25lIn19fV1d
 \begin{tikzcd}
   & {} &&& {} && {} \\
-  \head{param\ structs} && \head{members} & \head{defined\ enum\ constants} && \head{reorder\ classes} \\
+  \head{Param\ Structs} && \head{Members} & \head{Defined\ Enum\ Constants} && \head{Reorder\ Classes} \\
   \\
   \edge{ColorSpinorParam} && \edge{fieldOrder} & \edge{QUDA\_OPENQCD\_FIELD\_ORDER} && \edge{OpenQCDDiracOrder} \\
   \\
@@ -98,7 +98,7 @@
   \edge{QudaInvertParam} \\
   && \edge{clover\_order} & \edge{QUDA\_OPENQCD\_CLOVER\_ORDER} && \edge{OpenQCDOrder} \\
   \\
-  &&&&& \head{gamma\ basis\ transformations} \\
+  &&&&& \head{Gamma\ Basis\ Transformations} \\
   &&&&& \edge{NonRelToOpenqcdBasis} \\
   && \edge{gamma\_basis} & \edge{QUDA\_OPENQCD\_GAMMA\_BASIS} \\
   &&&&& \edge{OpenqcdToNonRelBasis} \\

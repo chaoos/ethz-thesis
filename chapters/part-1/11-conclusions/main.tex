@@ -7,16 +7,16 @@
 
 \readit{1}
 
-\worktodo{
-Conclusions
-* reflect on Goals and what was achieved
-* emphasize impact
-* limitations, challenges, Lessons Learned 
-* transition to next part
-* synthesis, no restatement
-* 1-2 pages
-* lays groundwork 
-}
+% \worktodo{
+% Conclusions
+% * reflect on Goals and what was achieved
+% * emphasize impact
+% * limitations, challenges, Lessons Learned 
+% * transition to next part
+% * synthesis, no restatement
+% * 1-2 pages
+% * lays groundwork 
+% }
 
 \tldr{lay groundwork, offloading heavy lifting}
 The main goal of this project was to enable the \RCstar collaboration to run the observable evaluation part of dynamic QCD+QED simulations on GPU-accelerated computing centers.
@@ -43,12 +43,12 @@ However, that does not temper the satisfaction one feels when a piece of code fi
 \tldr{testing is pain, on real-world problems}
 Testing scientific software is not straightforward.
 One lesson learned was that testing should reflect production use cases ideally running on the target system using target parameters and target problem sizes, as opposed to a single local workstation on toy problems.
-But, due to its parallel nature and utilization of multi-threading, multi-processing, CPUs, GPUs and being cutting edge in hardware and software developments, systematic testing of scientific software is more essential than ever.
+Due to its parallel nature and utilization of multi-threading, multi-processing, CPUs, GPUs and being cutting edge in hardware and software developments, systematic testing of scientific software is more essential than ever.
 This is particularly true when we compute observables for which no independent validation exists yet.
 In such cases, trust in the software must be earned through rigorous and reproducible validation workflows.
 
 \tldr{transition to part 2}
 In the next part, we will approach the problem of efficient utilization of computational resources from an orthogonal perspective: through algorithmic development informed by physical insight.
-The goal is to improve the estimation of physical observables not merely by accelerating code, but by enhancing the efficiency of the simulations themselves.
+The goal is to improve the estimation of physical observables not merely by accelerating code but by enhancing the efficiency of the simulations themselves.
 %It will deal with algorithmic developments backed by physical insight to obtain better estimates of physical observables.
 

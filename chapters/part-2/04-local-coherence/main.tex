@@ -30,7 +30,7 @@ In this section, with the concept of local coherence of low quark modes~\cite{Lu
 
 \tldr{free theory low modes and staircase functions}
 The low modes of the Dirac operator in the free quark theory are sharp delta functions at small momenta $\lvert p \rvert$ in momentum space making them smooth, slowly oscillating plane waves in position space $x$, whose amplitude only depends on $p$ and is spread over the whole lattice.
-Therefore one approximation for them in position space are constant spinor fields.
+Therefore, one approximation for them in position space are constant spinor fields.
 In order to include the slow oscillations, we may project these fields to a block decomposition of the lattice whose block size catches well the resolution of the wave, see \cref{fig:free:theory}.
 \begin{figure}
     \centering
@@ -103,7 +103,7 @@ The projected set in \cref{eq:local:coherence:sets} can now be specified as the 
 where $\gramschmidt{\mathcal{A}}$ is the Gram-Schmidt orthonormalized set provided an arbitrary linear independent set $\mathcal{A}$.
 
 \tldr{coarse color, coarse spacetime indices}
-This procedure specifies a second coarser lattice $\coarse{\lattice}$ analogue to \cref{sec:lattice:definition}, but with different degrees of freedom for spin, color and spacetime.
+This procedure specifies a second coarser lattice $\coarse{\lattice}$ analogue to \cref{sec:lattice:definition} but with different degrees of freedom for spin, color and spacetime.
 As of now, we will interpret the field index $\coarse{a}$ in $\psi_{\coarse{a}} \in \mathcal{B}$ for some (arbitrary) enumeration of the fields as coarse color.
 This will become clear later.
 The block index $\coarse{y} \in \coarse{\idxspacetime}$ is straightforwardly interpreted as coarse spacetime index and finally the coarse spin is trivial for now.
@@ -133,7 +133,7 @@ The plot shows the fraction of the \num{350} lowest modes that are contained in 
 The modes were determined up to relative precision of $\norm{Q \evec - \lambda \evec}/\norm{\evec} \leq 10^{-12}$ for an eigenmode $\evec$ with eigenvalue $\lambda$.
 Different number of low modes $\coarse{\Nc}$ and block extents where used for the bootstrap set to generate subspaces of differing sizes.
 Block sizes of $b_{\mu} = 4, 8$ correspond to physical extents of $b_{\mu} a \approx $ \u{0.25}{\femto\metre} and $b_{\mu} a \approx $ \u{0.5}{\femto\metre} respectively.
-As analytically expected, the spinors in the bootstrap set are represented exactly with no deficit, i.e. $1 - \epsilon_i = 1$ for $\psi \in \mathcal{B}$.
+As analytically expected, the spinors in the bootstrap set are represented exactly with no deficit, \ie $1 - \epsilon_i = 1$ for $\psi \in \mathcal{B}$.
 Spinors in $\mathcal{M} \setminus \mathcal{B}$ on the other hand have deficits larger than zero, but nevertheless they are well represented.
 The effect of a finer block grid or an increase in low modes are better overlaps as expected.
 Even with a very modest number of $\coarse{\Nc}=20$ low modes and a block size of $4^4$, we already contain $85-90\%$ of the $350$ lowest modes.
@@ -142,12 +142,12 @@ One might be tempted to drive the number of low modes to the extreme, while havi
 
 \tldr{used in inexact deflation and MG algos}
 We note that this property has been crucial to create subspaces with very inexact rough low modes to obtain powerful preconditioners for Krylov subspace solvers, called inexact deflation~\cite{Luescher2007} or multigrid~\cite{Babich:2010qb}.
-Furthermore the property has been used to accelerate the Lanczos algorithm to generate low modes~\cite{Clark_2018}.
+Furthermore, the property has been used to accelerate the Lanczos algorithm to generate low modes~\cite{Clark_2018}.
 The extension of what will follow to using modes determined with a low accuracy is straightforward as we will not assume any special properties of the fields in the bootstrap set.
 
 \tldr{LMA as trivial blocking}
 Finally we briefly revisit low-mode averaging one more time to show that it is a pathological case of the above.
-The projector $P$ used in low-mode averaging, see \cref{eq:lma:projector}, can be obtained by a block extent equal to the fine-grid lattice extent of $b_{\mu} = L_{\mu}$, i.e. one big block covering the whole lattice, making the coarse lattice trivial with a volume $\coarse{V} = 1$.
+The projector $P$ used in low-mode averaging, see \cref{eq:lma:projector}, can be obtained by a block extent equal to the fine-grid lattice extent of $b_{\mu} = L_{\mu}$, \ie one big block covering the whole lattice, making the coarse lattice trivial with a volume $\coarse{V} = 1$.
 It leaves only non-trivial coarse color degrees of freedom.
 LMA has $\Pi(\mathcal{B}) = \mathcal{B}$ and the deficits of modes not in the bootstrap set will be maximal,
 \begin{equation}
@@ -155,7 +155,7 @@ LMA has $\Pi(\mathcal{B}) = \mathcal{B}$ and the deficits of modes not in the bo
 \qquad
 \psi \in \mathcal{M} \setminus \mathcal{B} \;.
 \end{equation}
-Therefore \cref{fig:lc} for that choice will be a shifted Heaviside function as $\theta(\coarse{\Nc} -1 - i)$ where
+Therefore, \cref{fig:lc} for that choice will be a shifted Heaviside function as $\theta(\coarse{\Nc} -1 - i)$ where
 \begin{equation}
 \theta(i) = \begin{cases}
 1 & i \geq 0 \;,  \\
@@ -168,7 +168,7 @@ It is instructive to shortly touch upon the other extreme, where the block exten
 This choice results in a coarse lattice geometry equal to the fine one, $\coarse{\idxspacetime} = \idxspacetime$.
 A valid choice as long as $\coarse{\Nc} \leq 12$, because else the Gram-Schmidt reorthonormalization will certainly fail.
 The coarsening then only affects the internal degrees of freedom of a spinor field.
-If $\coarse{\Nc} = 12$ we obtain exactly the same lattice, $\coarse{\lattice} = \lattice$, possibly rotated mixing spins and colors, but with the same physics contents.
+If $\coarse{\Nc} = 12$ we obtain exactly the same lattice, $\coarse{\lattice} = \lattice$, possibly rotated mixing spins and colors but with the same physics contents.
 
 
 %and corresponding block projectors $P_{B_x}$,
@@ -211,7 +211,7 @@ Consider the set extension
 \begin{equation} \label{eq:bootstrap:chiral}
 \mathcal{B} \longmapsto P_{+} \mathcal{B} \cup P_{-} \mathcal{B} \;.
 \end{equation}
-This will preserve the chiral structure of a spinor projected to the subspace by the projector in \cref{eq:lc:projector} leading to an important, but simple equation
+This will preserve the chiral structure of a spinor projected to the subspace by the projector in \cref{eq:lc:projector} leading to an important but simple equation
 \begin{equation} \label{eq:P:g5:commute}
 [P, \gamma^{5}] = 0 \;.
 \end{equation}

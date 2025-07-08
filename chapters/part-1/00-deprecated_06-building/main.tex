@@ -131,7 +131,7 @@ Hence, when compiling an \openqxd program, we add the path to \quda's \code{incl
 To compile \openqxd against \quda, we require some environment variables to be set properly, \cref{lst:openqxd:env_vars}
 The environment variable \code{GCC} should point to a recent gcc compiler\footnote{At the time of writing this thesis, the authors recommend gcc version 12 or newer.}, whereas \code{CC} usually points to the MPI C compiler wrapper of the used MPI implementation\footnote{Usually just \code{mpicc} in the users \code{\$PATH}.}.
 \code{MPI\_HOME} and \code{MPI\_INCLUDE} have to point to directories of the MPI implementation and its include directory where the file \code{mpi.h} lies\footnote{Usually we have \code{MPI\_INCLUDE=\$\{MPI\_HOME\}/include}.}.
-These two directories are passed to the compile commands as \code{-I\$\{MPI\_INCLUDE\}} (directories to be searched for header files) and \code{-L\$\{MPI\_HOME\}/lib} (directories to be searched for \code{-l}, i.e. for named libraries.) respectively.
+These two directories are passed to the compile commands as \code{-I\$\{MPI\_INCLUDE\}} (directories to be searched for header files) and \code{-L\$\{MPI\_HOME\}/lib} (directories to be searched for \code{-l}, \ie for named libraries.) respectively.
 The variable \code{QUDA\_BUILD} is very similar.
 It points to the path where \quda was built.
 In the Makefiles it has 3 roles.
@@ -151,7 +151,7 @@ export QUDA_BUILD=<path>     # adds -I${QUDA_BUILD}/include -L${QUDA_BUILD}/lib
 \label{lst:openqxd:env_vars}
 \end{codelisting}
 
-% Note that any modification to the lattice geometry in OpenQxD (i.e., in \code{global.h}) necessitates recompiling the program binaries. 
+% Note that any modification to the lattice geometry in OpenQxD (\ie, in \code{global.h}) necessitates recompiling the program binaries. 
 
 % For the dynamic linking of OpenQXD:
 % \code{

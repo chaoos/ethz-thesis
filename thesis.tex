@@ -268,4 +268,15 @@
 % PYTHON: back or publications or pubs
 \cleardoublepage\include{frontbackmatter/publications}
 
+\ifthenelse{\value{worktodocount} > 0}{
+  \clearpage
+  \pagecolor{red}
+  \color{white}
+  \thispagestyle{empty}
+  \vspace*{\fill}
+  \begin{center}{\Huge NUMBER OF TODOs: \arabic{worktodocount}}\end{center}
+  \vspace*{\fill}
+  \clearpage
+}{}
+
 \end{document}

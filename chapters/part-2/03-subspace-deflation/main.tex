@@ -21,7 +21,7 @@
 }
 
 \tldr{subspace deflation intro}
-The method of low-mode averaging from the last section will be generalized to cover not only subspaces spanned by low modes, but arbitrary subspaces spanned by an arbitrary set of (currently unspecified) orthonormal basis fields.
+The method of low-mode averaging from the last section will be generalized to cover not only subspaces spanned by low modes but arbitrary subspaces spanned by an arbitrary set of (currently unspecified) orthonormal basis fields.
 For this, we need to define the degrees of freedom on a spacetime lattice.
 
 
@@ -93,7 +93,7 @@ T \coarse{\psi} &= \sum_{i=0}^{N-1} \coarse{\psi}_{[i]} \phi_{i} \;. &
 
 \tldr{projector definition}
 The prolongator is related to the restrictor by Hermiticity $T = R^{\dagger}$.
-Therefore the restrictor is a $\coarse{d} \times d$ matrix, whereas the prolongator is a $d \times \coarse{d}$ matrix.
+Therefore, the restrictor is a $\coarse{d} \times d$ matrix, whereas the prolongator is a $d \times \coarse{d}$ matrix.
 We can build the concatenation of the two and obtain the $d \times d$ Hermitian projector $P$ projecting spinor fields to the space parallel to the $\phi_{i}$,
 \begin{equation} \label{eq:P}
 P = \prolongator \restrictor \colon \vslattice \longrightarrow \vslattice \;,
@@ -168,7 +168,7 @@ The coarse Hermitian Dirac operator $\coarse{K}$ (as well as its inverse $\coars
 \qquad
 \coarse{K}^{-1} = \text{diag}\left(\frac{1}{\lambda_0}, \frac{1}{\lambda_1}, \ldots, \frac{1}{\lambda_{N-1}}\right) \;,
 \end{equation}
-Furthermore with the $\phi_i$ eigenmodes the projector commutes with the operator, $[P,Q]=0$, and thus the propagator $\prop$ decomposes exactly as in the LMA case
+Furthermore, with the $\phi_i$ eigenmodes the projector commutes with the operator, $[P,Q]=0$, and thus the propagator $\prop$ decomposes exactly as in the LMA case
 \begin{align}
 \prop_{r} &= (1-P) \prop, \\
 \prop_{e} &= PS = \prolongator \coarse{Q}^{-1} \restrictor \gamma^5,
@@ -183,7 +183,7 @@ This shows us, that $S_e$ is a low-rank approximation to $S$ in terms of its spe
 \rank(S_e) = N \;,
 \end{equation}
 where $\norm{\cdot}_2$ is the spectral norm.
-This family of approximations conserves the low-mode behavior of the propagator, which is responsible for the large distance behavior of the vector two-point correlator.
+This family of approximations conserves the low-mode behavior of the propagator which is responsible for the large distance behavior of the vector two-point correlator.
 The rank of the approximation is the number of deflated low-modes $N$.
 Although this parameter is under direct user control the memory requirements of LMA scale as $\bigO\left( N \right)$.
 

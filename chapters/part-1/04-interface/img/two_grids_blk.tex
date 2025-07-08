@@ -11,8 +11,9 @@
 \usetikzlibrary{decorations}
 \usetikzlibrary{fit, positioning, shapes.geometric}
 
-\newcommand{\head}[1]{\textbf{\underline{#1}}}
-\newcommand{\hit}[1]{\textbf{#1}}
+\newcommand{\head}[1]{\Huge \textbf{\underline{#1}}}
+\newcommand{\hit}[1]{\huge \textbf{#1}}
+\newcommand{\hrg}[1]{\huge #1}
 
 \input{preamble/colors.tex}
 \input{preamble/commands.tex}
@@ -68,34 +69,34 @@
 %\node (R6) [rank] [fit={(C44) (C75)}] {}; \node (LR6) [fill=white, text=black] at (R6.south) {rank 6};
 %\node (R5) [rank] [fit={(C06) (C37)}] {}; \node (LR5) [fill=white, text=black] at (R5.south) {rank 5};
 %\node (R7) [rank] [fit={(C46) (C77)}] {}; \node (LR7) [fill=white, text=black] at (R7.south) {rank 7};
-\node (R0) [rank] [fit={(C00) (C11)}] {}; \node (LR0) [fill=white, text=black] at (R0.south) {\hit{rank 0}};
-\node (R1) [rank] [fit={(C20) (C31)}] {}; \node (LR1) [fill=white, text=black] at (R1.south) {rank 1};
-\node (R4) [rank] [fit={(C40) (C51)}] {}; \node (LR4) [fill=white, text=black] at (R4.south) {\hit{rank 4}};
-\node (R5) [rank] [fit={(C60) (C71)}] {}; \node (LR5) [fill=white, text=black] at (R5.south) {rank 5};
-\node (R2) [rank] [fit={(C02) (C13)}] {}; \node (LR2) [fill=white, text=black] at (R2.south) {rank 2};
-\node (R3) [rank] [fit={(C22) (C33)}] {}; \node (LR3) [fill=white, text=black] at (R3.south) {rank 3};
-\node (R6) [rank] [fit={(C42) (C53)}] {}; \node (LR6) [fill=white, text=black] at (R6.south) {rank 6};
-\node (R7) [rank] [fit={(C62) (C73)}] {}; \node (LR7) [fill=white, text=black] at (R7.south) {rank 7};
-\node (R8) [rank] [fit={(C04) (C15)}] {}; \node (LR8) [fill=white, text=black] at (R8.south) {\hit{rank 8}};
-\node (R9) [rank] [fit={(C24) (C35)}] {}; \node (LR9) [fill=white, text=black] at (R9.south) {rank 9};
+\node (R00) [rank] [fit={(C00) (C11)}] {}; \node (LR00) [fill=white, text=black] at (R00.south) {\hit{rank 0}};
+\node (R01) [rank] [fit={(C20) (C31)}] {}; \node (LR01) [fill=white, text=black] at (R01.south) {\hrg{rank 1}};
+\node (R04) [rank] [fit={(C40) (C51)}] {}; \node (LR04) [fill=white, text=black] at (R04.south) {\hit{rank 4}};
+\node (R05) [rank] [fit={(C60) (C71)}] {}; \node (LR05) [fill=white, text=black] at (R05.south) {\hrg{rank 5}};
+\node (R02) [rank] [fit={(C02) (C13)}] {}; \node (LR02) [fill=white, text=black] at (R02.south) {\hrg{rank 2}};
+\node (R03) [rank] [fit={(C22) (C33)}] {}; \node (LR03) [fill=white, text=black] at (R03.south) {\hrg{rank 3}};
+\node (R06) [rank] [fit={(C42) (C53)}] {}; \node (LR06) [fill=white, text=black] at (R06.south) {\hrg{rank 6}};
+\node (R07) [rank] [fit={(C62) (C73)}] {}; \node (LR07) [fill=white, text=black] at (R07.south) {\hrg{rank 7}};
+\node (R08) [rank] [fit={(C04) (C15)}] {}; \node (LR08) [fill=white, text=black] at (R08.south) {\hit{rank 8}};
+\node (R09) [rank] [fit={(C24) (C35)}] {}; \node (LR09) [fill=white, text=black] at (R09.south) {\hrg{rank 9}};
 \node (R12) [rank] [fit={(C44) (C55)}] {}; \node (LR12) [fill=white, text=black] at (R12.south) {\hit{rank 12}};
-\node (R13) [rank] [fit={(C64) (C75)}] {}; \node (LR13) [fill=white, text=black] at (R13.south) {rank 13};
-\node (R10) [rank] [fit={(C06) (C17)}] {}; \node (LR10) [fill=white, text=black] at (R10.south) {rank 10};
-\node (R11) [rank] [fit={(C26) (C37)}] {}; \node (LR11) [fill=white, text=black] at (R11.south) {rank 11};
-\node (R14) [rank] [fit={(C46) (C57)}] {}; \node (LR14) [fill=white, text=black] at (R14.south) {rank 14};
-\node (R15) [rank] [fit={(C66) (C77)}] {}; \node (LR15) [fill=white, text=black] at (R15.south) {rank 15};
+\node (R13) [rank] [fit={(C64) (C75)}] {}; \node (LR13) [fill=white, text=black] at (R13.south) {\hrg{rank 13}};
+\node (R10) [rank] [fit={(C06) (C17)}] {}; \node (LR10) [fill=white, text=black] at (R10.south) {\hrg{rank 10}};
+\node (R11) [rank] [fit={(C26) (C37)}] {}; \node (LR11) [fill=white, text=black] at (R11.south) {\hrg{rank 11}};
+\node (R14) [rank] [fit={(C46) (C57)}] {}; \node (LR14) [fill=white, text=black] at (R14.south) {\hrg{rank 14}};
+\node (R15) [rank] [fit={(C66) (C77)}] {}; \node (LR15) [fill=white, text=black] at (R15.south) {\hrg{rank 15}};
 
 % openqxd lattice block grid
-\node (B0) [block] [fit={(R0) (R1) (R2) (R3) (LR0) (LR1) (LR2) (LR3)}]         {}; \node[fill=white, text=black] at (B0.north) {block 0};
-\node (B1) [block] [fit={(R4) (R5) (R6) (R7) (LR4) (LR5) (LR6) (LR7)}]         {}; \node[fill=white, text=black] at (B1.north) {block 1};
-\node (B2) [block] [fit={(R8) (R9) (R10) (R11) (LR8) (LR9) (LR10) (LR11)}]     {}; \node[fill=white, text=black] at (B2.north) {block 2};
-\node (B3) [block] [fit={(R12) (R13) (R14) (R15) (LR12) (LR13) (LR14) (LR15)}] {}; \node[fill=white, text=black] at (B3.north) {block 3};
+\node (B0) [block] [fit={(R00) (R01) (R02) (R03) (LR00) (LR01) (LR02) (LR03)}] {}; \node[fill=white, text=black] at (B0.south) {\hrg{block 0}};
+\node (B1) [block] [fit={(R04) (R05) (R06) (R07) (LR04) (LR05) (LR06) (LR07)}] {}; \node[fill=white, text=black] at (B1.south) {\hrg{block 1}};
+\node (B2) [block] [fit={(R08) (R09) (R10) (R11) (LR08) (LR09) (LR10) (LR11)}] {}; \node[fill=white, text=black] at (B2.north) {\hrg{block 2}};
+\node (B3) [block] [fit={(R12) (R13) (R14) (R15) (LR12) (LR13) (LR14) (LR15)}] {}; \node[fill=white, text=black] at (B3.north) {\hrg{block 3}};
 
 % quda lattice ranks
-\node (QR0) [rank] [fit={(D00) (D33)}] {}; \node (LQR0) [fill=white, text=black] at (QR0.south) {rank 0};
-\node (QR1) [rank] [fit={(D40) (D73)}] {}; \node (LQR1) [fill=white, text=black] at (QR1.south) {rank 1};
-\node (QR2) [rank] [fit={(D04) (D37)}] {}; \node (LQR2) [fill=white, text=black] at (QR2.south) {rank 2};
-\node (QR3) [rank] [fit={(D44) (D77)}] {}; \node (LQR3) [fill=white, text=black] at (QR3.south) {rank 3};
+\node (QR0) [rank] [fit={(D00) (D33)}] {}; \node (LQR0) [fill=white, text=black] at (QR0.south) {\hrg{rank 0}};
+\node (QR1) [rank] [fit={(D40) (D73)}] {}; \node (LQR1) [fill=white, text=black] at (QR1.south) {\hrg{rank 1}};
+\node (QR2) [rank] [fit={(D04) (D37)}] {}; \node (LQR2) [fill=white, text=black] at (QR2.south) {\hrg{rank 2}};
+\node (QR3) [rank] [fit={(D44) (D77)}] {}; \node (LQR3) [fill=white, text=black] at (QR3.south) {\hrg{rank 3}};
 
 \end{tikzpicture}
 

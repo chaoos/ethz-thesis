@@ -2,11 +2,11 @@
 \label{ch:appendix:symmetries}
 \label{ch:appendix:D}
 
-\readit{0}
+\readit{1}
 
 In order to quantify the symmetry of the numerical range of an operator we have implemented a metric; the intersection-over-union (IoU).
 Assume we have a continuous subset set of complex numbers $S \subseteq \mathbb{C}$ and a reflection operator $\mathcal{R} \colon z \mapsto \mathcal{R}(z)$ and $\mathcal{R}(S) = \{ \mathcal{R}(z) \mid z \in S \} $.
-We define the asymmetry score for continuous sets as
+We define the asymmetry score with respect to $\mathcal{R}$ for continuous sets as
 \begin{equation} \label{eq:asymmetry:score:cont}
 M_c(\mathcal{R}; S)
 = 1-
@@ -37,12 +37,12 @@ Thus for every point in $S$, if its error rectangle does not overlap with the er
 \Cref{tab:asymmetry:scores} shows asymmetry scores for various numerical ranges and spectral hulls determined numerically.
 We see high degrees of symmetry about the real axis for all operators that preserve chirality.
 %Even the case \caseX{1} showsOn the other hand, the symmetry can only be verified up to the precision of eigenvalue determination for the operators with an analytical symmetry.
-Underlined scores correspond to analytical perfect symmetries.
+Gray colored scores correspond to analytical perfect symmetries.
 Broken symmetries shows themselves as symmetry scores larger than eigenvalue precision.
 
-\renewcommand{\nt}[2]{#1}
-\renewcommand{\ut}[2]{\textcolor{gray}{ #1 }}
-\renewcommand{\st}[2]{\textbf{ #1 }}
+\newcommand{\ant}[2]{#1}
+\newcommand{\aut}[2]{\textcolor{gray}{ #1 }}
+%\newcommand{\ast}[2]{\textbf{ #1 }}
 \begin{table}
 \begin{tabular}{c|ccc}
 \toprule
@@ -51,35 +51,35 @@ Broken symmetries shows themselves as symmetry scores larger than eigenvalue pre
 \multicolumn{1}{c}{$M_c(\mathcal{R}; W(D))$} &
 \multicolumn{1}{c}{$M_p(\mathcal{R}; \sigma(D))$} \\
 \midrule
-Wilson              & real axis                             & \ut{$1.2 \times 10^{-5}$}{1.225428429696418e-05} 
-                                                            & \ut{0.027}{0.02734375} \\
-(fine)              & center point                          & \ut{$1.0 \times 10^{-5}$}{1.0178085134593395e-05}
-                                                            & \nt{0.29}{0.29296875} \\
+Wilson              & real axis                             & \aut{$1.2 \times 10^{-5}$}{1.225428429696418e-05} 
+                                                            & \aut{0.027}{0.02734375} \\
+(fine)              & center point                          & \aut{$1.0 \times 10^{-5}$}{1.0178085134593395e-05}
+                                                            & \ant{0.29}{0.29296875} \\
 \midrule
-Wilson-Clover       & real axis                             & \ut{$1.1 \times 10^{-5}$}{1.1129247529217956e-05}
-                                                            & \ut{0.037}{0.03676470588235292} \\
-(fine)              & center point                          & \nt{$0.070$}{0.06978011204544077}
-                                                            & \nt{0.53}{0.5294117647058824} \\
+Wilson-Clover       & real axis                             & \aut{$1.1 \times 10^{-5}$}{1.1129247529217956e-05}
+                                                            & \aut{0.037}{0.03676470588235292} \\
+(fine)              & center point                          & \ant{$0.070$}{0.06978011204544077}
+                                                            & \ant{0.53}{0.5294117647058824} \\
 \midrule
-% \caseX{1}, $4^{4}$   & real axis                             & \nt{$0.015$}{0.015392394837683288}
-%                                                             & \nt{0.488}{0.4878048780487805} \\
-% (coarse)            & center point                          & \nt{$0.028$}{0.02801502185149307}
-%                                                             & \nt{1.0}{1.0} \\
+% \caseX{1}, $4^{4}$   & real axis                             & \ant{$0.015$}{0.015392394837683288}
+%                                                             & \ant{0.488}{0.4878048780487805} \\
+% (coarse)            & center point                          & \ant{$0.028$}{0.02801502185149307}
+%                                                             & \ant{1.0}{1.0} \\
 % \midrule
-% \caseX{2c}, $4^{4}$   & real axis                             & \ut{$4.2 \times 10^{-9}$}{4.263768560441861e-09}
-%                                                             & \ut{0.1}{0.09999999999999998} \\
-% (coarse)            & center point                          & \nt{$0.014$}{0.013976043931514748}
-%                                                             & \nt{1.0}{1.0} \\
+% \caseX{2c}, $4^{4}$   & real axis                             & \aut{$4.2 \times 10^{-9}$}{4.263768560441861e-09}
+%                                                             & \aut{0.1}{0.09999999999999998} \\
+% (coarse)            & center point                          & \ant{$0.014$}{0.013976043931514748}
+%                                                             & \ant{1.0}{1.0} \\
 % \bottomrule
-\caseX{1}, $6^{4}$      & real axis                         & \nt{0.013}{0.012689731798519066}
-                                                            & \nt{0.33}{0.32558139534883723} \\
-(coarse)                & center point                      & \nt{0.031}{0.03147742194608616}
-                                                            & \nt{0.65}{0.6511627906976745} \\
+\caseX{1}, $6^{4}$      & real axis                         & \ant{0.013}{0.012689731798519066}
+                                                            & \ant{0.33}{0.32558139534883723} \\
+(coarse)                & center point                      & \ant{0.031}{0.03147742194608616}
+                                                            & \ant{0.65}{0.6511627906976745} \\
 \midrule
-\caseX{2sc}, $6^{4}$    & real axis                         & \ut{$1.1 \times 10^{-8}$}{1.0991055066078559e-08}
-                                                            & \ut{0.063}{0.0625} \\
-(coarse)                & center point                      & \nt{0.031}{0.03144572737373563}
-                                                            & \nt{1.0}{1.0} \\
+\caseX{2sc}, $6^{4}$    & real axis                         & \aut{$1.1 \times 10^{-8}$}{1.0991055066078559e-08}
+                                                            & \aut{0.063}{0.0625} \\
+(coarse)                & center point                      & \ant{0.031}{0.03144572737373563}
+                                                            & \ant{1.0}{1.0} \\
 \bottomrule
 \end{tabular}
 \caption{

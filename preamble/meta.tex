@@ -2,8 +2,17 @@
 % Document information
 %
 
+\usepackage{etoolbox}    % for \newcounter + patching if needed
+
 % Work version info
-\newcommand{\worktodo}[1]{\textcolor{red}{\textbf{TODO}: #1}}
+
+\newcounter{worktodocount}
+%\newcommand{\worktodo}[1]{
+\DeclareRobustCommand{\worktodo}[1]{%
+  \stepcounter{worktodocount}%
+  \textcolor{red}{\textbf{TODO}: #1}%
+}
+
 \usepackage{scrtime}
 \newcommand{\workdraft}{\textcolor{gray}{Draft, \today{}---\thistime}}
 % \renewcommand{\workdraft}{}

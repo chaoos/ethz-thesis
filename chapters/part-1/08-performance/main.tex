@@ -7,31 +7,31 @@
 
 \readit{1}
 
-\worktodo{
-this section need FULL refactoring!
-Performance assessment for (all without transfers)
-\begin{itemize}
-    \item[x] Quda dop, cstar and periodic on synthetic data on daint strong.
-    \item[x] Quda dop, cstar and periodic on synthetic data on daint weak.
-    \item openqxd Dirac operator cstar and periodic on synthetic data on daint strong.
-    \item[1/2] openqxd Dirac operator cstar and periodic on synthetic data on daint weak.
-    \item[1/2] openqxd deflated solver vs quda mg simple solver, strong and weak scaling with G8 (periodic) and D300 (cstar, qcd-only) and evtl. C380 (cstar and qcd-qed) on daint.
-    \item[x] quda simple solver vs. quda mrhs solver. Done: D300 and A400 speedup vs. nrhs (16 and 32)
-    \item[x] quda simple solver vs. quda async solver overlapping something (not yet sure what to overlap). Done: A360 at geno 1 node: good, A400 at daint 2 nodes: VERY bad, F7 at daint 1 node: BAD
-    \item[x] performance degradation of \code{MPI\_THREAD\_MULTIPLE}. Done: in previous plots.
-    \item[x] performance degradation of dual lattice (or contribution of inter-grid data movement to total). Dual lattice is very inefficient on daint-alps! Maybe rewrite such that only one MPIsend/recv per non-quda rank? Else it is infeasible I think
-    \item strong scaling inverter plot with: sync vs. async vs. dual on G8/D300/C380
-    \item[x] ideally activate GDR ...
-    \item ideally activate nvshmem ...
-\end{itemize}
-}
+% \worktodo{
+% this section need FULL refactoring!
+% Performance assessment for (all without transfers)
+% \begin{itemize}
+%     \item[x] Quda dop, cstar and periodic on synthetic data on daint strong.
+%     \item[x] Quda dop, cstar and periodic on synthetic data on daint weak.
+%     \item openqxd Dirac operator cstar and periodic on synthetic data on daint strong.
+%     \item[1/2] openqxd Dirac operator cstar and periodic on synthetic data on daint weak.
+%     \item[1/2] openqxd deflated solver vs quda mg simple solver, strong and weak scaling with G8 (periodic) and D300 (cstar, qcd-only) and evtl. C380 (cstar and qcd-qed) on daint.
+%     \item[x] quda simple solver vs. quda mrhs solver. Done: D300 and A400 speedup vs. nrhs (16 and 32)
+%     \item[x] quda simple solver vs. quda async solver overlapping something (not yet sure what to overlap). Done: A360 at geno 1 node: good, A400 at daint 2 nodes: VERY bad, F7 at daint 1 node: BAD
+%     \item[x] performance degradation of \code{MPI\_THREAD\_MULTIPLE}. Done: in previous plots.
+%     \item[x] performance degradation of dual lattice (or contribution of inter-grid data movement to total). Dual lattice is very inefficient on daint-alps! Maybe rewrite such that only one MPIsend/recv per non-quda rank? Else it is infeasible I think
+%     \item strong scaling inverter plot with: sync vs. async vs. dual on G8/D300/C380
+%     \item[x] ideally activate GDR ...
+%     \item ideally activate nvshmem ...
+% \end{itemize}
+% }
 
 \tldr{intro}
 This chapter will present performance assessments of the various implementations discussed in \cref{ch:p1:interface}.
 The goal is to determine production readiness of the code to run on current accelerator-based super-computing centers, mainly targeting good performance on the very recent GH200 node at CSCS~\cite{fusco2024}.
 All machines involved in data taking are specified in \cref{sec:perf:hardware}.
 The physics program of the \RCstar collaboration is centered around lattices with \Cstar boundary conditions and occasionally periodic ones.
-Thus we ran performance tests on lattices specified in \cref{sec:perf:ensembles}, where the methodology is discussed in \cref{sec:perf:methodology}.
+Thus, we ran performance tests on lattices specified in \cref{sec:perf:ensembles}, whereas the methodology is discussed in \cref{sec:perf:methodology}.
 Among the investigated features were the contributions of the dual process grid (\cref{sec:perf:dual}), the efficiency of the asynchronous solver with concurrent workload on the CPU (\cref{sec:perf:solver:async}), the blocked solver acting on multiple RHS at the same time (\cref{sec:perf:solver:mrhs}), asymptotic scaling behavior of the Dirac operator (\cref{sec:perf:dop}) and a production multigrid solver (\cref{sec:perf:solver}).
 
 \section{Hardware specifications}
@@ -47,7 +47,13 @@ The performance measures that follow were obtained on the machines
     %\item \emph{Geno} at ETHZ, Switzerland, 2\x AMD EPYC\textsuperscript{\texttrademark} 9124 @ 3GHz (16 cores, Zen 4), 1.5 TB memory, 8\x NVIDIA\textsuperscript{\textregistered} RTX A2000 (12 GB GDDR6 memory)
 \end{itemize}
 
-\worktodo{Some technical details about GH200 at CSCS https://arxiv.org/pdf/2408.11556v1}
+The Quad GH200 node is an interesting machine, since it comes with many new concepts and a sophisticated memory hierarchy~\cite{fusco2024}.
+All compute units (CPUs and GPUs) within the node are able to access each others memory directly, enabling zero-copy access.
+This hierarchy of the unified address space is fully coherent and is abstracted with the help of individual NUMA domains.
+The chips themselves are connected via NVLink-C2C, a high bandwidth low latency chip-to-chip interconnect.
+This will be one of the target machines of the code and careful placement of processes to match NUMA domains was taken special emphasis on.
+
+%\worktodo{Some technical details about GH200 at CSCS https://arxiv.org/pdf/2408.11556v1}
 
 \section{Tested ensembles}
 \label{sec:perf:ensembles}
@@ -86,6 +92,11 @@ Ensembles with $\alpha \neq 0$ are dynamic QCD+QED simulations.}
 % * CUDA 12.4 Driver version 550.54.15, GCC 13.2
 % }
 
+\tldr{library versions}
+Most runs were conducted on the GH200 nodes at CSCS with a few exceptions.
+The MPI implementation was Cray MPICH 8.1.30 CUDA-aware with GTL on top of Libfabric 1.15.2.0.
+We used CUDA 12.4 with Driver version 550.54.15 and GCC 13.2.
+
 \tldr{how timings were taken}
 Timing measurements were obtained by taking an \code{MPI\_Barrier} to wait for all participating processes followed by a call to \code{MPI\_Wtime}.
 The absolute time returned by \code{MPI\_Wtime} had a granularity of \SI{32}{\nano \second}.
@@ -93,20 +104,11 @@ This methodology was used to determine start and stop times, and differences wer
 %The time on rank \num{0} was taken as reference.
 All measurements were averaged over at least \num{5} independent runs if not stated otherwise.
 
-\tldr{library versions}
-Most runs were conducted on the GH200 nodes at CSCS with a few exceptions.
-The MPI implementation was Cray MPICH 8.1.30 CUDA-aware with GTL on top of Libfabric 1.15.2.0.
-We used CUDA 12.4 with Driver version 550.54.15 and GCC 13.2.
-
-\tldr{what is a kernel}
-The word \emph{kernel} is used for both; functions implemented on the CPU using C/C++ or functions implemented on the GPU using CUDA.
-We measure timings and other metrics of kernels.
-
 \tldr{how energy meas. were taken}
 For energy measurements, we read from the PM counters provided by HPE that collect point-in-time telemetry of power data on node or blade level.
-The refresh rate of these metrics was \SI{10}{\hertz} and the power management counter support version was \num{3}.
+Their refresh rate was \SI{10}{\hertz} and the power management counter support version was \num{3}.
 The numbers were taken from the sysfs filesystem under \code{/sys/cray/pm\_counters} on each node.
-No information about the granularity of these metrics was available, thus they are only indicative and their precision has to be taken with a grain of salt.
+No information about the granularity of these metrics was available, thus, they are only indicative and their precision has to be taken with a grain of salt.
 
 \tldr{numa setup of the quad GH200}
 All runs conducted were setup with correct NUMA placement and pinning of processes.
@@ -115,16 +117,20 @@ The Quad GH200 node has \num{36} NUMA domains~\cite{fusco2024}.
 Each Grace CPU is affine to \SI{128}{GB} DDR memory and NUMA domains \num{0},\num{1},\num{2} and \num{3}.
 Each H100 GPU is affine to \SI{96}{GB} HBM memory and NUMA domains \num{4}, \num{12}, \num{20} and \num{28}.
 The remaining NUMA domains are used only when multi-instance GPU (MIG) is activated.
-However GPU $n$ is also affine NUMA domain $n$ for $n=0,1,2,3$.
-Therefore maximal performance can be achieved by placing MPI processes evenly divided into NUMA domains.
+However, GPU $n$ is also affine to NUMA domain $n$ for $n=0,1,2,3$.
+Therefore, maximal performance can be achieved by placing MPI processes evenly divided into NUMA domains.
 If not all \num{288} cores are used, which is usually the case, we evenly fill NUMA domains.
 Examples of explicit bindings are discussed in the main text.
+
+\tldr{what is a kernel}
+The word \emph{kernel} is used for both; functions implemented on the CPU using C/C++ or functions implemented on the GPU using CUDA.
+We measure timings and other metrics of kernels.
 
 \section{The dual lattice}
 \label{sec:perf:dual}
 
 \tldr{dual: correct blk grid is forced}
-In this section we will investigate and quantify the performance slowdown imposed by the usage of the dual process grid (\cref{sec:interface:openqxd:dual}) and show that it is basically negligible.
+In this section, we investigate and quantify the performance slowdown imposed by the usage of the dual process grid (\cref{sec:interface:openqxd:dual}) and show that it is basically negligible.
 We argued that one has to use the correct process block grid to optimize the performance of the inter-grid operator.
 Implementation-wise this is forced and the code does not compile if the process block grid was not chosen properly.
 % We will start with the claim about using the correct process block grid in \cref{fig:dual:blk}.
@@ -144,28 +150,28 @@ Implementation-wise this is forced and the code does not compile if the process 
 % \end{figure}
 
 \tldr{dual: ranks per node}
-We will start investigating the effect of varying the number of ranks per node in \cref{fig:dual:tpn}.
+We start investigating the effect of varying the number of ranks per node in \cref{fig:dual:tpn}.
 The plot shows the number of ranks per node versus the cost in nodehours per physical lattice point for an application of the inter-grid operator while keeping the number of nodes fixed.
-\num{4} ranks per node would be the case where no dual lattice is used, i.e. both lattices are equal and the cost of the inter-grid operator would be \num{0} identically.
+\num{4} ranks per node would be the case where no dual lattice is used, \ie both lattices are equal and the cost of the inter-grid operator would be \num{0} identically.
 The plot shows the usual strong scaling behavior until the node memory bandwidth is saturated.
 %little dependency on the number of ranks per node.
 %Still the smaller the number the faster the operator.
-%This is expected, because in the case of \num{8} ranks per node (we have \num{4} dual ranks per node, i.e. \num{4} GPUs per node), every second rank is a dual rank.
+%This is expected, because in the case of \num{8} ranks per node (we have \num{4} dual ranks per node, \ie \num{4} GPUs per node), every second rank is a dual rank.
 %Meaning that only half of the global lattice has to be communicated to other processes.
 %On the other side, for the case of \num{256} ranks per node, we have a dual rank every \num{64}th native rank, and thus communication of \num{63}/\num{64} of the global lattice volume.
 
 \tldr{dual: amount of data movement}
 The processes were pinned such that data exchange only happens inside a NUMA domain.
 %This is only communication inside the NUMA domain.
-Nevertheless the whole field has to be moved in memory in all cases.
+Nevertheless, the whole field has to be moved in memory in all cases.
 %, making the dependency on the ranks per node flat.
 As expected, for the periodic lattice G8 compared to the the \Cstar lattice D300 (both have the same physical lattice size), we observe roughly a ratio of \num{2}.
 
 \tldr{dual: fill node is good}
 The dual lattice is primarily used when there is some non-negligible pure-MPI workload left on the CPU.
 We see that the inter-grid operator performs best when filling the node with ranks.
-This is fortunate, because this usually holds for the CPU workload too.
-Concluding, we can say that when using the dual lattice, it is fine to use as many ranks per node as desired.
+This is fortunate because this usually holds true for the CPU workload as well.
+To summarize, we can say that when working with the dual lattice, it is fine to use as many ranks per node as desired.
 \begin{figure}
     \centering
     \includegraphics[width=0.6\linewidth]{\dir/img/dual_tpn_numa_shm}
@@ -175,10 +181,10 @@ Concluding, we can say that when using the dual lattice, it is fine to use as ma
 
 \tldr{dual: strong scaling nodes}
 %When choosing the ideal process block grid, which is always provided, we claimed that inter-node communication is eliminated.
-We claimed that inter-node communication is eliminated.
+We claimed in \cref{sec:interface:openqxd:dual} that inter-node communication is eliminated.
 This is shown in \cref{fig:dual:nodes}.
-As claimed, we observe embarrassingly parallel behavior with respect to the number of nodes, even when going up to \num{128} nodes (\num{512} GPUs) on the smallest lattice making the inter-grid operator strong scaling ideal.
-The base-case for the \Cstar lattices is \num{2} nodes (\num{8} GPUs) because of an implementation restriction\footnote{The current implementation demands a process grid length of at least 2 in every direction that is a spatial C$^\star$-direction. With 3 C$^\star$ directions this gives a minimum of 8 processes, i.e. 8 GPUs unless one uses MPS or MIG. MPS gives a severe performance degradation of the GPU part, and MIG is on request not available on \emph{Daint-Alps}.}.
+We observe embarrassingly parallel behavior with respect to the number of nodes, even when going up to \num{128} nodes (\num{512} GPUs) on the smallest lattice making the inter-grid operator strong scaling ideal.
+The base-case for the \Cstar lattices is \num{2} nodes (\num{8} GPUs) because of an implementation restriction\footnote{The current implementation demands a process grid length of at least 2 in every direction that is a spatial C$^\star$-direction. With 3 C$^\star$ directions this gives a minimum of 8 processes, \ie 8 GPUs unless one uses MPS or MIG. MPS gives a severe performance degradation of the GPU part, and MIG is not available on request on \emph{Daint-Alps}.}.
 %This behavior implies that if the inter-grid operator is too expensive, one can always make its contribution negligible by increasing the number of nodes.
 \begin{figure}
     \centering
@@ -188,10 +194,10 @@ The base-case for the \Cstar lattices is \num{2} nodes (\num{8} GPUs) because of
 \end{figure}
 
 \tldr{dual: contribution negligible}
-Finally, we discuss the contribution of the inter-grid operator to a solve of the Dirac equation using a multigrid solver -- a production example of the dual grid in action in \cref{fig:dual:bar}.
-The plot shows five contributions; moving the source vector from the native to the dual lattice (blue) and subsequently to the GPU (green), solving the linear system of equations on the GPU (purple), and moving the solution vector from the GPU back to the dual lattice (red) and subsequently to the native lattice (yellow).
+Finally, we discuss the contribution of the inter-grid operator to a solve of the Dirac equation using a multigrid solver -- a production example of the dual grid in action is given in \cref{fig:dual:bar}.
+The plot shows five contributions; moving the source vector from the native to the dual lattice (blue) and subsequently to the GPU (green), solving the linear system of equations on the GPU (purple), moving the solution vector from the GPU back to the dual lattice (red) and subsequently to the native lattice (yellow).
 %First, as expected the D2H/H2D transfers and the inter-grid data movement operators perform very similar, since both move about the same amount of data in memory and both are bound by memory bandwidth.
-We see that the inter-grid contribution decreases as one increases the node count, same holds for CPU-GPU transfers.
+We see that the inter-grid contribution decreases as one increases the node count, same holds true for CPU-GPU transfers.
 This is expected, since both kernels involve no communication.
 The only contribution that does not strong scale perfectly -- the solver itself as we will see later -- increases its contribution when increasing the number of nodes.
 However, we observe that the inter-grid operator contributes negligibly to the overall solve.
@@ -203,9 +209,9 @@ However, we observe that the inter-grid operator contributes negligibly to the o
 \end{figure}
 
 \tldr{dual: numa placement: 10-20 percent additional speedup}
-Regarding the dual lattice, we made sure that native and dual processes corresponding to the same local lattices were in the same NUMA domain to prevent communication from one NUMA domain to another further optimizing its performance.
+Regarding the dual lattice, we ensured that native and dual processes corresponding to the same local lattices were in the same NUMA domain to prevent communication from one NUMA domain to another further optimizing its performance.
 Due to the difference in processes numbering in periodic and \Cstar cases, see \cref{eq:dual:rank:condition:periodic,eq:dual:rank:condition:cstar}, the CPU-binding has to be different as well.
-To illustrate this, we show an explicit example of the pinning and core distribution for a run with a single GH200 node and \num{32} rank per node in \cref{tab:perf:numa:periodic,tab:perf:numa:cstar} for periodic and \Cstar boundary conditions respectively.
+To illustrate this, we show an explicit example of the pinning and core distribution for a run with a single GH200 node and \num{32} rank per node in \cref{tab:perf:numa:periodic,tab:perf:numa:cstar} for periodic and \Cstar boundary conditions, respectively.
 The additional effect on performance of correct NUMA placement was in the regime of \SIrange{10}{20}{\percent}.
 
 \begin{table}[h]
@@ -229,7 +235,7 @@ The additional effect on performance of correct NUMA placement was in the regime
 16-23 & 144-151 & 2 & 2 & 16 & 144 & 2 & 2 \\
 24-31 & 216-223 & 3 & 3 & 24 & 216 & 3 & 3 \\
 \end{tabular}
-\caption{Example of NUMA process placement to core IDs with periodic boundaries. With \num{32} tasks per node, we divide them into \num{8} tasks per NUMA domain associated to one CPU, filling only \num{8} from the available \num{72} cores. The dual MPI rank is calculated using \cref{eq:dual:rank:condition:periodic} and should be in the same NUMA domain. The GPUs are in NUMA domains \num{4},\num{12},\num{20} and \num{28}, but also affine to \num{0}, \num{1}, \num{2} and \num{3} respectively.}
+\caption{Example of NUMA process placement to core IDs with periodic boundaries. With \num{32} tasks per node, we divide them into \num{8} tasks per NUMA domain associated to one CPU, filling only \num{8} from the available \num{72} cores. The dual MPI rank is calculated using \cref{eq:dual:rank:condition:periodic} and should be in the same NUMA domain. The GPUs are in NUMA domains \num{4},\num{12},\num{20} and \num{28} but also affine to \num{0}, \num{1}, \num{2} and \num{3}, respectively.}
 \label{tab:perf:numa:periodic}
 \end{table}
 
@@ -261,7 +267,7 @@ $17,19, \ldots, 31$ & 216-223 & 3 & 3 & 17 & 216 & 3 & 3 \\
 
 \tldr{dual: summary}
 We investigated the behavior and contributions of the dual process grid.
-Its contribution is insignificant in all cases and can even be pushed down further by increasing the number of nodes due to its perfect strong scaling.
+Its contribution was insignificant in all cases and can even be pushed down further by increasing the number of nodes due to its perfect strong scaling.
 However, the solver algorithm does not strong scale perfectly as we will see later.
 This trade-off has to be taken into account when considering the setup.
 %However, the trade-off that the solver itself does not strong scale perfectly has to be taken into account when considering the node count.
@@ -287,8 +293,8 @@ Kernels on the CPU are described as follows:
 
 \tldr{async: leonardo, contributions}
 In \cref{fig:async:F7:leo:bar}, we observe clear speedups of the heterogeneous case compared to the serial execution model.
-Slight performance degradation only occurs in kernels which heavily utilize MPI.
-Furthermore the performance of the solve on the GPU is only negligibly affected by the concurrent work done on the CPU.
+Slight performance degradation only occurs in kernels heavily utilizing MPI.
+Furthermore, the performance of the solve on the GPU is only negligibly affected by the concurrent work done on the CPU.
 \begin{figure}
     \centering
     \includegraphics[width=\linewidth]{\dir/img/async_leo_F7.A}
@@ -305,17 +311,19 @@ This means we can successfully hide the entire CPU or GPU work by instantiating 
 \includegraphics[width=0.6\linewidth]{\dir/img/async_leo_F7.B}
 \caption{
 Absolute speedup of the heterogeneous versus the serial execution model averaged over \num{10} solves.
-A speedup of \num{2} is the analytic maximum.
+A speedup of \num{2} is the analytical maximum.
 %A data point above \num{1} results in a speedup, whereas a data point below \num{1} results in a slowdown.
 The effect of overlapping for the GPU solve as well as the individual kernels are indicated by yellow and green, whereas the blue shows the net speedup when overlapping.
-\datataking{Leonardo Booster} \worktodo{add arrows speedup/degradation, add errorbars}}
+\datataking{Leonardo Booster}
+% \worktodo{add arrows speedup/degradation, add errorbars}
+}
 \label{fig:async:F7:leo:speedup}
 \end{figure}
 
 \tldr{async: daint, contributions}
 The data for the heterogeneous solver was taken on \emph{Leonardo Booster}.
 It is worth looking at the same plot for a GH200 node at \emph{Daint-Alps}, see \cref{fig:async:F7:daint:bar}.
-It shows a completely different picture: it is not worth doing entirely.
+The data shows a completely different picture: it is not worth doing entirely.
 On the contrary; performance is even degraded compared to the serial case.
 This originates from the fact that the power module of the GH200 node at CSCS is capped at around \SI{650}{\watt} and the CPU will always draw as much power from it as it can, letting the GPU starve.
 The two devices compete for energy.
@@ -335,13 +343,22 @@ As backed by the data in the plot, it is currently\footnote{The problem is known
 The multiple right-hand sides solver interface is discussed in \cref{sec:interface:solver:mrhs} and can be accessed as described in \cref{sec:develop:mrhs:way}.
 \Cref{fig:mrhs:tts} shows its speedup versus the number of right-hand sides.%, where all right-hand sides are solved simultaneously.
 The base case is a single right-hand side.
-The theoretical maximal speedup is around 1.75-2 \worktodo{proof}.
-On the small lattice A400 it clearly reached, but on the large lattice D300 not.
-This lies in the fact that the increase in data locality has a higher impact on small problems which are already in the bad strong scaling region as opposed to large ones.
+The theoretical maximal speedup\footnote{
+This number is obtained by considering a performance model as
+\begin{align}
+\text{cost}(1)      &= \mem(D) + 2 x \cdot \mem(\psi)    &\text{single RHS} \,, \\
+\text{cost}(\infty) &= 2 x \cdot \mem(\psi)              &\text{for } \Nrhs \to \infty  \,,
+\end{align}
+for the cost of an application of the Wilson-Clover Dirac operator, where $\mem(A)$ denotes the memory traffic of the object $A$.
+Naively $x=8$ for fetching \num{8} neighboring points and $x=1$ for perfect caching.
+Thus, using $\mem(D) = 6 \cdot \mem(\psi)$, the ratio of these two $\frac{\text{cost}(1)}{\text{cost}(\infty)} = \frac{x+3}{x} \in \left[ 1.375, 4 \right]$.
+} is around 1.375-4 .
+On the small lattice A400 we reach a higher speedup as on the large lattice D300.
+This is due to the fact that the increase in data locality and parallelism has a higher impact on small problems which are already in the bad strong scaling region as opposed to large ones.
 However, the speedup directly translates to cost efficiency.
 \begin{figure}
     \centering
-    \includegraphics[width=0.6\linewidth]{\dir/img/mrhs_tts}
+    \includegraphics[width=0.7\linewidth]{\dir/img/mrhs_tts}
     \caption{Number of right-hand sides versus speedup compared to a single right-hand side. For small problems, a twofold speedup is reached. \datataking{Daint-Alps}}
     \label{fig:mrhs:tts}
 \end{figure}
@@ -357,7 +374,7 @@ On the other hand, solving \num{16} or more RHSs at the same time exposes substa
 Even more importantly the energy cost per solve decreases by a factor of about \num{1.6}.
 \begin{figure}
     \centering
-    \includegraphics[width=0.6\linewidth]{\dir/img/mrhs_energy}
+    \includegraphics[width=0.7\linewidth]{\dir/img/mrhs_energy}
     \caption{Number of right-hand sides versus energy consumption per RHS per node (blue) and versus power drawn from the power module per node (yellow) of the A400 lattice running on 2 nodes. Increasing the number of RHSs saturates the nodes. \datataking{Daint-Alps}}
     \label{fig:mrhs:energy}
 \end{figure}
@@ -369,7 +386,7 @@ Even more importantly the energy cost per solve decreases by a factor of about \
 One of the most important kernels of every lattice application is the Dirac operator.
 It is crucial to have an efficient implementation of the Dirac stencil, since iterative Krylov solvers themselves call the operator once or twice in every iteration.
 We are interested in the pure nearest-neighbor stencil as it appears in solver algorithms.
-Thus we assume the field to already reside in HBM memory on the GPU and the following plots will neither include H2D nor D2H transfers.
+Thus, we assume the field to already reside in HBM memory on the GPU and the following plots will neither include H2D nor D2H transfers.
 
 \tldr{Dop: strong scaling daint}
 \Cref{fig:daint:alps:dw:strong} shows strong scaling of the GPU implementation of the Dirac operator.
@@ -380,7 +397,7 @@ For this lattice size on a GPU, it is expected that for \num{64} to \num{256} no
 One reason is a too small local problem size to saturate the high parallelizability of the H100.
 For comparison, the local lattice size for the \num{256} node case is $16^{4}$ resulting in a local vector size of about \SI{12.58}{MB}.
 One H100 has \num{132} streaming multiprocessors (SMs), \num{64} warps per SM with a warp size of \num{32}.
-Therefore, the $16^{4}$ local latticem, with its \num{65536} lattice points, is distributed to \num{270336} available CUDA threads on a single H100.
+Therefore, the $16^{4}$ local lattice, with its \num{65536} lattice points, is distributed to \num{270336} available CUDA threads on a single H100.
 Even the smaller \num{64} node case with \num{262144} local lattice points is barely able to saturate the machine.
 \begin{figure}
     \centering
@@ -390,10 +407,11 @@ Even the smaller \num{64} node case with \num{262144} local lattice points is ba
 \end{figure}
 
 \tldr{Dop: weak scaling daint}
-Moving on, since the performance of the operator only depends on the problem size and boundary conditions but not on physics parameters, we can easily run it on synthetic data to obtain a weak scaling plot as in \cref{fig:daint:alps:dw:weak}.
+Since the performance of the operator only depends on the problem size and boundary conditions but not on physics parameters, we can easily run it on synthetic data to obtain a weak scaling plot as in \cref{fig:daint:alps:dw:weak}.
 In the weak scaling study, the physical local lattice size is kept constant.
 This is $64 \times 32 \times 64 \times 64$ for the periodic lattice and $128 \times 32 \times 64 \times 32$ for the \Cstar lattice.
-These numbers were chosen such that both lattices show the exact same global lattice extents for the \num{2} node case and onward and the number of local lattice points (about \SI{8}{m} for periodic and double that for \Cstar) is significantly larger than the number of CUDA threads in the H100.
+These numbers were chosen such that both lattices show the exact same global lattice extents for the \num{2} node case and onward.
+Additionally, the number of local lattice points (about \SI{8}{m} for periodic and double that for \Cstar) is significantly larger than the number of CUDA threads in the H100.
 As expected, since the local problem size stays large we observe solid weak scaling of the Dirac stencil, with still \SI{80}{\percent} efficiency at \num{1024} GPUs.
 The good weak scaling makes the software stack ready for larger problem sizes.
 \begin{figure}
@@ -404,11 +422,11 @@ The good weak scaling makes the software stack ready for larger problem sizes.
 \end{figure}
 
 \tldr{Dop: no nvshmem}
-For the strong and weak scaling runs, we did not utilize NVIDIA shared memory (NVSHMEM), because it was not yet available on the cluster.
-NVSHEMEM is NVIDIAs implementation of the OpenSHMEM standard~\cite{online:openshmem}, a parallel programming model and library designed to facilitate efficient data sharing and communication between GPUs, both within a single node and across multiple nodes.
+For the strong and weak scaling runs, we did not utilize NVIDIA shared memory (NVSHMEM) because it was not available on the cluster.
+NVSHMEM is NVIDIAs implementation of the OpenSHMEM standard~\cite{online:openshmem}, a parallel programming model and library designed to facilitate efficient data sharing and communication between GPUs, both within a single node and across multiple nodes.
 NVIDIA promises less overhead resulting in more efficient strong scaling when using NVSHMEM~\cite{online:nvshmem}.
-However, the Cray MPI implementation was CUDA-aware, Peer to peer access (P2P) from GPUs within the same node was utilized, and GPU-direct RDMA (GDR) was enabled to further remedy bad strong scaling behavior.
-Nevertheless the error bars might be slightly underestimated, because of temporal correlations among runs, specially for runs with high node counts.
+However, the Cray MPI implementation was CUDA-aware, Peer to Peer access (P2P) from GPUs within the same node was utilized, and GPU-direct RDMA (GDR) was enabled to further remedy bad strong scaling behavior.
+Nevertheless, the error bars might be slightly underestimated because of temporal correlations among runs, especially for runs with high node counts.
 
 %\worktodo{say something about nvshmem, gives better strong scaling ...}
 %\worktodo{say something about GDR}
@@ -422,55 +440,63 @@ Nevertheless the error bars might be slightly underestimated, because of tempora
 
 \tldr{solver intro}
 As opposed to the Dirac operator, the convergence rate of a Krylov solve \emph{does} depend on the physics parameters and the background gauge field non-trivially.
-Therefore we cannot present a thorough weak scaling study for the solver.
+Therefore, we cannot present a thorough weak scaling study for the solver.
 For the discussion of strong scaling of the solver that follows, we took representative gauge field configurations and fixed physics parameters.
 
 \tldr{solver: strong scaling on daint}
 \Cref{fig:daint:alps:inv:strong} shows strong scaling of a production multigrid solver on a periodic and a \Cstar lattice.
 The relative residual is chosen to be $10^{-12}$ for all solves.
 We see very poor strong scaling above \numrange{16}{32} nodes.
-This is expected, because unfortunately multigrid preconditioning inherently possesses bad strong scaling behavior.
-This comes due to the fact, that multigrid coarsens the lattice into a smaller lattice with significantly fewer degrees of freedom and solves the Dirac equation on the coarse lattice in every iteration step.
-The repeated coarse lattice solves which dominate the runtime are by far not able to saturate the GPU specially for high node counts.
-Clearly an unpreconditioned solver would show better strong scaling that is comparable to the Dirac operator itself (see \cref{fig:daint:alps:dw:strong}), but on ill-conditioned systems such a solver would take thousands of iteration steps or not even converge.
+This is expected because unfortunately multigrid preconditioning inherently possesses bad strong scaling behavior.
+This is due to the fact that multigrid coarsens the lattice into a smaller lattice with significantly fewer degrees of freedom and solves the Dirac equation on the coarse lattice in every iteration step.
+The repeated coarse lattice solves, which dominate the runtime, are by far not able to saturate the GPU especially for high node counts.
+Clearly, an unpreconditioned solver would show better strong scaling that is comparable to the Dirac operator itself (see \cref{fig:daint:alps:dw:strong}), but on ill-conditioned systems such a solver would take thousands of iteration steps or never converge at all.
 Multigrid is the state-of-the-art production solver for ill-conditioned systems in the field.
 Its time to solution is paramount with the trade-off of bad strong scaling.
 
 %It is a periodic extension of D300 respecting global boundary conditions.
 %Its scaling is good up to \num{512} GPUs.
 For this reason, the plot shows a third (somewhat artificial) lattice D300x16.
-This lattice consists of periodically extended copies of D300 in all \num{4} spacetime directions by a factor of \num{2} respecting global boundary conditions; therefore \num{16} times larger than the original D300.
-Such a lattice belongs to the largest ones appearing in the field (sometimes coined monster lattice).
-D300x16 has physical lattice extents as $T \times L^{3} = 256 \times 128^{3}$.
-The fact that this lattice scales well up to \num{512} GPUs, indicates that the code is ready for substantially larger problem sizes.
+This lattice consists of periodically extended copies of D300 in all \num{4} spacetime directions by a factor of \num{2} respecting global boundary conditions, \ie, \num{16} times larger than the original D300.
+Such a lattice belongs to the largest ones appearing in the field (sometimes called monster lattice).
+D300x16 has physical lattice extents $T \times L^{3} = 256 \times 128^{3}$.
+The fact that this lattice scales well up to \num{512} GPUs indicates that the code is ready for substantially larger problem sizes.
 
 \begin{figure}
-    \centering
-    \includegraphics[width=0.9\linewidth]{\dir/img/daint_alps_inv_strong}
-    \caption{Strong scaling of a multigrid solver (left panel) and average time to solution for one solve (right panel). The base cases were chosen to be the smallest node count for the computation to fit in GPU memory. \datataking{Daint-Alps}}
-    \label{fig:daint:alps:inv:strong}
+\centering
+\includegraphics[width=0.9\linewidth]{\dir/img/daint_alps_inv_strong}
+\caption{
+Strong scaling of a multigrid solver (left panel) and average time to solution for one solve (right panel).
+The base cases were chosen to be the smallest node count for the computation to fit in GPU memory.
+\datataking{Daint-Alps}}
+\label{fig:daint:alps:inv:strong}
 \end{figure}
 
 \tldr{solver: scaling with mrhs (weak) on daint}
 The discussion in the previous paragraph suggests that if we saturate the GPU by exposing more parallelizability on the lattices which are too small, we should observe better scaling behavior.
 This can be achieved by solving for multiple right-hand sides at the same time.
-\Cref{fig:daint:alps:inv:weak:mrhs} shows a variant of a weak scaling study where not the local problem size was held constant, but the computational work per node in terms of RHSs.
-As the number of nodes increases the number of RHSs increases proportionally, thus the local workload stays constant as opposed to the local lattice size.
+\Cref{fig:daint:alps:inv:weak:mrhs} shows a variant of a weak scaling study where not the local problem size was held constant but the computational work per node in terms of RHSs.
+As the number of nodes increases the number of RHSs increases proportionally, thus, the local workload stays constant as opposed to the local lattice size.
 The plot shows some interesting features worth mentioning.
 The super-linear efficiency for the small node counts comes from the better data locality and increased arithmetic intensity when processing more than one RHS at the same time.
 The improvement diminishes again quickly, since even though the local size of the RHSs stays constant, the local \emph{problem} size -- and by this the local operator size in memory -- decreases inversely proportional to the node count.
 Processing multiple RHS turns matrix-vector into matrix-matrix multiplications, increasing the arithmetic intensity.
-In the plot, the matrix representing the RHSs stays constant in total size, but its dimensions change, whereas the operator matrix size decreases.
-There are numerous competing concepts affecting overall performance in this scenario.
-As the number of RHS increases we expect better temporal data locality and cache reuse until batch sizes exceed cache or shared memory capacity clearly visible in the plot.
+In the plot, the matrix representing the RHSs stays constant in total size but its dimensions change, whereas the operator matrix size decreases.
+There are numerous competing concepts affecting the overall performance in this scenario.
+As the number of RHS increases, we expect better temporal data locality and cache reuse until batch sizes exceed cache or shared memory capacity clearly visible in the plot.
 Since the amount of local variables scales linear in the number of RHSs, we expect variables to the moved to slower memory resulting in register spilling~\cite{CHAITIN198147} as the number RHSs increases.
 Finally, as the RHS matrix changes shape stride access pattern can cause data in cache to repeatedly being evicted resulting in cache thrashing~\cite{10.1145/1476589.1476705}.
 %However for intermediate node counts, we see good scaling behavior.
 \begin{figure}
-    \centering
-    \includegraphics[width=0.9\linewidth]{\dir/img/daint_alps_inv_weak_mrhs}
-    \caption{Variant of weak scaling of a multigrid solver w.r.t. number of RHSs (left panel) and average time to solution for all RHSs (right panel). The base cases were chosen to be the smallest node count for the computation to fit in GPU memory. \datataking{Daint-Alps}}
-    \label{fig:daint:alps:inv:weak:mrhs}
+\centering
+\includegraphics[width=0.9\linewidth]{\dir/img/daint_alps_inv_weak_mrhs}
+\caption{
+Variant of weak scaling of a multigrid solver w.r.t. number of RHSs (left panel) and average time to solution for all RHSs (right panel).
+The base cases were chosen to be the smallest node count for the computation to fit in GPU memory.
+\datataking{Daint-Alps}
+\worktodo{remove red from plot}
+}
+\label{fig:daint:alps:inv:weak:mrhs}
 \end{figure}
 
 \section{Summary}
@@ -478,22 +504,22 @@ Finally, as the RHS matrix changes shape stride access pattern can cause data in
 
 \tldr{performance data conclusion}
 Wrapping up the performance section, we conclude that on a cluster with GH200 nodes with lattices currently accessible to us, we can utilize the resources of the node efficiently.
-However, performing runs with more than \num{32} GH200 nodes is not advisable, because then we are clearly in the bad strong scaling region, unless we study larger lattices as the ones considered or increase the number of RHSs substantially.
-In a field where the total problem size naturally grows with the available compute power, good weak scaling makes our software stack future proof.
+However, performing runs with more than \num{32} GH200 nodes is not advisable because we are clearly in the bad strong scaling region then unless we study larger lattices as the ones considered or increase the number of RHSs substantially.
+In a field where the total problem size naturally grows with the available compute power, good weak scaling makes our software stack future-proof.
 The fact that the largest lattice considered strong scales up to \num{512} GPUs indicates that the code is ready for the exascale.
 
 %On the other side, evaluating observables usually consists of computations on $\bigO(1000)$ independent gauge field configurations.
 %Solving the Dirac equation on all configs of an ensemble can easily be done embarrassingly parallel with one job of size \numrange{8}{16} nodes per config and a RHS batch size of \numrange{4}{32}.
 
-Computations on the CPU can efficiently be overlapped with concurrent solves on the GPU, if power supply of the machine allows it as proven on \emph{Leonardo Booster}.
+Computations on the CPU can efficiently be overlapped with concurrent solves on the GPU if power supply of the machine allows it as proven on \emph{Leonardo Booster}.
 Finally, for maximizing node utilization of CPU workloads, it can conveniently be scaled out within the node by using the dual process grid adding negligible performance overhead.
 
 The inherent challenging strong scaling of multigrid is not a big problem for multiple reasons.
-First, we have now many tools available to mitigate it, such as overlapping multigrid solves with computations on the CPU or solving an array of RHSs in one batch.
+First, we now have many tools available to mitigate it, such as overlapping multigrid solves with computations on the CPU or solving an array of RHSs in one batch.
 Second, in reality the only relevant metric usually boils down to time or energy to solution.
 
 The data still shows some non-negligible contributions of H2D and D2H transfers (red and green in \cref{fig:dual:bar}).
-In future developments, the H2D transfers could be eliminated to a large extent by setting up the source vector directly on the GPU, specially when dealing with random or point sources.
+In future developments, the H2D transfers could be eliminated to a large extent by setting up the source vector directly on the GPU, especially when dealing with random or point sources.
 Instead of handing over the field data, we hand over a description of the field instead.
 Field transfers in general can be reduced by employing a memory management system keeping track of field status.
 A system mitigating CPU-GPU traffic will be introduced in \cref{ch:p1:memory}.
@@ -507,7 +533,7 @@ This requires few solves of the Dirac equation with a frequently changing backgr
 With the current interface gauge field generation is not efficient for multiple reasons:
 \begin{itemize}
     \item As long as the gauge field is generated on the CPU, we have to transfer it every time it changes.
-    \item Few solves imply few RHSs, reducing our possibilities to performance tune. Thus the effect on performance of blocked solvers is degraded.
+    \item Few solves imply few RHSs, reducing our possibilities to performance tune. Thus, the effect on performance of blocked solvers is degraded.
     \item Few RHSs cause H2D/D2H transfers of gauge and clover fields to contribute more to the overall solve.
     \item To achieve reasonable throughput of generated gauge fields, it is common in the field to scale out. This requires good strong scaling behavior.
 \end{itemize}
@@ -546,7 +572,7 @@ With the current interface gauge field generation is not efficient for multiple 
 
 % \subsection{Dirac operator}
 
-% We investigate the scaling behaviour of applying the Dirac stencil operator, \cref{eq:Dw,eq:Dw:QCD+QED}, both in openQxD as well as  QUDA, see \cref{fig:old:daint:dw:strong,fig:old:daint:dw:weak,fig:lumi:dw:strong,fig:lumi:dw:weak}. We see very good strong and weak scaling on the CPU. Notice that the base case of the GPU version is one GPU (i.e. no network communication) for the periodic lattice and 8 GPUs for the C$^\star$ lattice \footnote{The current implementation demands a process grid length of at least 2 in every direction that is a spatial C$^\star$-direction. With 3 C$^\star$ directions this gives a minimum of 8 processes, i.e. 8 GPUs unless one uses MPS or MIG.}. We use 32 and 128 ranks per node in the CPU runs for Piz Daint and LUMI-C, respectively. The GPU runs are limited by network communication more severely than the CPU runs. For the weak scaling plots we make sure that node- and GPU-local lattices have the same size. The strong and weak scaling seems less favourable on the GPU, but when comparing the time to solution, we see a $\sim10$x speedup between CPU and GPU runs for the same problem size and moderate amounts of GPUs. In \cref{fig:old:daint:dw:weak} right, we observe the (expected) $\sim2$x slowdown of a C$^\star$ operator compared to a periodic one on the same device and setup, due to a doubling of the lattice size in $x$-direction.
+% We investigate the scaling behaviour of applying the Dirac stencil operator, \cref{eq:Dw,eq:Dw:QCD+QED}, both in openQxD as well as  QUDA, see \cref{fig:old:daint:dw:strong,fig:old:daint:dw:weak,fig:lumi:dw:strong,fig:lumi:dw:weak}. We see very good strong and weak scaling on the CPU. Notice that the base case of the GPU version is one GPU (\ie no network communication) for the periodic lattice and 8 GPUs for the C$^\star$ lattice \footnote{The current implementation demands a process grid length of at least 2 in every direction that is a spatial C$^\star$-direction. With 3 C$^\star$ directions this gives a minimum of 8 processes, \ie 8 GPUs unless one uses MPS or MIG.}. We use 32 and 128 ranks per node in the CPU runs for Piz Daint and LUMI-C, respectively. The GPU runs are limited by network communication more severely than the CPU runs. For the weak scaling plots we make sure that node- and GPU-local lattices have the same size. The strong and weak scaling seems less favourable on the GPU, but when comparing the time to solution, we see a $\sim10$x speedup between CPU and GPU runs for the same problem size and moderate amounts of GPUs. In \cref{fig:old:daint:dw:weak} right, we observe the (expected) $\sim2$x slowdown of a C$^\star$ operator compared to a periodic one on the same device and setup, due to a doubling of the lattice size in $x$-direction.
 
 % The poor scaling of the application of the Dirac operator on LUMI-G (\cref{fig:lumi:dw:strong,fig:lumi:dw:weak}) can probably be explained by the high computational performance of the MI250 which exposes us to the limited communication bandwidth earlier. To make best use of resources a larger local volume would be favourable to keep the device utilized while reducing the communication overhead (due to a smaller surface-to-volume ratio). In our tests, we use the same lattice size on Piz Daint as well as on LUMI-G to be able to compare them, and the P100 with 16GB DRAM on Piz Daint was the limiting factor. However, this suggests that the way we've implemented C$^\star$ boundaries (namely by doubling the lattice) is favourable for the GPU, because it makes the local lattice larger.
 

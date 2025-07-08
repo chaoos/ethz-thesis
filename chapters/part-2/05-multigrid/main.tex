@@ -29,7 +29,7 @@ D \psi = \eta \;,
 \end{equation}
 possibly for many different right-hand sides $\eta$.
 A suitable class of iterative solvers for this kind of problem are Krylov subspace solvers~\cite{krylov1931numerical,book:saad2003iterative}.
-We will additionally assume the Dirac operator $D$ to be non-normal, non-Hermitian\footnote{More important properties of the Wilson and Wilson-Clover Dirac operator will be delayed to \cref{ch:p2:chirality}.} and close to singular, i.e. having a large condition number.
+We will additionally assume the Dirac operator $D$ to be non-normal, non-Hermitian\footnote{More important properties of the Wilson and Wilson-Clover Dirac operator will be delayed to \cref{ch:p2:chirality}.} and close to singular, \ie having a large condition number.
 This is a scenario that occurs often in simulations in the chiral regime, where chiral symmetry is spontaneously broken.
 The presence of eigenvalues near the complex origin (in the former called \emph{low modes} or \emph{near-null vectors}) pose problems when it comes to numerical inversion.
 The error of the iterative solution is then dominated by the low-mode contributions of the operator $D$ which converge the slowest or stall entirely.
@@ -71,11 +71,11 @@ In the context of solvers, this is sometimes referred to as critical soling down
 Related to the problem in the near chiral limit is the $V^{2}$ problem~\cite{Luescher2007} which we have already touched in \cref{ch:p2:introduction} when reviewing the variance reduction method low-mode averaging.
 It states that the dimension of the low mode subspace scales linear in the volume of the lattice~\cite{banks1980}.
 This is the main motivation behind preconditioning methods such as multigrid~\cite{Babich:2010qb}.
-The idea is to generate an approximate subspace having large overlaps with the true low mode subspace, but is comparably cheap to obtain.
+The idea is to generate an approximate subspace having large overlaps with the true low mode subspace that is comparably cheap to obtain.
 This is not possible with traditional low mode deflation methods, as their cost, memory and storage requirements scale as $\bigO(V^{2})$.
 This is a variant of critical slowing down.
 The property of local coherence (\cref{ch:p2:lc}) is crucial for a computationally cheap generation of such a subspace.
-For this type of preconditioning one generates approximate low mode vectors by either solving the homogeneous system\footnote{The homogeneous system has no solution if $D$ is invertible. One runs a fixed number of iterations of some solver, for instance BiCGSTAB. The produced solution is then rich in low modes, i.e. the slow-to-converge directions.} with $\eta=0$
+For this type of preconditioning one generates approximate low mode vectors by either solving the homogeneous system\footnote{The homogeneous system has no solution if $D$ is invertible. One runs a fixed number of iterations of some solver, for instance BiCGSTAB. The produced solution is then rich in low modes, \ie the slow-to-converge directions.} with $\eta=0$
 \begin{equation}
 D \evec = 0 \;,
 \end{equation}{}
@@ -89,7 +89,7 @@ The numerical precision of such modes is in the regime \num{0.1}.
 \tldr{bootstrap set, MG left preconditioning, smoothing}
 The setup phase consist of a definition of a bootstrap set $\mathcal{B}$ that consists of $\Nc = 10-30$ approximate low modes and a description of a coarse lattice and spin degrees of freedom as in \cref{eq:coarse:lattice,sec:lc:spin} respectively.
 Using local coherence, we can thus generate powerful large subspaces at low cost having large overlap with the true low mode subspace as seen in \cref{fig:lc} using only a few approximate low modes.
-Therefore we have a prolongator $\prolongator$, a restrictor $\restrictor$ and a coarse Dirac operator $\coarse{D} = RDT$.
+Therefore, we have a prolongator $\prolongator$, a restrictor $\restrictor$ and a coarse Dirac operator $\coarse{D} = RDT$.
 Instead of solving \cref{eq:var:dirac:equation}, we solve the left-preconditioned system
 \begin{equation} \label{eq:var:dirac:equation:mg}
 L D \psi = L \eta \;,
@@ -144,7 +144,7 @@ for $\chi$ followed by reconstructing the full solution as
 \end{equation}
 The above will be referred to as \emph{additive} preconditioning, compare multiplicative preconditioning \cref{eq:var:dirac:equation:mg}.
 We note that $L D$ is non-invertible.
-This is not an issue as long as the full solution is consistent, i.e. there exist a $\psi$ that solves $D \psi = \eta$~\cite{kaasschieter1988preconditioned}.
+This is not an issue as long as the full solution is consistent, \ie there exist a $\psi$ that solves $D \psi = \eta$~\cite{kaasschieter1988preconditioned}.
 There are infinitely many solutions $\chi$.
 Nevertheless the full solution vector $\psi$ is unique after projecting in \cref{eq:inexact:defl:solution:projection}.
 
@@ -196,7 +196,7 @@ Preconditioning as described above can be seen through the following intuitive a
 The Dirac operator is a nearest neighbor stencil.
 In every iteration it is applied to the current solution vector.
 Information in the current solution vector on a certain lattice site slowly propagates through the lattice; one site per iteration in each direction.
-Even though the coarse Dirac operator is still nearest neighbor, information on the coarse grid travels faster through the lattice, because sites are further apart (i.e. one coarse grid hop corresponds to multiple fine-grid hops).
+Even though the coarse Dirac operator is still nearest neighbor, information on the coarse grid travels faster through the lattice, because sites are further apart (\ie one coarse grid hop corresponds to multiple fine-grid hops).
 This enhances non-local information exchange on the lattice with fewer iterations on the coarse grid.
 Additionally the coarse grid is constructed from approximate low modes which are associated to long-range interactions allowing long-distance propagation of information.
 This concept is illustrated in \cref{fig:coarse:stencil}.
@@ -204,7 +204,7 @@ This concept is illustrated in \cref{fig:coarse:stencil}.
 \begin{figure}
 \centering
 \includestandalone[width=0.9\linewidth]{\dir/img/long_distance}
-\caption{Illustration that the coarse grid Dirac stencil transports information further through the lattice. Upper left: Dirac stencil on a $6 \times 6$ lattice connecting nearest neighbors. Instead we could restrict the vector to the coarse $3 \times 3$ grid, apply the coarse Dirac stencil (bottom center) and prolong back. The result is a longer range interaction (upper right). The information transfer is restricted to the coarse degrees of freedom, i.e. the low modes of the fine grid which in turn are associated to long-range interactions. Therefore not \emph{all} information has propagated, but the most relevant information has.}
+\caption{Illustration that the coarse grid Dirac stencil transports information further through the lattice. Upper left: Dirac stencil on a $6 \times 6$ lattice connecting nearest neighbors. Instead we could restrict the vector to the coarse $3 \times 3$ grid, apply the coarse Dirac stencil (bottom center) and prolong back. The result is a longer range interaction (upper right). The information transfer is restricted to the coarse degrees of freedom, \ie the low modes of the fine grid which in turn are associated to long-range interactions. Therefore, not \emph{all} information has propagated but the most relevant information has.}
 \label{fig:coarse:stencil}
 \end{figure}
 
@@ -228,7 +228,7 @@ We will generalize this equation in a recursive way by applying it repeatedly to
 \subsection{Recursive notation}
 
 \tldr{all can be formulated recursively}
-Before we continue, we will formulate multigrid recursively and shift in notation by defining the $\lvl$-th recursive coarse Dirac operator as coarsening of the $(\lvl-1)$-th coarse Dirac operator\footnote{The notation with the hat is clean and concise, but as in real life, wearing multiple hats is awkward -- $\hat{\hat{\hat{D}}}$.}
+Before we continue, we will formulate multigrid recursively and shift in notation by defining the $\lvl$-th recursive coarse Dirac operator as coarsening of the $(\lvl-1)$-th coarse Dirac operator\footnote{The notation with the hat is clean and concise but as in real life, wearing multiple hats is awkward -- $\hat{\hat{\hat{D}}}$.}
 \begin{equation}
 \onlvl{D}{\lvl} = \onlvl{\restrictor}{\lvl-1} \onlvl{D}{\lvl-1} \onlvl{\prolongator}{\lvl-1} \;,
 \qquad
@@ -327,9 +327,9 @@ Clearly the second level can also be obtained by coarsening directly level \num{
 These are two strategies to obtain the same.
 We either coarsen recursively or always relative to level \num{0}.
 The former strategy results in lattices which are always nestings of each other as depicted in \cref{fig:recursive:nesting}.
-The latter one allows more freedom in defining levels, which might not always be valid coarsenings of each other.
-To catch up on the example above, instead of defining the second level as described, we could define it with a block size of $\onlvl{b}{2}_{\mu} = 6$, not with respect to the previous level, but with respect to level \num{0}.
-This would result in a coarse lattice of size $\onlvl{L}{2}_{\mu} = 48 / 6 = 8$ which is still coarser than level \num{1} with $\onlvl{L}{1}_{\mu} = 12$, but cannot be obtained as direct coarsening of level \num{1}, because \num{12} is not a multiple of \num{8}.
+The latter one allows more freedom in defining levels which might not always be valid coarsenings of each other.
+To catch up on the example above, instead of defining the second level as described, we could define it with a block size of $\onlvl{b}{2}_{\mu} = 6$, not with respect to the previous level but with respect to level \num{0}.
+This would result in a coarse lattice of size $\onlvl{L}{2}_{\mu} = 48 / 6 = 8$ which is still coarser than level \num{1} with $\onlvl{L}{1}_{\mu} = 12$ but cannot be obtained as direct coarsening of level \num{1}, because \num{12} is not a multiple of \num{8}.
 
 \tldr{weird for solvers, but good for MG-LMA}
 Such a scenario might not be meaningful in a solver preconditioning scenario, where inter-grid data movement among subsequent levels is crucial for overall performance.
@@ -339,7 +339,7 @@ The recursive variant allows control of pre- and post-smoother between all level
 
 \tldr{we use loop variant in implementation}
 Implementation effort as well as performance of the two variants clearly differ and we will not discuss them further.
-The implementation used for this project is the variant that allows more freedom in the coarse grid creation, i.e. the one where level \num{0} is always coarsened.
+The implementation used for this project is the variant that allows more freedom in the coarse grid creation, \ie the one where level \num{0} is always coarsened.
 
 % \subsection{Final propagator decomposition}
 
@@ -395,7 +395,7 @@ C(x_1;x_2;\ldots;x_n)
 = \sum_{\lvl_1=0}^{\Nlvl-1} \cdots \sum_{\lvl_n=0}^{\Nlvl-1}
 C_{\lvl_1, \lvl_2, \ldots, \lvl_n}(x_1;x_2;\ldots;x_n) \;.
 \end{equation}
-Furthermore, we may define the level-$k$-contribution (also denoted as \Ln{k}) to the full correlator by collecting all components of the correlator tensor \cref{eq:Cijk}, including propagators on level $k$ or coarser, but not finer levels, i.e.
+Furthermore, we may define the level-$k$-contribution (also denoted as \Ln{k}) to the full correlator by collecting all components of the correlator tensor \cref{eq:Cijk}, including propagators on level $k$ or coarser but not finer levels, \ie
 \begin{align}
 C_{\Ln{k}}(x_1;x_2;\ldots;x_n)
 = \sum_{i=1}^{n}
@@ -446,7 +446,7 @@ This natural decomposition into level-contributions is illustrated in \cref{fig:
 \label{fig:mg:corr}
 \end{figure}
 Crucial about this decomposition is that every level can be evaluated separately with a different strategy in terms of number and type of sources.
-An evaluation of $C_{\Ln{k}}$ requires only inversions of the Dirac operator $\onlvl{D}{k}$ on level $k$ and coarser levels, but not on finer levels $0, \ldots, k-1$.
+An evaluation of $C_{\Ln{k}}$ requires only inversions of the Dirac operator $\onlvl{D}{k}$ on level $k$ and coarser levels but not on finer levels $0, \ldots, k-1$.
 $C_{\Ln{0}}$ requires fine-grid solves.
 The fact that the coarse Dirac operators have exactly the same sparsity structure as the fine one (see \cref{fig:coarse:op:structure}) allows to use the same solvers algorithms for inversions.
 
@@ -796,7 +796,7 @@ G_{\Ln{(\Nlvl-1)}}(t)
 	\fieldx{\onlvl{\Gamma_2}{\Nlvl-1}}{t+y_0}
 \right\} \;.
 \end{multline}
-The $\Gamma$-matrices are defined as in \cref{eq:coarse:index} as coarsened operators with the time extent as open index, i.e. defined with a partial trace over space $\idxspace$, color $\idxcolor$ and spin $\idxspin$, but not time, see \cref{eq:partial:trace}.
+The $\Gamma$-matrices are defined as in \cref{eq:coarse:index} as coarsened operators with the time extent as open index, \ie defined with a partial trace over space $\idxspace$, color $\idxcolor$ and spin $\idxspin$ but not time, see \cref{eq:partial:trace}.
 Explicitly
 \begin{equation} \label{eq:gamma:partial:trace}
 \left( \onlvl{\Gamma_k}{\Nlvl-1} \right)_{ij} = \tr_{\idxspace \times \idxspin \times \idxcolor} \left( \Gamma_k \phi_j \phi_i^\dagger \right) \;.
@@ -818,7 +818,7 @@ Let us compare this form with the full lattice volume averaged correlator $\lver
 We see that it has exactly the same form, just with some replacements.
 The fine-grid $\Gamma$-matrices are replaced with the coarse ones, the fine-grid inverse Dirac operator $\prop=D^{-1}$ is replaced with the coarse one $(\onlvl{D}{\Nlvl-1})^{-1}$ and finally the trace over color, spin and space is replaced by a trace over coarse color, spin and space.
 Note that the original fine-grid trace over color, spin and space is performed on the $\Gamma$-matrices \cref{eq:gamma:partial:trace}.
-However, the term is calculated exactly and averaged over the full spacetime volume, its variance will be minimal, i.e. the gauge variance of that level.
+However, the term is calculated exactly and averaged over the full spacetime volume, its variance will be minimal, \ie the gauge variance of that level.
 
 \tldr{LMA does exact coarsest lvl, but without blocking}
 Revisiting low-mode averaging one more time, we notice that the above form is exactly equal to the eigen-eigen term of low-mode averaging worked out in \cref{eq:Gconn:eigen-eigen}, if the multigrid decomposition was chosen accordingly.

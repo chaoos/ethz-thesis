@@ -67,7 +67,7 @@ int main(int argc, char *argv[]) {
 \end{codelisting}
 
 \tldr{Dop overload to GPU just as AVX/SSE versions}
-Therefore the Dirac operator, \code{Dw\_dble()}, is a function that takes fields in \openqxd and transfers the input field to the GPU, calls the Dirac operator in \quda and transfers the output field back.
+Therefore, the Dirac operator, \code{Dw\_dble()}, is a function that takes fields in \openqxd and transfers the input field to the GPU, calls the Dirac operator in \quda and transfers the output field back.
 This type of function overloading already finds practice in \openqxd for functions that employ AVX or SSE instructions.
 It is achieved with compile time macros and C preprocessor directives, see \cref{lst:mm:pp_macros}.
 The snippet shows three implementations of the same function; a default implementation which is selected if no compile time flag is set, an implementation using AVX instructions and an implementation wrapping the GPU function call via \quda's interface API.
@@ -110,7 +110,7 @@ Finally, we want to state requirements of the memory management system in descen
 The first step will be a unification of fields.
 We want to establish a one-to-one correspondence between CPU and GPU fields as depicted in \cref{fig:mm:field0:correspondence}.
 Every time a field is (de-)allocated on the CPU, we (de-)construct the GPU field.
-This can be done lazily, i.e. the actual object and data allocation for the GPU field may happen as soon as the field hits the GPU.
+This can be done lazily, \ie the actual object and data allocation for the GPU field may happen as soon as the field hits the GPU.
 By this, a field living on the CPU only occupies no memory on the GPU.
 Our main concern now is to maintain consistency among the data, if the field is being written by the CPU or the GPU.
 Thus, we equip every field on the CPU with some meta information about its state.
@@ -150,7 +150,7 @@ The \code{spinor\_info} struct holds information about the field such as
 	\item Other useful meta information, such as field size in bytes, precision, number of times the field was transferred for optimization purposes, etc.
 \end{itemize}
 For an implementation of the above field unification proposal only field allocation, deallocation, reservation and release functions need to be altered\footnote{Explicitly, these are \capcode{alloc\_wsd()}, \capcode{reserve\_wsd()}, \capcode{release\_wsd()} and their single precision variants.}.
-Furthermore all legacy \openqxd function still work and operate on the base pointers in the same way as before.
+Furthermore, all legacy \openqxd function still work and operate on the base pointers in the same way as before.
 Functions that are offloaded to the GPU will take the same CPU base-pointers as the legacy function.
 They will navigate to the \code{spinor\_info} struct by pointer arithmetic, check if the field needs to be transferred and do so if required.
 To operate on the field, they grab the GPU-field pointer.
@@ -176,9 +176,9 @@ For this we need to introduce two concepts.
 
 \tldr{mprotect, posix, OS mechanism, page-alignment}
 \Posix-compliant operating systems offer system calls for protecting a region of previously allocated memory.
-The region must be page-aligned, meaning that the pointer pointing to the begin of the region has to be the beginning of a new page and the region has to end at the end of a page, i.e. the base pointer address and the size of the region in bytes have to be multiples of the page size\footnote{On most modern operating system the page size is \num{4096} bytes, if unknown it can be queried using the standard C library function \capcode{getpagesize()}.}.
-Allocating page-aligned memory cannot be done using the usual portable standard C library wrapper for dynamic memory allocation, \code{malloc()} (which allocates 8-byte aligned memory), but rather \code{posix\_memalign()} or \code{mmap()}.
-However, when accessing a protected region of memory (by dereferencing a pointer) the operating system behaves as if we have never allocated the memory, i.e. it triggers a segmentation fault.
+The region must be page-aligned, meaning that the pointer pointing to the begin of the region has to be the beginning of a new page and the region has to end at the end of a page, \ie the base pointer address and the size of the region in bytes have to be multiples of the page size\footnote{On most modern operating system the page size is \num{4096} bytes, if unknown it can be queried using the standard C library function \capcode{getpagesize()}.}.
+Allocating page-aligned memory cannot be done using the usual portable standard C library wrapper for dynamic memory allocation, \code{malloc()} (which allocates 8-byte aligned memory) but rather \code{posix\_memalign()} or \code{mmap()}.
+However, when accessing a protected region of memory (by dereferencing a pointer) the operating system behaves as if we have never allocated the memory, \ie it triggers a segmentation fault.
 
 \tldr{Why mprotect exists}
 One might ask what is such a mechanism good for?
@@ -228,7 +228,7 @@ We may again assume to have a spinor field in memory as depicted in \cref{fig:mm
 \end{figure}
 At this stage we assume the base pointer to be page-aligned and the size of the allocation to be a multiple of the page size as discussed in \cref{sec:mm:mprotect}.
 Furthermore, we assume the GPU has altered its copy of the field and the \code{spinor\_info} struct indicates the CPU field to be outdated.
-Therefore we put a memory protection over the field, \cref{fig:mm:field4:mprotected}.
+Therefore, we put a memory protection over the field, \cref{fig:mm:field4:mprotected}.
 \begin{figure}
   \includestandalone[width=\linewidth]{\dir/img/field4}
   \caption{A protected spinor field in memory visualized with a blue shield.}
@@ -244,7 +244,7 @@ The function will access the data at some memory address in the protected region
 Ultimately this will trigger a segmentation fault and we enter the previously registered signal handler.
 
 \tldr{clean recovery, inspect offending address, transfer, ... updated field}
-What remains to do is properly process the signal and recover the application state before the signal happened, but with updated field values.
+What remains to do is properly process the signal and recover the application state before the signal happened but with updated field values.
 The signal handler will check if the segmentation fault was triggered by an actual memory access violation or by a memory protection violation.
 If it is an actual segmentation fault, we continue by raising it.
 This can be determined by looking at the offending pointer address which is given as payload to the signal, see \cref{sec:mm:signals}.
@@ -282,4 +282,4 @@ We require no modification of legacy \openqxd functions.
 Only the field allocation and deallocation functions need to be touched.
 This is a minimal-effort-maximal-outcome approach that allows \openqxd developers to continue working the way they are used to, while having the benefit of GPU offloaded functionality.
 We also emphasize that this solution is meant for an intermediate phase, where certain functionality will stay on the CPU (probably for a long time) and we incrementally port kernel by kernel to the GPU without much overhead.
-This scheme was explained for spinor fields, but can trivially be extended to gauge and clover fields.
+This scheme was explained for spinor fields but can trivially be extended to gauge and clover fields.

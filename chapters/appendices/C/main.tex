@@ -2,20 +2,20 @@
 \label{ch:appendix:C}
 \label{ch:appendix:nr:ch:estimator}
 
-\readit{0}
+\readit{1}
 
 This appendix explains the numerical algorithms used for the boundary estimates of the numerical range and spectral hull of operators discussed in \cref{ch:p2:chirality}.
 
 \section{Numerical range}
 \label{app:C:numerical:range}
 
-We have estimated the numerical ranges in two ways~\cite{johnson1978numerical}: we determined a boundary from the inside and a boundary from the outside.
+We have estimated the numerical ranges in two ways~\cite{johnson1978numerical}: by determining a boundary from the inside and a boundary from the outside.
 What we show as numerical range is the shaded area between these two boundaries.
 We will use property \cref{eq:nr:linear} from \cref{thm:nr:properties} in the form
 \begin{equation} \label{eq:nr:linear:theta}
 W(A) = e^{-i \theta} W(e^{i \theta} A)
 \end{equation}
-for any $\theta \in [0, 2 \pi]$ and the fact that the numerical range of a Hermitian operator $H$ is a part of the real line segment $W(H) = [\lambda_{\text{min}}(H), \lambda_{\text{max}}(H)]$, where $\lambda_{\text{min}}(H), \lambda_{\text{max}}(H)$ are the smallest and largest algebraic eigenvalues of $H$.
+for any $\theta \in [0, 2 \pi]$ and the fact that the numerical range of a Hermitian operator $H$ is a part of the real line segment $W(H) = [\lambda_{\text{min}}(H), \lambda_{\text{max}}(H)]$, where $\lambda_{\text{min}}(H)$ and $\lambda_{\text{max}}(H)$ are the smallest and largest algebraic eigenvalues of $H$, respectively.
 
 One crucial observation is that for any linear operator $A$, its Hermitian part $H_A = \frac{1}{2} ( A + A^{\dagger} )$ obeys
 \begin{equation} \label{eq:nr:max}
@@ -42,11 +42,11 @@ r
 This concludes the other side.
 Through the set equality \cref{eq:nr:sets}, we also have the maxima equality \cref{eq:nr:max}.
 
-Therefore $\lambda_{\text{max}}(H_A)$ gives us a tangent in the complex plane $L(y) = \lambda_{\text{max}}(H_A) + iy$ which is a boundary for the numerical range of $A$ and the point $p = \psi^{\dagger} A \psi$ is the extremal point in $W(A)$ with largest real-part.
+Therefore, $\lambda_{\text{max}}(H_A)$ gives us a tangent in the complex plane $L(y) = \lambda_{\text{max}}(H_A) + iy$ which is a boundary for the numerical range of $A$ and the point $p = \psi^{\dagger} A \psi$ is the extremal point in $W(A)$ with largest real-part.
 The vector $\psi$ is an eigenvector of the system $H_A \psi = \lambda_{\text{max}}(H_A) \psi$.
 
 \setlist[enumerate]{label*=\arabic*.}
-By rotating $A$ in different directions $\theta$, we may find other tangents to $W(A)$ and boundary points $p_{\theta}$ in other directions.
+By rotating $A$ with different angles $\theta$, we may find other tangents to $W(A)$ and boundary points $p_{\theta}$ in other directions.
 The algorithm is as follows:
 \begin{enumerate}
 \item Define a set of probing angles $\Theta$ of $N_{\theta} \geq 3$ angles, $\lvert \Theta \rvert = N_{\theta}$. The angles may be uniformly distributed\footnote{If one has information about the shape or symmetries of the numerical range, one can choose the probing angles more suitable for the operator of interest.} from $[0, 2 \pi)$.
@@ -114,7 +114,7 @@ The plots show a clear resolution refinement from left to right.
 Once the numerical range is determined and we have access to the boundary points $P_{\Theta}$, the spectral hull is straightforward to determine:
 The spectral hull is always a subset of the numerical range, \cref{eq:nr:convhull}.
 Therefore, the eigenvalues closest to the boundary points of the numerical range $p_{\theta} \in P_{\Theta}$ either lie on the boundary of the spectral hull or outside of it.
-It is thus enough to determine the eigenvalues closest to the shifts $p_{\theta} \in P_{\Theta}$, or equivalently the smallest magnitude eigenvalue $\lambda_{\theta}$ of the systems
+It is thus enough to determine the eigenvalues closest to the shifts $p_{\theta} \in P_{\Theta}$, or equivalently the smallest magnitude eigenvalue $\lambda_{\theta}$ of the shifted systems
 \begin{equation}
 A_{\theta} \psi = \lambda_{\theta} \psi \;,
 \quad
@@ -122,7 +122,7 @@ A_{\theta} \psi = \lambda_{\theta} \psi \;,
 \quad
 A_{\theta} = A - p_{\theta} \id \;.
 \end{equation}
-If we do that for all $p_{\theta}$ fine enough, we find extremal eigenvalues $\lambda_{\theta}$ of $A$ in all directions probed by the $p_{\theta}$.
+If we do that for $p_{\theta}$ fine enough, we find extremal eigenvalues $\lambda_{\theta}$ of $A$ in all directions probed by the $p_{\theta}$.
 The convex hull of the set $\Lambda_{\Theta} = \{ \lambda_{\theta} \}_{\theta}$ gives us a inner approximation of the true spectral hull,
 \begin{equation}
 \Sigma_{\text{in}} = \convhull{ \Lambda_{\Theta} } \subseteq \convshull{A} \;.

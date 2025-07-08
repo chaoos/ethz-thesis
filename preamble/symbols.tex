@@ -166,3 +166,21 @@
 \newcommand{\sizeof}{\text{sizeof}}
 
 
+% chirality stuff
+
+\newcommand{\convhull}[1]{\text{conv}\{ #1 \}}
+\newcommand{\convshull}[1]{ \convhull{ \sigma( #1 ) } }
+
+\newcommand{\csym}{\text{ID}} % Symbol for cases
+\newcommand{\csyms}{\text{IDs}} % Symbols for cases
+\newcommand{\boxcheck}{
+    \makebox[0pt][l]{$\square$}\raisebox{.15ex}{\hspace{0.1em}$\checkmark$}
+}
+
+%\newcommand{\case}[1]{$\csym = #1$}
+\newcommand{\caseX}[1]{$\csym$ (\hyperlink{id:#1}{#1})}
+\newcommand{\pcaseX}[1]{$\csym$ (\protect\hyperlink{id:#1}{#1})}
+\newcommand{\caseXtwo}[2]{$\csyms$ (\hyperlink{id:#1}{#1}) and (\hyperlink{id:#2}{#2})}
+\newcommand{\caseXthree}[3]{$\csyms$ (\hyperlink{id:#1}{#1}), (\hyperlink{id:#2}{#2}) and (\hyperlink{id:#3}{#3})}
+\newcommand{\caseXfour}[4]{$\csyms$ (\hyperlink{id:#1}{#1}), (\hyperlink{id:#2}{#2}), (\hyperlink{id:#3}{#3}) and (\hyperlink{id:#4}{#4})}
+\newcommand{\rowtarget}[2]{\hypertarget{id:#1}{#2}}

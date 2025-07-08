@@ -14,7 +14,7 @@
 
 We have introduced a novel variance reduction method called \emph{multigrid low-mode averaging} (MG LMA), combining the efficient multigrid preconditioner with low-mode deflation.
 The method can be applied to any $n$-point function, but benefits are only expected for observable sensitive to low-mode noise.
-This is the case for a large class of observables including meson two-point functions important in the high-precision determination of the leading-order HVP of the muon $g-2$, but also baryon three-point functions important for hadron spectroscopy.
+This is the case for a large class of observables, including meson two-point functions important in the high-precision determination of the leading-order HVP of the muon $g-2$, but also baryon three-point functions important for hadron spectroscopy.
 For disconnected diagrams leading to one-point functions, we do not expect a huge gain in variance reduction, since the success of methods like frequency splitting suggest that noise originates from the high modes, rather than the low modes.
 However, as a rule of thumb, whenever LMA is beneficial, MG LMA should be too.
 
@@ -25,7 +25,7 @@ Although, the introduced method will constantly benefit from the rapid theoretic
 For twisted mass fermions multigrid had to be adjusted by introducing a pure algorithmic parameter -- a factor for the coarse twisted mass~\cite{Alexandrou:2016izb} -- to improve the condition of the coarse grid twisted mass Dirac operator.
 They observed that, if not adjusted, the solver performance might degrade or stall entirely.
 If that factor is unequal to one, the coarse operator is not the restriction of the fine one anymore.
-This trade off might be fine for a preconditioner, but might impact the variance contribution and degrade the performance of MG LMA compared to Wilson-Clover fermions.
+This trade off might be fine for a preconditioner but might impact the variance contribution and degrade the performance of MG LMA compared to Wilson-Clover fermions.
 
 \tldr{staggered and MG}
 The staggered fermion Dirac operator shows spurious eigenvalues on coarse grids~\cite{Brower:2018ymy} making it especially challenging to obtain a performant multigrid implementation.

@@ -17,8 +17,12 @@
 * [x] read through once, add \readit{n} to chapter headers, where n is the number of times read through it; continue at "Exact estimator on coarsest level"
 * [ ] "full correlator" -> "Euclidean time correlator" everywhere
 * [ ] Ns, \hat{Ns}, same for Nc
-* [ ] "MG LMA" -> "MG-LMA"
+* [ ] "MG-LMA" -> "MG LMA"
 * [x] check evans and steves presentations
+* [x] cheryls corrections, continue at chapter 7
+* [ ] i.e -> \ie, and others
+* [ ] Fix ordering of publications and references [P1] to [P11], but then the refs start at [12]
+* [ ] For all figures: check font sizes relative to main text font size
 
 
 ## Final things to check
@@ -27,7 +31,7 @@
 * [ ] Line break layout of \code{} fragments
 * [ ] Captions and their figures on the same page
 * [ ] No unmet references
-* [ ] check all \code{} parts
+* [ ] check all \code{} parts, also in captions, footnotes, figures, etc
 * [ ] Also in images/schemes!
 
 <!-- Funny quote

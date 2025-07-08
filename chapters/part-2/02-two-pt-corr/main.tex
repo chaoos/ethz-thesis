@@ -59,7 +59,7 @@
 % a_{\ell} = \frac{g_{\ell}-2}{2}.
 % \end{equation}
 % The one-loop correction to the electron $a_{e} = \frac{\alpha}{2 \pi}$ was already calculated analytically in 1948 by Schwinger~\cite{Schwinger:1948}.
-% Impressive advancements of higher order corrections up to $\bigO(\alpha^{5})$ (i.e. to tenth order in $e$!) have been carried out since then for the electron~\cite{laporta1996analytical,PhysRevLett.109.111807,PhysRevD.91.033006,nio2015qed}.
+% Impressive advancements of higher order corrections up to $\bigO(\alpha^{5})$ (\ie to tenth order in $e$!) have been carried out since then for the electron~\cite{laporta1996analytical,PhysRevLett.109.111807,PhysRevD.91.033006,nio2015qed}.
 
 % \section{Which lepton?}
 
@@ -67,7 +67,7 @@
 % \begin{equation}
 % \delta a_{\ell} \sim \frac{m_{\ell}^{2}}{\Lambda^{2}},
 % \end{equation}
-% where $m_{\ell}$ is the mass of the lepton and $\Lambda$ is the energy scale where new physics appear, i.e. roughly the mass of a new unknown heavy virtual particle.
+% where $m_{\ell}$ is the mass of the lepton and $\Lambda$ is the energy scale where new physics appear, \ie roughly the mass of a new unknown heavy virtual particle.
 % This suggests that the anomalous magnetic moment of the heaviest known lepton, the tau with a mass of about \SI{1.8}{\GeV} (see \cref{tab:leptons}), should be the best candidate to lead to new physics.
 % Admittedly the tau is very short lived with a lifetime of about \num{0.3} pico-seconds making it hard to access in experiments.
 % Nevertheless it is being investigated~\cite{Fael:2013ij,BaBar:2015ard} as an alternative path to new physics.
@@ -222,8 +222,8 @@ This allows us to define the propagator -- the Green's function to the lattice D
 \begin{equation} \label{eq:prop:pt-to-all}
 \propxyab{x}{y}{\alpha}{\beta}{a}{b} = \fieldxaa{\psi^{y, \beta, b}}{x}{\alpha}{a} \;.
 \end{equation}
-Since this equality holds for fixed source point $y$, but open spin and color indices $\alpha, \beta, a, b$ and open lattice sink point $x$, the above is called the \df{point-to-all propagator}.
-This not an approximation, but an exact equation.
+Since this equality holds for fixed source point $y$ but open spin and color indices $\alpha, \beta, a, b$ and open lattice sink point $x$, the above is called the \df{point-to-all propagator}.
+This not an approximation but an exact equation.
 It makes it possible to evaluate \cref{eq:G:corr:connected} for some restricted set of source points $y \in \Omega$.
 
 We note that one may increase the precision by adding more distinct points to the set $\Omega$, but every source point amounts \num{12} solves of the Dirac equation, which might quickly become expensive.
@@ -289,7 +289,7 @@ We notice that if $\Nst < \infty$, \cref{eq:stoch:id} is not an equality.
 Evaluating observables with it will introduce non-negligible stochastic noise from the estimator itself which has to be taken care of when estimating errors.
 However, the identity \cref{eq:stoch:id} can be plugged into \cref{eq:G:corr:connected} at any place.
 All choices are equivalent in terms of computational cost.
-The stochastic estimator inherently introduces a spatial lattice volume average on time slice $z_0$, i.e. $\lvert \Omega \rvert = \lvert \idxspace \rvert = L^{3}$.
+The stochastic estimator inherently introduces a spatial lattice volume average on time slice $z_0$, \ie $\lvert \Omega \rvert = \lvert \idxspace \rvert = L^{3}$.
 It can be seen as a stochastic all-to-all propagator on a fixed time slice $z_0$.
 Upon including all time slices, it is truly a stochastic all-to-all propagator.
 Thus by plugging in the stochastic identity, we find
@@ -394,7 +394,7 @@ where the $\gamma^{5}$ at the end is because $S = Q^{-1} \gamma^{5}$.
 Analogously, we emphasize just as \cref{eq:prop:pt-to-all} is an exact point-to-all propagator (no approximation involved), the above is an exact all-to-all propagator.
 
 In its current state, this propagator is not appropriate for numerical computations, because the full eigen-decomposition into all $12V$ modes is prohibitively expensive.
-Although we can truncate the sum in \cref{eq:prop:all-to-all} and only take the $\Nc \ll 12 V$ modes with lowest magnitude eigenvalues, i.e. the largest $\frac{1}{\lambda_{n}}$.
+Although we can truncate the sum in \cref{eq:prop:all-to-all} and only take the $\Nc \ll 12 V$ modes with lowest magnitude eigenvalues, \ie the largest $\frac{1}{\lambda_{n}}$.
 These should be the modes that contribute most to the propagator.
 To do this, we define an orthogonal projector to the space of the $\Nc$ lowest modes
 \begin{equation} \label{eq:lma:projector}
@@ -481,7 +481,7 @@ G_{ee}^{\text{conn}}(t)
 \end{multline}
 where the $\sprod{\cdot}{\cdot}$ denotes the standard spinor product.
 Since the eigenmodes are defined on every lattice point, we can easily perform a full volume average of this contribution, $\lvert \Omega \rvert = V$.
-This is characteristic to this estimator, but also crucial, because now the eigen-eigen term is at its gauge noise level and its variance cannot be lowered further\footnote{Without employing multi-level sampling schemes for the gauge field.}.
+This is characteristic to this estimator but also crucial, because now the eigen-eigen term is at its gauge noise level and its variance cannot be lowered further\footnote{Without employing multi-level sampling schemes for the gauge field.}.
 We note that this is also an all-to-all contraction in the index of eigenmodes $n,m$.
 Due to the exact averaging over the subspace of low modes, this class of estimators is known under the name low-mode averaging (LMA)~\cite{Neff_2001,Giusti_2004,DeGrand_2004}.
 
@@ -524,7 +524,7 @@ where we have introduced the time-diluted modes
   0 & \text{otherwise}
 \end{cases} 
 \end{equation}
-such that the original mode can be recovered by summing over all times and they are mutually orthogonal, but not orthonormal anymore
+such that the original mode can be recovered by summing over all times and they are mutually orthogonal but not orthonormal anymore
 \begin{equation}
 \evec_{n} = \sum_{t=0}^{L_0-1} \evec_{n}^{\tslice{t}},
 \qquad
@@ -537,13 +537,13 @@ G_{\cross}^{\text{conn}}(t)
 &= 2 \Re{G_{er}^{\text{conn}}(t)}
 \end{align}
 
-Clearly the cross-term is expensive to estimate exactly, since we need to solve the Dirac equation on every time-diluted mode for every $\gamma$-matrix we want to evaluate the correlator for, i.e. solve the systems
+Clearly the cross-term is expensive to estimate exactly, since we need to solve the Dirac equation on every time-diluted mode for every $\gamma$-matrix we want to evaluate the correlator for, \ie solve the systems
 \begin{equation}
 D \psi = (1-P) \gamma_k \evec_{n}^{\tslice{t}}
 \end{equation}
 for all $k = 1,2,3$, $t \in \stime$ and $n = 0, \ldots, \Nc-1$.
 This makes $3 \Nc L_0$ solves!
-Many improved estimators will not include the whole time extend, all $\gamma$-matrices or all modes, but a subset of them.
+Many improved estimators will not include the whole time extend, all $\gamma$-matrices or all modes but a subset of them.
 Additionally, many LMA-scenarios employ heavily truncated solves on subsets for the above and correct the bias regularly with differences of high precision and truncated solves to obtain an unbiased estimator~\cite{bmw_2017,Kuberski_2023}.
 Alternatively one can introduce a stochastic estimator for the cross-term~\cite{lynch2023,fermi_2023}.
 Another noteworthy variant goes under the name of all-mode averaging (AMA)~\cite{Blum_2012,Blum_2015,CAA,RBC_2018}.
@@ -561,7 +561,7 @@ The polynomial's purpose is to extend the averaging from low modes to all modes,
 However, in all scenarios the cost of this term poses one of the major limiters of LMA, a problem which we aim to solve in the remainder of this part.
 
 Finally the rest-rest term is the simplest one in the decomposition.
-It is just the standard form \cref{eq:G:corr:connected}, but $S$ replaced with $(1-P)S$.
+It is just the standard form \cref{eq:G:corr:connected}, but with $S$ being replaced by $(1-P)S$.
 
 Clearly the cost and the effectiveness of the method both critically depend on the number of low modes $\Nc$ where the spectral sum is truncated.
 

@@ -18,22 +18,6 @@
 
 %\worktodo{$[P,\chi^{5}]=0$, thus $P$ leaves the subspaces of fermion fields with definite chirality invariant.}
 
-\newcommand{\csym}{\text{ID}} % Symbol for cases
-\newcommand{\csyms}{\text{IDs}} % Symbols for cases
-\newcommand{\boxcheck}{
-    \makebox[0pt][l]{$\square$}\raisebox{.15ex}{\hspace{0.1em}$\checkmark$}
-}
-\newcommand{\convhull}[1]{\text{conv}\{ #1 \}}
-\newcommand{\convshull}[1]{ \convhull{ \sigma( #1 ) } }
-
-%\newcommand{\case}[1]{$\csym = #1$}
-\newcommand{\caseX}[1]{$\csym$ (\hyperlink{id:#1}{#1})}
-\newcommand{\pcaseX}[1]{$\csym$ (\protect\hyperlink{id:#1}{#1})}
-\newcommand{\caseXtwo}[2]{$\csyms$ (\hyperlink{id:#1}{#1}) and (\hyperlink{id:#2}{#2})}
-\newcommand{\caseXthree}[3]{$\csyms$ (\hyperlink{id:#1}{#1}), (\hyperlink{id:#2}{#2}) and (\hyperlink{id:#3}{#3})}
-\newcommand{\caseXfour}[4]{$\csyms$ (\hyperlink{id:#1}{#1}), (\hyperlink{id:#2}{#2}), (\hyperlink{id:#3}{#3}) and (\hyperlink{id:#4}{#4})}
-\newcommand{\rowtarget}[2]{\hypertarget{id:#1}{#2}}
-
 % We define the \emph{condition number} of an operator $A$ as
 % \begin{equation}
 % \kappa(A) = \frac{ \sigma_{max}(A) }{ \sigma_{min}(A) } \;,
@@ -153,7 +137,7 @@ where $\rho^{5}(\coarse{x})$ acts only on coarse spins and coarse colors, potent
 As opposed to the fine grid, we loose the strict separability as of \cref{eq:strict:separable} of $\rho^5$ into spin (chiral and non-chiral indices) and color in general.
 
 The spin degrees of freedom can be coarsened in many ways.
-%If we coarsen all of them, $N_s = 1$, then the two operators $\rho^{5}$ and $\id_{\coarse{S}}$ are both $1 \times 1$ matrices, i.e. numbers and the coarse $\coarse{\Gamma^5}$ is proportional to the identity.
+%If we coarsen all of them, $N_s = 1$, then the two operators $\rho^{5}$ and $\id_{\coarse{S}}$ are both $1 \times 1$ matrices, \ie numbers and the coarse $\coarse{\Gamma^5}$ is proportional to the identity.
 %If we coarsen all of them, $N_s = 1$, then $\rho^{5}$ only has coarse color indices.
 The are certain coarsening choices that reinstantiate the strict separability of the fine operator and make $\rho^5(\coarse{x})$ independent of $\coarse{x}$.
 %If we coarsen none of them by leaving all \num{4} spins explicit on the coarse subspace $N_s = 4$, then both operators will be $2 \times 2$ matrices equal to their fine grid versions, $\rho^{5} = \chi^{5}$ and $\id_{\coarse{S}} = \id_S$.
@@ -172,7 +156,7 @@ Cases \caseX{2sc} and \caseX{2sv} are physically equivalent, they only differ in
 When appearing in traces, they evaluate to the same result.
 Case \caseX{1} preserves no spin degrees of freedom, case \caseX{2nc} preserved the non-chiral ones and cases \caseXfour{2sc}{2sv}{2wc}{4} preserve chiral degrees of freedom, \caseX{4} even both.
 
-Preservation of the trace $\tr(\coarse{\Gamma^5})=0$ implies that both chiral degrees of freedom are treated symmetrically, i.e. both are explicit on coarse subspaces, none is preferred over the other.
+Preservation of the trace $\tr(\coarse{\Gamma^5})=0$ implies that both chiral degrees of freedom are treated symmetrically, \ie both are explicit on coarse subspaces, none is preferred over the other.
 We therefore define the term \df{weak chirality preservation} of coarse subspaces as subspaces whose projector obeys
 \begin{equation}
 [P, \Gamma^{5}] = 0 \;.
@@ -298,13 +282,13 @@ Assuming that $P$ and $\Gamma^{5}$ are Hermitian, the following statements are a
 \end{lemma}
 \begin{proof}
 Assuming the first equality to be true, we have already shown that the spectrum has to be one of \cref{eq:sigma}.
-Thus \cref{eq:lemma:chirality:preservation:equiv} implies \cref{eq:lemma:sigma}.
+Thus, \cref{eq:lemma:chirality:preservation:equiv} implies \cref{eq:lemma:sigma}.
 
 Looking at an operator with one of the three possible spectra, all of them square to an operator with spectrum $\{1\}$, which is the identity operator.
-Thus \cref{eq:lemma:sigma} implies \cref{eq:lemma:involution}.
+Thus, \cref{eq:lemma:sigma} implies \cref{eq:lemma:involution}.
 
 Coarse operators inherit Hermiticity from fine ones.
-Thus a Hermitian involution is unitary; \cref{eq:lemma:involution} implies \cref{eq:lemma:unitary}.
+Thus, a Hermitian involution is unitary; \cref{eq:lemma:involution} implies \cref{eq:lemma:unitary}.
 
 Assuming we have a unitary, we calculate straight,
 \begin{align}
@@ -317,7 +301,7 @@ Assuming we have a unitary, we calculate straight,
 &= 0 \;,
 \end{align}
 where in the last step we used the unitary property of $\coarse{\Gamma^{5}}$.
-Thus \cref{eq:lemma:unitary} implies \cref{eq:lemma:trsq0}.
+Thus, \cref{eq:lemma:unitary} implies \cref{eq:lemma:trsq0}.
 
 Finally, assuming \cref{eq:lemma:trsq0} and Hermiticity of $P$ and $\Gamma^{5}$, we find that
 \begin{equation}
@@ -330,7 +314,7 @@ The trace over the operator squared is zero by assumption, thus
 0 = \sum_{j} (i \lambda_j)^2 = - \sum_{j} \lambda_j^2 \;.
 \end{equation}
 This is only possible if $\lambda_j=0$ for all $j$.
-Thus \cref{eq:lemma:trsq0} implies \cref{eq:lemma:chirality:preservation:equiv} concluding the proof.
+Thus, \cref{eq:lemma:trsq0} implies \cref{eq:lemma:chirality:preservation:equiv} concluding the proof.
 \end{proof}
 
 \section{Weak chirality preservation}
@@ -352,7 +336,7 @@ The first equation is readily shown as
 \begin{align}
 \coarse{\Gamma^{5}} \coarse{K} = R \Gamma^{5} T R K T = R \Gamma^{5} P K T = R P \Gamma^{5} K T = R \Gamma^{5} K T = \coarse{\Gamma^{5} K} \;.
 \end{align}
-The second equation is just the same again, and for the third equation we note that Hermiticity is preserved when coarsening and since $\Gamma^{5} K$ is Hermitian by assumption, so is $\coarse{\Gamma^{5} K}$ and $\coarse{\Gamma^{5}} \coarse{K}$, thus $\coarse{K}^{\dagger} = \Gamma^{5} \coarse{K} \Gamma^{5}$.
+The second equation is just the same again, and for the third equation we note that Hermiticity is preserved when coarsening and since $\Gamma^{5} K$ is Hermitian by assumption, so is $\coarse{\Gamma^{5} K}$ and $\coarse{\Gamma^{5}} \coarse{K}$, thus, $\coarse{K}^{\dagger} = \Gamma^{5} \coarse{K} \Gamma^{5}$.
 \end{proof}
 
 These are properties we may wish to have on the coarse grid, but we note that for case \caseX{2wc} in \cref{tab:spins} this is satisfied, although $\coarse{K}$ might become ill-conditioned as seen later.
@@ -369,7 +353,7 @@ The singular values $\sigma_i = \lvert \lambda_i \rvert$ are the magnitudes of e
 %The SVD above is not unique, but the singular values are.
 
 \begin{lemma}[Coarse singular value decomposition] \label{lemma:svd:coarse}
-If chirality is weakly preserved, $[P, \Gamma^5]=0$, the singular value decomposition of $\coarse{K}$ is equivalent to \cref{eq:svd}, with every operator and vector hatted.
+If chirality is weakly preserved, $[P, \Gamma^5]=0$, the singular value decomposition of $\coarse{K}$ is equivalent to \cref{eq:svd} with every operator and vector hatted.
 \end{lemma}
 
 \begin{proof}
@@ -417,7 +401,7 @@ Then for the determinant of $\coarse{K}$, we find
 \det(\coarse{\Gamma^{5}})^{2} \det(\coarse{K}) =
 \det(\coarse{K}) \;,
 \end{equation}
-i.e. the determinant is real and eigenvalues are either real or come in complex conjugate pairs as on the fine grid.
+\ie the determinant is real and eigenvalues are either real or come in complex conjugate pairs as on the fine grid.
 \end{proof}
 
 % \worktodo{
@@ -579,7 +563,7 @@ $A$ is Hermitian and positive definite, thus invertible: $\forall \lambda \in \s
 % \begin{align} \label{eq:def:numerical:range}
 % W(A) \coloneqq \left\{ \psi^\dagger A \psi \; \middle| \; \psi \in \vslattice \; \text{and} \; \norm{\psi} = 1 \right\}.
 % \end{align}
-The numerical range of $A$ is the interval in $\mathbb{R}_+$ delimited by the smallest and largest eigenvalue of $A$~\cite{gustafson1997numerical}, i.e. $W(A) = [ \lambda_{min}, \lambda_{max} ] \subset \mathbb{R}_+$.
+The numerical range of $A$ is the interval in $\mathbb{R}_+$ delimited by the smallest and largest eigenvalue of $A$~\cite{gustafson1997numerical}, \ie $W(A) = [ \lambda_{min}, \lambda_{max} ] \subset \mathbb{R}_+$.
 % Then
 % \begin{align*}
 % W({\coarse{K}})
@@ -609,7 +593,7 @@ Nevertheless this has been done in the field~\cite{Cohen:2011ivh,Boyle:2014rwa}.
 We continue with properties that lead to symmetries in numerical ranges.
 
 \begin{lemma}[Symmetry about the real axis] \label{lemma:nr:xsym}
-Assume $K$ be a $\Gamma^{5}$-Hermitian operator, i.e. $K^{\dagger} = \Gamma^{5} K \Gamma^{5}$.
+Assume $K$ be a $\Gamma^{5}$-Hermitian operator, \ie $K^{\dagger} = \Gamma^{5} K \Gamma^{5}$.
 Then the numerical range of $K$ is symmetric about the real axis,
 \begin{equation}
 W(K) = W(K)^{\star} \iff \forall z \in W(K) \colon \bar{z} \in W(K) \;.
@@ -755,7 +739,7 @@ We have determined the spectral hulls of the Wilson and Wilson-Clover Dirac oper
 Both are positively stable (spectral hull is in the open right half plane).
 We see that the spectrum of the Wilson-Clover operator underwent the same squeezing caused by adding the Clover-term, similar to the numerical range.
 Notable is that the free (gauge fields set to unity) Wilson operators numerical range and spectral hull coincide, except for the rightmost piece.
-Eigenvectors associated to the extremal eigenvalues lying on the boundary of the numerical range are thus orthogonal to all other eigenvectors, i.e. the operator restricted to these eigenvectors is normal, $D^\dagger D \xi = D D^\dagger \xi$.
+Eigenvectors associated to the extremal eigenvalues lying on the boundary of the numerical range are thus orthogonal to all other eigenvectors, \ie the operator restricted to these eigenvectors is normal, $D^\dagger D \xi = D D^\dagger \xi$.
 
 Spectral hulls of different coarse Wilson-Clover Dirac operators are plotted in \cref{fig:ch:coarse}.
 If chirality is strongly preserved, we observe spectral hull inclusion from coarser to finer grids,
@@ -1104,12 +1088,12 @@ Coarse eigenvalues above the purple region are distorted on both cases as expect
 
 \section{Numerical variance study}
 
-The preserved chiral properties do not only have impact on the spectrum, but also the variance contribution of coarse subspaces.
+The preserved chiral properties do not only have impact on the spectrum but also the variance contribution of coarse subspaces.
 \Cref{fig:chirality:variance} shows the impact of coarse chirality on the variances.
 We can clearly see a tremendous benefit from the strong chirality preservation as opposed to its absence.
 Variance contributing to the large distance regime therefore originates from both chiral sectors equally.
 The yellow data corresponds to the \caseX{1} case from \cref{tab:spins}, whereas the green data to the \caseX{2sc} case.
-Even though the \caseX{2sc} subspace is twice as large as the \caseX{1} one, it is a tradeoff absolutely worth doing, not only for the coarse condition, but also for its variance contribution.
+Even though the \caseX{2sc} subspace is twice as large as the \caseX{1} one, it is a tradeoff absolutely worth doing, not only for the coarse condition but also for its variance contribution.
 \begin{figure}
 \centering
 \includegraphics[width=1.0\linewidth]{\dir/img/chirality}
@@ -1195,11 +1179,11 @@ Variance contributions of both LMA (left) and MG LMA (right) profit from these c
 %The studies
 
 The numerical range studies revealed important information about Wilson-type Dirac operators.
-Critically, the Wilson-Clover operator is not accretive, even more so for physical masses, i.e. the operator itself, but also its coarse variants have the potential for zero or arbitrarily small modes in their spectra.
+Critically, the Wilson-Clover operator is not accretive, even more so for physical masses, \ie the operator itself, but also its coarse variants have the potential for zero or arbitrarily small modes in their spectra.
 %We thus need a coarsening strategy that .
 Weak chirality preservation $[P, \Gamma^{5}]=0$ is responsible for the inheritance of many properties, amongst others equal singular values for non-Hermitian $\coarse{K}$ and Hermitian $\coarse{\Gamma^{5} K}$ coarsenings.
 Empirically we observed spectral hull inclusion and overlap of the $\Nc$ lowest modes for coarsening schemes that strongly preserve chiral properties, no so for weak chiral, non-chiral or no spin preservation at all.
-Therefore it is the chiral degree of freedom alone, that is responsible for inheriting well behaved spectra.
+Therefore, it is the chiral degree of freedom alone, that is responsible for inheriting well behaved spectra.
 %Spectral hull inclusion guarantees well-conditioned coarse operators, which is crucial for MG LMA and multigrid as a preconditioner to be beneficial.
 
 %Chirality on the coarse subspaces is an important concept. %, and critical for MG LMA and multigrid as a preconditioner to be beneficial.
@@ -1218,7 +1202,7 @@ We believe that careful study of numerical range theory on other lattice discret
 Concluding, the main finding of this section is:\\
 \textbf{
 For an invertible $\Gamma^{5}$-Hermitian operator $K$ acting on the lattice,
-if chirality is strongly preserved, i.e. if $[P, \Gamma^{5}] = 0$ and $\tr(\coarse{\Gamma^5}) = 0$, then coarse operators $\coarse{K}$ satisfy
+if chirality is strongly preserved, \ie if $[P, \Gamma^{5}] = 0$ and $\tr(\coarse{\Gamma^5}) = 0$, then coarse operators $\coarse{K}$ satisfy
 \begin{equation}
 \kappa(\coarse{K}) \leq \kappa(K) \;.
 \end{equation}

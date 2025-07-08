@@ -11,7 +11,7 @@ This section describes how to run the checks testing the interface manually\foot
 
 \tldr{infile format for general section}
 The contents of the input file may be written in the traditional openQCD INI-inspired style.
-If the input file contains a section called \code{QUDA}, settings from that section will be read in in the bootstrapping phase, i.e. when calling \code{quda\_init()}.
+If the input file contains a section called \code{QUDA}, settings from that section will be read in in the bootstrapping phase, \ie when calling \code{quda\_init()}.
 An example may look as follows:
 \begin{minted}[]{ini}
 [QUDA]
@@ -45,7 +45,7 @@ This is the argument \code{id} that has to be provided when calling the solver w
 For the section to be a valid \quda solver section we need to specify the key-value pair \code{solver = QUDA}, else the setup function will throw an error message if fed with \code{id=3}.
 All the remaining keys parameterize the various members of the \code{QudaInvertParam} struct and we refer the reader to its documentation \cite{QUDApaper,github:quda}.
 We note that every name in \code{<quda>/include/quda\_enum.h} can be used as value for the key-value pairs in the input file for readability, so that the user doesn't have to write \code{2} for \code{QUDA\_GCR\_INVERTER} for instance.
-The example section above is minimal, i.e. it only sets required parameters; it solves the Wilson-Clover Dirac equation using a BiCGSTAB solver without any preconditioning to a relative residual of $10^{-4}$.
+The example section above is minimal, \ie it only sets required parameters; it solves the Wilson-Clover Dirac equation using a BiCGSTAB solver without any preconditioning to a relative residual of $10^{-4}$.
 We may have mutiple sections as the one above each one enumerated by a unique identifier \code{id}.
 
 \section{Parametrizing a multigrid solver}

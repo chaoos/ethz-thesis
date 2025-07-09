@@ -1,0 +1,58 @@
+\documentclass{standalone}
+
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc}
+\usetikzlibrary{decorations.markings}
+
+\input{preamble/colors.tex}
+\input{preamble/commands.tex}
+\input{preamble/symbols.tex}
+
+\colorlet{pointColor}{black}
+\colorlet{arrowColor}{black}
+
+\tikzset{
+  gauge/.style = {
+    shorten <=12pt,
+    shorten >=12pt,
+    color=arrowColor,
+    postaction={
+      decorate,
+      decoration={
+        markings,
+        mark=at position 0.5 with {\arrow{Stealth}}
+      }
+    }
+  },
+  point/.style = {
+    color=pointColor
+  }
+}
+
+\usepackage{graphicx} % for \rotatebox
+
+\begin{document}
+\pagestyle{empty}
+
+\begin{tikzpicture}
+
+\fill[point] (0,0) circle (0.05) node[below left]  {$x$};
+\fill[point] (5,0) circle (0.05) node[below right] {$x + \hat{\mu}$};
+\fill[point] (0,5) circle (0.05) node[above left]  {$x + \hat{\nu}$};
+\fill[point] (5,5) circle (0.05) node[above right] {$x + \hat{\mu} + \hat{\nu}$};
+
+\draw[gauge] (0,0) -- (5,0) node[midway, below] {$U_{\mu}(x)$};
+\draw[gauge] (5,0) -- (5,5) node[midway, right] {$U_{\nu}(x + \hat{\mu})$};
+\draw[gauge] (5,5) -- (0,5) node[midway, above] {$U_{\mu}(x + \hat{\nu})^{\dagger}$};
+\draw[gauge] (0,5) -- (0,0) node[midway, left]  {$U_{\nu}(x)^{\dagger}$};
+
+\draw[->] (-3,0) -- (-2,0) node[midway, below] {$\mu$};
+\draw[->] (-3,0) -- (-3,1) node[midway, left]  {$\nu$};
+
+
+\node[anchor=center] at (2.5,2.5) {$U_{\mu \nu}(x)$};
+
+
+\end{tikzpicture}%
+
+\end{document}

@@ -10,10 +10,10 @@
 \readit{1}
 
 \tldr{CICD intro, git private}
-This section describes the continuous integration testing and deployment (CI/CD) pipeline as introduced in \openqxd's development repository\cite{gitlab:openqxd-devel}.
+This chapter describes the continuous integration testing and deployment (CI/CD) pipeline as introduced in \openqxd's development repository\cite{gitlab:openqxd-devel}.
 At the time of writing this thesis the repository is private.
 As part of the goals of the PASC project\cite{pasc:project} and thus as part of this thesis, we instantiated CI/CD paradigms to the development workflow of \openqxd.
-This chapter details our strategy for continuous integration in \cref{sec:cicd:integration}, code testing philosophy in \cref{sec:cicd:testing} and direct software deployment to CSCS infrastructure in \cref{sec:cicd:deployment}.
+This chapter details our strategy for continuous integration in \cref{sec:cicd:integration}, continuous testing directly on target hardware at CSCS in \cref{sec:cicd:testing} and software deployment to CSCS infrastructure in \cref{sec:cicd:deployment}.
 
 \section{Continuous integration}
 \label{sec:cicd:integration}
@@ -282,10 +282,10 @@ One will find an already compiled version of \quda with all required environment
 \label{sec:cicd:summary}
 
 All parts of the interface are continuously tested on a daily basis.
-Testing on CSCS production infrastructure can manually be triggered conveniently as comments in merge-requests.
+Testing on GH200 nodes at CSCS can manually be triggered, conveniently as comments in merge-requests.
 Occurring software bugs or compiler issues can be identified directly when they appear and future developments will not enter the codebase unless all tests are successful.
 Testing directly on target infrastructure increases quality, robustness, stability and trust in the code substantially while guaranteeing functionality.
-The direct deployment to CSCS simplifies the process of setup, compile and run in a production environment, since the steps of setting up the correct environment and properly compiling the code essentially vanish from the workflow.
+The direct deployment to CSCS user environment registries simplifies the process of setup, compile and run in a production environment, since the steps of setting up the correct environment and properly compiling the code essentially vanish from the workflow.
 Deploying the whole software environment rather than just the code considerably increases reproducibility of simulations.
 
 %\worktodo{AMD Mi300 runs?}

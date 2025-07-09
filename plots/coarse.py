@@ -32,11 +32,13 @@ plots = [
     "active": True,
     "filename": "/scratch/rgruber/67bc5d6d049e882b8a262db6/chapters/part-2/06-numerics/img/coarse_condition.pdf",
     #"name": "Solvers",
+    "figsize": (6.0, 5.0),
     "properties": {
       "xlabel": r'$\mathbb{C}$-dimension of Dirac operator',
-      #"ylabel": "Condition number",
+      "ylabel": "blabal",
       "yscale": "log",
       "xscale": "log",
+      "position": [0.15, 0.1, 0.8, 0.85],
       #"xticks": [100, 819200, 13107200, 402653184],
       #"xticklabels": ["LMA", r"MG: $8^4$", r"MG: $4^4$", "Fine-grid"],
     },
@@ -76,9 +78,11 @@ plots = [
     "active": True,
     "hostname": ["geno"],
     "filename": "/scratch/rgruber/67bc5d6d049e882b8a262db6/chapters/part-2/06-numerics/img/coarse_tts_vs_memory.pdf",
+    "figsize": (6.0, 5.0),
     "properties": {
       "xlabel": "Dirac operator size in memory [GB]",
-      "ylabel": "time [sec]"
+      "ylabel": "time [sec]",
+      "position": [0.15, 0.1, 0.8, 0.85],
     },
     "lines": [
       {

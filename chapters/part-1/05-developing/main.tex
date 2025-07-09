@@ -436,7 +436,14 @@ contract(i, last_solution, MPI_COMM_WORLD, ...); /* wind-down */
 
 % This interface makes all variants of the iterative solver algorithms in the QUDA library for Wilson fermions accessible in openQxD, including the conjugate gradient (CG), generalized conjugate residuals (GCR) and the adaptive multi-grid preconditioner (MG)~\cite{Babich:2010qb} which is similar to the inexact deflation method implemented natively in openQxD and many more.
 
-\section{Limits}
+\section{Summary}
+
+We have seen how to use the interface to port existing applications written in \openqxd, write new ones and how to easily implement heterogeneous computing by overlapping solves on the GPU with arbitrary workload on the CPU.
+Through the parameter and revision tracking system, the interface allows flexible usage over many use cases and stays consistent with \openqxd's internal state.
+
+%\worktodo{summary}
+
+\subsection{Limitations}
 
 \tldr{Forced field transfers for solver kernels}
 Currently, there are some limits regarding the interface.

@@ -25,7 +25,10 @@
   Information: the negative reciprocal value of probability. }%
 \vskip 1em
 
-\worktodo{numerical study intro}
+\tldr{numerical study intro}
+In this chapter, we study the application of multigrid low-mode averaging to the connected two-point light-quark meson correlator introduced in \cref{ch:p2:2pt-corr}, that contributes the dominant error to the leading order HVP of the Muon $g-2$.
+Numerical data shows the ability of the method to reach gauge variance with significantly smaller cost as compared to the naive stochastic estimator, but also compared to low-mode averaging -- the state-of-the-art method for this class of observables.
+We will show numerical evidence of its linear volume scaling with constant number of low modes, as opposed to the quadratic scaling of low-mode averaging.
 
 The numerical study was carried out using $\Nf=2$ flavours of non-perturbative $\bigO(a)$-improved Wilson-Clover fermions all with the same bare quark masses and lattice parameters.
 They were generated starting from the CLS ensemble labelled F7~\cite{online:cls} and their specifications are collected in \cref{tab:mglma:ensembles}.
@@ -611,7 +614,8 @@ It is thus save to assume -- with the same solver algorithm on all levels -- tha
 \hfill
 \subfloat[Memory bandwidth model]{\includegraphics[width=0.49\textwidth]{\dir/img/coarse_tts_vs_memory}\label{fig:coarse:memory}}
 
-\caption{\worktodo{regenerate plots}
+\caption{
+\worktodo{label, legend font size bigger}
 (a) Estimated condition number and average number of iteration steps for a Biconjugate gradient stabilized solve (BiCGSTAB) vs. the dimension of the operator on G7. \takenfull
 (b) Time for one application of a fine- or coarse-grid Dirac operator vs. their memory footprints on G7.
 }
@@ -764,8 +768,8 @@ The most important finding in this chapter is that the achieved variance reducti
 Due to the good overlap with the true low-mode subspace, we observe speedups of more than an order of magnitude compared to the plain stochastic and LMA estimators.
 
 The majority of the variance is contained in the cheap parts, whereas the expensive remainder shows suppressed variance contribution.
-This hierarchical sampling scheme leads to a flat scaling behavior of required number of low modes, leading to a linear volume-scaling in computational cost.
-Since coarse operators are better conditioned than fine ones, sampling coarse subspaces is always less expensive than sampling the fine ones, keeping the cost factor under control.
+This hierarchical sampling scheme leads to a flat scaling behavior of required number of low modes, leading to a linear volume-scaling in computational cost, effectively eliminating the $V^{2}$-problem inherent to this class of problems.
+Since coarse operators are better conditioned than fine ones, sampling coarse subspaces is always less expensive than sampling fine ones, keeping the cost factor under control.
 
 % \worktodo{
 %    * We showed, the method works for O(a)-improved Wilson-Clover fermions

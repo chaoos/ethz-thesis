@@ -31,8 +31,8 @@ This chapter will present performance assessments of the various implementations
 The goal is to determine production readiness of the code to run on current accelerator-based super-computing centers, mainly targeting good performance on the very recent GH200 node at CSCS~\cite{fusco2024}.
 All machines involved in data taking are specified in \cref{sec:perf:hardware}.
 The physics program of the \RCstar collaboration is centered around lattices with \Cstar boundary conditions and occasionally periodic ones.
-Thus, we ran performance tests on lattices specified in \cref{sec:perf:ensembles}, whereas the methodology is discussed in \cref{sec:perf:methodology}.
-Among the investigated features were the contributions of the dual process grid (\cref{sec:perf:dual}), the efficiency of the asynchronous solver with concurrent workload on the CPU (\cref{sec:perf:solver:async}), the blocked solver acting on multiple RHS at the same time (\cref{sec:perf:solver:mrhs}), asymptotic scaling behavior of the Dirac operator (\cref{sec:perf:dop}) and a production multigrid solver (\cref{sec:perf:solver}).
+Thus, we ran performance tests on lattices specified in \cref{sec:perf:ensembles}, whereas the methodology of measurements is discussed in \cref{sec:perf:methodology}.
+Among the investigated features were the contributions of the dual process grid (\cref{sec:perf:dual}), the efficiency of  heterogeneous workloads using the asynchronous solver with concurrent workload on the CPU (\cref{sec:perf:solver:async}), the blocked solver acting on multiple RHS at the same time (\cref{sec:perf:solver:mrhs}), asymptotic scaling behavior of the Dirac operator (\cref{sec:perf:dop}) and a production multigrid solver (\cref{sec:perf:solver}).
 
 \section{Hardware specifications}
 \label{sec:perf:hardware}

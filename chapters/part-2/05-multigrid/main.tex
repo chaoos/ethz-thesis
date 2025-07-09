@@ -1,7 +1,7 @@
 \chapter{Multigrid}
 \label{ch:p2:multigrid}
 
-\dictum[William Shakespeare]{%
+\dictum[William Shakespeare, Macbeth]{%
   It is a tale told by an idiot, full of sound and fury signifying nothing. }%
 \vskip 1em
 
@@ -21,8 +21,13 @@
 
 \section{Multigrid preconditioning}
 
+\tldr{mg intro}
+In this chapter we will discuss multigrid as a concept and its prominent role as a solver preconditioner.
+After that, we will construct a decomposed propagator in terms of contributions from multigrid levels.
+By inserting this decomposition into the connected two-point correlator introduced in \cref{ch:p2:2pt-corr}, it enables us to define a new hierarchical stochastic sampling scheme, where every multigrid level is evaluated with separate statistics.
+This defines a new class of variance reduction methods which we call \emph{multigrid low-mode averaging}.
+
 \tldr{solve ill Dirac eq, Krylov solvers suppress low mode components}
-In this section we will discuss multigrid as a concept and its prominent role as a solver preconditioner.
 As in \cref{part:gpu}, we are interested to solve the Dirac equation numerically,
 \begin{equation} \label{eq:var:dirac:equation}
 D \psi = \eta \;,
@@ -204,7 +209,7 @@ This concept is illustrated in \cref{fig:coarse:stencil}.
 \begin{figure}
 \centering
 \includestandalone[width=0.9\linewidth]{\dir/img/long_distance}
-\caption{Illustration that the coarse grid Dirac stencil transports information further through the lattice. Upper left: Dirac stencil on a $6 \times 6$ lattice connecting nearest neighbors. Instead we could restrict the vector to the coarse $3 \times 3$ grid, apply the coarse Dirac stencil (bottom center) and prolong back. The result is a longer range interaction (upper right). The information transfer is restricted to the coarse degrees of freedom, \ie the low modes of the fine grid which in turn are associated to long-range interactions. Therefore, not \emph{all} information has propagated but the most relevant information has.}
+\caption{Illustration that the coarse grid Dirac stencil transports information further through the lattice. Upper left: Dirac stencil on a $6 \times 6$ lattice connecting nearest neighbors. Instead we could restrict the vector to the coarse $3 \times 3$ grid, apply the coarse Dirac stencil (bottom center) and prolong back. The result is a longer range interaction (upper right). The information transfer is restricted to the coarse degrees of freedom, \ie the low modes of the fine grid which in turn are associated to long-range interactions. Therefore, not \emph{all} information has propagated the longer distance but the most relevant information has.}
 \label{fig:coarse:stencil}
 \end{figure}
 

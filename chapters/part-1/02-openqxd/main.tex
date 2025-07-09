@@ -8,6 +8,8 @@
 
 %\newcommand{\Dw}{{D_{\mathrm{w}}}}
 
+In this chapter, we outline some of the main features, design choices and peculiarities of \openqxd, the simulation program worked on in this thesis.
+
 \tldr{openqxd and openqcd intro}
 The \openqxd code~\cite{openqxd} is an extension of the state-of-the-art lattice QCD Markov Chain Monte Carlo code openQCD~\cite{online:openqcd,Luscher:2012av} which complies to the C89 standard with MPI parallelization and has proven strong-scalability to hundreds of CPU-based nodes including specific optimizations for x86 architectures.
 Due to the extensive suite of legacy applications based on \openqcd as well as its renowned stability and reproducibility, our goal is to accelerate the code by offloading the solution to the Dirac equation \cref{eq:dirac:equation} to the GPU accelerator using the \quda library.
@@ -56,7 +58,7 @@ The lattice topology in terms of process grid, global and local lattice sizes is
 #define NPROC2_BLK 1
 #define NPROC3_BLK 1
 \end{minted}
-\caption{Excerpt of the file \capcode{include/global.h} describing the \openqxd process grid.}
+\caption{Excerpt of the file \capcodeA{include/global.h} describing the \openqxd process grid.}
 \label{lst:openqxd:global.h}
 \end{codelisting}
 
@@ -144,7 +146,7 @@ typedef struct
    double re,im;
 } complex_dble;
 \end{minted}
-\caption{The \capcode{complex} and \capcode{complex\_dble} struct}
+\caption{The \capcodeA{complex} and \capcodeA{complex\_dble} struct}
 \label{lst:openqxd:complex_double}
 \end{codelisting}
 These are alignment-compatible to the C99 native data types \code{float complex} and \code{double complex}, respectively, thus they can be cast safely\footnote{When including \fncode{<complex.h>} for complex number support in C99 and newer, one has to be careful because the single precision complex struct in \openqxd has the same name as the complex datatype. Without renaming, there will be naming conflicts.}.
@@ -292,5 +294,14 @@ This will become important later, because \quda is not capable of generating the
 %stores the real phases of U(1) field
 %\worktodo{we have the SU3 and the U1 fields separately, but also the combined U3 defined on the extended lattice. QED clover term is added on top of the QCD clover term.}
 
+\section{Summary}
+
+%\worktodo{summary of openqxd}
+
+The simulation code used by the \RCstar collaboration is \openqxd.
+It is capable of \Cstar boundary conditions implemented through the orbifold construction, required for dynamical QCD+QED simulations.
+The code runs efficiently on CPU cluster parallelized purely via MPI.
+This is reflected via data structures as arrays of structs and linear algebra kernels being optimized for CPUs, little abstraction was implemented.
+We wish to enable simulations on modern GPU-based clusters by offloading solves to the Dirac equation to GPUs.
 
 

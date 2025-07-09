@@ -7,6 +7,8 @@
 
 %\worktodo{initQuda, endQuda, loadCloverQuda loadGaugeQuda newMultigridQuda, createCloverQuda, updateMultigridQuda, freeCloverQuda, destroyMultigridQuda}
 
+In this chapter, we outline some of the main features, design choices and peculiarities of \quda, the library we offload Dirac equation solves to.
+
 \tldr{what is quda}
 \Quda \cite{QUDApaper} is a library written in CUDA C++ that contains a suite of efficient kernels and solvers to implement lattice QCD simulations. It can be used as a plug and play substitute for certain compute intensive tasks.
 \Quda is highly optimized to run on multiple GPUs and has backends for CUDA, HIP, SYCL and multi-threading, where it performs autotuning to determine empirically the best kernel launch parameters for every kernel separately.
@@ -34,7 +36,7 @@ This executes the previously packed device function which ultimately instantiate
 \begin{figure}
 \includestandalone[width=\linewidth]{\dir/img/gamma5}
 \caption{
-Call graph of the \capcode{gamma5} function in \quda as an example of how kernels are abstracted from the backends.
+Call graph of the \capcodeA{gamma5} function in \quda as an example of how kernels are abstracted from the backends.
 This function acts on fields already transferred to \quda, thus there is no gamma basis transformation.
 }
 \label{fig:quda:gamma5}
@@ -63,7 +65,7 @@ After some instantiation of template parameters such as the floating point preci
 The remainder of the diagram after the last point (indicated by \code{...}) is very similar to the call graph of \code{gamma5}, \cref{fig:quda:gamma5}.
 \begin{figure}
   \includestandalone[width=\linewidth]{\dir/img/copy}
-  \caption{Copy process triggered by equating two fields of type \capcode{ColorSpinorField}.}
+  \caption{Copy process triggered by equating two fields of type \capcodeA{ColorSpinorField}.}
   \label{fig:quda:copy}
 \end{figure}
 
@@ -123,3 +125,11 @@ These functions may trigger field transfers or reordering:
   \item \code{plaqQuda()}: calculate the plaquette over the resident $\ggrp{SU}{3}$ gauge field.
 \end{itemize} 
 
+\section{Summary}
+
+%\worktodo{summary of quda}
+
+\Quda is a lattice QCD library running efficiently on GPUs of various vendors via CUDA, HIP and SYCL backend abstraction.
+It comes with a state-of-the-art mixed-precision multigrid solver optimized for many lattice QCD Dirac operators such as the Wilson-Clover.
+Abstraction is practiced in terms of operator overloading, class inheritance and heavy templating.
+\Cstar boundary conditions and the QCD+QED Wilson-Clover Dirac operator are missing features which we implemented.

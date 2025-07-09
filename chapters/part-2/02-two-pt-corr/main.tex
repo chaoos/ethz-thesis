@@ -14,6 +14,10 @@
     * LMA prop? in the traditional formulation, eq (12) in lma-final.tex
 }
 
+\tldr{intro}
+We will introduce the light-quark connected meson correlator -- the observable of interest -- in this chapter.
+A discussion of common evaluation strategies will follow, culminating in an analysis of low-mode averaging, its problems in terms of its unfortunate quadratic volume scaling and challenges that emerge when evaluating the remaining pieces not attributed to the low modes.
+
 %\section{g-2}
 
 % \worktodo{
@@ -164,8 +168,6 @@
 The observable of interest in this part is the the connected leading order hadronic vacuum polarization contribution (LO-HVP) to the anomalous magnetic moment of the muon as introduced in \cref{sec:intro:gm2}.
 The connected LO-HVP piece which dominates the error budget is itself a comparably simple observable, but suffers from the signal-to-noise ratio problem.
 The piece we calculate on the lattice is the Euclidean time correlator \cref{eq:coor1}, which in a post-processing phase enters the main integral for the connected LO-HVP contribution \cref{eq:a:mu:lohvp}.
-
-\worktodo{intro for this}
 
 \section{Two-point correlator}
 \label{sec:2pt-corr}
@@ -369,7 +371,7 @@ This analysis shows that a stochastic evaluation of \cref{eq:G:corr:connected} a
 
 \worktodo{todo}
 
-\subsection{Spectral propagator}
+\subsection{Spectral propagator and LMA}
 
 Finally, we introduce yet another estimator for \cref{eq:G:corr:connected} using the spectral decomposition of the Hermitian Dirac operator,
 \begin{equation}

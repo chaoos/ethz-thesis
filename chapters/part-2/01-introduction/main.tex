@@ -1,4 +1,4 @@
-\chapter{Introduction}
+\chapter{Introduction to Part II}
 \label{ch:p2:introduction}
 
 \dictum[Nazario Tantalo]{%
@@ -7,9 +7,9 @@
 
 \readit{1}
 
-\worktodo{
-* motivation for variance reduction methods, importance
-	* high-precision lattice QCD, QED
+% \worktodo{
+% * motivation for variance reduction methods, importance
+% 	* high-precision lattice QCD, QED
 	% * signal to noise ratio problem:
 	% 	* Cite Parisi: G. Parisi, Phys. Rept. 103 (1984) 203.
 	% 	* And  Lepage: G.P. Lepage, TASI 89 Summer School, Boulder, CO, Jun 4-30, 1989.
@@ -34,7 +34,7 @@
 	% * Dilution methods: stoachstic all-to-all props, spin, color, eo, space-time, 
 	% 	* REF: https://www.sciencedirect.com/science/article/pii/S0010465505004005
 	% 	* REF: earlier, calls it "partitioning": https://arxiv.org/abs/hep-lat/9911013
-	* point sources: exact, regularly spaced, randomly placed, ...
+	% * point sources: exact, regularly spaced, randomly placed, ...
 	% * frequency splitting: stochastic estimation of disconnected diagrams, ...
 	% 	* REF: https://arxiv.org/pdf/1903.10447
 	% 	* REF: https://arxiv.org/pdf/2001.08783
@@ -53,14 +53,14 @@
 	% * one-end trick: used for twisted mass fermions
 	% 	* was used in the stochastic estimation of the trace for the twisted mass discretization of fermions 
 	% 	* REF: Ph. Boucaud, P. Dimopoulos, F. Farchioni, R. Frezzotti, V. Gimenez, G. Herdoiza, K. Jansen, V. Lubicz, C. Michael, G. Münster, D. Palao, G.C. Rossi, L. Scorzato, A. Shindler, S. Simula, T. Sudmann, C. Urbach, and U. Wenger. Dynamical twisted mass fermions with light quarks: simulation and analysis details. Computer Physics Communications, 179(10):695–715, 2008.
-* motivation for powerful preconditioners
-	* ill-cond systems (physical pion mass ensembles, un-prec solvers stall, ...)
-* review on solver preconditioners
-	* EO-precond
-	* SAP
-	* Deflation/Multigrid: accelerate solves of Dirac eqation using inexact or exact low-modes (not a variance reduction method ifself, but important for all of them that heavily utilize inversions of D)
-		* physical motivation behind, preconditoners
-}
+% * motivation for powerful preconditioners
+% 	* ill-cond systems (physical pion mass ensembles, un-prec solvers stall, ...)
+% * review on solver preconditioners
+% 	* EO-precond
+% 	* SAP
+% 	* Deflation/Multigrid: accelerate solves of Dirac eqation using inexact or exact low-modes (not a variance reduction method ifself, but important for all of them that heavily utilize inversions of D)
+% 		* physical motivation behind, preconditoners
+% }
 
 \tldr{signal/noise ratio problem and parisi/lepage}
 Precise observable evaluations in the context of numerical lattice field theory require significant computational resources.
@@ -195,13 +195,14 @@ The individual terms contribute differently to the overall variance and one hope
 MLMC does not propose actual decomposistions but formalizes the general procedure, describing the heart of nearly every variance reduction method.
 
 \tldr{MG-MLMC}
-In this spirit, deflation of low modes was used to estimate traces over inverse matrices in~\cite{Gambhir:2016uwp}, but speedups where only obtained together with hierarchical probing.
+In this spirit, deflation of low modes was used to estimate traces over inverse matrices in~\cite{Gambhir:2016uwp,Alcalde_2017}, but speedups where only obtained together with hierarchical probing.
 A method called multigrid multilevel Monte Carlo (MG-MLMC) decomposes the propagator into multigrid levels using an adaptive algebraic multigrid approach and then estimates the trace separately on all levels.
 This was investigated on the 2D (gauge-covariant) Laplacian and the Schwinger model~\cite{doi:10.1137/21M1441894:2022}.
 A similar method was previously been used for trace estimation of single inverse matrices using inexact deflation à la Lüscher~\cite{Romero:2019psj}.
 It was recently improved to use the Hutch++ method on coarse levels~\cite{Frommer:2022qiy}.
 The Hutch++ method~\cite{doi:10.1137/1.9781611976496.16:2021} decomposes the trace into a projected low-rank term computed exactly, whereas the remainder is estimated using standard Hutchinson~\cite{Hutchinson01011990}.
 First tests on disconnected QCD diagrams where conducted~\cite{Frommer:2025kfp} resulting in a moderate variance reduction of about \SI{12}{\percent} compared to standard Hutchinson.
+%A very similar study was already performed in ref~\cite{Alcalde_2017,} with comparable results, speedup where only obtained when combining the method with hierarchical probing.
 This is to be expected, since the variance in disconnected diagrams stems from the high modes, not from the low modes.
 
 % * review of other variance reduction techniques
@@ -260,6 +261,6 @@ These pieces are put together in \cref{ch:p2:multigrid} to construct a variance 
 In \cref{ch:p2:numerics}, we show it in action applied to the LO-HVP and provide numerical evidence for its flat volume dependence.
 This part is closed in \cref{ch:p2:chirality} with theoretical considerations about chirality.
 
-\worktodo{solvers and preconditioning}
+%\worktodo{solvers and preconditioning}
 %\worktodo{the remainder of this part ...}
 

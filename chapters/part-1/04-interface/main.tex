@@ -11,9 +11,9 @@
 \readit{1}
 
 \tldr{interface intro}
-This section documents the code required for interfacing \openqxd with \quda and describes design choices made.
+This chapter documents the code required for interfacing \openqxd with \quda and describes design choices made.
 A working interface requires substantial code additions and changes in both applications.
-This chapter is divided thus into two major sections: developments made in \quda (\cref{sec:interface:quda}) and developments made in \openqxd (\cref{sec:interface:openqxd}).
+Therefore, this chapter is divided into two major sections: developments made in \quda (\cref{sec:interface:quda}) and developments made in \openqxd (\cref{sec:interface:openqxd}).
 The first section describes how to access interface functions, translation of lattice coordinates, field transfer, how \Cstar boundaries and QCD+QED are implemented and the various ways to interface the solver.
 The second section documents from the perspective of \openqxd how to setup solvers and how the dual process grid works.
 
@@ -345,7 +345,7 @@ We choose to implement \Cstar boundary conditions in the same way as they are im
 When \quda initializes its communication grid topology, we specify the neighbors of each rank in all directions. This also respects the specific process placement when using \Cstar boundaries, see \cref{sec:interface:quda:init}. For \quda to setup communication among neighboring ranks, the function \code{comm\_rank\_displaced()} calculates the neighboring rank number given one of the (positive or negative) 8 directions (see its call graph \cref{fig:comm_rank_displaced}.).
 \begin{figure}
   \includestandalone[width=\linewidth]{\dir/img/comm_rank_displaced}
-  \caption{Call graph for the function \capcode{comm\_rank\_displaced}. Starting from the initialization function \capcode{quda\_init} in \openqxd, see \cref{sec:interface:openqxd:init} which calls the interface initialization functions, see \cref{sec:interface:quda:init}, calling the communication grid setup which itself calls the constructor of the \capcode{Communicator} class which finally sets the grid topology.}
+  \caption{Call graph for the function \capcodeA{comm\_rank\_displaced}. Starting from the initialization function \capcodeA{quda\_init} in \openqxd, see \cref{sec:interface:openqxd:init} which calls the interface initialization functions, see \cref{sec:interface:quda:init}, calling the communication grid setup which itself calls the constructor of the \capcodeA{Communicator} class which finally sets the grid topology.}
   \label{fig:comm_rank_displaced}
 \end{figure}
 The function reads the \code{cstar} property from the \code{Topology} struct that can take values \num{0}, \num{1}, \num{2} or \num{3} denoting the number of spatial directions with \Cstar boundaries, where \code{cstar=0} corresponds to its default value indicating periodic boundaries.
@@ -551,7 +551,7 @@ The solver identifier refers to the solver section of the input file that was pa
 %Its call graph is intricate, see \cref{fig:call_graph}.
 \begin{figure}
   \includestandalone[width=\linewidth]{\dir/img/call_graph}
-  \caption{Call graph of the \capcode{openQCD\_qudaSolverGetHandle} function. Solid lines imply the function will always call the function the arrow points to, dashed lines will call only if necessary. The graph divides into namespaces in \openqxd (top) to obtain latest parameters and revision counter, the interface (center) and \quda (bottom).}
+  \caption{Call graph of the \capcodeA{openQCD\_qudaSolverGetHandle} function. Solid lines imply the function will always call the function the arrow points to, dashed lines will call only if necessary. The graph divides into namespaces in \openqxd (top) to obtain latest parameters and revision counter, the interface (center) and \quda (bottom).}
   \label{fig:call_graph}
 \end{figure}
 It makes sure that all necessary preliminaries are fulfilled for kernels that act on gauge or clover fields.
@@ -917,7 +917,7 @@ The dual process grid can be specified in a second header file called \code{incl
 #define QUDA_L2 L2
 #define QUDA_L3 L3
 \end{minted}
-\caption{Excerpt of the file \capcode{include/quda\_global.h} describing the (second) dual process grid. Its default values are equal to the native process grid and local lattice sizes from \capcode{include/global.h}, compare \cref{lst:openqxd:global.h}.}
+\caption{Excerpt of the file \capcodeA{include/quda\_global.h} describing the (second) dual process grid. Its default values are equal to the native process grid and local lattice sizes from \capcodeA{include/global.h}, compare \cref{lst:openqxd:global.h}.}
 \label{lst:interface:quda_global.h}
 \end{codelisting}
 \end{figure}

@@ -27,12 +27,15 @@
 
 ## Final things to check
 
-* [ ] No more red things
+* [ ] No more red things -> no red last page
 * [ ] Line break layout of \code{} fragments
 * [ ] Captions and their figures on the same page
 * [ ] No unmet references
 * [ ] check all \code{} parts, also in captions, footnotes, figures, etc
 * [ ] Also in images/schemes!
+* [ ] Table of contents: only depth 2
+* [ ] Remove TLDRs
+* [ ] Check crefs in clover picture
 
 <!-- Funny quote
 // If this code works, it was written by Paul DiLascia. If not, I don't know

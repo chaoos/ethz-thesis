@@ -5,27 +5,27 @@
   It is a tale told by an idiot, full of sound and fury signifying nothing. }%
 \vskip 1em
 
-\readit{2}
+\readit{3}
 
 \worktodo{
 * Multigrid
-	* Local coherence
-	* block decomp -> subspace deflation with non-trivial lattice index
-	* MG decomposition -> as subspace defl., LMA as subsp. defl. with trivial lattice index
-		* recursion
-		* solver precond -> multiplicative vs. additive
-	* MG LMA
-		* prop decomp
-		* Estimator for 2pt vector corr.
+  * Local coherence
+  * block decomp -> subspace deflation with non-trivial lattice index
+  * MG decomposition -> as subspace defl., LMA as subsp. defl. with trivial lattice index
+    * recursion
+    * solver precond -> multiplicative vs. additive
+  * MG LMA
+    * prop decomp
+    * Estimator for 2pt vector corr.
 }
-
-\section{Multigrid preconditioning}
 
 \tldr{mg intro}
 In this chapter we will discuss multigrid as a concept and its prominent role as a solver preconditioner.
 After that, we will construct a decomposed propagator in terms of contributions from multigrid levels.
 By inserting this decomposition into the connected two-point correlator introduced in \cref{ch:p2:2pt-corr}, it enables us to define a new hierarchical stochastic sampling scheme, where every multigrid level is evaluated with separate statistics.
 This defines a new class of variance reduction methods which we call \emph{multigrid low-mode averaging}.
+
+\section{Multigrid preconditioning}
 
 \tldr{solve ill Dirac eq, Krylov solvers suppress low mode components}
 As in \cref{part:gpu}, we are interested to solve the Dirac equation numerically,
@@ -58,7 +58,7 @@ This is a peculiarity of Krylov solvers, as they generate a solution in the Kryl
 \begin{equation}
 \mathcal{K}_n(Q, \eta) = \vspan{ \eta, Q \eta, Q^{2} \eta, \ldots, Q^{n} \eta } \;,
 \end{equation}
-whereas the vectors $Q^{m} \eta$ have suppressed low mode components for large $m$.
+whereas the vectors $Q^{m} \eta$ have suppressed low mode components for increasing $m$.
 
 % The Dirac operator is a nearest neighbor stencil.
 % In every iteration it is applied to the current solution vector.
@@ -67,7 +67,7 @@ whereas the vectors $Q^{m} \eta$ have suppressed low mode components for large $
 
 \tldr{instead: amplify low-mode components}
 In order to complement a Krylov solver, the above analysis shows that a preconditioner for ill-conditioned systems should preferably amplify and not suppress the low-mode components of the solution vector.
-In the context of solvers, this is sometimes referred to as critical soling down near the chiral limit.
+The stalling of Krylov solvers due to near-singularity of the Dirac operator is sometimes referred to as critical slowing down near the chiral limit.
 
 \subsection{\texorpdfstring{$V^{2}$}{V2}-problem}
 \label{sec:mg:V2:problem}
@@ -134,7 +134,7 @@ Many multigrid implementations have a fixed coarsest grid with a trivial spaceti
 The corresponding coarse operator has a small dimension only given by the coarse spin and color degrees of freedom $N_s N_c = \bigO(10)$ and its inverse can be held in memory up to machine precision.
 
 \tldr{lüscher deflation, additive preconditioning}
-It is worth discussing a similar alternative to multigrid called inexact deflation developed independently in ref. ~\cite{Luescher2007}.
+It is worth discussing a similar alternative to multigrid called inexact deflation developed independently in ref.~\cite{Luescher2007}.
 It can be seen as a special case of multigrid, although there are some differences.
 The subspace is built similarly, except that the spin degrees of freedom are coarsened away, $N_s = 1$.
 Apart from this the preconditioning \emph{subtracts} the low modes by solving
@@ -153,11 +153,14 @@ This is not an issue as long as the full solution is consistent, \ie there exist
 There are infinitely many solutions $\chi$.
 Nevertheless the full solution vector $\psi$ is unique after projecting in \cref{eq:inexact:defl:solution:projection}.
 
-\tldr{V2 problem solved}
+\tldr{flat in pion mass and linear in V}
 Both inexact deflation and multigrid, have a very flat scaling behavior in the pion mass and are scaling close to linear in the lattice volume $\bigO(V)$.
 This makes them ideal preconditioners for ill-conditioned systems.
+Although they have an expensive setup phase for generating the coarse subspaces, when solving for many right-hand sides this cost is amortized quickly.
+
+\tldr{V2 problem solved}
 The coarse system is restricted to the low mode subspace of the operator.
-Evidently, if the subspaces are generated from low modes, we clearly reduce the error components of the solution vector $\psi$ associated to the low modes and the critical slowing down of the Krylov solver as described above is solved.
+Evidently, if the subspaces are generated from low modes, we clearly reduce the error components of the solution vector $\psi$ associated to the low modes and the bias of Krylov solvers towards suppressing low-mode components as described above is solved.
 
 \subsection{Smoothing}
 
@@ -201,7 +204,7 @@ Preconditioning as described above can be seen through the following intuitive a
 The Dirac operator is a nearest neighbor stencil.
 In every iteration it is applied to the current solution vector.
 Information in the current solution vector on a certain lattice site slowly propagates through the lattice; one site per iteration in each direction.
-Even though the coarse Dirac operator is still nearest neighbor, information on the coarse grid travels faster through the lattice, because sites are further apart (\ie one coarse grid hop corresponds to multiple fine-grid hops).
+Even though the coarse Dirac operator is still nearest neighbor, information on the coarse grid travels faster through the lattice, because sites are further apart (\ie one coarse grid hop corresponds to multiple fine-grid hops depending on the choice of block size).
 This enhances non-local information exchange on the lattice with fewer iterations on the coarse grid.
 Additionally the coarse grid is constructed from approximate low modes which are associated to long-range interactions allowing long-distance propagation of information.
 This concept is illustrated in \cref{fig:coarse:stencil}.
@@ -216,15 +219,15 @@ This concept is illustrated in \cref{fig:coarse:stencil}.
 \section{Multigrid propagator}
 
 \tldr{2-lvl MG prop decomposition}
-With the definition of a coarse lattice, we can define the propagator decomposition as
+With the definition of a coarse lattice, we can define a propagator decomposition as
 \begin{equation} \label{eq:mg:prop:decomp:2lvl}
 \prop = D^{-1}
 = \underbrace{
-	D^{-1}
-	- \prolongator \coarse{D}^{-1} \restrictor
+  D^{-1}
+  - \prolongator \coarse{D}^{-1} \restrictor
 }_{\prop_0}
 + \underbrace{
-	\prolongator \coarse{D}^{-1} \restrictor
+  \prolongator \coarse{D}^{-1} \restrictor
 }_{\prop_1}
 \end{equation}
 by adding and subtracting the piece along the coarse subspace.
@@ -261,16 +264,16 @@ We therefore have analogous to \cref{eq:mg:prop:decomp:2lvl} the full propagator
 + \onlvl{\prolongator}{\lvl} \left( \onlvl{D}{\lvl+1} \right)^{-1} \onlvl{\restrictor}{\lvl} \;,
 \end{equation}
 with $\lvl=0$ being exactly equal to \cref{eq:mg:prop:decomp:2lvl}.
-For convenience we define the compound inter-grid operators moving data directly between levels $0$ and $\lvl > 0$
+For convenience we define the compound inter-grid operators moving data directly between levels $0$ and $\lvl > 0$ as
 \begin{align}
 \onlvl{\mathcal{\restrictor}}{\lvl}
 = \onlvl{\restrictor}{\lvl-1} \cdots \onlvl{\restrictor}{0}
 \; \colon \; 
-\onlvl{\vslattice}{0} \longrightarrow \onlvl{\vslattice}{\lvl} \\
+\onlvl{\vslattice}{0} \longrightarrow \onlvl{\vslattice}{\lvl} \;, \\
 \onlvl{\mathcal{\prolongator}}{\lvl}
 = \onlvl{\prolongator}{0} \cdots \onlvl{\prolongator}{\lvl-1}
 \; \colon \; 
-\onlvl{\vslattice}{\lvl} \longrightarrow \onlvl{\vslattice}{0}
+\onlvl{\vslattice}{\lvl} \longrightarrow \onlvl{\vslattice}{0} \;,
 \end{align}
 with base cases $\onlvl{\mathcal{\restrictor}}{0} = \onlvl{\mathcal{\prolongator}}{0} = \id$ for $\lvl=0$.
 The recursive notation is depicted in \cref{fig:recursive:nesting}.
@@ -278,12 +281,12 @@ The recursive notation is depicted in \cref{fig:recursive:nesting}.
 \centering
 %\includestandalone[height=0.9\linewidth,angle=-90,origin=c]{\dir/img/nesting}
 \includestandalone[width=0.9\linewidth]{\dir/img/nesting}
-\caption{2D illustration of a recursive lattice coarsening. The finest lattice on level \num{0} in orange has a size of $\onlvl{V}{0}=64$. The block size for level \num{1} in green is $b_0\times b_1=2\times2$ resulting in a coarse lattice size of $\onlvl{V}{1}=16$. The coarsest lattice in purple has a trivial lattice size of $\onlvl{V}{3}=1$ and thus corresponds to LMA, where no blocking is done. The inter-grid operators $\onlvl{\restrictor}{\lvl}$ and $\onlvl{\prolongator}{\lvl}$ move data on consequent lattices, whereas the compound inter-grid operators $\onlvl{\mathcal{\restrictor}}{\lvl}$ and $\onlvl{\mathcal{\prolongator}}{\lvl}$ move data between levels \num{0} and $\lvl$. \takenfull }
+\caption{2D illustration of a recursive lattice coarsening. The finest lattice on level \num{0} in orange has a size of $\onlvl{V}{0}=64$. The block size for level \num{1} in green is $b_0\times b_1=2\times2$ resulting in a coarse lattice size of $\onlvl{V}{1}=16$. The coarsest lattice in purple has a trivial lattice size of $\onlvl{V}{3}=1$ and thus corresponds to LMA, where no blocking is done. The inter-grid operators $\onlvl{\restrictor}{\lvl}$ and $\onlvl{\prolongator}{\lvl}$ move data on adjacent levels, whereas the compound inter-grid operators $\onlvl{\mathcal{\restrictor}}{\lvl}$ and $\onlvl{\mathcal{\prolongator}}{\lvl}$ move data between levels \num{0} and $\lvl$. \takenfull }
 \label{fig:recursive:nesting}
 \end{figure}
 
 \tldr{smoothing in recursive notation more powerful}
-In this notation pre- and post-smoother can be added to every level separately by extending the restrictors and prolongators,
+In this notation, pre- and post-smoother can be added to every level separately by extending the restrictors and prolongators,
 \begin{align}
 \onlvl{\restrictor}{\lvl} &\longrightarrow \onlvl{\restrictor}{\lvl} \onlvl{F}{\lvl}_{\text{pre}} \;, \\
 \onlvl{\prolongator}{\lvl} &\longrightarrow \onlvl{F}{\lvl}_{\text{post}} \onlvl{\prolongator}{\lvl} \;,
@@ -297,7 +300,7 @@ with smoother acting on level $\lvl$,
 \subsection{Propagator decomposition}
 
 \tldr{N-lvl MG prop decomposition}
-Now, we are ready to discuss a propagator decomposition using $\Nlvl$ of multigrid.
+Now, we are ready to discuss a propagator decomposition using $\Nlvl$ levels of multigrid.
 A general decomposition into $\Nlvl$ levels as in \cref{eq:mg:prop:decomp:2lvl} can be obtained by repeatedly plugging \cref{eq:mg:rec:prop:decomp:onlvl} into the full propagator $\prop=D^{-1}$.
 With the notation from the previous section, we obtain a decomposition as
 \begin{equation} \label{eq:mg:rec:prop:decomp:main}
@@ -326,25 +329,53 @@ This gives slightly higher flexibility in the choice of coarse lattices.
 \tldr{example of recursive vs. loop}
 As an example consider a fine-grid lattice with extents that are not powers of two, for instance $L_{\mu} = 48$.
 The first level of multigrid might be chosen by a block of size $\onlvl{b}{1}_{\mu} = 4$ resulting in a coarse lattice of extents $\onlvl{L}{1}_{\mu} = 48 / 4 = 12$.
-The second level may be defined relative to the first level with $\onlvl{b}{2}_{\mu} = 2$ resulting in a coarse lattice of extents $\onlvl{L}{2}_{\mu} = 12 / 2 = 6$.
-This is recursive coarsening as described above.
-Clearly the second level can also be obtained by coarsening directly level \num{0} instead of level \num{1}, by defining a block of size $b_{\mu} = 8$ with respect to level \num{0}, instead of level \num{1}.
-These are two strategies to obtain the same.
-We either coarsen recursively or always relative to level \num{0}.
-The former strategy results in lattices which are always nestings of each other as depicted in \cref{fig:recursive:nesting}.
-The latter one allows more freedom in defining levels which might not always be valid coarsenings of each other.
-To catch up on the example above, instead of defining the second level as described, we could define it with a block size of $\onlvl{b}{2}_{\mu} = 6$, not with respect to the previous level but with respect to level \num{0}.
-This would result in a coarse lattice of size $\onlvl{L}{2}_{\mu} = 48 / 6 = 8$ which is still coarser than level \num{1} with $\onlvl{L}{1}_{\mu} = 12$ but cannot be obtained as direct coarsening of level \num{1}, because \num{12} is not a multiple of \num{8}.
+At this point, with the recursive formulation, we do not have much freedom to choose the next levels.
+In \cref{tab:mg:formulations:example}, we collected possible levels in such a scenario for the recursive and the relaxed formulation.
+We see the relaxed formulation allows coarse levels that are not valid coarsenings of each other, for instance \Ln{2} and \Ln{3} in \cref{tab:mg:formulations:example}, but all are valid coarsenings of the fine grid.
+
+% The second level may be defined relative to the first level with $\onlvl{b}{2}_{\mu} = 2$ resulting in a coarse lattice of extents $\onlvl{L}{2}_{\mu} = 12 / 2 = 6$.
+% This is recursive coarsening as described above.
+% Clearly the second level can also be obtained by coarsening directly level \num{0} instead of level \num{1}, by defining a block of size $b_{\mu} = 8$ with respect to level \num{0}, instead of level \num{1}.
+% These are two strategies to obtain the same.
+% We either coarsen recursively or always relative to level \num{0}.
+% The former strategy results in lattices which are always nestings of each other as depicted in \cref{fig:recursive:nesting}.
+% The latter one allows more freedom in defining levels which might not always be valid coarsenings of each other.
+% To catch up on the example above, instead of defining the second level as described, we could define it with a block size of $\onlvl{b}{2}_{\mu} = 6$, not with respect to the previous level but with respect to level \num{0}.
+% This would result in a coarse lattice of size $\onlvl{L}{2}_{\mu} = 48 / 6 = 8$ which is still coarser than level \num{1} with $\onlvl{L}{1}_{\mu} = 12$ but cannot be obtained as direct coarsening of level \num{1}, because \num{12} is not a multiple of \num{8}.
+
+\begin{table}
+\begin{tabular}{l|ll|ll}
+%\toprule
+        & \multicolumn{2}{c|}{Recursive notation}           & \multicolumn{2}{c}{Relaxed notation}              \\
+{Level} & {Volume}                & {Block size}            & {Volume}                & {Block size}            \\
+\midrule
+\Ln{0}  & $V = 48^{4}$            & -                       & $V = 48^{4}$            & -                       \\
+\Ln{1}  & $\onlvl{V}{1} = 12^{4}$ & $\onlvl{b}{1} = 4^{4}$  & $\onlvl{V}{1} = 12^{4}$ & $\onlvl{b}{1} = 4^{4}$  \\
+\Ln{2}  & $\onlvl{V}{2} = 6^{4}$  & $\onlvl{b}{2} = 8^{4}$  & $\onlvl{V}{2} = 8^{4}$  & $\onlvl{b}{2} = 6^{4}$  \\
+\Ln{3}  & $\onlvl{V}{3} = 1^{4}$  & $\onlvl{b}{3} = 48^{4}$ & $\onlvl{V}{3} = 6^{4}$  & $\onlvl{b}{3} = 8^{4}$  \\
+\Ln{4}  & -                       & -                       & $\onlvl{V}{4} = 4^{4}$  & $\onlvl{b}{4} = 12^{4}$ \\
+\Ln{1}  & -                       & -                       & $\onlvl{V}{5} = 1^{4}$  & $\onlvl{b}{5} = 48^{4}$ \\
+\bottomrule
+\end{tabular}
+\caption{
+\label{tab:mg:formulations:example}
+%\worktodo{caption}
+Example of the recursive and relaxed formulation of multigrid.
+The block size is denoted with respect to the fine grid.
+The relaxed formulation allows more choice in coarse spacetime volumes.
+}
+\end{table}
 
 \tldr{weird for solvers, but good for MG-LMA}
-Such a scenario might not be meaningful in a solver preconditioning scenario, where inter-grid data movement among subsequent levels is crucial for overall performance.
+The relaxed formulation might not be meaningful in a solver preconditioning scenario, where inter-grid data movement among subsequent levels is crucial for overall performance.
 In terms of a propagator decomposition it indeed makes sense, not only because it provides more flexibility to fine-tune the evaluation of an observable as seen later, but also because we usually move data from and to level \num{0} and other levels.
 The two variants also differ when it comes to smoothing.
-The recursive variant allows control of pre- and post-smoother between all levels separately, whereas the other variant only allows pre- and post-smoothing on level \num{0}.
+The recursive variant allows control of pre- and post-smoother between all levels separately, whereas the relaxed variant only allows pre- and post-smoothing on level \num{0}.
 
 \tldr{we use loop variant in implementation}
 Implementation effort as well as performance of the two variants clearly differ and we will not discuss them further.
-The implementation used for this project is the variant that allows more freedom in the coarse grid creation, \ie the one where level \num{0} is always coarsened.
+The implementation used for this project is the relaxed variant allowing more freedom in the coarse grid creation, \ie the one where level \num{0} is coarsened for all levels.
+The formulation of the method and its subsequent analysis that will follow are independent of the choice of formulation made at this point.
 
 % \subsection{Final propagator decomposition}
 
@@ -366,7 +397,7 @@ The method is expected to be beneficial whenever low-mode averaging is beneficia
 
 \tldr{n-pt function decomposition, grouping and illustration}
 We will use the decomposition of the quark propagator established in the last section, resulting in a hierarchical $\Nlvl$-level scheme which naturally arises from the hierarchical decomposition of the fine-grid lattice.
-For generality we will start with a general connected $n$-point function
+For generality we will start with a connected $n$-point function
 \begin{equation} \label{eq:Cxyz}
 C(x_1;x_2;\ldots;x_n) = \tr \left\{
 \propxy{x_1}{x_2}
@@ -376,9 +407,9 @@ C(x_1;x_2;\ldots;x_n) = \tr \left\{
 \cdots
 \propxy{x_n}{x_1}
 \Gamma_n
-\right\}
+\right\} \;,
 \end{equation}
-where the $\Gamma_i$ are monomials of $\gamma$-matrices and the $S$ are propagators from $x_i$ to $x_j$.
+where the $\Gamma_i$ are monomials of $\gamma$-matrices and the $S$ are propagators from lattice points $x_i$ to $x_j$.
 Plugging in the multigrid propagator decomposition \cref{eq:mg:rec:prop:decomp:main}, we find $(\Nlvl)^{n}$ contributions
 \begin{equation} \label{eq:Cijk}
 C_{\lvl_1, \lvl_2, \ldots, \lvl_n}(x_1;x_2;\ldots;x_n)
@@ -418,7 +449,7 @@ Using this grouping of levels, the full correlator \cref{eq:Cxyz} can be recover
 \begin{align}
 C(x_1;x_2;\ldots;x_n) = \sum_{k=0}^{\Nlvl-1} C_{\Ln{k}}(x_1;x_2;\ldots;x_n) \;.
 \end{align}
-This natural decomposition into level-contributions is illustrated in \cref{fig:mg:corr} for correlator tensors with ranks $n=1,2,3$.
+This decomposition into level-contributions comes natural as illustrated in \cref{fig:mg:corr} for correlator tensors with ranks $n=1,2,3$.
 % \begin{figure}
 % \centering
 % \includestandalone[width=0.4\linewidth]{\dir/img/mg_corr_2d}
@@ -447,7 +478,7 @@ This natural decomposition into level-contributions is illustrated in \cref{fig:
 % \begin{subfigure}{0.45\textwidth}
 % \includestandalone[width=\linewidth]{\dir/img/mg_corr_3d}
 % \end{subfigure}
-\caption{(a) Grouping into contributions of multigrid levels of a $1$-point correlator. (b) Grouping into contribution on multigrid levels of a $2$-point connected correlator into \num{8} multigrid levels. Elements of the correlator tensor $C_{ij}$, \cref{eq:Cijk} are assigned to grid levels \Ln{k}. The sum of the orange shaded elements correspond to the \Ln{0}-contribution of the correlator, green to \Ln{1}, red to \Ln{2} etc. Summing all tensor elements is equal to summing all levels and results in the full correlator. (c) Example of a $3$-point correlator tensor grouping into \num{4} multigrid levels. \takenpart }
+\caption{(a) Grouping into contributions of multigrid levels of a $1$-point correlator. (b) Grouping into contribution on multigrid levels of a $2$-point connected correlator into \num{8} multigrid levels. Elements of the correlator tensor $C_{ij}$, \cref{eq:Cijk} are assigned to grid levels \Ln{k}. The sum of the orange shaded elements correspond to the \Ln{0}-contribution of the correlator, green to \Ln{1}, red to \Ln{2} etc. Summing all tensor elements is equal to summing all levels and results in the full correlator. (c) Example of a $3$-point connected correlator tensor grouping into \num{4} multigrid levels. \takenpart }
 \label{fig:mg:corr}
 \end{figure}
 Crucial about this decomposition is that every level can be evaluated separately with a different strategy in terms of number and type of sources.
@@ -501,7 +532,7 @@ Clearly for every sample of the fine-grid \Ln{0}-term we have to solve the full 
 Solving the coarse system is significantly cheaper than solving the fine-grid system if the subspace was chosen properly.
 This is, if the coarse dimension is much smaller than the fine one, $\dim_{\mathbb{C}}(\coarse{\vslattice}) \ll \dim_{\mathbb{C}}(\vslattice)$.
 Our strategy will be as follows: the expensive \Ln{0}-term will be evaluated with as few as possible sources, for instance \numrange{1}{10}, whereas the cheap \Ln{1}-term will be sampled with many sources, say \numrange{100}{1000}.
-We will present different estimators for the level contributions, but every estimator that is valid on the fine-grid correlator can be safely used on coarse levels.
+We will present different estimators for the level contributions, but every estimator that is valid on the fine-grid correlator can be safely used on coarse levels too.
 
 \subsection{Point-source estimator on level $k$}
 
@@ -517,20 +548,20 @@ The final equation only changes slightly by replacing the propagator $\prop$ wit
 % C_{ij}(x_0, y_0)
 % &\approx \frac{1}{\Nst} \sum_{n=0}^{\Nst-1} \sum_{\vect{x}} \;
 % \sprod{
-% 	\fieldx{(\prop_j \gamma^{5} \eta_n^{\tslice{y_0}})}{x}
+%   \fieldx{(\prop_j \gamma^{5} \eta_n^{\tslice{y_0}})}{x}
 % }{
-% 	\gamma^{5}
-% 	\Gamma_2
-% 	\fieldx{(\prop_i \Gamma_1 \eta_n^{\tslice{y_0}})}{x}
+%   \gamma^{5}
+%   \Gamma_2
+%   \fieldx{(\prop_i \Gamma_1 \eta_n^{\tslice{y_0}})}{x}
 % } \;,
 C_{ij,n}(x_0, y_0)
 &= \frac{1}{L^{3}} \sum_{\vect{x}} \;
 \sprod{
-	\fieldx{(\prop_j \gamma^{5} \eta_n^{\tslice{y_0}})}{x}
+  \fieldx{(\prop_j \gamma^{5} \eta_n^{\tslice{y_0}})}{x}
 }{
-	\gamma^{5}
-	\Gamma_2
-	\fieldx{(\prop_i \Gamma_1 \eta_n^{\tslice{y_0}})}{x}
+  \gamma^{5}
+  \Gamma_2
+  \fieldx{(\prop_i \Gamma_1 \eta_n^{\tslice{y_0}})}{x}
 } \;,
 \end{align}
 compare \cref{eq:stoch:C:full}.
@@ -548,22 +579,22 @@ According to \cref{eq:mg:rec:prop:decomp:inner:lvl}, the fine-grid stochastic pr
 &= S_{\lvl} \Gamma \eta_n^{\tslice{t}}
 % \\
 % &= \onlvl{\mathcal{\prolongator}}{\lvl  }
-% 	\left( \onlvl{D}{\lvl  } \right)^{-1}
-% 	\onlvl{\mathcal{\restrictor}}{\lvl  }
-% 	\Gamma \eta_n^{\tslice{t}}
+%   \left( \onlvl{D}{\lvl  } \right)^{-1}
+%   \onlvl{\mathcal{\restrictor}}{\lvl  }
+%   \Gamma \eta_n^{\tslice{t}}
 % - \onlvl{\mathcal{\prolongator}}{\lvl+1}
-% 	\left( \onlvl{D}{\lvl+1} \right)^{-1}
-% 	\onlvl{\mathcal{\restrictor}}{\lvl+1}
-% 	\Gamma \eta_n^{\tslice{t}}
+%   \left( \onlvl{D}{\lvl+1} \right)^{-1}
+%   \onlvl{\mathcal{\restrictor}}{\lvl+1}
+%   \Gamma \eta_n^{\tslice{t}}
 % \\
 = \onlvl{\mathcal{\prolongator}}{\lvl  }
-	\psi_{n}^{\Gamma \tslice{t} (\lvl)}
+  \psi_{n}^{\Gamma \tslice{t} (\lvl)}
 - \onlvl{\mathcal{\prolongator}}{\lvl+1}
-	\psi_{n}^{\Gamma \tslice{t} (\lvl+1)} \;, \\
+  \psi_{n}^{\Gamma \tslice{t} (\lvl+1)} \;, \\
 \phi_{n(\Nlvl-1)}^{\Gamma \tslice{t}}
 &= S_{\Nlvl-1} \Gamma \eta_n^{\tslice{t}}
 = \onlvl{\mathcal{\prolongator}}{\Nlvl-1  }
-	\psi_{n}^{\Gamma \tslice{t} (\Nlvl-1)} \;,
+  \psi_{n}^{\Gamma \tslice{t} (\Nlvl-1)} \;,
 \end{align}
 for $\lvl < \Nlvl-1$, where the coarsest level contribution has no subtracted term.
 The final term can be written in terms of the prolonged differences \cref{eq:prolonged:solves} -- a scalar product in the fine-grid as
@@ -581,30 +612,30 @@ The final term can be written in terms of the prolonged differences \cref{eq:pro
 % &\approx
 % % \frac{1}{\Nst} \sum_{n=0}^{\Nst-1} \sum_{\vect{x}} \;
 % % \sprod{
-% % 	\fieldx{(\prop_j \gamma^{5} \eta_n^{\tslice{y_0}})}{x}
+% %   \fieldx{(\prop_j \gamma^{5} \eta_n^{\tslice{y_0}})}{x}
 % % }{
-% % 	\gamma^{5}
-% % 	\Gamma_2
-% % 	\fieldx{(\prop_i \Gamma_1 \eta_n^{\tslice{y_0}})}{x}
+% %   \gamma^{5}
+% %   \Gamma_2
+% %   \fieldx{(\prop_i \Gamma_1 \eta_n^{\tslice{y_0}})}{x}
 % % } \\
 % % &=
 % \frac{1}{\Nst} \sum_{n=0}^{\Nst-1} \sum_{\vect{x}} \;
 % \sprod{
-% 	\fieldx{\phi_{n(j)}^{\gamma^{5} \tslice{y_0}}}{x}
+%   \fieldx{\phi_{n(j)}^{\gamma^{5} \tslice{y_0}}}{x}
 % }{
-% 	\gamma^{5}
-% 	\Gamma_2
-% 	\fieldx{ \phi_{n(i)}^{\Gamma_1 \tslice{y_0}} }{x}
+%   \gamma^{5}
+%   \Gamma_2
+%   \fieldx{ \phi_{n(i)}^{\Gamma_1 \tslice{y_0}} }{x}
 % } \;.
 C_{ij,n}(x_0, y_0)
 &=
 \frac{1}{L^{3}} \sum_{\vect{x}} \;
 \sprod{
-	\fieldx{\phi_{n(j)}^{\gamma^{5} \tslice{y_0}}}{x}
+  \fieldx{\phi_{n(j)}^{\gamma^{5} \tslice{y_0}}}{x}
 }{
-	\gamma^{5}
-	\Gamma_2
-	\fieldx{ \phi_{n(i)}^{\Gamma_1 \tslice{y_0}} }{x}
+  \gamma^{5}
+  \Gamma_2
+  \fieldx{ \phi_{n(i)}^{\Gamma_1 \tslice{y_0}} }{x}
 } \;.
 \end{align}
 compare \cref{eq:stoch:C:full:final} or directly in terms of the coarse spinor solutions
@@ -613,71 +644,71 @@ compare \cref{eq:stoch:C:full:final} or directly in terms of the coarse spinor s
 % &\approx
 % \frac{1}{\Nst} \sum_{n=0}^{\Nst-1} \sum_{\vect{x}} \;
 % \sprod{
-% 	\fieldx{\phi_{n(j)}^{\gamma^{5} \tslice{y_0}}}{x}
+%   \fieldx{\phi_{n(j)}^{\gamma^{5} \tslice{y_0}}}{x}
 % }{
-% 	\gamma^{5}
-% 	\Gamma_2
-% 	\fieldx{ \phi_{n(i)}^{\Gamma_1 \tslice{y_0}} }{x}
+%   \gamma^{5}
+%   \Gamma_2
+%   \fieldx{ \phi_{n(i)}^{\Gamma_1 \tslice{y_0}} }{x}
 % } \\
 % \phi_{n(i)}^{\Gamma_1 \tslice{y_0}}
 % &= \onlvl{\mathcal{\prolongator}}{i}
-% 	\psi_{n}^{\Gamma_1 \tslice{y_0} (i)}
+%   \psi_{n}^{\Gamma_1 \tslice{y_0} (i)}
 % - \onlvl{\mathcal{\prolongator}}{i+1}
-% 	\psi_{n}^{\Gamma_1 \tslice{y_0} (i+1)} \\
+%   \psi_{n}^{\Gamma_1 \tslice{y_0} (i+1)} \\
 % \phi_{n(j)}^{\gamma^{5} \tslice{y_0}}
 % &= \onlvl{\mathcal{\prolongator}}{j}
-% 	\psi_{n}^{\gamma^{5} \tslice{y_0} (j)}
+%   \psi_{n}^{\gamma^{5} \tslice{y_0} (j)}
 % - \onlvl{\mathcal{\prolongator}}{j+1}
-% 	\psi_{n}^{\gamma^{5} \tslice{y_0} (j+1)} \\
+%   \psi_{n}^{\gamma^{5} \tslice{y_0} (j+1)} \\
 % C_{ij}(x_0, y_0)
 % &\approx
 % \frac{1}{\Nst} \sum_{n=0}^{\Nst-1} \sum_{\vect{x}} \;
 % \sprod{
-% 	\fieldx{\phi_{n(j)}^{\gamma^{5} \tslice{y_0}}}{x}
+%   \fieldx{\phi_{n(j)}^{\gamma^{5} \tslice{y_0}}}{x}
 % }{
-% 	\gamma^{5}
-% 	\Gamma_2
-% 	\fieldx{(\onlvl{\mathcal{\prolongator}}{i} \psi_{n}^{\Gamma_1 \tslice{y_0} (i)})}{x}
+%   \gamma^{5}
+%   \Gamma_2
+%   \fieldx{(\onlvl{\mathcal{\prolongator}}{i} \psi_{n}^{\Gamma_1 \tslice{y_0} (i)})}{x}
 % } \\
 % &-
 % \sprod{
-% 	\fieldx{\phi_{n(j)}^{\gamma^{5} \tslice{y_0}}}{x}
+%   \fieldx{\phi_{n(j)}^{\gamma^{5} \tslice{y_0}}}{x}
 % }{
-% 	\gamma^{5}
-% 	\Gamma_2
+%   \gamma^{5}
+%   \Gamma_2
 %   \fieldx{(\onlvl{\mathcal{\prolongator}}{i+1} \psi_{n}^{\Gamma_1 \tslice{y_0} (i+1)})}{x}
 % } \\
 % &=
 % \frac{1}{\Nst} \sum_{n=0}^{\Nst-1} \sum_{\vect{x}} \;
 % \sprod{
-% 	\fieldx{(\onlvl{\mathcal{\prolongator}}{j} \psi_{n}^{\gamma^{5} \tslice{y_0} (j)})}{x}
+%   \fieldx{(\onlvl{\mathcal{\prolongator}}{j} \psi_{n}^{\gamma^{5} \tslice{y_0} (j)})}{x}
 % }{
-% 	\gamma^{5}
-% 	\Gamma_2
-% 	\fieldx{( \onlvl{\mathcal{\prolongator}}{i}\psi_{n}^{\Gamma_1 \tslice{y_0} (i)})}{x}
+%   \gamma^{5}
+%   \Gamma_2
+%   \fieldx{( \onlvl{\mathcal{\prolongator}}{i}\psi_{n}^{\Gamma_1 \tslice{y_0} (i)})}{x}
 % } \\
 % &-
 % \sprod{
 %   \fieldx{( \onlvl{\mathcal{\prolongator}}{j+1}\psi_{n}^{\gamma^{5} \tslice{y_0} (j+1)})}{x}
 % }{
-% 	\gamma^{5}
-% 	\Gamma_2
-% 	\fieldx{( \onlvl{\mathcal{\prolongator}}{i}\psi_{n}^{\Gamma_1 \tslice{y_0} (i)})}{x}
+%   \gamma^{5}
+%   \Gamma_2
+%   \fieldx{( \onlvl{\mathcal{\prolongator}}{i}\psi_{n}^{\Gamma_1 \tslice{y_0} (i)})}{x}
 % } \\
 % &-
 % \sprod{
-% 	\fieldx{( \onlvl{\mathcal{\prolongator}}{j}\psi_{n}^{\gamma^{5} \tslice{y_0} (j)})}{x}
+%   \fieldx{( \onlvl{\mathcal{\prolongator}}{j}\psi_{n}^{\gamma^{5} \tslice{y_0} (j)})}{x}
 % }{
-% 	\gamma^{5}
-% 	\Gamma_2
+%   \gamma^{5}
+%   \Gamma_2
 %   \fieldx{( \onlvl{\mathcal{\prolongator}}{i+1}\psi_{n}^{\Gamma_1 \tslice{y_0} (i+1)})}{x}
 % } \\
 % &+
 % \sprod{
 %   \fieldx{( \onlvl{\mathcal{\prolongator}}{j+1}\psi_{n}^{\gamma^{5} \tslice{y_0} (j+1)})}{x}
 % }{
-% 	\gamma^{5}
-% 	\Gamma_2
+%   \gamma^{5}
+%   \Gamma_2
 %   \fieldx{( \onlvl{\mathcal{\prolongator}}{i+1}\psi_{n}^{\Gamma_1 \tslice{y_0} (i+1)})}{x}
 % } \\
 % \end{align}
@@ -687,22 +718,22 @@ compare \cref{eq:stoch:C:full:final} or directly in terms of the coarse spinor s
 % \frac{1}{\Nst} \sum_{n=0}^{\Nst-1} \sum_{\lvl_1 \in \mathcal{A}_i} \sum_{\lvl_2 \in \mathcal{A}_j} \;
 % (-1)^{i+j + \lvl_1 + \lvl_2} \\
 % \cdot \sum_{\vect{x}} \sprod{
-% 	\fieldx{( \onlvl{\mathcal{\prolongator}}{\lvl_2}\psi_{n}^{\gamma^{5} \tslice{y_0} (\lvl_2)})}{x}
+%   \fieldx{( \onlvl{\mathcal{\prolongator}}{\lvl_2}\psi_{n}^{\gamma^{5} \tslice{y_0} (\lvl_2)})}{x}
 % }{
-% 	\gamma^{5}
-% 	\Gamma_2
-% 	\fieldx{( \onlvl{\mathcal{\prolongator}}{\lvl_1}\psi_{n}^{\Gamma_1 \tslice{y_0} (\lvl_1)})}{x}
+%   \gamma^{5}
+%   \Gamma_2
+%   \fieldx{( \onlvl{\mathcal{\prolongator}}{\lvl_1}\psi_{n}^{\Gamma_1 \tslice{y_0} (\lvl_1)})}{x}
 % } \;,
 C_{ij,n}(x_0, y_0)
 = \frac{1}{L^{3}}
 \sum_{\lvl_1 \in \mathcal{A}_i} \sum_{\lvl_2 \in \mathcal{A}_j} \;
 (-1)^{i+j + \lvl_1 + \lvl_2} \\
 \cdot \sum_{\vect{x}} \sprod{
-	\fieldx{( \onlvl{\mathcal{\prolongator}}{\lvl_2}\psi_{n}^{\gamma^{5} \tslice{y_0} (\lvl_2)})}{x}
+  \fieldx{( \onlvl{\mathcal{\prolongator}}{\lvl_2}\psi_{n}^{\gamma^{5} \tslice{y_0} (\lvl_2)})}{x}
 }{
-	\gamma^{5}
-	\Gamma_2
-	\fieldx{( \onlvl{\mathcal{\prolongator}}{\lvl_1}\psi_{n}^{\Gamma_1 \tslice{y_0} (\lvl_1)})}{x}
+  \gamma^{5}
+  \Gamma_2
+  \fieldx{( \onlvl{\mathcal{\prolongator}}{\lvl_1}\psi_{n}^{\Gamma_1 \tslice{y_0} (\lvl_1)})}{x}
 } \;,
 \end{multline}
 where the index set $\mathcal{A}_\lvl$ is defined as
@@ -762,24 +793,24 @@ We may use the same stochastic source as sample on multiple levels, since these 
 % \right\} \\
 % &= \frac{1}{\Nst} \sum_{n=0}^{\Nst-1} \sum_{\vect{x}} \;
 % \tr \left\{
-% 	\fieldx{(\prop_j^{\dagger} \eta_n^{\tslice{y_0}}}{x})^{\dagger}
+%   \fieldx{(\prop_j^{\dagger} \eta_n^{\tslice{y_0}}}{x})^{\dagger}
 %   \Gamma_2
 %   \fieldx{(\prop_i \Gamma_1
 %   \eta_n^{\tslice{y_0}})}{x}
 % \right\} \\
 % &= \frac{1}{\Nst} \sum_{n=0}^{\Nst-1} \sum_{\vect{x}} \;
 % \sprod{
-% 	\fieldx{(\prop_j^{\dagger} \eta_n^{\tslice{y_0}}}{x})
+%   \fieldx{(\prop_j^{\dagger} \eta_n^{\tslice{y_0}}}{x})
 % }{
-% 	\fieldx{(\Gamma_2 \prop_i \Gamma_1 \eta_n^{\tslice{y_0}})}{x}
+%   \fieldx{(\Gamma_2 \prop_i \Gamma_1 \eta_n^{\tslice{y_0}})}{x}
 % } \\
 % &= \frac{1}{\Nst} \sum_{n=0}^{\Nst-1} \sum_{\vect{x}} \;
 % \sprod{
-% 	\fieldx{(\prop_j \gamma^{5} \eta_n^{\tslice{y_0}}}{x})
+%   \fieldx{(\prop_j \gamma^{5} \eta_n^{\tslice{y_0}}}{x})
 % }{
-% 	\gamma^{5}
-% 	\Gamma_2
-% 	\fieldx{(\prop_i \Gamma_1 \eta_n^{\tslice{y_0}})}{x}
+%   \gamma^{5}
+%   \Gamma_2
+%   \fieldx{(\prop_i \Gamma_1 \eta_n^{\tslice{y_0}})}{x}
 % }
 % \end{align}
 
@@ -790,15 +821,15 @@ We may use the same stochastic source as sample on multiple levels, since these 
 \tldr{formulas for exact coarsest lvl}
 When estimating the coarsest grid contribution, its dimension might be small enough for an exact estimation.
 This is the case if its dimension no larger than say $10^{4}$.
-The coarse term can then be brought into a simpler form
+The coarsest term can then be brought into a simpler form
 \begin{multline} \label{eq:mglma:coarsest:exact}
 G_{\Ln{(\Nlvl-1)}}(t)
 = \frac{1}{\lvert \idxspacetime \rvert} \sum_{y_0=0}^{L_0-1} \\
 \cdot \tr \left\{
-	(\onlvl{D}{\Nlvl-1})^{-1}
-	\fieldx{\onlvl{\Gamma_1}{\Nlvl-1}}{y_0}
-	(\onlvl{D}{\Nlvl-1})^{-1}
-	\fieldx{\onlvl{\Gamma_2}{\Nlvl-1}}{t+y_0}
+  (\onlvl{D}{\Nlvl-1})^{-1}
+  \fieldx{\onlvl{\Gamma_1}{\Nlvl-1}}{y_0}
+  (\onlvl{D}{\Nlvl-1})^{-1}
+  \fieldx{\onlvl{\Gamma_2}{\Nlvl-1}}{t+y_0}
 \right\} \;.
 \end{multline}
 The $\Gamma$-matrices are defined as in \cref{eq:coarse:index} as coarsened operators with the time extent as open index, \ie defined with a partial trace over space $\idxspace$, color $\idxcolor$ and spin $\idxspin$ but not time, see \cref{eq:partial:trace}.
@@ -818,25 +849,25 @@ Let us compare this form with the full lattice volume averaged correlator $\lver
 \sum_{\vect{x}} \;
 \tr \left\{
   \propxy{t+y_0, \vect{x}}{y} \Gamma_1 \propxy{y}{t+y_0, \vect{x}} \Gamma_2
-\right\}.
+\right\} \;.
 \end{equation}
 We see that it has exactly the same form, just with some replacements.
 The fine-grid $\Gamma$-matrices are replaced with the coarse ones, the fine-grid inverse Dirac operator $\prop=D^{-1}$ is replaced with the coarse one $(\onlvl{D}{\Nlvl-1})^{-1}$ and finally the trace over color, spin and space is replaced by a trace over coarse color, spin and space.
-Note that the original fine-grid trace over color, spin and space is performed on the $\Gamma$-matrices \cref{eq:gamma:partial:trace}.
+Note that the original fine-grid trace over color, spin and space is moved to the $\Gamma$-matrices \cref{eq:gamma:partial:trace}.
 However, the term is calculated exactly and averaged over the full spacetime volume, its variance will be minimal, \ie the gauge variance of that level.
 
 \tldr{LMA does exact coarsest lvl, but without blocking}
-Revisiting low-mode averaging one more time, we notice that the above form is exactly equal to the eigen-eigen term of low-mode averaging worked out in \cref{eq:Gconn:eigen-eigen}, if the multigrid decomposition was chosen accordingly.
+Revisiting low-mode averaging one more time, we notice that the above form is exactly equal to the eigen-eigen term of low-mode averaging worked out in \cref{eq:Gconn:eigen-eigen}, if the coarsest lattice is trivial.
 To see this, we remember the conclusions drawn in \cref{sec:sd:lma} and write the trace in index notation. 
 Then \cref{eq:mglma:coarsest:exact} turns quickly into
 \begin{equation}
 % G_{\Ln{1}}(t)
 % = \frac{1}{\lvert \idxspacetime \rvert} \sum_{y_0=0}^{L_0-1}
 % \tr \left\{
-% 	\coarse{Q}^{-1}
-% 	\coarse{\gamma^{5} \Gamma_1}(y_0)
-% 	\coarse{Q}^{-1}
-% 	\coarse{\gamma^{5} \Gamma_2}(t+y_0)
+%   \coarse{Q}^{-1}
+%   \coarse{\gamma^{5} \Gamma_1}(y_0)
+%   \coarse{Q}^{-1}
+%   \coarse{\gamma^{5} \Gamma_2}(t+y_0)
 % \right\} \;.
 G_{\Ln{1}}(t)
 = \frac{1}{\lvert \idxspacetime \rvert} \sum_{y_0=0}^{L_0-1}
@@ -854,27 +885,27 @@ G_{\Ln{1}}(t)
 \sum_{\vect{y}}
 %\left( \fieldx{\coarse{\gamma^{5} \Gamma_1}}{y_0} \right)_{[lm]}
 \sprod{
-	\fieldx{\phi_l}{y}
+  \fieldx{\phi_l}{y}
 }{
-	\gamma^{5}
-	\Gamma_1
-	\fieldx{\phi_m}{y}
+  \gamma^{5}
+  \Gamma_1
+  \fieldx{\phi_m}{y}
 } \\
 \cdot \sum_{\vect{x}}
 %\left( \fieldx{\coarse{\gamma^{5} \Gamma_2}}{t+y_0} \right)_{[nk]}
 \sprod{
-	\fieldx{\phi_n}{t+y_0,\vect{x}}
+  \fieldx{\phi_n}{t+y_0,\vect{x}}
 }{
-	\gamma^{5}
-	\Gamma_2
-	\fieldx{\phi_k}{t+y_0,\vect{x}}
+  \gamma^{5}
+  \Gamma_2
+  \fieldx{\phi_k}{t+y_0,\vect{x}}
 } \,,
 \end{multline}
-we readily find \cref{eq:Gconn:eigen-eigen} identically, with the bootstrap vectors chosen as low modes $\phi_i = \evec_i$ as is done in an LMA scenario.
+we readily find \cref{eq:Gconn:eigen-eigen} identically, with the bootstrap vectors chosen as low modes $\phi_i = \evec_i$ as is done in LMA.
 
 \tldr{terminating lvl is LMA}
 In fact even in a multigrid scenario with more than \num{2} levels, one has the freedom to choose the coarsest lattice to be trivial resulting in a final layer of traditional low-mode averaging.
-Even though such a layer does add only negligible cost, it is only useful for small enough lattices as we will see in the numerical study \cref{ch:p2:numerics}.
+Even though such a layer does add only negligible cost, it is only useful for small enough lattices as we will see in the numerical study in \cref{ch:p2:numerics}.
 
 \subsection{$V^2$ problem of LMA}
 
@@ -898,15 +929,15 @@ Low-mode error components in the iterative solution are treated by solving the c
 The quark propagator (the inverse of the Dirac operator) can be decomposed into a contribution along the multigrid subspace and a remainder.
 This can be repeated recursively, leading to a decomposition of an arbitrary $n$-point function into $\Nlvl$ multigrid level contributions in a natural way.
 Every level can be evaluated individually with a different evaluation strategy.
-Low-mode averaging is a trivial special case of this decomposition.
+Low-mode averaging is a special case of this decomposition with a trivial coarse lattice.
 
 % \worktodo{
-% 	* Krylov solvers supress low mode contributions
-% 	* V2 problem
-% 	* MG solves the coarse Dirac equation to low precision in every outer iteration
-% 	* with this a MG propagator decomposition can be written down
-% 	* recusively
-% 	* Every n-point function can be decomposed into levels in a natural way
-% 	* Every level evaluated with a different strategy
-% 	* 
+%   * Krylov solvers supress low mode contributions
+%   * V2 problem
+%   * MG solves the coarse Dirac equation to low precision in every outer iteration
+%   * with this a MG propagator decomposition can be written down
+%   * recusively
+%   * Every n-point function can be decomposed into levels in a natural way
+%   * Every level evaluated with a different strategy
+%   * 
 % }

@@ -1,7 +1,7 @@
 \chapter{Subspace deflation}
 \label{ch:p2:subspace-deflation}
 
-\readit{1}
+\readit{2}
 
 \worktodo{
 * Subspace deflation (2 lvl, loop, hat notation)
@@ -21,46 +21,46 @@
 }
 
 \tldr{subspace deflation intro}
-The method of low-mode averaging from the last section will be generalized to cover not only subspaces spanned by low modes but arbitrary subspaces spanned by an arbitrary set of (currently unspecified) orthonormal basis fields.
+The method of low-mode averaging from the last chapter will be generalized to cover not only subspaces spanned by low modes but arbitrary subspaces spanned by an arbitrary set of (currently unspecified) orthonormal basis fields.
 We will discuss operators acting on the lattice and how to restrict them to the subspaces -- a process which we will call coarsening.
-For this, we need to define the degrees of freedom on a spacetime lattice.
+% For this, we need to define the degrees of freedom on a spacetime lattice.
 
 
-\section{Lattice definition}
-\label{sec:lattice:definition}
+% \section{Lattice definition}
+% \label{sec:lattice:definition}
 
-\tldr{lattice definition}
-We define a \df{lattice} $\lattice$ as the set of its indices.
-The fine-grid lattice is defined as the triple $\lattice = (\idxspacetime, \idxspin, \idxcolor)$ and its index set is the cross-product $\idxset = \idxspacetime \times \idxspin \times \idxcolor$ with
-\begin{align}
-\begin{aligned}
-\text{the spacetime lattice }
-    \idxspacetime &= \idxtime \times \idxspace, \\
-\text{the temporal lattice }
-    \idxtime  &= \exptime, \\
-\text{the spatial lattice }
-    \idxspace &= \expspace, \\
-\text{the spins }
-    \idxspin  &= \expspin, \\
-\text{the colors }
-    \idxcolor &= \expcolor,
-\end{aligned} \label{eq:index:sets}
-\end{align}
-where $\Lt,L_i,N_s,\Nc \in \mathbb{N}$.
-The product $V = \Lt \Lx \Ly \Lz$ is called the \df{lattice volume}, whereas the product $N_s \Nc$ parametrize the internal degrees of freedom of a spinor field on each lattice point.
-The product of the two $d = V N_s \Nc$ gives us the dimension over the complex numbers $\mathbb{C}$ of spinor fields and operators acting on spinor fields on the lattice.
-The native lattice where $(N_s, \Nc) = (4,3)$, we will call the \df{fine-grid lattice} $\lattice$.
-Furthermore, the Hilbert space of spinor fields $\vslattice$ is the tensor product of Hilbert spaces,
-\begin{equation}
-\vslattice = \mathcal{H}_{L_0} \otimes \mathcal{H}_{L_1} \otimes \mathcal{H}_{L_2} \otimes \mathcal{H}_{L_3} \otimes \mathcal{H}_{N_s} \otimes \mathcal{H}_{N_c} \cong \mathbb{C}^{d} \;,
-\end{equation}
-where each individual space corresponds to an index set in \cref{eq:index:sets} and is isomorphic to $\mathcal{H}_{N} \cong \mathbb{C}^{N}$.
-We note, the Dirac operator which is an endomorphism on this Hilbert space, $D \colon \vslattice \rightarrow \vslattice$, is not separable into a tensor product, because its action to a spinor field couples and mixes all individual degrees of freedom non-trivially, compare \cref{eq:Dw:QCD+QED}.
+% \tldr{lattice definition}
+% We define a \df{lattice} $\lattice$ as the set of its indices.
+% The fine-grid lattice is defined as the triple $\lattice = (\idxspacetime, \idxspin, \idxcolor)$ and its index set is the cross-product $\idxset = \idxspacetime \times \idxspin \times \idxcolor$ with
+% \begin{align}
+% \begin{aligned}
+% \text{the spacetime lattice }
+%     \idxspacetime &= \idxtime \times \idxspace, \\
+% \text{the temporal lattice }
+%     \idxtime  &= \exptime, \\
+% \text{the spatial lattice }
+%     \idxspace &= \expspace, \\
+% \text{the spins }
+%     \idxspin  &= \expspin, \\
+% \text{the colors }
+%     \idxcolor &= \expcolor,
+% \end{aligned} \label{eq:index:sets}
+% \end{align}
+% where $\Lt,L_i,N_s,\Nc \in \mathbb{N}$.
+% The product $V = \Lt \Lx \Ly \Lz$ is called the \df{lattice volume}, whereas the product $N_s \Nc$ parametrize the internal degrees of freedom of a spinor field on each lattice point.
+% The product of the two $d = V N_s \Nc$ gives us the dimension over the complex numbers $\mathbb{C}$ of spinor fields and operators acting on spinor fields on the lattice.
+% The native lattice where $(N_s, \Nc) = (4,3)$, we will call the \df{fine-grid lattice} $\lattice$.
+% Furthermore, the Hilbert space of spinor fields $\vslattice$ is the tensor product of Hilbert spaces,
+% \begin{equation}
+% \vslattice = \mathcal{H}_{L_0} \otimes \mathcal{H}_{L_1} \otimes \mathcal{H}_{L_2} \otimes \mathcal{H}_{L_3} \otimes \mathcal{H}_{N_s} \otimes \mathcal{H}_{N_c} \cong \mathbb{C}^{d} \;,
+% \end{equation}
+% where each individual space corresponds to an index set in \cref{eq:index:sets} and is isomorphic to $\mathcal{H}_{N} \cong \mathbb{C}^{N}$.
+% We note, the Dirac operator which is an endomorphism on this Hilbert space, $D \colon \vslattice \rightarrow \vslattice$, is not separable into a tensor product, because its action to a spinor field couples and mixes all individual degrees of freedom non-trivially, compare \cref{eq:Dw:QCD+QED}.
 
 \section{Subspace definition}
 
 \tldr{arbitrary ONB}
-We want to formalize and generalize the idea of low-mode averaging from the previous chapter to an arbitrary orthonormal basis of $N$ spinor fields $\phi_{i} \in \mathcal{B}$ spanning an arbitrary subspace $\vspan{\mathcal{B}} \subseteq \vslattice$ of the fine grid lattice Hilbert space $\vslattice = \mathbb{C}^d$.
+We want to formalize and generalize the idea of low-mode averaging from the previous chapter to an arbitrary orthonormal basis of $N$ spinor fields $\phi_{i} \in \mathcal{B}$ spanning an arbitrary subspace $\vspan{\mathcal{B}} \subseteq \vslattice$ of the fine-grid lattice Hilbert space $\vslattice = \mathbb{C}^d$.
 %The vector space of spinor fields spanned by the fine-grid lattice $\lattice = \mathbb{C}^d$ will be denoted by $\vslattice$, implying $\text{span}(\mathcal{B}) \subseteq \vslattice$.
 The space $\vspan{\mathcal{B}}$ is isomorphic to a Hilbert space $\coarse{\vslattice}$ of dimension $N$.
 In accordance to \cref{sec:lattice:definition}, for now we define the dimension over the complex numbers of the subspace as $\coarse{d} = \dim_{\mathbb{C}}(\coarse{\vslattice})$, whereas the dimension of the fine space $\vslattice$ is $d = \dim_{\mathbb{C}}(\vslattice)$.
@@ -72,13 +72,13 @@ One which we call the \df{restrictor} $\restrictor$ restricts a spinor $\psi$ to
 \begin{align}
 &\begin{aligned}
 \restrictor \colon
-\vslattice &\longrightarrow \coarse{\vslattice}, \\
-\psi       &\longmapsto     \coarse{\psi}, \\
-(R \psi)_{[i]} &= \sprod{\phi_{i}}{\psi},
-& i &\in \{ 0, \ldots, N-1 \}
+\vslattice &\longrightarrow \coarse{\vslattice} \;, \\
+\psi       &\longmapsto     \coarse{\psi} \;, \\
+(R \psi)_{[i]} &= \sprod{\phi_{i}}{\psi} \;,
+& i &\in \{ 0, \ldots, N-1 \} \;,
 \end{aligned} \label{eq:R}
 \end{align}
-where the subscript notation $\psi_{[i]}$ indicates the $i$-th component of the vector $\psi$ (see \cref{sec:notation:index}) and the scalar product goes over all indices of the spinors; color, spin and spacetime.
+where the subscript notation $\psi_{[i]}$ indicates the $i$-th component of the vector $\psi$ (see \cref{sec:notation:index}) and the scalar product goes over all indices of spinors; color, spin and spacetime.
 
 \tldr{prolongator definition}
 The second one which we call the \df{prolongator} $\prolongator$ prolongates information back from the subspace to the vector space of spinors.
@@ -86,16 +86,16 @@ It acts as
 \begin{align}
 &\begin{aligned}
 \prolongator \colon
-\coarse{\vslattice}  &\longrightarrow \vslattice, \\
-\coarse{\psi}        &\longmapsto     \psi, \\
+\coarse{\vslattice}  &\longrightarrow \vslattice \;, \\
+\coarse{\psi}        &\longmapsto     \psi \;, \\
 T \coarse{\psi} &= \sum_{i=0}^{N-1} \coarse{\psi}_{[i]} \phi_{i} \;. &
 \end{aligned} \label{eq:T}
 \end{align}
 
 \tldr{projector definition}
-The prolongator is related to the restrictor by Hermiticity $T = R^{\dagger}$.
+The prolongator is related to the restrictor by Hermitian transposition $T = R^{\dagger}$.
 Therefore, the restrictor is a $\coarse{d} \times d$ matrix, whereas the prolongator is a $d \times \coarse{d}$ matrix.
-We can build the concatenation of the two and obtain the $d \times d$ Hermitian projector $P$ projecting spinor fields to the space parallel to the $\phi_{i}$,
+We can build the concatenation of the two and obtain the $d \times d$ Hermitian projector $P$, projecting spinor fields to the space along the $\phi_{i}$,
 \begin{equation} \label{eq:P}
 P = \prolongator \restrictor \colon \vslattice \longrightarrow \vslattice \;,
 \qquad
@@ -127,7 +127,7 @@ The coarse operator may inherit certain properties of the fine-grid one, if the 
 We will discuss these choices later.
 A subset of indices may be left open, such as $\fieldx{\coarse{K}}{x}$ or $\fieldx{\coarse{K}}{x_0}$ indicating a partial trace in \cref{eq:coarse:index}.
 
-\tldr{partial trace definition}
+\tldr{partial trace definition and open indices}
 We define the \emph{partial trace} as follows.
 Assuming two finite-dimensional Hilbert spaces, $\mathcal{H}_A$ and $\mathcal{H}_B$, we define the partial trace as the completely positive, trace preserving map (CPTPM) acting on the endomorphisms of the tensor product, yielding an endomorphism on the remaining Hilbert space,
 \begin{align} \label{eq:partial:trace}
@@ -137,11 +137,12 @@ O &\longmapsto \tr(O) = \sum_{i} ( \id_A \otimes \psi_i )^{\dagger} O ( \id_A \o
 \end{aligned}
 \end{align}
 where $\{\psi_i\}_i$ is an orthonormal basis of $\mathcal{H}_B$ and $\id_A$ is the identity operator on $\mathcal{H}_A$.
-When the subscript is absent, we implicitly trace out all degrees of freedom resulting in a number; $\tr \colon \text{End}(\mathcal{H}) \longrightarrow \mathbb{C}$.
+When the subscript on the trace is absent, we implicitly trace out all degrees of freedom resulting in a number; $\tr \colon \text{End}(\mathcal{H}) \longrightarrow \mathbb{C}$.
+Therefore, if in \cref{eq:coarse:index} the partial trace is taken, the index is absent in the trace on the right hand side.
 
-\tldr{open indices}
-Thus if in \cref{eq:coarse:index} the partial trace is taken, the index is absent in the trace on the right hand side.
-However, $\coarse{K}$ is the restriction of $K$ to the subspace spanned by the $\phi_{i} \in \mathcal{B}$ as long as $N < 12V$ the coarse operator is smaller in dimension as depicted in \cref{fig:coarsen}.
+\tldr{restriction and identity}
+$\coarse{K}$ is the restriction of $K$ to the subspace spanned by the $\phi_{i} \in \mathcal{B}$.
+As long as $N < 12V$, the coarse operator is smaller in dimension as depicted in \cref{fig:coarsen}.
 \begin{figure}
   \includestandalone[width=0.6\linewidth]{\dir/img/coarsen}
   \caption{Depiction of the fact that the prolongator and restrictor are non-square matrices and coarse operator are restrictions of their fine-grid versions by dimensional reduction.}
@@ -158,8 +159,8 @@ Trivially, when taking $K = \id$ we find the $\coarse{d} \times \coarse{d}$ iden
 \tldr{LMA as specific choice of subspace deflation}
 We can immediately see that low-mode averaging is a variant of subspace deflation with a particular choice for the fields spanning the subspace $\coarse{\vslattice}$ and the operator $K$ as
 \begin{align}
-K &= \gamma^{5} D  &  &\text{ the Hermitian Dirac operator,} \\
-\phi_i &= \evec_i  &  &\text{ the $N=\Nc$ exact lowest modes of $Q$.}
+K &= \gamma^{5} D \:.  &  &\text{ the Hermitian Dirac operator,} \\
+\phi_i &= \evec_i \;,  &  &\text{ the $N=\Nc$ exact lowest modes of $Q$.}
 \end{align}
 %This choice makes the coarse Hermitian Dirac operator $\coarse{K}$ (as well as its inverse $\coarse{K}^{-1}$) diagonal with the eigenvalues $\lambda_i$ (and their reciprocal values respectively) along the diagonal.
 We assume the eigenvalues of $K$ are enumerated in increasing order with respect to their magnitudes $\lvert \lambda_0 \rvert \leq \lvert \lambda_1 \rvert \leq \ldots \leq \lvert \lambda_{N-1} \rvert$.
@@ -167,12 +168,12 @@ The coarse Hermitian Dirac operator $\coarse{K}$ (as well as its inverse $\coars
 \begin{equation} \label{eq:sd:lma:diagonal:dirac}
 \coarse{K} = \text{diag}\left(\lambda_0, \lambda_1, \ldots, \lambda_{N-1}\right) \;,
 \qquad
-\coarse{K}^{-1} = \text{diag}\left(\frac{1}{\lambda_0}, \frac{1}{\lambda_1}, \ldots, \frac{1}{\lambda_{N-1}}\right) \;,
+\coarse{K}^{-1} = \text{diag}\left(\frac{1}{\lambda_0}, \frac{1}{\lambda_1}, \ldots, \frac{1}{\lambda_{N-1}}\right) \;.
 \end{equation}
 Furthermore, with the $\phi_i$ eigenmodes the projector commutes with the operator, $[P,Q]=0$, and thus the propagator $\prop$ decomposes exactly as in the LMA case
 \begin{align}
-\prop_{r} &= (1-P) \prop, \\
-\prop_{e} &= PS = \prolongator \coarse{Q}^{-1} \restrictor \gamma^5,
+\prop_{r} &= (1-P) \prop \;, \\
+\prop_{e} &= PS = \prolongator \coarse{Q}^{-1} \restrictor \gamma^5 \;,
 \end{align}
 compare \cref{eq:prop:lma}.
 This shows us, that $S_e$ is a low-rank approximation to $S$ in terms of its spectral decomposition with
@@ -194,7 +195,7 @@ Although this parameter is under direct user control the memory requirements of 
 \tldr{subspace deflation summary}
 We have generalized the idea of low-mode averaging to a deflation of an arbitrary subspace.
 This led to a definition of linear operators restricted to that subspace which we refer to as coarsenings or coarse-grid operators.
-This section introduced the deflation of arbitrary subspaces specified by an orthonormal basis set of spinor fields.
+This chapter introduced the deflation of arbitrary subspaces specified by an orthonormal basis set of spinor fields.
 To move data from the fine to the coarse subspace and vice versa, we specified inter-grid operators referred to as restrictor and prolongator.
 This led to the observation that low-mode averaging is variant of subspace deflation with a specific basis choice making the coarse operator diagonal.
-We did not yet motivate why the Hilbert space $\coarse{\vslattice}$ is coined ``coarse''.
+We will motivate why the Hilbert space $\coarse{\vslattice}$ is coined ``coarse'' in the next chapter.

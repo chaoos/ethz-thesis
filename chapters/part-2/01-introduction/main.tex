@@ -2,10 +2,10 @@
 \label{ch:p2:introduction}
 
 \dictum[Nazario Tantalo]{%
-  I use to say that discussions about noise are simply noise ...}%
+  I used to say that discussions about noise are simply noise ...}%
 \vskip 1em
 
-\readit{1}
+\readit{2}
 
 % \worktodo{
 % * motivation for variance reduction methods, importance
@@ -75,14 +75,14 @@ The ratio of the two $e^{-(E_0 - E_{\text{noise}}/2)t}$, decays exponentially if
 
 \tldr{pion corr is good, baryons bad}
 The pion correlator for instance has $E_0 = m_{\pi}$ the pion mass and $E_{\text{noise}} = 2 m_{\pi}$ leading to a constant signal-to-noise ratio.
-The signal of that correlator clearly does not deteriorate as time increases.
+The signal of that correlator clearly does not deteriorate as time increases, since the pion has the lightest mass among the hadrons.
 For baryon correlators where $E_0 = m_{b}$ the baryon mass, we find $E_{\text{noise}} = 3/2 m_{\pi}$.
 Since baryon masses are in the regime of one or multiple GeV and the pion masses are about \SI{135}{\mega \eV}, we observe a signal loss already early in the decay.
 
 \section{Variance reduction methods}
 
 We will briefly review different variance reduction methods in this section.
-Some of them approach the problem from a different perspective or are targeting other classes of observables.
+Some of them approach the signal-to-noise problem from a different perspective or are targeting other classes of observables.
 
 \tldr{multi-level integration}
 The fundamental restriction on correlation functions discussed above led to the development of algorithms employing integration techniques with multiple levels.
@@ -90,13 +90,13 @@ Such multi-level algorithms use domain decomposition into overlapping blocks to 
 Each factor depends on a different set of gauge fields with support only on the domain of the decomposed lattice.
 If applied appropriately, they lead to exponential signal-to-noise suppression in the prefactor of $e^{-(E_0 - E_{\text{noise}}/2)t}$, circumventing the Parisi-LePage argument.
 If applied to pure gauge theory this either completely removes the signal-to-noise problem or suppresses it substantially~\cite{Luscher:2001up,Meyer:2002cd,DellaMorte:2007zz,DellaMorte:2008jd,della2011novel}.
-Once fermions enter the theory, non-locality of the determinant and the fermion propagator are challenging to deal with in the factorization~\cite{Ce:2016idq,Ce:2016ajy,Giusti:2017ksp,Ce:2017ndt}.
+Once fermions enter the game, non-locality of the determinant and the fermion propagator are challenging to deal with in the factorization~\cite{Ce:2016idq,Ce:2016ajy,Giusti:2017ksp,Ce:2017ndt}.
 In the meantime it has been successfully applied to connected and disconnected diagrams of meson two-point functions~\cite{Giusti:2018vxm} and the light-connected leading-order hadronic vacuum polarization contribution (HVP) to the muon $g-2$~\cite{DallaBrida:2020cik,Giusti:2021qhk}.
 
 \tldr{multi-level is at gauge field sampling}
 A multi-level integration scheme is a variance reduction method entering the gauge field generation phase.
 Gauge fields in different domains are drawn according to the domain decomposed action.
-This reduces the variance of the full translation averaged correlator, \ie what we will call the gauge variance or gauge noise of the observable in the following (it will be formally defined in \cref{sec:numerics:gauge:variance}).
+This reduces the variance of the full translation averaged correlator, \ie what we will call the gauge variance or gauge noise of the observable in the following (the quantity will be formally defined in \cref{sec:numerics:gauge:variance}).
 Reaching the gauge noise level with state-of-the-art estimators on large physical pion mass ensembles becomes prohibitively expensive, even more so if applied multi-level schemes reduce the gauge noise further.
 In this work we are concerned with methods to reach the gauge noise with as little as possible computational resources, not with a reduction of the gauge noise itself.
 We thus expect the gauge fields to be generated already from now on.
@@ -119,12 +119,12 @@ These techniques can be supplemented by smearing of gauge fields using APE~\cite
 A noteworthy smearing method in the context of this thesis is distillation~\cite{HadronSpectrum:2009krc,Knechtli:2022bji}, where low modes of the 3D spatial gauge-covariant Laplacian are generated.
 The source fields are then projected to that low-rank linear subspace; the projector acts as a smearing kernel.
 The method is based on the gauge-covariant smearing of fermion fields which in the limit exponentially suppress high mode contributions.
-Thus only the lowest mode components of the sources dominate ground state overlap.
+Thus only the lowest mode components of the sources dominates ground state overlap.
 The cost is proportional the number of modes determined and correlation functions restricted to that subspace can be volume averaged easily, since the restricted propagators are all-to-all.
-The method was also investigated as a substitute for low-mode averaging~\cite{Bushnaq:2023}.
+The method was also investigated as a substitute for low-mode averaging~\cite{Bushnaq:2023} with no success.
 
 \tldr{smearing changes amplitude}
-Smearing of gauge and fermion fields has no effect on the asymptotic exponential behavior of the correlator but modifying its absolute value.
+Smearing of gauge and fermion fields has no effect on the asymptotic exponential behavior of the correlator but modifies its absolute value.
 This makes smearing very suitable for spectroscopy studies, where one is interested in the exponential decay rate for mass extraction but unsuitable if contributions from excited states need to be included or the correlator amplitude is important too.
 This is the case for the HVP of the muon $g-2$.
 
@@ -145,10 +145,10 @@ This is the case for the HVP of the muon $g-2$.
 	% * point sources: exact, regularly spaced, randomly placed, ...
 
 \tldr{simple Hutchinson}
-A standard estimator for traces over propagators is the Hutchinson method~\cite{Hutchinson01011990}, where a stochastic identity was introduced for an estimation of single inverse matrix traces.
+A standard estimator for traces over propagators is the Hutchinson method~\cite{Hutchinson01011990}, where a stochastic identity is introduced for an estimation of single inverse matrix traces.
 As a negative byproduct, this introduces additional stochastic noise which has to be suppressed separately.
-However, this enabled stochastic all-to-all propagators~\cite{Foley:2005ac} when using random wall-sources; sources with support only on a certain time slice.
-A necessity stemming from correlation functions usually being investigated as functions Euclidean time or if at least some translation averaging is used.
+However, this enables stochastic all-to-all propagators~\cite{Foley:2005ac} when using random wall-sources; sources with support only on a certain time slice.
+A necessity stemming from correlation functions often being investigated as functions of Euclidean time.
 The noise can be any set with zero mean and unit variance, like Gaussian or subsets thereof; a popular choice is $\mathbb{Z}_2 = \{\pm 1\}$ which minimizes stochastic variance over traces of real matrices~\cite{Bernardson:1993he}.
 
 \tldr{index dilution}
@@ -160,7 +160,7 @@ This makes it possible to evaluate multiple diagrams with the same \num{4} spin-
 Dilution on an internal degree of freedom like color and/or spin tends to reduce the overall stochastic noise introduced by the stochastic identity now being exactly zero on off-diagonal dilution indices~\cite{Babich:2010at,Morningstar:2011ka}.
 Variance caused by even-odd interactions can be cancelled by even-odd dilution~\cite{Bali_2009,Foley:2005ac,Morningstar:2011ka}.
 The structure of the observables should always be a guidance for an effective dilution scheme.
-Clearly the extreme case would be a dilution in all indices; color, spin, time and space, resulting in an exact estimation but at infeasible cost.
+Clearly the extreme case would be a dilution in all indices; color, spin, time and space, resulting in an exact estimation using point sources but at infeasible cost.
 
 \tldr{hierarchical probing}
 For disconnected diagrams which are closely related to single inverse matrix traces, methods based on specific choice of probing vectors have been developed.
@@ -189,7 +189,7 @@ Crucial for this method is that the Dirac operator is better conditioned for lar
 
 \tldr{Multilevel Monte Carlo}
 We want to briefly discuss multilevel Monte Carlo (MLMC) methods~\cite{giles2008,Giles_2015}.
-Unfortunately there is a naming clash: this has nothing to do with multi-level algorithms for gauge field generation as discussed above.
+Unfortunately there is a naming clash: this has nothing to do with multi-level algorithms for gauge field generation as discussed previously.
 Multilevel Monte Carlo is a general framework to split an unbiased stochastic estimator into a sum of estimators.
 The individual terms contribute differently to the overall variance and one hopes to find decompositions where terms dominating the variance are cheap to estimate.
 MLMC does not propose actual decomposistions but formalizes the general procedure, describing the heart of nearly every variance reduction method.
@@ -220,20 +220,20 @@ This is to be expected, since the variance in disconnected diagrams stems from t
 \section{Low-mode averaging}
 
 \tldr{LMA original and usages}
-We will now discuss the method of low-mode averaging~\cite{Neff_2001,DeGrand_2004,Giusti_2004,} (LMA) and some of its many variants which this document is based upon.
-It decomposed the quark propagator $D^{-1}$ into a truncated spectral decomposition and a remainder.
+We will now discuss the variance reduction method of low-mode averaging~\cite{Neff_2001,DeGrand_2004,Giusti_2004,} (LMA) and some of its many variants which had a large influence in this thesis.
+The method consists of decomposing the quark propagator $D^{-1}$ into a truncated spectral decomposition and a remainder.
 The spectral sum can be easily volume averaged pushing its variance to its gauge noise.
 This method is used widely in the field for quantities suffering from the signal-to-noise ratio problem in the long distance.
 Examples are the HVP~\cite{bmw_2024,Kuberski_2023,Aubin:2022hgm,Bazavov:2024eou,RBC_2024} and HLbL~\cite{Lin:2024khg} contributions to the muon $g-2$ or derived quantities~\cite{ExtendedTwistedMass:2025tpc}, baryon three-point functions~\cite{Yang:2015zja,Ohki:2012jyg} and masses \cite{Bali:2010se}, nucleon charges~\cite{Yamanaka:2018uud}, reweighting of the RHMC~\cite{Kuberski:2023zky}, decay constants~\cite{Bali:2014pva}, low energy couplings~\cite{Bernardoni:2011kd}, form factors~\cite{JLQCD:2009ofg} and many more.
-Clearly, the method is only beneficial if the majority of the noise comes from the low-mode contribution and one can afford a numerical determination of the low-mode subspace.
+Clearly, the method is only beneficial if the majority of the noise comes from the low-mode contribution and one can afford a numerical determination of the linear-in-volume scaling low-mode subspace.
 
 \tldr{V2 problem}
 The method usually comes with two tasks, both of which are computationally expensive.
-First, one has to determine a certain number of eigenmodes of the (Hermitian) Dirac operator.
+First, one has to determine a certain number of eigenmodes of the Hermitian or the non-Hermitian Dirac operator.
 This number heavily depends on the lattice volume, the physical quantity of interest and the variance reduction goal.
 Obviously the more modes involved, the better the outcome.
-The number of low modes required for constant variance reduction is proportional to the lattice volume for a fixed quantity, because the size of the low-mode subspace is proportional to the lattice volume~\cite{banks1980}.
-Therefore, the computational work to determine the low-mode subspace scales quadratic in the lattice volume, which we will refer to as \emph{$V^{2}$-problem}~\cite{Luescher2007}.
+The number of low modes required for constant variance reduction is proportional to the lattice volume, because the size of the low-mode subspace is proportional to the lattice volume~\cite{banks1980}.
+Therefore, the computational work to determine the low-mode subspace scales at least quadratic in the lattice volume, which we will refer to as \emph{$V^{2}$-problem}~\cite{Luescher2007}.
 This fact makes LMA on large-scale physical point lattices prohibitively expensive.
 On recent high-precision determinations of the HVP contribution to the muon $g-2$ this number is driven to the limit of affordability; \numrange{1000}{6000}~\cite{Djukanovic:2024cmq,RBC_2024,bmw_2024,Aubin:2022hgm} with varying satisfaction.
 
@@ -251,7 +251,7 @@ We observe a non-trivial interplay of computational cost and variance reduction.
 In order to achieve a fair variance reduction we want to drive the number of deflated low modes as high as we can afford.
 On the other hand, the cost of the eigensolver and of the cross-term increases proportional to that number.
 It is not feasible anymore on physical point lattices to drive the number of eigenmodes so high to suppress the variance on the cross-term such that its evaluation is cheap.
-An often unmentioned issue is the immense memory footprint of $\bigO(1000)$ low modes that have to be in memory all at the same time.
+An often unmentioned issue is the immense memory footprint of $\bigO(1000)$ low modes that have to be in memory all at the same time, sometimes even driving the required node count of the job into the bad strong scaling region.
 
 \tldr{remainder of the part}
 The remainder of this part is structured as follows.

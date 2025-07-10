@@ -351,6 +351,7 @@ This number is obtained by considering a performance model as
 \end{align}
 for the cost of an application of the Wilson-Clover Dirac operator, where $\mem(A)$ denotes the memory traffic of the object $A$.
 Naively $x=8$ for fetching \num{8} neighboring points and $x=1$ for perfect caching.
+The reality is in between.
 Thus, using $\mem(D) = 6 \cdot \mem(\psi)$, the ratio of these two $\frac{\text{cost}(1)}{\text{cost}(\infty)} = \frac{x+3}{x} \in \left[ 1.375, 4 \right]$.
 } is around 1.375-4 .
 On the small lattice A400 we reach a higher speedup as on the large lattice D300.

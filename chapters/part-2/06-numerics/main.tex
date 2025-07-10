@@ -19,7 +19,7 @@
 % 	* Cost
 % }
 
-\readit{2}
+\readit{3}
 
 \dictum[Claude Shannon]{%
   Information: the negative reciprocal value of probability. }%
@@ -28,7 +28,7 @@
 \tldr{numerical study intro}
 In this chapter, we study the application of multigrid low-mode averaging to the connected two-point light-quark meson correlator introduced in \cref{ch:p2:2pt-corr}, that contributes the dominant error to the leading order HVP of the Muon $g-2$.
 Numerical data shows the ability of the method to reach gauge variance with significantly smaller cost as compared to the naive stochastic estimator, but also compared to low-mode averaging -- the state-of-the-art method for this class of observables.
-We will show numerical evidence of its linear volume scaling with constant number of low modes, as opposed to the quadratic scaling of low-mode averaging.
+We will show numerical evidence of its linear volume scaling (constant number of low modes), as opposed to the quadratic scaling of low-mode averaging.
 
 The numerical study was carried out using $\Nf=2$ flavours of non-perturbative $\bigO(a)$-improved Wilson-Clover fermions all with the same bare quark masses and lattice parameters.
 They were generated starting from the CLS ensemble labelled F7~\cite{online:cls} and their specifications are collected in \cref{tab:mglma:ensembles}.
@@ -68,11 +68,12 @@ Finally we employ a multigrid LMA scheme with at least one non-trivial coarse la
 This class of estimators is labelled ``MG LMA''.
 All the levels are usually evaluated stochastically just as the plain stochastic estimator, only exception is the coarsest level which is contracted exactly if its lattice was trivial~\cref{eq:mglma:coarsest:exact}.
 Details about the LMA estimators can be found in \cref{tab:lma:estimators}.
-
-For all ensembles and estimators that include low modes, we used a fixed number of $\Nc=50$ low modes of the Hermitian Dirac operator determined to a precision of $\norm{Q \evec - \lambda \evec} / \norm{\evec} \leq 10^{-12}$ using the library PRIMME~\cite{primme}.
+For all ensembles and estimators that include low modes, we used a fixed number of $\Nc=50$ low modes of the Hermitian Dirac operator.
 
 \section{Methodology}
 \label{sec:numerics:methodology}
+
+Low modes of the Hermitian Dirac operator were determined to a precision of $\norm{Q \evec - \lambda \evec} / \norm{\evec} \leq 10^{-12}$ using the library PRIMME~\cite{primme}.
 
 % \worktodo{
 % * How timers are taken. precision of timings
@@ -140,6 +141,7 @@ Details about all the estimators including low modes from \cref{fig:E7:var:vs:so
 For the different ensembles the table renders the number of multigrid levels, the block sizes used to generate the coarse lattices on each level.
 % Block decompositions for the three estimators used in this work and the corresponding coarse-grid operators on levels $l$. 
 When the block size matches the lattice volume, as is the case in the LMA schemes, no blocking is performed on that level.
+All estimators use the same $\Nc=50$ low modes.
 %The coarsest level is not required to avoid blocking; for example the $\Nlvl=2$ MG LMA schemes terminate on a     block-projected level.
 }
 \label{tab:lma:estimators}
@@ -157,8 +159,7 @@ where $G(t)$ is the stochastic estimator \cref{eq:stoch:Gij:final} with a single
 \section{Gauge variance}
 \label{sec:numerics:gauge:variance}
 
-Before we continue, we will discuss the gauge variance.
-It is defined as the variance of the correlator $\mathcal{G}(t)$ averaged over the full spacetime lattice \cref{eq:G:corr:volume:averaged}.
+The gauge variance is defined as the variance of the correlator $\mathcal{G}(t)$ averaged over the full spacetime lattice \cref{eq:G:corr:volume:averaged}.
 It is the minimal variance given by
 \begin{equation} \label{eq:var:gauge}
 \sigma_{\mathcal{G}}(t) = \langle \mathcal{G}(t)^{2} \rangle_{U} - \langle \mathcal{G}(t) \rangle_{U}^{2} \;.
@@ -174,7 +175,7 @@ We may use the samples from the pure stochastic estimator to estimate the gauge 
 - \langle C_m(t_m+t,t_m) \rangle_{U} \langle C_n(t_n+t,t_n) \rangle_{U} \Big]
 \end{align}
 using \cref{eq:stoch:C:full:final}.
-The total variance of the stochastic estimator was defined in \cref{eq:abs:variance} and in the limit of infinite stochastic samples it equals the gauge variance $\sigma_{\mathcal{G}}$,
+The total variance of the stochastic estimator as defined in \cref{eq:abs:variance} in the limit of infinite stochastic samples equals the gauge variance $\sigma_{\mathcal{G}}$,
 \begin{equation} \label{eq:var:gauge:limit}
 \lim_{\Nst \to \infty} \sigma_{G}(t) = \sigma_{\mathcal{G}}(t) \;.
 \end{equation}
@@ -195,7 +196,7 @@ The black dashed line with grey error bands represents $\sigma_{\mathcal{G}}(t)$
 \section{Relative variance}
 
 We start with presenting relative variance plots for all ensembles in \cref{fig:rel:variance}.
-The plots compare the LMA estimator with a 2-level MG LMA estimator~\cref{tab:lma:estimators}.
+The plots compare the LMA estimator with a 2-level MG LMA estimator.
 Shown on the y-axis is the relative variance of the corresponding level; the variance of one stochastic source normalized by the sum of variances of all levels, \ie
 \begin{equation} \label{eq:rel:variance}
 \sigma_{rel}^{2} = \frac{\sigma^{2}}{ \sum_{\lvl} \sigma_{\Ln{\lvl}}^{2} } \in [0, 1] \;.
@@ -248,25 +249,26 @@ The plots show that we are able to push down the \Ln{0} variance to the gauge no
 Even though introducing stochastic noise, the \Ln{0} term is so subdominant in the relevant large time regime, that its total variance (stochastic and gauge) is below the gauge noise of the full correlator and therefore does only contribute negligibly when evaluated with a single stochastic source.
 We note that for F7, \cref{fig:F7:abs:variance}, which seems to be a small exception, we did not use an ideal setup.
 A block size of $8 \times 8^{3}$ for the first coarse level \Ln{1} is probably already too large, a better choice would be $6 \times 6^{3}$, whereas $4 \times 4^{3}$ is presumably too aggressive.
-The fact that on larger lattices G7 and H7, we are able to reach gauge variance with a single stochastic source on \Ln{0} implies that with proper choice of blocking this is also possible on the intermediate F7.
+The fact that on larger lattices G7 and H7, we are able to reach gauge variance with a single stochastic source on \Ln{0} implies that with proper choice of blocking it is clearly possible on the intermediate F7 too.
 
 Of special interest is the smallest lattice E7 \cref{fig:E7:abs:variance}.
-Low-mode averaging using \num{50} low modes is actually already beneficial on that lattice.
+The lattice is so small, that low-mode averaging with \num{50} low modes is actually already beneficial.
 In a real world scenario one would probably increase the number a bit, but nevertheless the deflation is already working.
 When comparing to MG LMA, clearly the non-trivial lattice still beats the trivial one.
 We note that the subspace generated for the trivial lattice (LMA) is contained in the subspace of any non-trivial lattice (MG LMA) by construction.
-This implies that a non-trivial coarse lattice will always have the better variance contribution than a trivial one assuming the same low modes were used in their construction.
+This implies that a non-trivial coarse lattice will always have the better variance contribution than a trivial one, assuming the same low modes were used in their construction.
 
 On the larger lattices, G7 and H7 \cref{fig:G7:abs:variance,fig:H7:abs:variance}, we also show 4-level scenarios.
 We found that on large lattices is it beneficial to dampen the cost of the possibly-very-large \Ln{1} term by deflating it again.
 The coarsest level on these two lattices is trivial, \ie corresponds to a layer of LMA.
-It does not contribute to the overall variance reduction, because deflation of \num{50} low modes without blocking is simply not worth it on these large lattices.
+It does not contribute to the overall variance reduction, because deflation of \num{50} low modes without blocking is simply not worth doing on these large lattices.
 This can be seen in the corresponding LMA plots (left panels), where the plain stochastic estimator basically coincides with \Ln{0}.
 It clearly shows that the effect of the pure low mode deflation quickly becomes negligible as one increases the lattice volume keeping the number of low modes constant.
 
 In order to enjoy the same variance contribution for LMA as on the smallest lattice E7, where we see benefits, one has to increase the number of low modes proportional to the volume.
-Such an increase would correspond to roughly $(\text{E7}, \text{F7}, \text{G7}, \text{H7}) \approx (50, 250, 800, 4000)$ low modes, only to obtain the variance contribution of \cref{fig:E7:abs:variance} leftmost panel, which still does not push the \Ln{0} noise down to gauge noise.
-The gauge noise level can be reached by either further increasing the number of low modes or by using a MG LMA scenario as in the right panels.
+Such an increase would correspond to roughly $(\text{E7}, \text{F7}, \text{G7}, \text{H7}) \approx (50, 250, 800, 4000)$ low modes, only to obtain the variance contribution of \cref{fig:E7:abs:variance} leftmost panel, which is still not enough to push the \Ln{0} noise down to gauge noise\footnote{The size in memory of \num{4000} low modes of H7 would of order \SI{130}{\tera\byte}.}.
+The gauge noise level can be reached by either further increasing the number of low modes or by using an MG LMA scenario as in the right panels.
+
 
 \begin{figure}
 \centering
@@ -324,7 +326,7 @@ We expect the variance to decrease roughly as $1/\Nst$ (dotted lines in the plot
 The data in the plots are extracted on time-slice $t \approx $ \u{1.3}{\femto \metre}.
 This corresponding to the time extent where the signal-to-noise ratio problem starts to be severe~\cite{Kuberski_2023} and where the long-distance window (LD) is located (see \cref{sec:intro:gm2:windows}).
 
-We considered reaching the gauge variance as soon as the line and the gauge variance where consistent with one another.
+We considered reaching the gauge variance as soon as the line and the gauge variance were consistent with one another.
 On most ensembles one single source on the fine-grid is enough -- as explained earlier on F7 the setup was not ideal.
 The important point is that the bulk of the variance is captured on the coarse lattices.
 Having $\bigO(1000)$ sources on the fine lattice is expensive and infeasible but on coarse lattices absolutely fine.
@@ -332,43 +334,61 @@ For instance the \Ln{2} operator on G7 in the 4-level scheme \cref{fig:G7:var:vs
 Inversions on the \Ln{2} lattice are cheaper by about that factor, assuming the same solver algorithm.
 It is thus simple to sample that level excessively using \num{1024} sources to push its variance down to the gauge variance.
 The cost of these \num{1024} \Ln{2}-inversion is roughly the same as the cost of about \num{2} \Ln{0}-inversions.
-On the same lattice, we observe that the LMA estimator basically broke down, because the \Ln{0}-noise is right up with the stochastic estimator, \ie at the upper bound value yielding no variance reduction.
+On the same lattice, we observe that the LMA estimator basically broke down, because the \Ln{0}-noise is right up with the stochastic estimator, \ie at the upper bound value giving no variance reduction.
 
+%\subfloat[E7]{\includegraphics[width=0.49\textwidth]{\dir/img/E7/E7_rel_variance}\label{fig:E7:rel:variance}}
 \begin{figure}
 \centering
-\includegraphics[width=1.0\linewidth]{\dir/img/E7/E7_var_vs_srcs}
+\subfloat[E7]{\includegraphics[width=1.0\linewidth]{\dir/img/E7/E7_var_vs_srcs}\label{fig:E7:var:vs:sources}}
+\hfill
+\subfloat[F7]{\includegraphics[width=1.0\linewidth]{\dir/img/F7/F7_var_vs_srcs}\label{fig:F7:var:vs:sources}}
+\hfill
+\subfloat[G7]{\includegraphics[width=1.0\linewidth]{\dir/img/G7/G7_var_vs_srcs}\label{fig:G7:var:vs:sources}}
 \caption{
-E7: Absolute total variance \cref{eq:abs:variance} vs. the number of stochastic sources.
-The left panel shows data for the LMA estimator, center and right show 2-level multigrid and a 3-level multigrid LMA estimator.
-The blue solid line represents the pure stochastic estimator without any deflation and the black dashed line indicates the gauge variance of the full correlator. Both appear in all panels for comparison.
+Absolute total variance \cref{eq:abs:variance} vs. the number of stochastic sources for lattices E7 (top), F7 (center) and G7 (bottom).
+The left panels show data for the LMA estimator, center the simple 2-level MG LMA estimator and right a 3-level (E7, F7) or 4-level (G7) MG LMA estimator.
+The blue solid line represents the pure stochastic estimator without any deflation and the black dashed line indicates the gauge variance of the full correlator.
+Both appear in all panels for comparison.
 \takenpart
 }
-\label{fig:E7:var:vs:sources}
+\label{fig:var:vs:sources}
 \end{figure}
 
-\begin{figure}
-\centering
-\includegraphics[width=1.0\linewidth]{\dir/img/F7/F7_var_vs_srcs}
-\caption{
-F7: Absolute total variance \cref{eq:abs:variance} vs. the number of stochastic sources.
-The left panel shows data for the LMA estimator, center and right show 2-level multigrid and a 3-level multigrid LMA estimator.
-The blue solid line represents the pure stochastic estimator without any deflation and the black dashed line indicates the gauge variance of the full correlator. Both appear in all panels for comparison.
-\takenpart
-}
-\label{fig:F7:var:vs:sources}
-\end{figure}
+% \begin{figure}
+% \centering
+% \includegraphics[width=1.0\linewidth]{\dir/img/E7/E7_var_vs_srcs}
+% \caption{
+% E7: Absolute total variance \cref{eq:abs:variance} vs. the number of stochastic sources.
+% The left panel shows data for the LMA estimator, center and right show 2-level multigrid and a 3-level multigrid LMA estimator.
+% The blue solid line represents the pure stochastic estimator without any deflation and the black dashed line indicates the gauge variance of the full correlator. Both appear in all panels for comparison.
+% \takenpart
+% }
+% \label{fig:E7:var:vs:sources}
+% \end{figure}
 
-\begin{figure}
-\centering
-\includegraphics[width=1.0\linewidth]{\dir/img/G7/G7_var_vs_srcs}
-\caption{
-G7: Absolute total variance \cref{eq:abs:variance} vs. the number of stochastic sources.
-The left panel shows data for the LMA estimator, center and right show 2-level multigrid and a 4-level multigrid LMA estimator.
-The blue solid line represents the pure stochastic estimator without any deflation and the black dashed line indicates the gauge variance of the full correlator. Both appear in all panels for comparison.
-\takenpart
-}
-\label{fig:G7:var:vs:sources}
-\end{figure}
+% \begin{figure}
+% \centering
+% \includegraphics[width=1.0\linewidth]{\dir/img/F7/F7_var_vs_srcs}
+% \caption{
+% F7: Absolute total variance \cref{eq:abs:variance} vs. the number of stochastic sources.
+% The left panel shows data for the LMA estimator, center and right show 2-level multigrid and a 3-level multigrid LMA estimator.
+% The blue solid line represents the pure stochastic estimator without any deflation and the black dashed line indicates the gauge variance of the full correlator. Both appear in all panels for comparison.
+% \takenpart
+% }
+% \label{fig:F7:var:vs:sources}
+% \end{figure}
+
+% \begin{figure}
+% \centering
+% \includegraphics[width=1.0\linewidth]{\dir/img/G7/G7_var_vs_srcs}
+% \caption{
+% G7: Absolute total variance \cref{eq:abs:variance} vs. the number of stochastic sources.
+% The left panel shows data for the LMA estimator, center and right show 2-level multigrid and a 4-level multigrid LMA estimator.
+% The blue solid line represents the pure stochastic estimator without any deflation and the black dashed line indicates the gauge variance of the full correlator. Both appear in all panels for comparison.
+% \takenpart
+% }
+% \label{fig:G7:var:vs:sources}
+% \end{figure}
 
 \section{Volume scaling}
 \label{sec:numerics:volume:scaling}
@@ -382,7 +402,7 @@ Thus, the larger lattices result in a reduced variance of the stochastic estimat
 
 The gauge variance on the other hand is defined in \cref{eq:var:gauge,eq:appendix:gv:formula} as the variance of the full lattice volume averaged correlator \cref{eq:G:corr:volume:averaged} and is thus expected to decrease inversely proportional to the full \textit{spacetime} lattice volume.
 The usefulness of the pure stochastic estimator is therefore limited, because it chases the gauge variance which decreases faster by a factor of the temporal lattice extent.
-Although being a simple method, this is one of the main reasons why it is rarely been used standalone on large lattices close to the physical point.
+Although being a simple method, this is one of the reasons why it is rarely been used standalone on large lattices close to the physical point.
 
 As already touched upon, we observe that the effect of pure low mode deflation (LMA), as the lattice volume increases, becomes negligible unless one also increases the number of low modes proportional to the volume.
 This is apparent when looking at the \Ln{0} line in the left panel.
@@ -397,7 +417,7 @@ Variances of the \Ln{1} term and the pure stochastic estimator basically coincid
 This is exactly what we aim for with the method.
 It shows that independent of the lattice volume, we can capture the bulk of the variance in the cheap-to-evaluate \Ln{1} term on the coarse lattice.
 All that remains is to push down the variance of the \Ln{1} term by sampling it with the number of sources as stated in \cref{tab:cost}.
-The cost of inversion is basically shifted from the expensive fine grid to the cheap coarse grid, where the number of inversions roughly stays the same.
+The cost of inversion is basically shifted from the expensive fine grid to the cheap coarse grid, where the number of inversions to reach gauge noise roughly stays the same.
 
 \begin{figure}
 \centering
@@ -465,11 +485,11 @@ This amounts to a cost of \numrange{2}{4} inversions per low mode.
 \section{Cost}
 \label{sec:cost}
 
-Next, we compare cost of the difference estimators.
+Next, we compare cost of the different estimators.
 A breakdown to reach gauge noise can be seen in \cref{tab:cost}.
 We list the three ensembles E7, F7 and G7 with their estimators.
-Details about the estimators can be obtained from \cref{tab:lma:estimators}.
-\Cref{tab:cost} displays two column for cost; \emph{measured} and \emph{modeled} cost, both in terms of fine-grid inversions.
+%Details about the estimators can be obtained from \cref{tab:lma:estimators}.
+\Cref{tab:cost} displays two columns for cost; \emph{measured} and \emph{modeled} cost, both in terms of fine-grid inversions.
 We decided for this cost metric, because it is machine-independent yet expressive.
 A conversion to absolute time to solution (TTS) can readily be made by plugging in the time of a fine-grid inversion on some system of interest.
 Speedups are ratios of these numbers and absolute TTS will cancel in such ratios.
@@ -488,14 +508,14 @@ For instance on the G7 lattice with a large intermediate \Ln{1} lattice, we see 
 Main reason for that is the difference in preconditioning.
 However, it directly results in about three times slower inversions in terms of TTS.
 Nevertheless we see clear improvement even with our inefficient coarse grid solver.
-In \cref{sec:numerics:coarse:condition} we will show that the coarse Dirac operators are indeed easier to invert in all cases assuming the same solver algorithm is used.
+In \cref{sec:numerics:coarse:condition} we will show numerically that the coarse Dirac operators are indeed easier to invert in all cases, assuming the same solver algorithm.
 
 The stochastic estimator in \cref{tab:cost} is our baseline.
 It is straightforward to determine its cost in terms of fine-grid inversions; it is read off from \cref{fig:E7:var:vs:sources,fig:F7:var:vs:sources,fig:G7:var:vs:sources} by inspecting where blue line enters the gauge variance error band and multiplying by a factor \num{4}.
 We observe an increase in stochastic sources for larger lattices.
 As discussed in \cref{sec:numerics:volume:scaling}, we expect the stochastic estimator to degrade in efficiency, because the gauge variance decreases inversely proportional to the lattice volume, whereas for the stochastic estimator it is the spatial lattice volume.
 
-Furthermore, we have evaluated an LMA estimator with $\Nc=50$ low modes on all lattices.
+We have evaluated an LMA estimator with $\Nc=50$ low modes on all lattices.
 Whereas on the smallest lattice E7 it is very beneficial, decreasing the cost by a factor of \num{64} with respect to the baseline, it becomes less and less significant on the other lattices giving only a speedup of about \num{2}.
 Clearly we could make the speedup of this estimator roughly constant by increasing the number of low modes proportional to the lattice volume.
 Its cost is determined by counting the number of stochastic sources required on the fine grid to reach gauge variance.
@@ -509,7 +529,7 @@ The measured and the modeled cost for the coarse grid inversion was calculated u
 where $\Nlvl$ is the number of multigrid levels.
 The number of stochastic sources used on level $\lvl$, denoted as $\Nst(\Ln{\lvl})$ is read off from the corresponding columns in \cref{tab:cost}.
 For the measured cost we read of the ratio $\ratio(\Ln{\lvl})$ from \cref{tab:cost:imp} which is the dimensionless ratio of the average measured TTS of a fine grid divided by a coarse grid inversion.
-The modeled ratio will be discussed separately in \cref{sec:numerics:performance:model}.
+The ratio of the modeled cost will be discussed separately in \cref{sec:numerics:performance:model}.
 The factor \num{4} comes from the fact that we use spin-diagonal random wall-sources on all levels which amounts one inversion per spin degree of freedom.
 
 The smallest lattice E7 shows two estimators; a two-level scheme using the $\Nc=50$ low modes to create a subspace with block size $8^4$ (see \cref{tab:lma:estimators}) and a three-level scheme that is the combination of the LMA estimator with the two-level scheme.
@@ -520,11 +540,11 @@ However when instantiating a third level these \num{1024} coarse grid sources de
 We emphasize that this is the same factor \num{64} as the LMA estimator had over the stochastic one, which is not a coincidence, when inspecting \cref{fig:E7:var:vs:sources}.
 Deflation of pure low modes had the effect of pushing down the \Ln{0} variance of the LMA estimator (\cref{fig:E7:var:vs:sources} right).
 In the exact same way we pushed down the \Ln{1} variance (\cref{fig:E7:var:vs:sources} center) by deflating it with the pure low modes (\cref{fig:E7:var:vs:sources} left).
-However, the intermediate non-trivial lattice between the fine grid and the trivial lattice has the effect of both pushing down the \Ln{0} noise to the gauge variance and decreasing the required source on \Ln{1} to \num{16}.
+However, the intermediate non-trivial lattice between the fine grid and the trivial lattice has the effect of both pushing down the \Ln{0} noise to the gauge variance and decreasing the required sources on \Ln{1} to \num{16}.
 
 We go on discussing the intermediate lattice F7, where the MG LMA scheme was not chosen ideally.
-The LMA estimator is not beneficial anymore, making the three-level scheme only marginally better than the two-level one.
-With ideally chosen coarse grids, we would expect its cost in terms of fine-grid inversions to be in between the cost of E7 and G7.
+The LMA estimator is already not beneficial anymore, making the three-level scheme only marginally better than the two-level one.
+With ideally chosen coarse grids, we would expect its cost in terms of fine-grid inversions to be in between the costs of E7 and G7.
 This could have been reached with another intermediate coarse lattice of block size of either $6^4$ or $4^4$ with respect to \Ln{0}, similar as to the four-level scheme of G7.
 
 Finally the largest lattice fully analyzed is G7.
@@ -532,7 +552,7 @@ We have employed the same two-level scheme as for the other lattices but additio
 The final level on this lattice did not contribute and could have been removed safely without cost impact.
 However the final lattices -- if trivial -- were not considered in the cost estimation, because these are just $\Ns \Nc=100$ dimensional all to all contractions, see \cref{eq:mglma:coarsest:exact}.
 
-The cost of the MG LMA compared to the LMA estimators decreased by introducing non-trivial coarse lattices, over which we sample.
+The cost of MG LMA compared to LMA decreased by introducing non-trivial coarse lattices, over which we sample.
 Even with our modest implementation we observe huge speedups over the plain stochastic but also over the LMA estimator with a constant number of low modes.
 
 \begin{table}[b!]
@@ -576,7 +596,7 @@ We note that one should take care when comparing timings from one lattice to ano
 \subsection{Condition of coarse Dirac operators}
 \label{sec:numerics:coarse:condition}
 
-We will continue motivating the performance model by investigating condition numbers of coarse Dirac operators.
+We will continue investigating condition numbers of coarse Dirac operators.
 The success of the method crucially depends on the fact that the coarse Dirac operators are better conditioned than the fine grid one.
 This is because the convergence behavior of Krylov subspace solvers depends on the eigenvalue distribution and the condition number of the operator to solve.
 For instance, for conjugate gradient (CG) the number of iteration steps scales as~\cite{shewchuk1994introduction}
@@ -628,17 +648,18 @@ It is thus save to assume -- with the same solver algorithm on all levels -- tha
 Based on the insights of the previous section, we will quantify the improvement factor of a coarse grid solve compared to a fine grid one.
 This will give us an estimate for the ratio $\ratio$ to use in the cost formula \cref{eq:numerics:cost} to obtain a cost estimate as if we have used the same solver algorithm on all levels, \ie as if we had access to a performant true multigrid solver.
 
-The high coarse grid iteration count of our disadvantageous implementation is refuted considering numerical results in \cref{sec:numerics:coarse:condition}.
+The high coarse grid iteration count of our disadvantageous implementation is refuted considering the numerical results from the previous section.
 A second problem emerges as one increases the dimension of the coarse operators, because they -- even though having the same sparsity pattern as the fine one -- are less sparse in general, since they usually have more color degrees of freedom.
 
-Sparse matrix vector multiplication is the dominant kernel in a Krylov solver.
+Sparse matrix vector multiplication is the dominant kernel in a Krylov solve of a lattice Dirac operator.
 It is a memory bandwidth bound operation.
 The time of a Dirac operator application is proportional to its size in memory, see \cref{fig:coarse:memory}.
 The rightmost data point in the plot is not the fine grid operator as one might assume but the \Ln{1} operator!
-In case of coarse operators from the 4-level scheme of G7, the \Ln{1} operator is about \num{3} times larger in memory than the fine grid Dirac operator from which it is constructed.
+Because of the deceased sparsity, the \Ln{1} operator from the 4-level scheme of G7 is about \num{3} times larger in memory than the fine grid Dirac operator it is constructed from, even though its dimension is about a factor \num{30} smaller.
+%In case of the 4-level scheme of G7, the \Ln{1} operator is about \num{3} times larger in memory than the fine grid Dirac operator from which it is constructed, even though its dimension is about a factor \num{30} smaller, just because of the deceased sparsity.
 Besides the different solver algorithms on fine and coarse grids, this fact is responsible for the degradation of performance of our implementation.
 On first sight this poses a clear problem.
-How can this be beneficial if the operator footprint increases in some cases?
+How can this be beneficial, if the operator memory footprint increases in some cases?
 In the following we will argue that this problem is in fact neither an issue and nor a performance limiter.
 
 We will start with formalizing the cost of a single inversion involving operator $K$.
@@ -647,8 +668,8 @@ Motivated by \cref{fig:coarse:memory}, our choice for the unit of cost is memory
 \cost(K) = \iter(K) \left[ \mem(K) + (N_{K} + 1) \cdot \mem(\psi) \right]
 \end{equation}
 where $\iter(K)$ denotes the average number of iterations required to solve a linear system of equation with the operator $K$ for some right-hand side and some fixed relative residual.
-The memory traffic in bytes produced by applying an operator $K$ or reading a field $\psi$ is denoted by $\mem(K)$ and $\mem(\psi)$ respectively.
-The number $N_K$ depends on the sparsity pattern of the operator, its implementation and the machine\footnote{If $K$ is a nearest neighbor stencil, the right-hand side may be read multiple times, depending on the sparsity pattern of the stencil, implementation thereof, cache hierarchy, size, latency and many more. If $K=D$ the Wilson-Dirac operator in 4D spacetime, $N_K = N_D = 1-9$, because for every lattice point, we need to read all direct neighbors in \num{8} directions including the point itself, compare \cref{eq:Dw:QCD+QED}. In the worst case this amounts \num{9} reads of the same point, but if cache reusage patterns are favorable this number will be smaller.}.
+The memory traffic in bytes produced by applying an operator $K$ or reading a field $\psi$ is denoted by $\mem(K)$ and $\mem(\psi)$, respectively.
+The number $N_K$ depends on the sparsity pattern of the operator, its implementation and the machine\footnote{If $K$ is a nearest neighbor stencil, the right-hand side may be read multiple times, depending on the sparsity pattern of the stencil, implementation thereof, cache hierarchy, size, latency and many more. If $K=D$ the Wilson-Dirac operator in 4D spacetime, $N_K = N_D = 1-9$, because for every lattice point, we need to read all direct neighbors in \num{8} directions including the point itself, compare \cref{eq:Dw:QCD+QED}. In the worst case this amounts \num{9} reads of the same point, but if cache reusage patterns are favorable this number will be closer to \num{1}.}.
 We assume that every solver iteration consists of one application of $K$ which involves one read of $K$, $N_K$ reads and one write of the right-hand side $\psi$.
 We have neglected further operations on the vectors, like scalar products, norms or axpys\footnote{This stands for $a \vect{x} + \vect{y}$, scalar times vector plus vector, "a x plus y". It resembles the BLAS level-1 routine call family of the same name.}, because we assume the operator memory traffic to dominate.
 
@@ -676,7 +697,7 @@ Finally we can define the speedup of a coarse grid solve of $\coarse{K}$ with re
 } \;.
 \end{equation}
 
-With one right-hand side assuming the operator to dominate, $\mem(K) \gg \mem(\psi)$, we find
+With one right-hand side and assuming the operator to dominate, $\mem(K) \gg \mem(\psi)$, we find
 \begin{equation} \label{eq:numerics:speedup:bad}
 \speedup(1)
 \approx \frac{ \iter(K) }{ \iter(\coarse{K}) }
@@ -691,7 +712,7 @@ On the other hand using a multiple right-hand side (mRHS) solver in the asymptot
 \frac{ (N_{K} + 1) }{ (N_{\coarse{K}} + 1) }
   \frac{ \mem(\psi) }{ \mem(\coarse{\psi}) } \;.
 \end{equation}
-We emphasize that the dependence of the memory traffic of the operator $\mem(K)$ dropped, compare \cref{eq:numerics:speedup:bad}.
+We emphasize that the dependence of the memory traffic of the operator $\mem(K)$ dropped, c.f. \cref{eq:numerics:speedup:bad}.
 Conservatively we will assume the iteration count to not change from fine to coarse grid, \ie $\iter(K) = \iter(\coarse{K})$, even though \cref{sec:numerics:coarse:condition} suggested $\iter(K) > \iter(\coarse{K})$, but quantifying that factor is not trivial.
 
 The coarse operator $\coarse{K}$ has the same sparsity pattern as the fine one.
@@ -705,14 +726,14 @@ They are proportional to the dimension,
 \mem(\psi) &= 12 V \cdot \sizeof(Float) \;, \\
 \mem(\coarse{\psi}) &= \coarse{N}_s \coarse{\Nc} \coarse{V} \cdot \sizeof(Float) \;.
 \end{align}
-The irrelevant size of the datatype in bytes, \sizeof(Float), cancels in the ratio and since the produced memory traffic of an inversion $\cost(K)$ is proportional to the TTS of the same, we can interpret the speedup as ratio
+The irrelevant size of the primitive datatype in bytes, \sizeof(Float), cancels in the ratio and since the produced memory traffic of an inversion $\cost(K)$ is proportional to the TTS of the same, we can interpret the speedup as ratio
 \begin{equation} \label{eq:numerics:speedup:good}
 \ratio(\Ln{\lvl})
 = \lim_{\Nrhs \to \infty} \speedup(\Nrhs)
 \approx \frac{ \mem(\psi) }{ \mem(\coarse{\psi}) }
 = \frac{12 V}{ \coarse{N}_s \coarse{\Nc} \coarse{V} } \;.
 \end{equation}
-Thus the cost ratio in our performance model is just the ratio of dimensions.
+Thus the cost ratio in our performance model is just the ratio of the dimensions of the respective Hilbert spaces.
 
 For the determination of the modeled cost in \cref{tab:cost} we used \cref{eq:numerics:cost} with \cref{eq:numerics:speedup:good} as ratio $\ratio$.
 The values are assembled in \cref{tab:cost:model}.
@@ -768,7 +789,7 @@ The most important finding in this chapter is that the achieved variance reducti
 Due to the good overlap with the true low-mode subspace, we observe speedups of more than an order of magnitude compared to the plain stochastic and LMA estimators.
 
 The majority of the variance is contained in the cheap parts, whereas the expensive remainder shows suppressed variance contribution.
-This hierarchical sampling scheme leads to a flat scaling behavior of required number of low modes, leading to a linear volume-scaling in computational cost, effectively eliminating the $V^{2}$-problem inherent to this class of problems.
+This hierarchical sampling scheme leads to a flat scaling behavior in the required number of low modes, leading to a linear volume-scaling in computational cost, effectively eliminating the $V^{2}$-problem inherent to this class of problems.
 Since coarse operators are better conditioned than fine ones, sampling coarse subspaces is always less expensive than sampling fine ones, keeping the cost factor under control.
 
 % \worktodo{

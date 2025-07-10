@@ -1,7 +1,7 @@
 \chapter{Two-point correlator}
 \label{ch:p2:2pt-corr}
 
-\readit{1}
+\readit{2}
 
 \worktodo{
 * 2pt corr
@@ -16,7 +16,7 @@
 
 \tldr{intro}
 We will introduce the light-quark connected meson correlator -- the observable of interest -- in this chapter.
-A discussion of common evaluation strategies will follow, culminating in an analysis of low-mode averaging, its problems in terms of its unfortunate quadratic volume scaling and challenges that emerge when evaluating the remaining pieces not attributed to the low modes.
+A discussion of common evaluation strategies will follow, culminating in an analysis of low-mode averaging applied to it, its problems in terms of its unfortunate quadratic volume scaling and challenges that emerge when evaluating the remaining pieces not attributed to the low modes.
 
 %\section{g-2}
 
@@ -168,30 +168,62 @@ A discussion of common evaluation strategies will follow, culminating in an anal
 The observable of interest in this part is the the connected leading order hadronic vacuum polarization contribution (LO-HVP) to the anomalous magnetic moment of the muon as introduced in \cref{sec:intro:gm2}.
 The connected LO-HVP piece which dominates the error budget is itself a comparably simple observable, but suffers from the signal-to-noise ratio problem.
 The piece we calculate on the lattice is the Euclidean time correlator \cref{eq:coor1}, which in a post-processing phase enters the main integral for the connected LO-HVP contribution \cref{eq:a:mu:lohvp}.
+Before we move on, we need to define the degrees of freedom on a spacetime lattice.
+
+\section{Lattice definition}
+\label{sec:lattice:definition}
+
+\tldr{lattice definition}
+We define a \df{lattice} $\lattice$ as the set of its indices.
+The fine-grid lattice is defined as the triple $\lattice = (\idxspacetime, \idxspin, \idxcolor)$ and its index set is the cross-product $\idxset = \idxspacetime \times \idxspin \times \idxcolor$ with
+\begin{align}
+\begin{aligned}
+\text{the spacetime lattice }
+    \idxspacetime &= \idxtime \times \idxspace, \\
+\text{the temporal lattice }
+    \idxtime  &= \exptime, \\
+\text{the spatial lattice }
+    \idxspace &= \expspace, \\
+\text{the spins }
+    \idxspin  &= \expspin, \\
+\text{the colors }
+    \idxcolor &= \expcolor,
+\end{aligned} \label{eq:index:sets}
+\end{align}
+where $\Lt,L_i,N_s,\Nc \in \mathbb{N}$.
+The product $V = \Lt \Lx \Ly \Lz$ is called the \df{lattice volume}, whereas the product $N_s \Nc$ parametrize the internal degrees of freedom of a spinor field on each lattice point.
+The product of the two $d = V N_s \Nc$ gives us the dimension over the complex numbers $\mathbb{C}$ of spinor fields and operators acting on spinor fields on the lattice.
+The native lattice where fermion fields live with $(N_s, \Nc) = (4,3)$, we will call the \df{fine-grid lattice} $\lattice$.
+Furthermore, the Hilbert space of spinor fields $\vslattice$ is the tensor product of Hilbert spaces,
+\begin{equation}
+\vslattice = \mathcal{H}_{L_0} \otimes \mathcal{H}_{L_1} \otimes \mathcal{H}_{L_2} \otimes \mathcal{H}_{L_3} \otimes \mathcal{H}_{N_s} \otimes \mathcal{H}_{N_c} \cong \mathbb{C}^{d} \;,
+\end{equation}
+where each individual space corresponds to an index set in \cref{eq:index:sets} and is isomorphic to $\mathcal{H}_{N} \cong \mathbb{C}^{N}$.
+We note, the Dirac operator which is an endomorphism on this Hilbert space, $D \colon \vslattice \rightarrow \vslattice$, is not separable into a tensor product, because its action to a spinor field couples and mixes all individual degrees of freedom non-trivially, compare \cref{eq:Dw:QCD+QED}.
 
 \section{Two-point correlator}
 \label{sec:2pt-corr}
 
-We will perform the Wick contraction of \cref{eq:C_corr_xy} on the lattice using Wick's theorem\footnote{We note that continuum objects like the spinor field $\psi(x)_{\alpha \atop a}$ will have a discretized lattice analogue $\psi[x]_{[\alpha] \atop [a]}$, emphasizing that spinors are just vectors with a multi-index or multi-dimensional arrays on a computer.}
+We will perform the Wick contraction of \cref{eq:C_corr_xy} on the lattice using Wick's theorem\footnote{We note that continuum objects like the spinor field $\psi(x)_{\alpha \atop a}$ will have a discretized lattice analogue $\psi[x]_{[\alpha] \atop [a]}$, emphasizing that spinors are just vectors with a multi-index or multi-dimensional arrays put on a computer.}
 \begin{equation}
 \langle \fieldxaa{\psi}{x}{\alpha}{a} \fieldxaa{\bar{\psi}}{y}{\beta}{b} \rangle =
-a^{-4} \propxyab{x}{y}{\alpha}{\beta}{a}{b}
+a^{-4} \propxyab{x}{y}{\alpha}{\beta}{a}{b} \;,
 \end{equation}
-where $\prop = D^{-1}$ the quark propagator and obtain its connected and disconnected contributions,
+where $\prop = D^{-1}$ is the quark propagator and obtain its connected and disconnected contributions,
 \begin{align}
-C_{\mu \nu}(x;y) &= C_{\mu \nu}^{\text{conn}}(x;y) + C_{\mu \nu}^{\text{disc}}(x;y), \\
+C_{\mu \nu}(x;y) &= C_{\mu \nu}^{\text{conn}}(x;y) + C_{\mu \nu}^{\text{disc}}(x;y) \;, \\
 C_{\mu \nu}^{\text{conn}}(x;y) &=
 \tr \left\{
   \propxy{x}{y} \gamma_{\mu} \propxy{y}{x} \gamma_{\nu}
-\right\}, \label{eq:C_corr_Dinv:connected} \\
+\right\} \;, \label{eq:C_corr_Dinv:connected} \\
 C_{\mu \nu}^{\text{disc}}(x;y) &=
 \tr \left\{ \propxy{x}{x} \gamma_{\mu} \right\}
 \cdot
-\tr \left\{ \propxy{y}{y} \gamma_{\nu} \right\},
+\tr \left\{ \propxy{y}{y} \gamma_{\nu} \right\} \;,
 \end{align}
 where the trace is over color and spin indices.
 As motivated in \cref{sec:intro:motivation}, we will concentrate on the connected (light-quark) piece, that contributes about 98\% of the value of $a_{\mu}^{\text{LO-HVP}}$ and 97\% to the variance (see \cref{fig:a_mu:sm:variances,fig:a_mu:lohvp:variances} and ref.~\cite{snowmass:2025}).
-On the lattice the Fourier integral of the connected bare isovector vector correlator, \cref{eq:coor1}, turns into a sum over spatial lattice points and can be evaluated using the results in \cref{eq:C_corr_Dinv:connected} as
+On the lattice the Fourier integral of the connected bare isovector vector correlator, \cref{eq:coor1}, turns into a sum over spatial lattice points and can be evaluated using the result in \cref{eq:C_corr_Dinv:connected} as
 \begin{equation} \label{eq:G:corr:connected}
 G^{\text{conn}}(t) =
 - \frac{a^{3}}{3 \lvert \Omega \rvert}
@@ -200,24 +232,24 @@ G^{\text{conn}}(t) =
 \sum_{k=1}^{3}
 \tr \left\{
   \propxy{t+y_0, \vect{x}}{y} \gamma_k \propxy{y}{t+y_0, \vect{x}} \gamma_k
-\right\}.
+\right\} \;.
 \end{equation}
 There are many strategies to evaluate this observable. In the following we will discuss some of them.
 
 \subsection{Point propagator}
 
-The most straightforward way to evaluate \cref{eq:G:corr:connected} is by using point sources. They are defined to be fields which have support only on one single lattice point $y$. With these sources as right-hand sides, we solve the Dirac equation \num{12} times, once for each color-spin combination
+The most straightforward way to evaluate \cref{eq:G:corr:connected} is by using point sources. They are defined to be fields which have support only on one single lattice point $y$, spin $\beta$ and color $b$, \ie they are standard basis vectors. With these sources as right-hand sides, we solve the Dirac equation \num{12} times, once for each color-spin combination
 \begin{equation} \label{eq:pt:prop:system}
-D \psi^{y, \beta, b} = \eta^{y, \beta, b},
+D \psi^{y, \beta, b} = \eta^{y, \beta, b} \,,
 \quad
-\beta = 0,1,2,3,
+\beta = 0,1,2,3 \;,
 \quad
-b = 0,1,2.
+b = 0,1,2 \;.
 \end{equation}
-In this equation $\eta^{y, \beta, b}$ is a point source
+In this equation $\eta^{y, \beta, b}$ is a point source, meaning
 \begin{equation}
 %\eta^{y, \beta, b}(x)_{\alpha \atop a} = \delta_{\alpha \beta} \delta_{ab} \delta_{xy},
-\fieldxaa{\eta^{y, \beta, b}}{x}{\alpha}{a} = \delta_{\alpha \beta} \delta_{ab} \delta_{xy},
+\fieldxaa{\eta^{y, \beta, b}}{x}{\alpha}{a} = \delta_{\alpha \beta} \delta_{ab} \delta_{xy} \;,
 \end{equation}
 and the solution $\psi^{y, \beta, b} = D^{-1} \eta^{y, \beta, b}$ is the column of the matrix $D^{-1}$ corresponding to source index $(y, \beta, b)$.
 This allows us to define the propagator -- the Green's function to the lattice Dirac operator -- in terms of solutions to \cref{eq:pt:prop:system}
@@ -226,7 +258,7 @@ This allows us to define the propagator -- the Green's function to the lattice D
 \end{equation}
 Since this equality holds for fixed source point $y$ but open spin and color indices $\alpha, \beta, a, b$ and open lattice sink point $x$, the above is called the \df{point-to-all propagator}.
 This not an approximation but an exact equation.
-It makes it possible to evaluate \cref{eq:G:corr:connected} for some restricted set of source points $y \in \Omega$.
+It makes it possible to evaluate \cref{eq:G:corr:connected} for some very restricted set of source points $y \in \Omega$.
 
 We note that one may increase the precision by adding more distinct points to the set $\Omega$, but every source point amounts \num{12} solves of the Dirac equation, which might quickly become expensive.
 However the cost of this estimator -- and by this its precision -- is under control of the user and can be improved arbitrarily even post hoc.
@@ -243,7 +275,7 @@ This means that we use $\Nst$ stochastic noise sources $\eta_n^{\tslice{t_n}}$ d
 \begin{equation} \label{eq:stoch:time_dilution}
 \fieldx{\eta^{\tslice{z_0}}_n}{x} = 0
 \quad
-\text{unless } z_0 = x_0.
+\text{unless } z_0 = x_0 \;.
 \end{equation}
 The sources have zero mean
 \begin{equation}
@@ -251,7 +283,7 @@ The sources have zero mean
   \frac{1}{\Nst}
     \sum_{n=0}^{\Nst-1}
       \fieldxaa{\eta^{\tslice{z_0}}_{n}}{x}{\alpha}{a}
- = 0,
+ = 0 \;,
 \end{equation}
 and unit variance
 \begin{equation}
@@ -264,7 +296,7 @@ and unit variance
 \delta_{\alpha \beta} \;
 \delta_{ab} \;
 \delta_{\vect{x} \vect{y}} \;
-\delta_{y_0 x_0 z_0}.
+\delta_{y_0 x_0 z_0} \;.
 \end{equation}
 The noise can be any (sub-)Gaussian set of noise for instance \ggrp{U}{1} or $\mathbb{Z}_2 = \{-1, 1\}$.
 This allows us to write a stochastic identity in spin, color and space at (for now) fixed time slice $z_0$ as
@@ -275,21 +307,21 @@ This allows us to write a stochastic identity in spin, color and space at (for n
       \eta_n^{\tslice{z_0}}
       (\eta_n^{\tslice{z_0}})^{\dagger}
 = \id_{\idxspin} \otimes \id_{\idxcolor} \otimes \id^{\tslice{z_0}}_{\idxspacetime}
-\equiv \id^{\tslice{z_0}}_{\text{st}}
+\equiv \id^{\tslice{z_0}}_{\text{st}} \;,
 \end{equation}
-with the identities on the tensor spaces \worktodo{symbols not introduced yet}
+with the identities on the tensor spaces %\worktodo{symbols not introduced yet}
 \begin{align}
-(\id_{\idxspin})_{[\alpha \beta]} &= \delta_{\alpha \beta}
-& \text{ for } \alpha, \beta &\in \idxspin \\
-(\id_{\idxcolor})_{[ab]} &= \delta_{ab}
-& \text{ for } a, b &\in \idxcolor \\
-\opxy{\id^{\tslice{z_0}}_{\idxspacetime}}{x}{y} &= \delta_{\vect{x} \vect{y}} \; \delta_{x_0 y_0 z_0}
-& \text{ for } x, y &\in \idxspacetime, z_0 \in \idxtime
+(\id_{\idxspin})_{[\alpha \beta]} &= \delta_{\alpha \beta} \;,
+&\text{for } \alpha, \beta &\in \idxspin \;, \\
+(\id_{\idxcolor})_{[ab]} &= \delta_{ab} \;,
+&\text{for } a, b &\in \idxcolor \;, \\
+\opxy{\id^{\tslice{z_0}}_{\idxspacetime}}{x}{y} &= \delta_{\vect{x} \vect{y}} \; \delta_{x_0 y_0 z_0} \;,
+&\text{for } x, y &\in \idxspacetime, z_0 \in \idxtime \;.
 \end{align}
 %$(\id_{\idxspin})_{\alpha \beta} = \delta_{\alpha \beta}$, $(\id_{\idxcolor})_{ab} = \delta_{ab}$ and $\id^{(z_0)}_{\idxspacetime}(x|y) = \delta_{\vect{x} \vect{y}} \; \delta_{x_0 y_0 z_0}$.
 We notice that if $\Nst < \infty$, \cref{eq:stoch:id} is not an equality.
 Evaluating observables with it will introduce non-negligible stochastic noise from the estimator itself which has to be taken care of when estimating errors.
-However, the identity \cref{eq:stoch:id} can be plugged into \cref{eq:G:corr:connected} at any place.
+However, the identity \cref{eq:stoch:id} can be plugged in \cref{eq:G:corr:connected} at any place.
 All choices are equivalent in terms of computational cost.
 The stochastic estimator inherently introduces a spatial lattice volume average on time slice $z_0$, \ie $\lvert \Omega \rvert = \lvert \idxspace \rvert = L^{3}$.
 It can be seen as a stochastic all-to-all propagator on a fixed time slice $z_0$.
@@ -311,7 +343,7 @@ C(x_0, y_0)
   \fieldx{\eta_n^{\tslice{y_0}}}{w}
   (\fieldx{\eta_n^{\tslice{y_0}}}{z})^{\dagger}
   \propxy{z}{x} \gamma_k
-\right\}.
+\right\} \;.
 \end{align}
 The trace turns into a spinor product by using $\gamma^{5}$-Hermiticity of the lattice Dirac operator $D$ and its propagator $S$,
 \begin{align}
@@ -342,11 +374,11 @@ C(x_0, y_0)
   \gamma_k
   \fieldx{(\prop \gamma_k
   \eta_n^{\tslice{y_0}})}{x}
-}.
+} \;.
 \end{align}
 In this step we define the solutions of the noise sources
 \begin{equation} \label{eq:stoch:C:solves}
-D \psi_{n}^{\Gamma \tslice{t}} = \Gamma \eta_n^{\tslice{t}},
+D \psi_{n}^{\Gamma \tslice{t}} = \Gamma \eta_n^{\tslice{t}} \;,
 \end{equation}
 which finally give us the stochastic estimator in terms of a fermion bilinear
 \begin{align} \label{eq:stoch:C:full:final}
@@ -375,22 +407,22 @@ This analysis shows that a stochastic evaluation of \cref{eq:G:corr:connected} a
 
 Finally, we introduce yet another estimator for \cref{eq:G:corr:connected} using the spectral decomposition of the Hermitian Dirac operator,
 \begin{equation}
-Q = \sum_{n=0}^{12V-1} \lambda_{n} \evec_{n} \evec_{n}^{\dagger},
+Q = \sum_{n=0}^{12V-1} \lambda_{n} \evec_{n} \evec_{n}^{\dagger} \;,
 \qquad
-Q = \gamma^{5} D,
+Q = \gamma^{5} D \;,
 \qquad
-Q^{\dagger} = Q,
+Q^{\dagger} = Q \;,
 \end{equation}
 into an orthonormal eigenbasis $\mathcal{B} = \{ \evec_n \}_{n=0}^{12V-1}$ with
 \begin{equation}
-Q \evec_{n} = \lambda_{n} \evec_{n},
+Q \evec_{n} = \lambda_{n} \evec_{n} \;,
 \qquad
-\evec_{n}^{\dagger} \evec_{m} = \delta_{nm},
+\evec_{n}^{\dagger} \evec_{m} = \delta_{nm} \;,
 \end{equation}
-where the eigenvalues are real $\lambda_{n} \in \mathbb{R}$.
+with real eigenvalues $\lambda_{n} \in \mathbb{R}$.
 The same decomposition holds for the propagator
 \begin{equation} \label{eq:prop:all-to-all}
-\propxy{x}{y} = \sum_{n=0}^{12V-1} \frac{1}{\lambda_{n}} \fieldx{\evec_{n}}{x} \fieldx{\evec_{n}^{\dagger}}{y} \gamma^{5},
+\propxy{x}{y} = \sum_{n=0}^{12V-1} \frac{1}{\lambda_{n}} \fieldx{\evec_{n}}{x} \fieldx{\evec_{n}^{\dagger}}{y} \gamma^{5} \;,
 \end{equation}
 where the $\gamma^{5}$ at the end is because $S = Q^{-1} \gamma^{5}$.
 Analogously, we emphasize just as \cref{eq:prop:pt-to-all} is an exact point-to-all propagator (no approximation involved), the above is an exact all-to-all propagator.
@@ -398,18 +430,18 @@ Analogously, we emphasize just as \cref{eq:prop:pt-to-all} is an exact point-to-
 In its current state, this propagator is not appropriate for numerical computations, because the full eigen-decomposition into all $12V$ modes is prohibitively expensive.
 Although we can truncate the sum in \cref{eq:prop:all-to-all} and only take the $\Nc \ll 12 V$ modes with lowest magnitude eigenvalues, \ie the largest $\frac{1}{\lambda_{n}}$.
 These should be the modes that contribute most to the propagator.
-To do this, we define an orthogonal projector to the space of the $\Nc$ lowest modes
+To do this, we define an orthogonal projector to the space of the $\Nc$ lowest modes as
 \begin{equation} \label{eq:lma:projector}
-P = \sum_{n=0}^{\Nc-1} \evec_n \evec_n^{\dagger},
+P = \sum_{n=0}^{\Nc-1} \evec_n \evec_n^{\dagger} \;,
 \qquad
-P^{2} = P = P^{\dagger}.
+P^{2} = P = P^{\dagger} \;.
 \end{equation}
 The full all-to-all propagator is then decomposed into two terms
 \begin{equation} \label{eq:prop:lma}
 S
 = \underbrace{\sum_{n=0}^{\Nc-1}
   \frac{1}{\lambda_{n}} \evec_{n} \evec_{n}^{\dagger} \gamma^{5}}_{=\prop_e}
-+ \underbrace{(1-P) Q^{-1} \gamma^{5}}_{=\prop_r}
++ \underbrace{(1-P) Q^{-1} \gamma^{5}}_{=\prop_r} \;,
 \end{equation}
 one contribution along the low eigenmode space $\prop_e$ and a remainder $\prop_r$.
 We note that this decomposition is an exact equality.
@@ -423,7 +455,7 @@ G^{\text{conn}}(t)
 = G_{ee}^{\text{conn}}(t)
 + G_{er}^{\text{conn}}(t)
 + G_{re}^{\text{conn}}(t)
-+ G_{rr}^{\text{conn}}(t).
++ G_{rr}^{\text{conn}}(t) \;.
 % - \frac{a^{3}}{3 \lvert \Omega \rvert}
 % \sum_{y \in \Omega}
 % \sum_{\vect{x}} \;
@@ -434,10 +466,10 @@ G^{\text{conn}}(t)
 \end{equation}
 The individual terms can be worked out using properties of the $\gamma$-matrices
 \begin{align}
-\{\gamma^{5}, \gamma_{\mu}\} &= 0,        &  (\gamma^{5})^{2} &= \id, \\
-\gamma_{\mu}^{\dagger} &= \gamma_{\mu},   &  (\gamma^{5})^{\dagger} &= \gamma^{5}.
+\{\gamma^{5}, \gamma_{\mu}\} &= 0 \;,        &  (\gamma^{5})^{2} &= \id \;, \\
+\gamma_{\mu}^{\dagger} &= \gamma_{\mu} \;,   &  (\gamma^{5})^{\dagger} &= \gamma^{5} \;.
 \end{align}
-In the following, we will discuss them individually.
+Since their evaluations differ quite substantially, we will discuss them individually in the following.
 
 For the eigen-eigen term we find
 \begin{multline} \label{eq:Gconn:eigen-eigen}
@@ -479,11 +511,11 @@ G_{ee}^{\text{conn}}(t)
   \gamma^{5}
   \gamma_k
   \fieldx{\evec_{n}}{t+y_0, \vect{x}}
-},
+} \;,
 \end{multline}
 where the $\sprod{\cdot}{\cdot}$ denotes the standard spinor product.
 Since the eigenmodes are defined on every lattice point, we can easily perform a full volume average of this contribution, $\lvert \Omega \rvert = V$.
-This is characteristic to this estimator but also crucial, because now the eigen-eigen term is at its gauge noise level and its variance cannot be lowered further\footnote{Without employing multi-level sampling schemes for the gauge field.}.
+This is characteristic to this type of estimator but also crucial, because now the eigen-eigen term is at its gauge noise level and its variance cannot be lowered further for a fixed gauge config\footnote{Without employing multi-level sampling schemes for the gauge field.}.
 We note that this is also an all-to-all contraction in the index of eigenmodes $n,m$.
 Due to the exact averaging over the subspace of low modes, this class of estimators is known under the name low-mode averaging (LMA)~\cite{Neff_2001,Giusti_2004,DeGrand_2004}.
 
@@ -502,7 +534,7 @@ G_{er}^{\text{conn}}(t) &=
   \gamma^{5}
   \gamma_k
   \evec_{n}^{\tslice{t+y_0}}
-} \\
+} \;, \\
 G_{re}^{\text{conn}}(t) &=
 \frac{a^{3}}{3 L^{3} \lvert \mathcal{T} \rvert}
 \sum_{y_0 \in \mathcal{T}} \;
@@ -516,27 +548,27 @@ G_{re}^{\text{conn}}(t) &=
   (1-P) S
   \gamma_k
   \evec_{n}^{\tslice{y_0}}
-}
+} \;,
 \end{align}
 where we have introduced the time-diluted modes
 \begin{equation}
 \fieldx{\evec_{n}^{\tslice{t}}}{x} =
 \begin{cases}
-  \fieldx{\evec_{n}}{x} & \text{if } x_0 = t \\
-  0 & \text{otherwise}
+  \fieldx{\evec_{n}}{x} & \text{if } x_0 = t \;, \\
+  0 & \text{otherwise} \;,
 \end{cases} 
 \end{equation}
 such that the original mode can be recovered by summing over all times and they are mutually orthogonal but not orthonormal anymore
 \begin{equation}
-\evec_{n} = \sum_{t=0}^{L_0-1} \evec_{n}^{\tslice{t}},
+\evec_{n} = \sum_{t=0}^{L_0-1} \evec_{n}^{\tslice{t}} \;,
 \qquad
-\sprod{\evec_{n}^{\tslice{t}}}{\evec_{m}^{\tslice{s}}} \sim \delta_{nm} \delta_{ts}.
+\sprod{\evec_{n}^{\tslice{t}}}{\evec_{m}^{\tslice{s}}} \sim \delta_{nm} \delta_{ts} \;.
 \end{equation}
 Both cross-terms are in general complex valued, but they are exactly complex conjugates of each other and thus we only need to estimate one of them
 \begin{align}
 G_{\cross}^{\text{conn}}(t)
 &= G_{er}^{\text{conn}}(t) + G_{re}^{\text{conn}}(t) \\
-&= 2 \Re{G_{er}^{\text{conn}}(t)}
+&= 2 \Re{G_{er}^{\text{conn}}(t)} \;.
 \end{align}
 
 Clearly the cross-term is expensive to estimate exactly, since we need to solve the Dirac equation on every time-diluted mode for every $\gamma$-matrix we want to evaluate the correlator for, \ie solve the systems
@@ -548,31 +580,38 @@ This makes $3 \Nc L_0$ solves!
 Many improved estimators will not include the whole time extend, all $\gamma$-matrices or all modes but a subset of them.
 Additionally, many LMA-scenarios employ heavily truncated solves on subsets for the above and correct the bias regularly with differences of high precision and truncated solves to obtain an unbiased estimator~\cite{bmw_2017,Kuberski_2023}.
 Alternatively one can introduce a stochastic estimator for the cross-term~\cite{lynch2023,fermi_2023}.
+We called this the \emph{cross-term problem}.
+
 Another noteworthy variant goes under the name of all-mode averaging (AMA)~\cite{Blum_2012,Blum_2015,CAA,RBC_2018}.
 It has a slightly different propagator decomposition
 \begin{equation}
 \prop
 = \underbrace{\prop - \prop_{\text{AMA}}}_{\prop_{\text{r}}}
 + \underbrace{\sum_{n=0}^{\Nc-1} \frac{1}{\lambda_n} \evec_n \evec_n^{\dagger} \gamma^{5}
-+ P_n(Q) P \gamma^{5}}_{\prop_{\text{AMA}}}\;.
++ P_n(Q) P \gamma^{5}}_{\prop_{\text{AMA}}} \;.
 \end{equation}
 Here $P_n(Q)$ is a polynomial in $Q$ usually obtained from an implicitly generated polynomial of a truncated solve (TSM)~\cite{Bali_2009} preconditioned by the eigenmodes and $P$ is defined as in \cref{eq:lma:projector}.
+Here, the TSM does not need bias correction, since the above is a exact decomposition, irrespective of the truncation scheme.
 For this estimator, it is also possible to set $N_c=0$ \cite{Blum_2012}.
 The terms involving $\prop_{r}$ are treated with very few sources, since they do not contribute much to the overall variance.
-The polynomial's purpose is to extend the averaging from low modes to all modes, hence the name all-mode averaging.
+Nevertheless, AMA merely moves the problem of the cross-term into the term including $\prop_{\text{AMA}}$ without solving it at its root.
+The polynomial's purpose is to extend the averaging from low modes to all modes, hence the name \emph{all}-mode averaging.
 However, in all scenarios the cost of this term poses one of the major limiters of LMA, a problem which we aim to solve in the remainder of this part.
 
-Finally the rest-rest term is the simplest one in the decomposition.
+Finally, the rest-rest term is the simplest one in the decomposition.
 It is just the standard form \cref{eq:G:corr:connected}, but with $S$ being replaced by $(1-P)S$.
+It can be estimated, for instance with point- or stochastic sources.
 
-Clearly the cost and the effectiveness of the method both critically depend on the number of low modes $\Nc$ where the spectral sum is truncated.
+Clearly the cost and the effectiveness of LMA and variants critically depend on the number of low modes $\Nc$ where the spectral sum is truncated.
+Effectiveness of LMA imposes $\Nc$ to be proportional to the lattice volume, a condition hard to satisfy on large lattices.
+We called this the \emph{$V^{2}$-problem}.
 
-\worktodo{todo}
+%\worktodo{todo}
 
 \section{Summary}
 \label{sec:2pt:summary}
 
 We have introduced the main observable of interest in this thesis -- the connected leading order hadronic vacuum polarization contribution (LO-HVP) to the anomalous magnetic moment of the muon, $a_{\mu}$.
 The connected two point correlation function which dominates the error contribution to the muon $g-2$ comes with high computational cost for sub-percent precision.
-Low-mode averaging as state-of-the-art method for this class of problems was introduced and its main limiters were stated in form of the $V^{2}$ problem and the cross-term problem.
+Low-mode averaging as state-of-the-art method for this class of problems was introduced and its main limiters were stated in form of the $V^{2}$- and the cross-term problem.
 

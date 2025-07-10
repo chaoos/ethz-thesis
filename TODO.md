@@ -23,6 +23,10 @@
 * [ ] i.e -> \ie, and others
 * [ ] Fix ordering of publications and references [P1] to [P11], but then the refs start at [12]
 * [ ] For all figures: check font sizes relative to main text font size
+* [ ] Longer chapter titles, like "Performance" --> "Performance plot of GPU stuff blabla"
+* [ ] `openQ*D` or `openQxD`
+* [ ] Go through refs and check if they look correct
+* [ ] Search for "section" and check if it should be "chapter"
 
 
 ## Final things to check

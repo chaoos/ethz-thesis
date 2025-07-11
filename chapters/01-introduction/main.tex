@@ -652,47 +652,47 @@ Compared to hadronic scales the muon mass is small, implying the largest contrib
 The observable of interest in this part of the document is the connected two-point isovector vector current correlator in the time-momentum representation \cite{Bernecker:2011}.
 The local electromagnetic vector current is defined as
 \begin{align}
-j_{\mu}(x) = q \bar{\psi}(x) \gamma_{\mu} \psi(x),
+j_{\mu}(x) = q \bar{\psi}(x) \gamma_{\mu} \psi(x) \;,
 \quad
-\mu=0,1,2,3
+\mu=0,1,2,3,
 \end{align}
 where $q$ is the charge of the quark, $\psi$ is the Grassmann-valued quark spinor field and $\gamma_{\mu}$ exposes the quantum numbers of a vector particle. From this current, we can define the two-point function
 \begin{align} \label{eq:C_corr_xy}
-C_{\mu \nu}(x;y) = \langle j_{\mu}(x) j_{\nu}(y) \rangle,
+C_{\mu \nu}(x;y) = \langle j_{\mu}(x) j_{\nu}(y) \rangle \;,
 \end{align}
 with a source $y$ and a sink $x$.
 In order to relate this quantity to the energy states of the system, we perform the Fourier transform over the spatial components of the sink variable $x$, project to zero momentum, average over the spatial components of the current and exploit translation invariance of the expression by averaging over some (at this point unspecified) set of distinct source points $y \in \Omega$,
 \begin{align}
 %G_y(t) = - \frac{1}{3} \sum_{k=1}^{3} \int \dd^3 \vect{x} \; C_k(t + y_0, \vect{x}; y).
-C(x_0;y_0) = - \frac{1}{3 \lvert \Omega \rvert} \sum_{y \in \Omega} \sum_{k=1}^{3} \int \dd^3 \vect{x} \; C_{kk}(x; y).
+C(x_0;y_0) = - \frac{1}{3 \lvert \Omega \rvert} \sum_{y \in \Omega} \sum_{k=1}^{3} \int \dd^3 \vect{x} \; C_{kk}(x; y) \;.
 \end{align}
 Furthermore, the correlation function only depends on the time difference $t = x_0 - y_0$ and we finally define the Euclidean time correlator
 %where $t$ is the time difference between the two spacetime points $(t + y_0, \vect{x})$ and $y$.
 %We can exploit translation invariance of the expression and average over some points $y \in \Omega$,
 \begin{align} \label{eq:coor1}
-G(t) = - \frac{1}{3 \lvert \Omega \rvert} \sum_{y \in \Omega} \sum_{k=1}^{3} \int \dd^3 \vect{x} \; C_k(t+y_0, \vect{x}; y).
+G(t) = - \frac{1}{3 \lvert \Omega \rvert} \sum_{y \in \Omega} \sum_{k=1}^{3} \int \dd^3 \vect{x} \; C_k(t+y_0, \vect{x}; y) \;.
 \end{align}
 
 The LO-HVP contribution can then be written as~\cite{Bernecker:2011}
 \begin{equation} \label{eq:a:mu:lohvp}
 a_{\mu}^{\text{LO-HVP}} = 
 \left( \frac{\alpha}{\pi} \right)^{2}
-\int_{0}^{\infty} \dd t \; G(t) K(t; m_{\mu})
+\int_{0}^{\infty} \dd t \; G(t) K(t; m_{\mu}) \;,
 \end{equation}
 where $K(t; m_{\mu})$ is a known analytic kernel function for the leading order depending on the Euclidean time $t$ and the muon mass $m_{\mu}$ only and is given by~\cite{Blum:2004cq}
 \begin{align}
 K(t; m_{\mu}) &= 
 8 \pi^{2} \int_{0}^{\infty} \frac{\dd \omega}{\omega} f(\omega^{2}) \left[
 \omega^{2} t^{2} - 4 \sin^{2}\left(\frac{\omega t}{2}\right)
-\right],
+\right] \;,
 \end{align}
 with
 \begin{equation}
 f(\omega^{2}) = 
-\frac{m_{\mu}^{2} \omega^{2} Z^{3} (1 - \omega^{2} Z)}{1 + m_{\mu}^{2} \omega^{2} Z^{2}},
+\frac{m_{\mu}^{2} \omega^{2} Z^{3} (1 - \omega^{2} Z)}{1 + m_{\mu}^{2} \omega^{2} Z^{2}} \;,
 \quad
 Z =
-- \frac{\omega^{2} - \sqrt{ \omega^{2} + 4 m_{\mu}^{2} \omega^{2} }}{ 2 m_{\mu}^{2} \omega^{2} }.
+- \frac{\omega^{2} - \sqrt{ \omega^{2} + 4 m_{\mu}^{2} \omega^{2} }}{ 2 m_{\mu}^{2} \omega^{2} } \;.
 \end{equation}
 
 \subsection{Window quantities}
@@ -842,7 +842,7 @@ The data points on the mirror lattice though are redundant, because no matter in
 By cleverly defining shifted boundary conditions on the extended lattice, one can thus get away with an extended lattice that is just twice as large as the physical one, irrespective of the number of spatial \Cstar directions.
 This is called the orbifold construction~\cite{openqxd} which is useful for implementations.
 Saying that \Cstar simulations are twice as expensive as periodic ones would still be ignorant to the many peculiarities of gauge field generation and observable evaluation.
-Such a comparison is highly non-trivial as has not been fully carried out as of today.\footnote{One has to consider the missing experience in tuning \Cstar simulations as opposed to periodic ones where the field has decades of experience but also partial lack of theoretical foundation, differences in observable evaluation just to name a few. Also cost savings of incorporating QED dynamically, rather than perturbatively is not trivial to estimate. We will not even attempt.}.
+Such a comparison is highly non-trivial as has not been fully carried out as of today.\footnote{One has to consider the missing experience in tuning \Cstar simulations as opposed to periodic ones where the field has decades of experience but also partial lack of theoretical foundation, differences in observable evaluation just to name a few. Cost savings of incorporating QED dynamically, rather than perturbatively are not trivial to estimate. We will not even attempt.}.
 
 \subsection{QCD+QED}
 

@@ -29,7 +29,7 @@ c) stochastic estimators (Hutchinson) add extra variance which can be large
 
 d) existing solutions: probing/freq. splitting/LMA => motivation for next chapter
 	* connected
-		* LMA 4p
+		* LMA 4p -> 1p
 	* disconnected
 		* HP 1p
 		* FS 1p

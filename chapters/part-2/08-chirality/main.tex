@@ -364,7 +364,7 @@ As in the fine case, we look at the eigenvalue decomposition of the coarse Hermi
 \end{equation}
 with real eigenvalues $\coarse{\lambda}_i$ and eigenvectors $\coarse{\psi}_i$. Using that $\coarse{\Gamma^{5}}$ is an involution, we obtain
 \begin{equation}
-\coarse{K} = \coarse{\Gamma^{5}} \coarse{\Gamma^{5}} \coarse{K} = \sum_{i} \coarse{\lambda}_i \coarse{\Gamma^{5}} \psi_i \psi_i^{\dagger} \;,
+\coarse{K} = \coarse{\Gamma^{5}} \coarse{\Gamma^{5}} \coarse{K} = \sum_{i} \coarse{\lambda}_i \coarse{\Gamma^{5}} \coarse{\psi}_i \coarse{\psi}_i^{\dagger} \;,
 \end{equation}
 and with definitions $\coarse{\sigma}_i = \lvert \coarse{\lambda}_i \rvert$ and $\tilde{\coarse{\psi}}_i = \text{sign}(\lambda_i) \coarse{\psi}_i$ we get \cref{eq:svd} with hatted quantities.
 \end{proof}
@@ -738,7 +738,7 @@ Every panel shows different coarsening block sizes, where ``LMA'' corresponds to
 We continue with studying the spectral hull, $\convshull{A}$, for fine and coarse Dirac operators.
 According to \cref{thm:nr:properties}, the spectral hull is always contained in the numerical range of an operator.
 For a non-normal operator they do not coincide.
-Comparing the areas of the numerical range and the spectral hull can be measure for non-normality.
+Comparing the areas of the numerical range and the spectral hull can be a measure for non-normality.
 
 We have determined the spectral hulls of the Wilson and Wilson-Clover Dirac operators \cref{fig:ch:fine} (see \cref{ch:appendix:nr:ch:estimator} for an algorithm).
 Both are positively stable (spectral hull is in the open right half plane).

@@ -237,6 +237,7 @@ G^{\text{conn}}(t) =
 There are many strategies to evaluate this observable. In the following we will discuss some of them.
 
 \subsection{Point propagator}
+\label{sec:point:prop}
 
 The most straightforward way to evaluate \cref{eq:G:corr:connected} is by using point sources. They are defined to be fields which have support only on one single lattice point $y$, spin $\beta$ and color $b$, \ie they are standard basis vectors. With these sources as right-hand sides, we solve the Dirac equation \num{12} times, once for each color-spin combination
 \begin{equation} \label{eq:pt:prop:system}
@@ -403,215 +404,217 @@ This analysis shows that a stochastic evaluation of \cref{eq:G:corr:connected} a
 
 \worktodo{todo}
 
-\subsection{Spectral propagator and LMA}
+% \subsection{Spectral propagator and LMA}
 
-Finally, we introduce yet another estimator for \cref{eq:G:corr:connected} using the spectral decomposition of the Hermitian Dirac operator,
-\begin{equation}
-Q = \sum_{n=0}^{12V-1} \lambda_{n} \evec_{n} \evec_{n}^{\dagger} \;,
-\qquad
-Q = \gamma^{5} D \;,
-\qquad
-Q^{\dagger} = Q \;,
-\end{equation}
-into an orthonormal eigenbasis $\mathcal{B} = \{ \evec_n \}_{n=0}^{12V-1}$ with
-\begin{equation}
-Q \evec_{n} = \lambda_{n} \evec_{n} \;,
-\qquad
-\evec_{n}^{\dagger} \evec_{m} = \delta_{nm} \;,
-\end{equation}
-with real eigenvalues $\lambda_{n} \in \mathbb{R}$.
-The same decomposition holds for the propagator
-\begin{equation} \label{eq:prop:all-to-all}
-\propxy{x}{y} = \sum_{n=0}^{12V-1} \frac{1}{\lambda_{n}} \fieldx{\evec_{n}}{x} \fieldx{\evec_{n}^{\dagger}}{y} \gamma^{5} \;,
-\end{equation}
-where the $\gamma^{5}$ at the end is because $S = Q^{-1} \gamma^{5}$.
-Analogously, we emphasize just as \cref{eq:prop:pt-to-all} is an exact point-to-all propagator (no approximation involved), the above is an exact all-to-all propagator.
+% Finally, we introduce yet another estimator for \cref{eq:G:corr:connected} using the spectral decomposition of the Hermitian Dirac operator,
+% \begin{equation}
+% Q = \sum_{n=0}^{12V-1} \lambda_{n} \evec_{n} \evec_{n}^{\dagger} \;,
+% \qquad
+% Q = \gamma^{5} D \;,
+% \qquad
+% Q^{\dagger} = Q \;,
+% \end{equation}
+% into an orthonormal eigenbasis $\mathcal{B} = \{ \evec_n \}_{n=0}^{12V-1}$ with
+% \begin{equation}
+% Q \evec_{n} = \lambda_{n} \evec_{n} \;,
+% \qquad
+% \evec_{n}^{\dagger} \evec_{m} = \delta_{nm} \;,
+% \end{equation}
+% with real eigenvalues $\lambda_{n} \in \mathbb{R}$.
+% The same decomposition holds for the propagator
+% \begin{equation} \label{eq:prop:all-to-all}
+% \propxy{x}{y} = \sum_{n=0}^{12V-1} \frac{1}{\lambda_{n}} \fieldx{\evec_{n}}{x} \fieldx{\evec_{n}^{\dagger}}{y} \gamma^{5} \;,
+% \end{equation}
+% where the $\gamma^{5}$ at the end is because $S = Q^{-1} \gamma^{5}$.
+% Analogously, we emphasize just as \cref{eq:prop:pt-to-all} is an exact point-to-all propagator (no approximation involved), the above is an exact all-to-all propagator.
 
-In its current state, this propagator is not appropriate for numerical computations, because the full eigen-decomposition into all $12V$ modes is prohibitively expensive.
-Although we can truncate the sum in \cref{eq:prop:all-to-all} and only take the $\Nc \ll 12 V$ modes with lowest magnitude eigenvalues, \ie the largest $\frac{1}{\lambda_{n}}$.
-These should be the modes that contribute most to the propagator.
-To do this, we define an orthogonal projector to the space of the $\Nc$ lowest modes as
-\begin{equation} \label{eq:lma:projector}
-P = \sum_{n=0}^{\Nc-1} \evec_n \evec_n^{\dagger} \;,
-\qquad
-P^{2} = P = P^{\dagger} \;.
-\end{equation}
-The full all-to-all propagator is then decomposed into two terms
-\begin{equation} \label{eq:prop:lma}
-S
-= \underbrace{\sum_{n=0}^{\Nc-1}
-  \frac{1}{\lambda_{n}} \evec_{n} \evec_{n}^{\dagger} \gamma^{5}}_{=\prop_e}
-+ \underbrace{(1-P) Q^{-1} \gamma^{5}}_{=\prop_r} \;,
-\end{equation}
-one contribution along the low eigenmode space $\prop_e$ and a remainder $\prop_r$.
-We note that this decomposition is an exact equality.
+% In its current state, this propagator is not appropriate for numerical computations, because the full eigen-decomposition into all $12V$ modes is prohibitively expensive.
+% Although we can truncate the sum in \cref{eq:prop:all-to-all} and only take the $\Nc \ll 12 V$ modes with lowest magnitude eigenvalues, \ie the largest $\frac{1}{\lambda_{n}}$.
+% These should be the modes that contribute most to the propagator.
+% To do this, we define an orthogonal projector to the space of the $\Nc$ lowest modes as
+% \begin{equation} \label{eq:lma:projector}
+% P = \sum_{n=0}^{\Nc-1} \evec_n \evec_n^{\dagger} \;,
+% \qquad
+% P^{2} = P = P^{\dagger} \;.
+% \end{equation}
+% The full all-to-all propagator is then decomposed into two terms
+% \begin{equation} \label{eq:prop:lma}
+% S
+% = \underbrace{\sum_{n=0}^{\Nc-1}
+%   \frac{1}{\lambda_{n}} \evec_{n} \evec_{n}^{\dagger} \gamma^{5}}_{=\prop_e}
+% + \underbrace{(1-P) Q^{-1} \gamma^{5}}_{=\prop_r} \;,
+% \end{equation}
+% one contribution along the low eigenmode space $\prop_e$ and a remainder $\prop_r$.
+% We note that this decomposition is an exact equality.
 
-The correlator has two slots for propagators.
-We can either plug \cref{eq:prop:lma} in only one slot or in both of them.
-Both options give different valid estimators.
-We will continue with the latter and since the propagator is now a sum of two terms, we obtain four terms for the correlator,
-\begin{equation}
-G^{\text{conn}}(t)
-= G_{ee}^{\text{conn}}(t)
-+ G_{er}^{\text{conn}}(t)
-+ G_{re}^{\text{conn}}(t)
-+ G_{rr}^{\text{conn}}(t) \;.
-% - \frac{a^{3}}{3 \lvert \Omega \rvert}
-% \sum_{y \in \Omega}
-% \sum_{\vect{x}} \;
-% \sum_{k=1}^{3}
-% \tr \left[
-%   \prop(t+y_0, \vect{x}|y) \gamma_k \prop(y|t+y_0, \vect{x}) \gamma_k
-% \right].
-\end{equation}
-The individual terms can be worked out using properties of the $\gamma$-matrices
-\begin{align}
-\{\gamma^{5}, \gamma_{\mu}\} &= 0 \;,        &  (\gamma^{5})^{2} &= \id \;, \\
-\gamma_{\mu}^{\dagger} &= \gamma_{\mu} \;,   &  (\gamma^{5})^{\dagger} &= \gamma^{5} \;.
-\end{align}
-Since their evaluations differ quite substantially, we will discuss them individually in the following.
+% The correlator has two slots for propagators.
+% We can either plug \cref{eq:prop:lma} in only one slot or in both of them.
+% Both options give different valid estimators.
+% We will continue with the latter and since the propagator is now a sum of two terms, we obtain four terms for the correlator,
+% \begin{equation}
+% G^{\text{conn}}(t)
+% = G_{ee}^{\text{conn}}(t)
+% + G_{er}^{\text{conn}}(t)
+% + G_{re}^{\text{conn}}(t)
+% + G_{rr}^{\text{conn}}(t) \;.
+% % - \frac{a^{3}}{3 \lvert \Omega \rvert}
+% % \sum_{y \in \Omega}
+% % \sum_{\vect{x}} \;
+% % \sum_{k=1}^{3}
+% % \tr \left[
+% %   \prop(t+y_0, \vect{x}|y) \gamma_k \prop(y|t+y_0, \vect{x}) \gamma_k
+% % \right].
+% \end{equation}
+% The individual terms can be worked out using properties of the $\gamma$-matrices
+% \begin{align}
+% \{\gamma^{5}, \gamma_{\mu}\} &= 0 \;,        &  (\gamma^{5})^{2} &= \id \;, \\
+% \gamma_{\mu}^{\dagger} &= \gamma_{\mu} \;,   &  (\gamma^{5})^{\dagger} &= \gamma^{5} \;.
+% \end{align}
+% Since their evaluations differ quite substantially, we will discuss them individually in the following.
 
-For the eigen-eigen term we find
-\begin{multline} \label{eq:Gconn:eigen-eigen}
-G_{ee}^{\text{conn}}(t)
+% For the eigen-eigen term we find
+% \begin{multline} \label{eq:Gconn:eigen-eigen}
+% G_{ee}^{\text{conn}}(t)
+% % = - \frac{a^{3}}{3 V}
+% % \sum_{k=1}^{3}
+% % \sum_{n,m=0}^{\Nc-1} \frac{1}{\lambda_{n} \lambda_{m}}
+% % \sum_{y_0=0}^{L_0-1} \;
+% % \sprod{
+% %   \evec_{n}^{(y_0)}
+% % }{
+% %   \gamma^{5}
+% %   \gamma_k
+% %   \evec_{m}^{(y_0)}
+% % } \\
+% % \cdot
+% % \sprod{
+% %   \evec_{m}^{(t+y_0)}
+% % }{
+% %   \gamma^{5}
+% %   \gamma_k
+% %   \evec_{n}^{(t+y_0)}
+% % }.
 % = - \frac{a^{3}}{3 V}
 % \sum_{k=1}^{3}
 % \sum_{n,m=0}^{\Nc-1} \frac{1}{\lambda_{n} \lambda_{m}}
-% \sum_{y_0=0}^{L_0-1} \;
+% \sum_{\vect{x},y} \;
 % \sprod{
-%   \evec_{n}^{(y_0)}
+%   \fieldx{\evec_{n}}{y}
 % }{
 %   \gamma^{5}
 %   \gamma_k
-%   \evec_{m}^{(y_0)}
+%   \fieldx{\evec_{m}}{y}
 % } \\
 % \cdot
 % \sprod{
-%   \evec_{m}^{(t+y_0)}
+%   \fieldx{\evec_{m}}{t+y_0, \vect{x}}
 % }{
 %   \gamma^{5}
 %   \gamma_k
-%   \evec_{n}^{(t+y_0)}
-% }.
-= - \frac{a^{3}}{3 V}
-\sum_{k=1}^{3}
-\sum_{n,m=0}^{\Nc-1} \frac{1}{\lambda_{n} \lambda_{m}}
-\sum_{\vect{x},y} \;
-\sprod{
-  \fieldx{\evec_{n}}{y}
-}{
-  \gamma^{5}
-  \gamma_k
-  \fieldx{\evec_{m}}{y}
-} \\
-\cdot
-\sprod{
-  \fieldx{\evec_{m}}{t+y_0, \vect{x}}
-}{
-  \gamma^{5}
-  \gamma_k
-  \fieldx{\evec_{n}}{t+y_0, \vect{x}}
-} \;,
-\end{multline}
-where the $\sprod{\cdot}{\cdot}$ denotes the standard spinor product.
-Since the eigenmodes are defined on every lattice point, we can easily perform a full volume average of this contribution, $\lvert \Omega \rvert = V$.
-This is characteristic to this type of estimator but also crucial, because now the eigen-eigen term is at its gauge noise level and its variance cannot be lowered further for a fixed gauge config\footnote{Without employing multi-level sampling schemes for the gauge field.}.
-We note that this is also an all-to-all contraction in the index of eigenmodes $n,m$.
-Due to the exact averaging over the subspace of low modes, this class of estimators is known under the name low-mode averaging (LMA)~\cite{Neff_2001,Giusti_2004,DeGrand_2004}.
+%   \fieldx{\evec_{n}}{t+y_0, \vect{x}}
+% } \;,
+% \end{multline}
+% where the $\sprod{\cdot}{\cdot}$ denotes the standard spinor product.
+% Since the eigenmodes are defined on every lattice point, we can easily perform a full volume average of this contribution, $\lvert \Omega \rvert = V$.
+% This is characteristic to this type of estimator but also crucial, because now the eigen-eigen term is at its gauge noise level and its variance cannot be lowered further for a fixed gauge config\footnote{Without employing multi-level sampling schemes for the gauge field.}.
+% We note that this is also an all-to-all contraction in the index of eigenmodes $n,m$.
+% Due to the exact averaging over the subspace of low modes, this class of estimators is known under the name low-mode averaging (LMA)~\cite{Neff_2001,Giusti_2004,DeGrand_2004}.
 
-The two crossing terms, rest-eigen and eigen-rest, show some symmetry,
-\begin{align}
-G_{er}^{\text{conn}}(t) &=
-\frac{a^{3}}{3 L^{3} \lvert \mathcal{T} \rvert}
-\sum_{y_0 \in \mathcal{T}} \;
-\sum_{n=0}^{\Nc-1} \; \frac{1}{\lambda_{n}}
-\sum_{k=1}^{3} \;
-\sprod{
-  (1-P) S
-  \gamma_k
-  \evec_{n}^{\tslice{y_0}}
-}{
-  \gamma^{5}
-  \gamma_k
-  \evec_{n}^{\tslice{t+y_0}}
-} \;, \\
-G_{re}^{\text{conn}}(t) &=
-\frac{a^{3}}{3 L^{3} \lvert \mathcal{T} \rvert}
-\sum_{y_0 \in \mathcal{T}} \;
-\sum_{n=0}^{\Nc-1} \frac{1}{\lambda_{n}} \;
-\sum_{k=1}^{3} \;
-\sprod{
-  \gamma^{5}
-  \gamma_k
-  \evec_{n}^{\tslice{t+y_0}}
-}{
-  (1-P) S
-  \gamma_k
-  \evec_{n}^{\tslice{y_0}}
-} \;,
-\end{align}
-where we have introduced the time-diluted modes
-\begin{equation}
-\fieldx{\evec_{n}^{\tslice{t}}}{x} =
-\begin{cases}
-  \fieldx{\evec_{n}}{x} & \text{if } x_0 = t \;, \\
-  0 & \text{otherwise} \;,
-\end{cases} 
-\end{equation}
-such that the original mode can be recovered by summing over all times and they are mutually orthogonal but not orthonormal anymore
-\begin{equation}
-\evec_{n} = \sum_{t=0}^{L_0-1} \evec_{n}^{\tslice{t}} \;,
-\qquad
-\sprod{\evec_{n}^{\tslice{t}}}{\evec_{m}^{\tslice{s}}} \sim \delta_{nm} \delta_{ts} \;.
-\end{equation}
-Both cross-terms are in general complex valued, but they are exactly complex conjugates of each other and thus we only need to estimate one of them
-\begin{align}
-G_{\cross}^{\text{conn}}(t)
-&= G_{er}^{\text{conn}}(t) + G_{re}^{\text{conn}}(t) \\
-&= 2 \Re{G_{er}^{\text{conn}}(t)} \;.
-\end{align}
+% The two crossing terms, rest-eigen and eigen-rest, show some symmetry,
+% \begin{align}
+% G_{er}^{\text{conn}}(t) &=
+% \frac{a^{3}}{3 L^{3} \lvert \mathcal{T} \rvert}
+% \sum_{y_0 \in \mathcal{T}} \;
+% \sum_{n=0}^{\Nc-1} \; \frac{1}{\lambda_{n}}
+% \sum_{k=1}^{3} \;
+% \sprod{
+%   (1-P) S
+%   \gamma_k
+%   \evec_{n}^{\tslice{y_0}}
+% }{
+%   \gamma^{5}
+%   \gamma_k
+%   \evec_{n}^{\tslice{t+y_0}}
+% } \;, \\
+% G_{re}^{\text{conn}}(t) &=
+% \frac{a^{3}}{3 L^{3} \lvert \mathcal{T} \rvert}
+% \sum_{y_0 \in \mathcal{T}} \;
+% \sum_{n=0}^{\Nc-1} \frac{1}{\lambda_{n}} \;
+% \sum_{k=1}^{3} \;
+% \sprod{
+%   \gamma^{5}
+%   \gamma_k
+%   \evec_{n}^{\tslice{t+y_0}}
+% }{
+%   (1-P) S
+%   \gamma_k
+%   \evec_{n}^{\tslice{y_0}}
+% } \;,
+% \end{align}
+% where we have introduced the time-diluted modes
+% \begin{equation}
+% \fieldx{\evec_{n}^{\tslice{t}}}{x} =
+% \begin{cases}
+%   \fieldx{\evec_{n}}{x} & \text{if } x_0 = t \;, \\
+%   0 & \text{otherwise} \;,
+% \end{cases} 
+% \end{equation}
+% such that the original mode can be recovered by summing over all times and they are mutually orthogonal but not orthonormal anymore
+% \begin{equation}
+% \evec_{n} = \sum_{t=0}^{L_0-1} \evec_{n}^{\tslice{t}} \;,
+% \qquad
+% \sprod{\evec_{n}^{\tslice{t}}}{\evec_{m}^{\tslice{s}}} \sim \delta_{nm} \delta_{ts} \;.
+% \end{equation}
+% Both cross-terms are in general complex valued, but they are exactly complex conjugates of each other and thus we only need to estimate one of them
+% \begin{align}
+% G_{\cross}^{\text{conn}}(t)
+% &= G_{er}^{\text{conn}}(t) + G_{re}^{\text{conn}}(t) \\
+% &= 2 \Re{G_{er}^{\text{conn}}(t)} \;.
+% \end{align}
 
-Clearly the cross-term is expensive to estimate exactly, since we need to solve the Dirac equation on every time-diluted mode for every $\gamma$-matrix we want to evaluate the correlator for, \ie solve the systems
-\begin{equation}
-D \psi = (1-P) \gamma_k \evec_{n}^{\tslice{t}}
-\end{equation}
-for all $k = 1,2,3$, $t \in \stime$ and $n = 0, \ldots, \Nc-1$.
-This makes $3 \Nc L_0$ solves!
-Many improved estimators will not include the whole time extend, all $\gamma$-matrices or all modes but a subset of them.
-Additionally, many LMA-scenarios employ heavily truncated solves on subsets for the above and correct the bias regularly with differences of high precision and truncated solves to obtain an unbiased estimator~\cite{bmw_2017,Kuberski_2023}.
-Alternatively one can introduce a stochastic estimator for the cross-term~\cite{lynch2023,fermi_2023}.
-We called this the \emph{cross-term problem}.
+% Clearly the cross-term is expensive to estimate exactly, since we need to solve the Dirac equation on every time-diluted mode for every $\gamma$-matrix we want to evaluate the correlator for, \ie solve the systems
+% \begin{equation}
+% D \psi = (1-P) \gamma_k \evec_{n}^{\tslice{t}}
+% \end{equation}
+% for all $k = 1,2,3$, $t \in \stime$ and $n = 0, \ldots, \Nc-1$.
+% This makes $3 \Nc L_0$ solves!
+% Many improved estimators will not include the whole time extend, all $\gamma$-matrices or all modes but a subset of them.
+% Additionally, many LMA-scenarios employ heavily truncated solves on subsets for the above and correct the bias regularly with differences of high precision and truncated solves to obtain an unbiased estimator~\cite{bmw_2017,Kuberski_2023}.
+% Alternatively one can introduce a stochastic estimator for the cross-term~\cite{lynch2023,fermi_2023}.
+% We called this the \emph{cross-term problem}.
 
-Another noteworthy variant goes under the name of all-mode averaging (AMA)~\cite{Blum_2012,Blum_2015,CAA,RBC_2018}.
-It has a slightly different propagator decomposition
-\begin{equation}
-\prop
-= \underbrace{\prop - \prop_{\text{AMA}}}_{\prop_{\text{r}}}
-+ \underbrace{\sum_{n=0}^{\Nc-1} \frac{1}{\lambda_n} \evec_n \evec_n^{\dagger} \gamma^{5}
-+ P_n(Q) P \gamma^{5}}_{\prop_{\text{AMA}}} \;.
-\end{equation}
-Here $P_n(Q)$ is a polynomial in $Q$ usually obtained from an implicitly generated polynomial of a truncated solve (TSM)~\cite{Bali_2009} preconditioned by the eigenmodes and $P$ is defined as in \cref{eq:lma:projector}.
-Here, the TSM does not need bias correction, since the above is a exact decomposition, irrespective of the truncation scheme.
-For this estimator, it is also possible to set $N_c=0$ \cite{Blum_2012}.
-The terms involving $\prop_{r}$ are treated with very few sources, since they do not contribute much to the overall variance.
-Nevertheless, AMA merely moves the problem of the cross-term into the term including $\prop_{\text{AMA}}$ without solving it at its root.
-The polynomial's purpose is to extend the averaging from low modes to all modes, hence the name \emph{all}-mode averaging.
-However, in all scenarios the cost of this term poses one of the major limiters of LMA, a problem which we aim to solve in the remainder of this part.
+% Another noteworthy variant goes under the name of all-mode averaging (AMA)~\cite{Blum_2012,Blum_2015,CAA,RBC_2018}.
+% It has a slightly different propagator decomposition
+% \begin{equation}
+% \prop
+% = \underbrace{\prop - \prop_{\text{AMA}}}_{\prop_{\text{r}}}
+% + \underbrace{\sum_{n=0}^{\Nc-1} \frac{1}{\lambda_n} \evec_n \evec_n^{\dagger} \gamma^{5}
+% + P_n(Q) P \gamma^{5}}_{\prop_{\text{AMA}}} \;.
+% \end{equation}
+% Here $P_n(Q)$ is a polynomial in $Q$ usually obtained from an implicitly generated polynomial of a truncated solve (TSM)~\cite{Bali_2009} preconditioned by the eigenmodes and $P$ is defined as in \cref{eq:lma:projector}.
+% Here, the TSM does not need bias correction, since the above is a exact decomposition, irrespective of the truncation scheme.
+% For this estimator, it is also possible to set $N_c=0$ \cite{Blum_2012}.
+% The terms involving $\prop_{r}$ are treated with very few sources, since they do not contribute much to the overall variance.
+% Nevertheless, AMA merely moves the problem of the cross-term into the term including $\prop_{\text{AMA}}$ without solving it at its root.
+% The polynomial's purpose is to extend the averaging from low modes to all modes, hence the name \emph{all}-mode averaging.
+% However, in all scenarios the cost of this term poses one of the major limiters of LMA, a problem which we aim to solve in the remainder of this part.
 
-Finally, the rest-rest term is the simplest one in the decomposition.
-It is just the standard form \cref{eq:G:corr:connected}, but with $S$ being replaced by $(1-P)S$.
-It can be estimated, for instance with point- or stochastic sources.
+% Finally, the rest-rest term is the simplest one in the decomposition.
+% It is just the standard form \cref{eq:G:corr:connected}, but with $S$ being replaced by $(1-P)S$.
+% It can be estimated, for instance with point- or stochastic sources.
 
-Clearly the cost and the effectiveness of LMA and variants critically depend on the number of low modes $\Nc$ where the spectral sum is truncated.
-Effectiveness of LMA imposes $\Nc$ to be proportional to the lattice volume, a condition hard to satisfy on large lattices.
-We called this the \emph{$V^{2}$-problem}.
+% Clearly the cost and the effectiveness of LMA and variants critically depend on the number of low modes $\Nc$ where the spectral sum is truncated.
+% Effectiveness of LMA imposes $\Nc$ to be proportional to the lattice volume, a condition hard to satisfy on large lattices.
+% We called this the \emph{$V^{2}$-problem}.
 
 %\worktodo{todo}
 
 \section{Summary}
 \label{sec:2pt:summary}
 
+\worktodo{remove lma}
+
 We have introduced the main observable of interest in this thesis -- the connected leading order hadronic vacuum polarization contribution (LO-HVP) to the anomalous magnetic moment of the muon, $a_{\mu}$.
 The connected two point correlation function which dominates the error contribution to the muon $g-2$ comes with high computational cost for sub-percent precision.
-Low-mode averaging as state-of-the-art method for this class of problems was introduced and its main limiters were stated in form of the $V^{2}$- and the cross-term problem.
+%Low-mode averaging as state-of-the-art method for this class of problems was introduced and its main limiters were stated in form of the $V^{2}$- and the cross-term problem.
 

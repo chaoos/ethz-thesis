@@ -28,11 +28,12 @@
 
 \tldr{intro}
 This chapter will present performance assessments of the various implementations discussed in \cref{ch:p1:interface}.
-The goal is to determine production readiness of the code to run on current accelerator-based super-computing centers, mainly targeting good performance on the very recent GH200 node at CSCS~\cite{fusco2024}.
+The goal is to determine production readiness of the code to run on current accelerator-based super-computing centers, focusing on good performance on the very recent GH200 node at CSCS~\cite{fusco2024}.
 All machines involved in data taking are specified in \cref{sec:perf:hardware}.
 The physics program of the \RCstar collaboration is centered around lattices with \Cstar boundary conditions and occasionally periodic ones.
 Thus, we ran performance tests on lattices specified in \cref{sec:perf:ensembles}, whereas the methodology of measurements is discussed in \cref{sec:perf:methodology}.
-Among the investigated features were the contributions of the dual process grid (\cref{sec:perf:dual}), the efficiency of  heterogeneous workloads using the asynchronous solver with concurrent workload on the CPU (\cref{sec:perf:solver:async}), the blocked solver acting on multiple RHS at the same time (\cref{sec:perf:solver:mrhs}), asymptotic scaling behavior of the Dirac operator (\cref{sec:perf:dop}) and a production multigrid solver (\cref{sec:perf:solver}).
+Among the investigated features were runtime contributions of the dual process grid (\cref{sec:perf:dual}), the efficiency of  heterogeneous workloads using the asynchronous solver with concurrent workload on the CPU (\cref{sec:perf:solver:async}), the blocked solver acting on multiple RHS at the same time (\cref{sec:perf:solver:mrhs}), asymptotic strong and weak scaling behavior of the Dirac operator (\cref{sec:perf:dop}) and finally scaling of multigrid solver used in production (\cref{sec:perf:solver}).
+The chapter ends with concluding remarks and limitation (\cref{sec:perf:summary}).
 
 \section{Hardware specifications}
 \label{sec:perf:hardware}
@@ -504,7 +505,7 @@ The base cases were chosen to be the smallest node count for the computation to 
 \label{sec:perf:summary}
 
 \tldr{performance data conclusion}
-Wrapping up the performance section, we conclude that on a cluster with GH200 nodes with lattices currently accessible to us, we can utilize the resources of the node efficiently.
+Wrapping up the performance chapter, we conclude that on a cluster with GH200 nodes with lattices currently accessible to us, we can utilize the resources of the node efficiently.
 However, performing runs with more than \num{32} GH200 nodes is not advisable because we are clearly in the bad strong scaling region then unless we study larger lattices as the ones considered or increase the number of RHSs substantially.
 In a field where the total problem size naturally grows with the available compute power, good weak scaling makes our software stack future-proof.
 The fact that the largest lattice considered strong scales up to \num{512} GPUs indicates that the code is ready for the exascale.

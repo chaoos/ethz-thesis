@@ -8,7 +8,9 @@
 
 %\newcommand{\Dw}{{D_{\mathrm{w}}}}
 
-In this chapter, we outline some of the main features, design choices and peculiarities of \openqxd, the simulation program worked on in this thesis.
+In this chapter, we outline some of the main features, design choices and peculiarities of \openqxd, the simulation program worked on in this thesis (\cref{sec:openqxd:design}).
+Following a description of the spacetime indexing (\cref{sec:openqxd:index}), we discuss internal memory structures for spinor (\cref{sec:openqxd:spinor:field}), gauge (\cref{sec:openqxd:gauge:field}) and clover fields (\cref{sec:openqxd:clover:field}).
+We continue explaining how \Cstar boundary conditions (\cref{sec:openqxd:cstar}) and dynamical QCD+QED (\cref{sec:openqxd:qcd+qed}) were implemented, before concluding the chapter with a brief summary (\cref{sec:openqxd:summary}).
 
 \tldr{openqxd and openqcd intro}
 The \openqxd code~\cite{openqxd} is an extension of the state-of-the-art lattice QCD Markov Chain Monte Carlo code openQCD~\cite{online:openqcd,Luscher:2012av} which complies to the C89 standard with MPI parallelization and has proven strong-scalability to hundreds of CPU-based nodes including specific optimizations for x86 architectures.
@@ -38,6 +40,7 @@ Due to the extensive suite of legacy applications based on \openqcd as well as i
 % workflow they are kept fixed.}
 
 \section{Design principles}
+\label{sec:openqxd:design}
 
 \tldr{lattice geometry as compile time constants}
 The lattice topology in terms of process grid, global and local lattice sizes is defined globally at compile time in a header file called \code{include/global.h} using C preprocessor directives, see \cref{lst:openqxd:global.h}. This implies that \openqxd must be recompiled every time the lattice or the process grid changes.
@@ -110,7 +113,7 @@ gives the parity of index $x$, and $b$, $n$ are related to $x$ as described in t
 This is implemented in \openqxd by means of the mapping array \code{ipt}, $\hat{x} \coloneqq \text{ipt}\left[\Lambda(x,L)\right]$.
 
 \section{The spinor field}
-\label{sec:openqxd:spinor_field}
+\label{sec:openqxd:spinor:field}
 
 \tldr{spinor struct}
 The double precision spinor field is stored as an array of $V_\mathrm{L}$ \code{spinor\_dble} structs (\cref{lst:openqxd:spinor}) where $V_\mathrm{L} = L_0 L_1 L_2 L_3$ is the rank-local lattice volume.
@@ -159,7 +162,7 @@ From \cref{lst:openqxd:spinor} we can read off the index order of a spinor field
 Functions operating on such spinor fields take base pointers of type \code{spinor\_dble*} as input and output arguments.
 
 \section{The gauge field}
-\label{sec:openqxd:gauge_field}
+\label{sec:openqxd:gauge:field}
 
 \tldr{gauge struct}
 The gauge field is stored as an array of $4V_\mathrm{L}$ \code{su3\_dble} structs (\cref{lst:gauge}).
@@ -180,7 +183,7 @@ The gauge field has indices $(x_{odd}, \pm \mu, a, b)$, where $x_{odd}$ is the l
 Thus, \openqxd stores the gauge links in all \num{8} directions at odd lattice points in contrast to most other common conventions which store \num{4} gauge links in positive directions for every lattice point.
 
 \section{The clover field}
-\label{sec:openqxd:clover_field}
+\label{sec:openqxd:clover:field}
 
 \tldr{clover struct + storage form}
 Finally, it is convenient to precompute the site-local coupling called the clover field which is a function of the gauge-field variables, \cref{eq:intro:clover}.
@@ -250,11 +253,11 @@ The clover field has indices $(x, \pm, i)$, where $x$ is the lattice index, $\pm
 % } complex_dble;
 
 \tldr{new stuff in openqxd compared to openqcd}
-In addition to the data structs discussed in \cref{sec:openqxd:spinor_field,sec:openqxd:gauge_field,sec:openqxd:clover_field} taken over from \openqcd, the \openqxd package -- which provides an extension to incorporate electromagnetic gauge fields -- implements new functionality such as C$^\star$ boundary conditions and additional degrees of freedom.
+In addition to the data structs discussed in \cref{sec:openqxd:spinor:field,sec:openqxd:gauge:field,sec:openqxd:clover:field} taken over from \openqcd, the \openqxd package -- which provides an extension to incorporate electromagnetic gauge fields -- implements new functionality such as C$^\star$ boundary conditions and additional degrees of freedom.
 These are described in more detail in the following two sections.
 
 \section{C\texorpdfstring{$^{\star}$}{*} boundary conditions}
-\label{sec:openqxd:cstar_bcs}
+\label{sec:openqxd:cstar}
 
 \tldr{Cstar BCs = doubling lattice}
 C$^{\star}$ boundary conditions on the lattice can be implemented by means of doubling the lattice in a certain spatial dimension (taken arbitrarily as x-direction in the following).
@@ -287,7 +290,7 @@ All fields are defined on the extended lattice and when copying the field values
 \tldr{Why are they separate in memory?}
 The $\ggrp{SU}{3}$ and $\ggrp{U}{1}$ fields are kept separately in memory, because their clover terms differ both in coefficients and field strength tensors, see \cref{eq:Dw:QCD+QED}.
 Fortunately, the QED clover term does neither change block structure nor Hermiticity of the blocks.
-Therefore, \openqxd simply adds the QED term on top of the QCD term, \cref{eq:Dw2}, and obtains the sum of the two clover terms, still stored in memory as discussed in \cref{sec:openqxd:clover_field}.
+Therefore, \openqxd simply adds the QED term on top of the QCD term, \cref{eq:Dw2}, and obtains the sum of the two clover terms, still stored in memory as discussed in \cref{sec:openqxd:clover:field}.
 Without further changes, functions depending on the clover field now naturally operate on the sum of the two clover fields.
 This will become important later, because \quda is not capable of generating the $\ggrp{U}{1}$ clover term.
 
@@ -295,6 +298,7 @@ This will become important later, because \quda is not capable of generating the
 %\worktodo{we have the SU3 and the U1 fields separately, but also the combined U3 defined on the extended lattice. QED clover term is added on top of the QCD clover term.}
 
 \section{Summary}
+\label{sec:openqxd:summary}
 
 %\worktodo{summary of openqxd}
 

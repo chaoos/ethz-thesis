@@ -1,7 +1,7 @@
 \chapter{Subspace deflation}
 \label{ch:p2:subspace-deflation}
 
-\readit{2}
+\readit{3}
 
 \worktodo{
 * Subspace deflation (2 lvl, loop, hat notation)
@@ -21,9 +21,11 @@
 }
 
 \tldr{subspace deflation intro}
-The method of low-mode averaging from the last chapter will be generalized to cover not only subspaces spanned by low modes but arbitrary subspaces spanned by an arbitrary set of (currently unspecified) orthonormal basis fields.
-We will discuss operators acting on the lattice and how to restrict them to the subspaces -- a process which we will call coarsening.
+The method of low-mode averaging from the last chapter will be generalized to cover not only subspaces spanned by low modes but arbitrary subspaces spanned by an arbitrary set of (currently unspecified) orthonormal basis fields (\cref{sec:sd:def}).
+We will discuss general operators acting on the lattice and how to restrict them to the subspaces -- a process which we will call coarsening (\cref{sec:sd:coarse:ops}).
+Revisiting LMA shows that it is a special case of subspace deflation (\cref{sec:sd:lma}), before we close the chapter with a summary (\cref{sec:sd:summary}).
 % For this, we need to define the degrees of freedom on a spacetime lattice.
+
 
 
 % \section{Lattice definition}
@@ -58,6 +60,7 @@ We will discuss operators acting on the lattice and how to restrict them to the 
 % We note, the Dirac operator which is an endomorphism on this Hilbert space, $D \colon \vslattice \rightarrow \vslattice$, is not separable into a tensor product, because its action to a spinor field couples and mixes all individual degrees of freedom non-trivially, compare \cref{eq:Dw:QCD+QED}.
 
 \section{Subspace definition}
+\label{sec:sd:def}
 
 \tldr{arbitrary ONB}
 We want to formalize and generalize the idea of low-mode averaging from the previous chapter to an arbitrary orthonormal basis of $N$ spinor fields $\phi_{i} \in \mathcal{B}$ spanning an arbitrary subspace $\vspan{\mathcal{B}} \subseteq \vslattice$ of the fine-grid lattice Hilbert space $\vslattice = \mathbb{C}^d$.
@@ -103,6 +106,7 @@ P^{2} = P = P^{\dagger} \;.
 \end{equation}
 
 \section{Coarse operators}
+\label{sec:sd:coarse:ops}
 
 \tldr{coarse operator definition}
 Next, we define operators on the subspace from operators acting on the lattice $\lattice$.
@@ -157,14 +161,14 @@ Trivially, when taking $K = \id$ we find the $\coarse{d} \times \coarse{d}$ iden
 \label{sec:sd:lma}
 
 \tldr{LMA as specific choice of subspace deflation}
-We can immediately see that low-mode averaging is a variant of subspace deflation with a particular choice for the fields spanning the subspace $\coarse{\vslattice}$ and the operator $K$ as
+We can immediately see that low-mode averaging as introduced in the last chapter is a variant of subspace deflation with a particular choice for the fields spanning the subspace $\coarse{\vslattice}$ and the operator $K$ as
 \begin{align}
 K &= \gamma^{5} D \:.  &  &\text{ the Hermitian Dirac operator,} \\
 \phi_i &= \evec_i \;,  &  &\text{ the $N=\Nc$ exact lowest modes of $Q$.}
 \end{align}
 %This choice makes the coarse Hermitian Dirac operator $\coarse{K}$ (as well as its inverse $\coarse{K}^{-1}$) diagonal with the eigenvalues $\lambda_i$ (and their reciprocal values respectively) along the diagonal.
 We assume the eigenvalues of $K$ are enumerated in increasing order with respect to their magnitudes $\lvert \lambda_0 \rvert \leq \lvert \lambda_1 \rvert \leq \ldots \leq \lvert \lambda_{N-1} \rvert$.
-The coarse Hermitian Dirac operator $\coarse{K}$ (as well as its inverse $\coarse{K}^{-1}$) are diagonal matrices with the eigenvalues along their diagonals,
+The coarse Hermitian Dirac operator $\coarse{K}$ (as well as its inverse $\coarse{K}^{-1}$) are then diagonal matrices with the eigenvalues along their diagonals,
 \begin{equation} \label{eq:sd:lma:diagonal:dirac}
 \coarse{K} = \text{diag}\left(\lambda_0, \lambda_1, \ldots, \lambda_{N-1}\right) \;,
 \qquad
@@ -195,6 +199,7 @@ Although this parameter is under direct user control the memory requirements of 
 \tldr{subspace deflation summary}
 We have generalized the idea of low-mode averaging to a deflation of an arbitrary subspace.
 This led to a definition of linear operators restricted to that subspace which we refer to as coarsenings or coarse-grid operators.
+%Such operators need not be diagonal, as is the case for LMA.
 This chapter introduced the deflation of arbitrary subspaces specified by an orthonormal basis set of spinor fields.
 To move data from the fine to the coarse subspace and vice versa, we specified inter-grid operators referred to as restrictor and prolongator.
 This led to the observation that low-mode averaging is variant of subspace deflation with a specific basis choice making the coarse operator diagonal.

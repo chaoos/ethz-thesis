@@ -1,7 +1,7 @@
 \chapter{Two-point correlator}
 \label{ch:p2:2pt-corr}
 
-\readit{2}
+\readit{3}
 
 \worktodo{
 * 2pt corr
@@ -16,7 +16,13 @@
 
 \tldr{intro}
 We will introduce the light-quark connected meson correlator -- the observable of interest -- in this chapter.
-A discussion of common evaluation strategies will follow, culminating in an analysis of low-mode averaging applied to it, its problems in terms of its unfortunate quadratic volume scaling and challenges that emerge when evaluating the remaining pieces not attributed to the low modes.
+The spacetime lattice with all degrees of freedom is formally introduced (\cref{sec:lattice:definition}) before the two-point correlator is brought into a form suitable for computational evaluation (\cref{sec:2pt-corr}) followed by a discussion of common evaluation strategies.
+The chapter ends with a brief summary (\cref{sec:2pt:summary}).
+% culminating in an analysis of low-mode averaging applied to it, its problems in terms of its unfortunate quadratic volume scaling and challenges that emerge when evaluating the remaining pieces not attributed to the low modes.
+
+
+
+
 
 %\section{g-2}
 
@@ -57,7 +63,7 @@ A discussion of common evaluation strategies will follow, culminating in an anal
 % This magnetic moment can be characterized in terms of the dimensionless Landé g-factor also known as the gyro-magnetic ratio, parametrized by $g$ in the formula above.
 % In 1928, Dirac formulated the Dirac equation for relativistic \spinhalf particles and derived their magnetic moment~\cite{dirac1928quantum}.
 % He obtained the g-factor to be $g=2$ exactly.
-% This result is independent of the mass and holds for every fundamental \spinhalf particle including the electron, muon, tauon and even the quarks\footnote{It does not hold for composite \spinhalf particles like the proton or neutron because they are not point-like; an assumption in Dirac's derivation.}.
+% This result is independent of the mass and holds for every fundamental \spinhalf particle including the electron, muon, tau and even the quarks\footnote{It does not hold for composite \spinhalf particles like the proton or neutron because they are not point-like; an assumption in Dirac's derivation.}.
 % The anomalous magnetic moment is defined as the deviation of the g-factor from its tree level result encoding the effects of relativistic quantum field theory,
 % \begin{equation}
 % a_{\ell} = \frac{g_{\ell}-2}{2}.
@@ -108,14 +114,14 @@ A discussion of common evaluation strategies will follow, culminating in an anal
 % The data-driven result -- in tension with the experimental value~\cite{Muong-2:2006rrc,Muong-2:2021ojo} -- is itself obtained using experimental data, namely from the cross-section $\sigma(e^{+} e^{-} \rightarrow \text{hadrons})$ as a function of the center of mass energy $\sqrt{s}$~\cite{davier:2017zfy,keshavarzi:2018mgv,colangelo:2018mtw,hoferichter:2019mqg,davier:2019can,keshavarzi:2019abf}.
 % This is certainly not a first principles theory prediction, but was until recently the only one whose error was competitive with the experimental error estimations.
 % Algorithmic, theoretical and computational advancements over the years made the quantity accessible in the framework of lattice QCD.
-% It is thus to be expected that future Muon $g-2$ Theory Initiative releases will not only include a lattice result for the HVP as of now, but also make it part of the official consensus result.
+% It is thus to be expected that future muon $g-2$ Theory Initiative releases will not only include a lattice result for the HVP as of now, but also make it part of the official consensus result.
 % %whose error quickly become comparable to the data-driven approach.
 % This work will focus on the leading order hadronic vacuum polarization contribution $a_{\mu}^{\text{LO-HVP}}$ to the muon $g-2$ which renders the most challenging contribution to reduce the variance of.
 
 % \section{The leading order HVP contribution}
 % \label{sec:lo-hvp}
 
-% The goal of the Muon $g-2$ Theory Initiative is to reach a relative error contribution to the whole LO-HVP in the regime of a per mill.
+% The goal of the muon $g-2$ Theory Initiative is to reach a relative error contribution to the whole LO-HVP in the regime of a per mill.
 % This poses an immense challenge theoretical, algorithmic and computational.
 % Compared to hadronic scales the muon mass is small, implying the largest contribution to $a_{\mu}$ must come from large distances.
 
@@ -179,19 +185,19 @@ The fine-grid lattice is defined as the triple $\lattice = (\idxspacetime, \idxs
 \begin{align}
 \begin{aligned}
 \text{the spacetime lattice }
-    \idxspacetime &= \idxtime \times \idxspace, \\
+    \idxspacetime &= \idxtime \times \idxspace \;, \\
 \text{the temporal lattice }
-    \idxtime  &= \exptime, \\
+    \idxtime  &= \exptime \;, \\
 \text{the spatial lattice }
-    \idxspace &= \expspace, \\
+    \idxspace &= \expspace \;, \\
 \text{the spins }
-    \idxspin  &= \expspin, \\
+    \idxspin  &= \expspin \;, \\
 \text{the colors }
-    \idxcolor &= \expcolor,
+    \idxcolor &= \expcolor \;,
 \end{aligned} \label{eq:index:sets}
 \end{align}
 where $\Lt,L_i,N_s,\Nc \in \mathbb{N}$.
-The product $V = \Lt \Lx \Ly \Lz$ is called the \df{lattice volume}, whereas the product $N_s \Nc$ parametrize the internal degrees of freedom of a spinor field on each lattice point.
+The product $V = \Lt \Lx \Ly \Lz$ is called the \df{lattice volume}, whereas the product $N_s \Nc$ parametrizes the internal degrees of freedom of a spinor field on each lattice point.
 The product of the two $d = V N_s \Nc$ gives us the dimension over the complex numbers $\mathbb{C}$ of spinor fields and operators acting on spinor fields on the lattice.
 The native lattice where fermion fields live with $(N_s, \Nc) = (4,3)$, we will call the \df{fine-grid lattice} $\lattice$.
 Furthermore, the Hilbert space of spinor fields $\vslattice$ is the tensor product of Hilbert spaces,
@@ -204,12 +210,17 @@ We note, the Dirac operator which is an endomorphism on this Hilbert space, $D \
 \section{Two-point correlator}
 \label{sec:2pt-corr}
 
-We will perform the Wick contraction of \cref{eq:C_corr_xy} on the lattice using Wick's theorem\footnote{We note that continuum objects like the spinor field $\psi(x)_{\alpha \atop a}$ will have a discretized lattice analogue $\psi[x]_{[\alpha] \atop [a]}$, emphasizing that spinors are just vectors with a multi-index or multi-dimensional arrays put on a computer.}
+To obtain a formula which we can evaluate on a computer, we perform a Wick contraction of \cref{eq:C_corr_xy} on the lattice.
+% \begin{align}
+% C_{\mu \nu}(x;y) = \langle j_{\mu}(x) j_{\nu}(y) \rangle \;,
+% \end{align}
+We will use Wick's theorem ($\prop = D^{-1}$ is the quark propagator)
 \begin{equation}
 \langle \fieldxaa{\psi}{x}{\alpha}{a} \fieldxaa{\bar{\psi}}{y}{\beta}{b} \rangle =
 a^{-4} \propxyab{x}{y}{\alpha}{\beta}{a}{b} \;,
 \end{equation}
-where $\prop = D^{-1}$ is the quark propagator and obtain its connected and disconnected contributions,
+to get rid of the Grassmann fields and obtain an expression in terms of quark propagators\footnote{We note that continuum objects like the spinor field $\psi(x)_{\alpha \atop a}$ will have a discretized lattice analogue $\psi[x]_{[\alpha] \atop [a]}$, emphasizing that spinors are just vectors with a multi-index or multi-dimensional arrays put on a computer.}.
+We obtain connected and disconnected contributions,
 \begin{align}
 C_{\mu \nu}(x;y) &= C_{\mu \nu}^{\text{conn}}(x;y) + C_{\mu \nu}^{\text{disc}}(x;y) \;, \\
 C_{\mu \nu}^{\text{conn}}(x;y) &=
@@ -234,7 +245,9 @@ G^{\text{conn}}(t) =
   \propxy{t+y_0, \vect{x}}{y} \gamma_k \propxy{y}{t+y_0, \vect{x}} \gamma_k
 \right\} \;.
 \end{equation}
-There are many strategies to evaluate this observable. In the following we will discuss some of them.
+This is the form suitable for computational evaluation.
+There are many strategies to evaluate this observable.
+In the following we will discuss some of them.
 
 \subsection{Point propagator}
 \label{sec:point:prop}
@@ -247,23 +260,24 @@ D \psi^{y, \beta, b} = \eta^{y, \beta, b} \,,
 \quad
 b = 0,1,2 \;.
 \end{equation}
-In this equation $\eta^{y, \beta, b}$ is a point source, meaning
+In this equation $\eta^{y, \beta, b}$ is a point source,
 \begin{equation}
 %\eta^{y, \beta, b}(x)_{\alpha \atop a} = \delta_{\alpha \beta} \delta_{ab} \delta_{xy},
 \fieldxaa{\eta^{y, \beta, b}}{x}{\alpha}{a} = \delta_{\alpha \beta} \delta_{ab} \delta_{xy} \;,
 \end{equation}
 and the solution $\psi^{y, \beta, b} = D^{-1} \eta^{y, \beta, b}$ is the column of the matrix $D^{-1}$ corresponding to source index $(y, \beta, b)$.
-This allows us to define the propagator -- the Green's function to the lattice Dirac operator -- in terms of solutions to \cref{eq:pt:prop:system}
+This allows us to define the propagator -- the Green's function to the lattice Dirac operator -- in terms of solutions to \cref{eq:pt:prop:system}, explicitly
 \begin{equation} \label{eq:prop:pt-to-all}
 \propxyab{x}{y}{\alpha}{\beta}{a}{b} = \fieldxaa{\psi^{y, \beta, b}}{x}{\alpha}{a} \;.
+%\quad \beta = 0,1,2,3 \;, \quad b = 0,1,2 \;.
 \end{equation}
 Since this equality holds for fixed source point $y$ but open spin and color indices $\alpha, \beta, a, b$ and open lattice sink point $x$, the above is called the \df{point-to-all propagator}.
 This not an approximation but an exact equation.
-It makes it possible to evaluate \cref{eq:G:corr:connected} for some very restricted set of source points $y \in \Omega$.
+It makes it possible to evaluate \cref{eq:G:corr:connected} for some restricted set of source points $y \in \Omega$.
 
 We note that one may increase the precision by adding more distinct points to the set $\Omega$, but every source point amounts \num{12} solves of the Dirac equation, which might quickly become expensive.
 However the cost of this estimator -- and by this its precision -- is under control of the user and can be improved arbitrarily even post hoc.
-Ideal would clearly be to include all lattice points in $\Omega$, but the cost for this is impracticable.
+Ideal would be to include all lattice points in $\Omega$, resulting in a volume average and minimal variance but the cost for this is impracticable.
 
 \subsection{Stochastic propagator}
 \label{sec:stochastic:prop}
@@ -297,7 +311,8 @@ and unit variance
 \delta_{\alpha \beta} \;
 \delta_{ab} \;
 \delta_{\vect{x} \vect{y}} \;
-\delta_{y_0 x_0 z_0} \;.
+\delta_{x_0 z_0} \;
+\delta_{y_0 z_0} \;.
 \end{equation}
 The noise can be any (sub-)Gaussian set of noise for instance \ggrp{U}{1} or $\mathbb{Z}_2 = \{-1, 1\}$.
 This allows us to write a stochastic identity in spin, color and space at (for now) fixed time slice $z_0$ as
@@ -316,29 +331,29 @@ with the identities on the tensor spaces %\worktodo{symbols not introduced yet}
 &\text{for } \alpha, \beta &\in \idxspin \;, \\
 (\id_{\idxcolor})_{[ab]} &= \delta_{ab} \;,
 &\text{for } a, b &\in \idxcolor \;, \\
-\opxy{\id^{\tslice{z_0}}_{\idxspacetime}}{x}{y} &= \delta_{\vect{x} \vect{y}} \; \delta_{x_0 y_0 z_0} \;,
+\opxy{\id^{\tslice{z_0}}_{\idxspacetime}}{x}{y} &= \delta_{\vect{x} \vect{y}} \; \delta_{x_0 z_0} \; \delta_{y_0 z_0} \;,
 &\text{for } x, y &\in \idxspacetime, z_0 \in \idxtime \;.
 \end{align}
 %$(\id_{\idxspin})_{\alpha \beta} = \delta_{\alpha \beta}$, $(\id_{\idxcolor})_{ab} = \delta_{ab}$ and $\id^{(z_0)}_{\idxspacetime}(x|y) = \delta_{\vect{x} \vect{y}} \; \delta_{x_0 y_0 z_0}$.
 We notice that if $\Nst < \infty$, \cref{eq:stoch:id} is not an equality.
-Evaluating observables with it will introduce non-negligible stochastic noise from the estimator itself which has to be taken care of when estimating errors.
+Evaluating observables with it will introduce non-negligible stochastic noise on top of the gauge noise from the estimator itself which has to be taken care of when estimating errors.
 However, the identity \cref{eq:stoch:id} can be plugged in \cref{eq:G:corr:connected} at any place.
 All choices are equivalent in terms of computational cost.
-The stochastic estimator inherently introduces a spatial lattice volume average on time slice $z_0$, \ie $\lvert \Omega \rvert = \lvert \idxspace \rvert = L^{3}$.
+The stochastic estimator inherently introduces a spatial lattice volume average on time slice $z_0$, \ie $\lvert \Omega \rvert = \lvert \idxspace \rvert = L_1 L_2 L_3$.
 It can be seen as a stochastic all-to-all propagator on a fixed time slice $z_0$.
 Upon including all time slices, it is truly a stochastic all-to-all propagator.
 Thus by plugging in the stochastic identity, we find
 \begin{align}
 C(x_0, y_0)
-&= \frac{1}{L^{3}} \sum_{\vect{x}, \vect{y}} \;
+&= \frac{1}{ \lvert \Sigma \rvert } \sum_{\vect{x}, \vect{y}} \;
 \tr \left\{ \propxy{x}{y} \gamma_k \propxy{y}{x} \gamma_k \right\} \\
-&= \frac{1}{L^{3}} \sum_{\vect{x}, w, z} \;
+&= \frac{1}{ \lvert \Sigma \rvert } \sum_{\vect{x}, w, z} \;
 \tr \left\{
   \propxy{x}{w} \gamma_k
   \opxy{\id^{\tslice{y_0}}_{\text{st}}}{w}{z}
   \propxy{z}{x} \gamma_k
 \right\} \\
-&\approx \frac{1}{L^{3} \Nst} \sum_{n=0}^{\Nst-1} \sum_{\vect{x}, w, z} \;
+&\approx \frac{1}{ \lvert \Sigma \rvert  \Nst} \sum_{n=0}^{\Nst-1} \sum_{\vect{x}, w, z} \;
 \tr \left\{
   \propxy{x}{w} \gamma_k
   \fieldx{\eta_n^{\tslice{y_0}}}{w}
@@ -349,7 +364,7 @@ C(x_0, y_0)
 The trace turns into a spinor product by using $\gamma^{5}$-Hermiticity of the lattice Dirac operator $D$ and its propagator $S$,
 \begin{align}
 C(x_0, y_0)
-&\approx \frac{1}{L^{3} \Nst} \sum_{n=0}^{\Nst-1} \sum_{\vect{x}, w, z} \;
+&\approx \frac{1}{ \lvert \Sigma \rvert \Nst} \sum_{n=0}^{\Nst-1} \sum_{\vect{x}, w, z} \;
 \sprod{
   \propxy{x}{z}
   \gamma^{5}
@@ -365,7 +380,7 @@ C(x_0, y_0)
 Finally, the sums on $z$ and $w$ are factorized and can be pulled inside
 \begin{align} \label{eq:stoch:C:full}
 C(x_0, y_0)
-&\approx \frac{1}{L^{3} \Nst} \sum_{n=0}^{\Nst-1} \sum_{\vect{x}} \;
+&\approx \frac{1}{ \lvert \Sigma \rvert \Nst} \sum_{n=0}^{\Nst-1} \sum_{\vect{x}} \;
 \sprod{
   \fieldx{(\prop
   \gamma^{5}
@@ -379,14 +394,14 @@ C(x_0, y_0)
 \end{align}
 In this step we define the solutions of the noise sources
 \begin{equation} \label{eq:stoch:C:solves}
-D \psi_{n}^{\Gamma \tslice{t}} = \Gamma \eta_n^{\tslice{t}} \;,
+D \psi_{n}^{\Gamma \tslice{y_0}} = \Gamma \eta_n^{\tslice{y_0}} \;,
 \end{equation}
 which finally give us the stochastic estimator in terms of a fermion bilinear
 \begin{align} \label{eq:stoch:C:full:final}
 C(x_0, y_0)
 &\approx \frac{1}{\Nst} \sum_{n=0}^{\Nst-1} \; C_n(x_0, y_0) \;, \\
 C_n(x_0, y_0)
-&= \frac{1}{L^{3}} \sum_{\vect{x}} \;
+&= \frac{1}{ \lvert \Sigma \rvert } \sum_{\vect{x}} \;
 \sprod{
   \fieldx{\psi_{n}^{\gamma^{5} \tslice{y_0}}}{x}
 }{
@@ -396,13 +411,16 @@ C_n(x_0, y_0)
 } \;.
 \end{align}
 This expression holds for a fixed time slice $y_0$.
-We may uniformly sample different times $y_0 \in \idxtime$ and take the sample average or just average over all times.
+We may uniformly sample different times $y_0 \in \idxtime$ and take the sample average or just average over all times
+\begin{equation}
+G^{\text{conn}}(t) = \frac{1}{L_0} \sum_{y_0 \in \idxtime}  C(t + y_0, y_0) \;.
+\end{equation}
 
 This analysis shows that a stochastic evaluation of \cref{eq:G:corr:connected} amounts of $4 \Nst$ solves of the Dirac equation. \num{4} because for every individual source, we need a solve for every $\gamma$-matrix that appears in the correlator, see \cref{eq:stoch:C:solves}, meaning for $\Gamma \in \{ \gamma^{5}, \gamma_1, \gamma_2, \gamma_3 \}$.
 
-\subsubsection{Spin diagonal sources}
+% \subsubsection{Spin diagonal sources}
 
-\worktodo{todo}
+% \worktodo{todo}
 
 % \subsection{Spectral propagator and LMA}
 
@@ -612,9 +630,11 @@ This analysis shows that a stochastic evaluation of \cref{eq:G:corr:connected} a
 \section{Summary}
 \label{sec:2pt:summary}
 
-\worktodo{remove lma}
+%\worktodo{remove lma}
 
 We have introduced the main observable of interest in this thesis -- the connected leading order hadronic vacuum polarization contribution (LO-HVP) to the anomalous magnetic moment of the muon, $a_{\mu}$.
-The connected two point correlation function which dominates the error contribution to the muon $g-2$ comes with high computational cost for sub-percent precision.
+Two common simple strategies for its evaluation have been discussed.
+The next chapter will introduce the state-of-the-art method how this observable is evaluated for high-precision studies.
+%The connected two point correlation function which dominates the error contribution to the muon $g-2$ comes with high computational cost for sub-percent precision.
 %Low-mode averaging as state-of-the-art method for this class of problems was introduced and its main limiters were stated in form of the $V^{2}$- and the cross-term problem.
 

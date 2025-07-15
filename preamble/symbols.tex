@@ -128,6 +128,7 @@
               & [{#5} {#6}]
 \end{smallmatrix}}}
 \newcommand{\fieldx}[2]{{#1}[{#2}]}
+\newcommand{\fieldxa}[3]{{{#1}[{#2}]}_{{#3}}}
 \newcommand{\fieldxaa}[4]{{{#1}[{#2}]}_{\begin{smallmatrix}
 [{#3}] \\
 [{#4}]
@@ -178,9 +179,9 @@
 }
 
 %\newcommand{\case}[1]{$\csym = #1$}
-\newcommand{\caseX}[1]{$\csym$ (\hyperlink{id:#1}{#1})}
-\newcommand{\pcaseX}[1]{$\csym$ (\protect\hyperlink{id:#1}{#1})}
-\newcommand{\caseXtwo}[2]{$\csyms$ (\hyperlink{id:#1}{#1}) and (\hyperlink{id:#2}{#2})}
-\newcommand{\caseXthree}[3]{$\csyms$ (\hyperlink{id:#1}{#1}), (\hyperlink{id:#2}{#2}) and (\hyperlink{id:#3}{#3})}
-\newcommand{\caseXfour}[4]{$\csyms$ (\hyperlink{id:#1}{#1}), (\hyperlink{id:#2}{#2}), (\hyperlink{id:#3}{#3}) and (\hyperlink{id:#4}{#4})}
+\newcommand{\caseX}[1]{(\hyperlink{id:#1}{#1})}
+\newcommand{\pcaseX}[1]{(\protect\hyperlink{id:#1}{#1})}
+\newcommand{\caseXtwo}[2]{(\hyperlink{id:#1}{#1}) and (\hyperlink{id:#2}{#2})}
+\newcommand{\caseXthree}[3]{(\hyperlink{id:#1}{#1}), (\hyperlink{id:#2}{#2}) and (\hyperlink{id:#3}{#3})}
+\newcommand{\caseXfour}[4]{(\hyperlink{id:#1}{#1}), (\hyperlink{id:#2}{#2}), (\hyperlink{id:#3}{#3}) and (\hyperlink{id:#4}{#4})}
 \newcommand{\rowtarget}[2]{\hypertarget{id:#1}{#2}}

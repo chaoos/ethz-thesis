@@ -20,12 +20,14 @@
 }
 
 \tldr{mg intro}
-In this chapter we will discuss multigrid as a concept and its prominent role as a solver preconditioner.
-After that, we will construct a decomposed propagator in terms of contributions from multigrid levels.
+In this chapter we will discuss multigrid as a concept and its prominent role as a solver preconditioner (\cref{sec:mg:precond}).
+After that, we will construct a decomposed propagator in terms of contributions from multigrid levels (\cref{sec:mg:prop}).
 By inserting this decomposition into the connected two-point correlator introduced in \cref{ch:p2:2pt-corr}, it enables us to define a new hierarchical stochastic sampling scheme, where every multigrid level is evaluated with separate statistics.
-This defines a new class of variance reduction methods which we call \emph{multigrid low-mode averaging}.
+This defines a new class of variance reduction methods which we call \emph{multigrid low-mode averaging} (\cref{sec:mg:lma}).
+The method will be applied to the two-point correlator (\cref{sec:mg:2pt}) and the section finished with a summary (\cref{sec:mg:summary}).
 
 \section{Multigrid preconditioning}
+\label{sec:mg:precond}
 
 \tldr{solve ill Dirac eq, Krylov solvers suppress low mode components}
 As in \cref{part:gpu}, we are interested to solve the Dirac equation numerically,
@@ -217,6 +219,7 @@ This concept is illustrated in \cref{fig:coarse:stencil}.
 \end{figure}
 
 \section{Multigrid propagator}
+\label{sec:mg:prop}
 
 \tldr{2-lvl MG prop decomposition}
 With the definition of a coarse lattice, we can define a propagator decomposition as
@@ -366,7 +369,7 @@ The relaxed formulation allows more choice in coarse spacetime volumes.
 }
 \end{table}
 
-\tldr{weird for solvers, but good for MG-LMA}
+\tldr{weird for solvers, but good for MG LMA}
 The relaxed formulation might not be meaningful in a solver preconditioning scenario, where inter-grid data movement among subsequent levels is crucial for overall performance.
 In terms of a propagator decomposition it indeed makes sense, not only because it provides more flexibility to fine-tune the evaluation of an observable as seen later, but also because we usually move data from and to level \num{0} and other levels.
 The two variants also differ when it comes to smoothing.
@@ -389,6 +392,7 @@ The formulation of the method and its subsequent analysis that will follow are i
 % \end{equation}
 
 \section{Multigrid low-mode averaging}
+\label{sec:mg:lma}
 
 We are now equipped to formulate a novel variance reduction method to evaluate $n$-point functions.
 
@@ -487,6 +491,7 @@ $C_{\Ln{0}}$ requires fine-grid solves.
 The fact that the coarse Dirac operators have exactly the same sparsity structure as the fine one (see \cref{fig:coarse:op:structure}) allows to use the same solvers algorithms for inversions.
 
 \section{Two-point connected correlator}
+\label{sec:mg:2pt}
 
 \tldr{2-pt example simplified heavily}
 We will continue with the connected bare isovector vector current correlator in the time-momentum representation already touched upon in \cref{sec:2pt-corr,eq:G:corr:connected} -- our target observable.

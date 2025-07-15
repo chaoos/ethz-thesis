@@ -8,7 +8,7 @@
 \readit{2}
 
 % \worktodo{
-%    * we focus on these publications (mg-lma, GPU stuff, not cstar HVP stuff)
+%    * we focus on these publications (MG LMA, GPU stuff, not cstar HVP stuff)
 %    * motivation (1-2 pages)
 %    * intro in lattice field theory (fundamentals)
 %    * action, O(a) improvement
@@ -31,7 +31,7 @@ Its agreement with experimental data is unprecedented.
 Lattice field theory is currently the only non-perturbative regularization of quantum field theory that allows for the numerical computation of non-perturbative observables from first principles.
 %Due to its statistical nature, determinations from lattice field theory can be systematically improved.
 Moreover, determinations from lattice field theory can be systematically improved.
-Gold-plated observables like the anomalous magnetic momentum of Muon $g-2$, where low energy behavior of QCD plays an important role are accessible from basic principles only non-perturbatively with the application of lattice QCD and QED.
+Gold-plated observables like the anomalous magnetic momentum of the muon $g-2$, where low energy behavior of QCD plays an important role are accessible from basic principles only non-perturbatively with the application of lattice QCD and QED.
 When adopting lattice regularization, the fields of the continuum theory are discretized in spacetime and represented as degrees of freedom associated to sites and links in a four dimensional spacetime hypercube.
 The discretization of the theory naturally regularizes ultraviolet and infrared divergences occurring in the continuum theory, due to its finite resolution and volume description.
 Feynman's path integral description of QFT is used as a representation, where the functional integral over field degrees of freedom turns into a high-dimensional regular integral.
@@ -463,8 +463,8 @@ It implies that laws of physics are the same for left-handed and right-handed pa
 \tldr{spontaneous chiral symmetry breaking}
 Spontaneous breaking of chiral symmetry~\cite{PhysRev.117.648} is a non-perturbative feature of the QCD vacuum.
 The chiral condensate $\langle \bar{\psi} \psi \rangle$ is a measure of it -- in fact it is the order parameter of chiral symmetry breaking.
-If the vacuum would respect this symmetry, the chiral condensate would be zero exactly.
-The fact that it is not the case breaks chiral symmetry from
+If the vacuum were to respect this symmetry, the chiral condensate would be exactly zero.
+The fact that this is not the case breaks chiral symmetry from
 \begin{equation}
 SU(N_f)_L \times SU(N_f)_R
 \quad
@@ -492,14 +492,22 @@ A non-zero chiral condensate $\langle \bar{\psi} \psi \rangle = \langle \bar{\ps
 
 \subsection{Renormalization and the continuum limit}
 
-\tldr{regulator, renormalization, cont limit}
+\tldr{regulators, renormalization, cont limit}
 For taking the continuum limit $a \to 0$, one needs to compute the observables of interest for several values of the lattice spacing $a$.
-The lattice spacing serves as a regulator of the theory; it makes divergent quantities finite by cutting off the divergent parts of integrals at the long (IR) and short (UV) distances, \ie it removes divergences like $a^{-n}$ for some $n \geq 1$.
-Naively taking the continuum limit will yield divergent results.
+The lattice spacing serves as a regulator of the theory; it makes divergent quantities finite by cutting off the divergent parts of integrals at the short (UV) distances, \ie it cuts off UV divergences.
+As $a \to 0$ they turn into terms proportional to $a^{-n}$ for some $n \geq 1$.
+In order to recover continuous QCD, the infinite-volume limit $L \to \infty$ has to be taken too, where $L$ is the extent of the lattice box.
+The finite volume is another regulator of the theory; it regularizes the long (IR) distance divergences, leading to finite-volume corrections scaling power-like $L^{-m}$ for some $m \geq 1$ or exponentially $e^{-m_{\pi} L}$.
+Both limits should be considered together to recover continuous QCD.
+
+Naively taking the continuum limit without tuning the bare parameters to the lines of constant physics will yield divergent results.
 On the other hand, results should not depend on the regulator and renormalization is the process of removing the dependency of the regulator from physical quantities.
-After renormalization the computed quantities still have lattice artifacts, \ie terms proportional to powers of $a^{n}$ for some $n \geq 1$.
-These are finally removed by the (now finite) continuum limit $a \to 0$.
-Although, as the lattice spacing becomes finer, simulation cost increases dramatically.
+Renormalization of the theory's parameters on the lattice is done by the choice of the lines of constant physics in the phase space of bare parameters.
+Operators like vector currents and bilinears require additional multiplicative renormalization constants.
+The tuning fixes certain physical quantities, like hadron masses or decay constants to external input.
+In general, after renormalization, the computed quantities still have lattice artifacts, \ie terms proportional to powers of $a^{n}$ for some $n \geq 1$.
+These are finally removed by the continuum limit $a \to 0$.
+As the lattice spacing becomes finer, simulation cost increases dramatically.
 
 \tldr{critical slowing down}
 The simulation cost in the lattice spacing $a$ and the lattice volume $V$ can be modeled as~\cite{Luscher:1998pe}
@@ -557,7 +565,10 @@ In this thesis we will be concerned quite substantially with the volume scaling 
 % * focus on two-point connected vector correlator
 % }
 
-In search of new fundamental physics, lattice field theory can non-perturbatively predict physical quantities using first principles to directly probe the standard model (SM) of particle physics.
+In search of new fundamental physics, lattice field theory
+can predict non-perturbative quantities from first principles
+%can non-perturbatively predict physical quantities using first principles
+to directly probe the standard model (SM) of particle physics.
 This is to search for indirect proofs of its validity.
 A strong-enough tension with an experimental quantity would proof the standard model is not sufficient to describe fundamental interactions.
 One hopes to find an observable where physics not described by the standard model has non-negligible influence in its value.
@@ -587,7 +598,7 @@ However, when interacting with an electromagnetic field, the relativistic treatm
 This magnetic moment can be characterized in terms of the dimensionless Landé g-factor also known as the gyro-magnetic ratio, parametrized by $g$ in the formula above.
 In 1928, Dirac formulated the Dirac equation for relativistic \spinhalf particles and derived their magnetic moment~\cite{dirac1928quantum}.
 He obtained the g-factor to be $g=2$ exactly.
-This result is independent of the mass and holds for every fundamental \spinhalf particle including the electron, muon, tauon and even the quarks\footnote{It does not hold for composite \spinhalf particles like the proton or neutron because they are not point-like; an assumption in Dirac's derivation.}.
+This result is independent of the mass and holds for every fundamental \spinhalf particle including the electron, muon, tau and even the quarks\footnote{It does not hold for composite \spinhalf particles like the proton or neutron because they are not point-like; an assumption in Dirac's derivation.}.
 The anomalous magnetic moment is defined as the deviation of the g-factor from its tree level result encoding the effects of relativistic quantum field theory,
 \begin{equation}
 a_{\ell} = \frac{g_{\ell}-2}{2}.
@@ -750,9 +761,9 @@ Through this choice, the intermediate window (W) is less sensitive to discretiza
 % }
 
 \tldr{theory: high-precision lattice is +QED}
-The last section about the Muon $g-2$ demands high precision determinations of physical quantities on the lattice such as the anomalous magnetic moment of the Muon.
+The last section about the muon $g-2$ demands high precision determinations of physical quantities on the lattice such as the anomalous magnetic moment of the muon.
 Such determinations are required to 
-%Further motivation for such an undertaking come from recent theoretical determinations of the hadronic vacuum polarization contribution (HVP) to the Muon g-2 which
+%Further motivation for such an undertaking come from recent theoretical determinations of the hadronic vacuum polarization contribution (HVP) to the muon g-2 which
 target sub-percent precision on the resulting quantity~\cite{RBC_2024, bmw_2017, Djukanovic:2024cmq, bmw_2024, milc_gm2, ExtendedTwistedMass:2022jpw, FermilabLattice:2024yho,snowmass:2020,snowmass:2025}.
 This poses major challenges for a number of conceptual and computational reasons.
 
@@ -940,7 +951,7 @@ Its dimension is double the periodic case and neighboring points $x \pm \hat{\mu
 \subsection{Muon $g-2$ and high precision physics}
 
 \tldr{SM prediction and goals}
-The Standard Model (SM) prediction of the anomalous magnetic moment of the Muon $a_{\mu}^{\text{SM}}$ has -- as of now -- a precision of \num{532} ppb (parts per billion)~\cite{snowmass:2025}, roughly the precision of the former E821 experiment at BNL~\cite{PhysRevD.73.072003}.
+The Standard Model (SM) prediction of the anomalous magnetic moment of the muon $a_{\mu}^{\text{SM}}$ has -- as of now -- a precision of \num{532} ppb (parts per billion)~\cite{snowmass:2025}, roughly the precision of the former E821 experiment at BNL~\cite{PhysRevD.73.072003}.
 The SM prediction has not yet reached its precision goal of about \num{127} ppb which is the final precision of the ongoing E989 experiment at Fermilab~\cite{Muong-2:2025xyk}.
 Another experiment measuring the quantity with a different method is in preparation at J-PARC~\cite{10.1093/ptep/ptz030}, that can serve as a independent cross check.
 
@@ -988,7 +999,7 @@ Data in this table was taken from ref.~\cite{snowmass:2025}.
 \centering
 \includegraphics[scale=0.5]{\dir/img/a_mu_sm_variances_squares} % 8
 \caption{
-Variance contributions to $a_{\mu}^{\text{SM}}$; the official Standard Model prediction to the anomalous magnetic moment of the Muon $g-2$.
+Variance contributions to $a_{\mu}^{\text{SM}}$; the official Standard Model prediction to the anomalous magnetic moment of the muon $g-2$.
 The areas are proportional to the variances, whereas the side lengths are proportional to the errors.
 The contributions stand for: LO-HVP: lattice determination of the leading order HVP contribution (the one we deal with in this thesis), HlBl: mixed (phenomenology and lattice) result for the hadronic light-by-light contribution up to next-to-leading order (NLO), EW: electro-weak contribution, QED: quantum electrodynamics contribution up to tenth order, N(N)LO-HVP: phenomenological result of higher order terms of the HVP.
 Data for this plot was taken from ref.~\cite{snowmass:2025}.
@@ -1000,7 +1011,7 @@ Data for this plot was taken from ref.~\cite{snowmass:2025}.
 \centering
 \includegraphics[scale=0.5]{\dir/img/a_mu_lohvp_variances_squares}
 \caption{
-Variance contributions to $a_{\mu}^{\text{LO-HVP}}$ (blue square in \cref{fig:a_mu:sm:variances}); the official Standard Model prediction to the leading order hadronic vacuum polarization contribution to the anomalous magnetic moment of the Muon $g-2$.
+Variance contributions to $a_{\mu}^{\text{LO-HVP}}$ (blue square in \cref{fig:a_mu:sm:variances}); the official Standard Model prediction to the leading order hadronic vacuum polarization contribution to the anomalous magnetic moment of the muon $g-2$.
 The areas are proportional to the variances, whereas the side lengths are proportional to the errors.
 The contributions stand for: light: light quark connected contribution (the one we deal with in this thesis), disconnected: sum of all disconnected flavor contributions, strange/charm: contribution of the strange/charm quark flavor.
 Data for this plot was taken from ref.~\cite{snowmass:2025}.
@@ -1084,32 +1095,67 @@ The second part investigates variance reduction using low-mode deflation techniq
 Some of the plots and illustrations presented in this thesis were taken from ref.~\citeOwn{mglma}.
 If so, it is indicated specifically in the captions.
 
-A path not further pursued during my PhD was the evaluation of the leading order HVP of Muon $g-2$ using \Cstar boundary conditions and QCD+QED gauge ensembles.
+A path not further pursued during my PhD was the evaluation of the leading order HVP of the muon $g-2$ using \Cstar boundary conditions and QCD+QED gauge ensembles.
 Publications related to this can be found in refs.~\citeOwn{lattice22:roman,lattice22:paola,lattice22:alessandro,lattice22:jens,qcd_qed_paola}.
 
 
 
 \section{Summary of contributions}
 
-The main contributions of this thesis are as follows:
+In this section, I declare my own achievements and contributions to this thesis according to article \num{13} of \cite{eth:doctorate:stipulations}.
+I wrote all chapters myself.
+I received valuable feedback from colleagues and collaborators, which helped improve the presentation and clarity of this thesis.
+All figures, plots and images were produced by me.
+Some were taken from the publication~\cite{mglma}.
 
-\begin{enumerate}
-   \item \textbf{GPU integration into \openqxd}: Development of a feature to offload inversions to the solver suite of \quda into the core components of \openqxd targeted at observable evaluation. Implementation of \Cstar boundary conditions and the QCD+QED Wilson-Clover Dirac operator in \quda.
-   \item \textbf{Versatile interface API}: Development of useful features such as the dual process grid (\cref{sec:interface:openqxd:dual}) or the asynchronous solver (\cref{sec:interface:solver:async}) allowing heterogeneous computing. The API was designed for easy porting of existing programs in \openqxd that aim to leverage solvers on the GPU.
-   \item \textbf{Performance evaluation}: Performance of all implemented features was carefully measured on state-of-the-art HPC infrastructure and real-world production problems and setups.
-   \item \textbf{CI/CD testing pipeline}: Integration of a CI/CD pipeline into the Git development-repository of \openqxd~\cite{gitlab:openqxd-devel} running on local compute resources as well as on GH200 nodes at CSCS.
-   \item \textbf{Field memory management proposal}: Design and proof-of-concept test of a memory management system to minimize CPU-GPU field transfers useful for a continuation of this work considering gauge field generation.
-   \item \textbf{Development of a novel variance reduction method}: Development, implementation and assessment of a new method called \emph{multigrid low-mode averaging} for $\bigO(a)$-improved Wilson-type fermions, and application of such to the evaluation of the leading order connected light-quark HVP of the Muon $g-2$.
-   \item \textbf{Theoretical considerations of chirality}: Investigation and analysis of chirality, spectral properties, numerical ranges and conditions of coarse and fine Dirac operators.
-\end{enumerate}
+\begin{description}
+\item[\cref{ch:introduction}]: This chapter is introductory, based on established literature and does not contain original research.
+\item Part I: GPU Porting of Dirac Solvers
+   \begin{description}
+   \item[\cref{ch:p1:introduction}]: This chapter is introductory, is based on established literature and does not contain original research.
+   \item[\cref{ch:p1:openqxd}]: I compiled this chapter based on access to the source code of \openqxd and its documentation. No original results are presented here.
+   \item[\cref{ch:p1:quda}]: I compiled this chapter based on access to the source code of \quda and its documentation. No original results are presented here.
+   \item[\cref{ch:p1:interface,ch:p1:develop}]: These chapters describe the software components I developed as part of this project. I was responsible for implementing the core functionality of interfacing \openqxd with \quda. The design of the code was discussed and refined in collaboration with members of the \RCstar collaboration, CSCS engineers and group member related to the PASC project~\cite{online:pasc2025}. The latter also contributed to specific components and architectural decisions. All documentation and the write-up of this chapter were done by me.
+   %\item[\cref{ch:p1:develop}]: \worktodo{todo}
+   \item[\cref{ch:p1:performance}]: This chapter shows performance data of interface components. I conducted all related runs independently and the analysis of data was done by me. Feedback from members of the \RCstar collaboration was incorporated.
+   \item[\cref{ch:p1:cicd}]: The automated testing pipeline was designed and introduced to the development repository~\cite{gitlab:openqxd-devel} by me. CSCS engineers were involved in consultation for best practices.
+   \item[\cref{ch:p1:memory}]: The memory management proposal was developed by me and a small proof-of-concept program was written by me too.
+   \item[\cref{ch:p1:conclusions}]: This chapter was written by me and reflects my own views and conclusions.
+   \end{description}
+\item Part II: Variance Reduction for Two-Point Functions
+   \begin{description}
+   \item[\cref{ch:p2:introduction}]: This chapter is introductory, is based on established literature and does not contain original research.
+   \item[\cref{ch:p2:2pt-corr}]: This chapter introduces the relevant formulae required later. Apart from notation, no original results are presented here.
+   \item[\cref{ch:p2:lma}]: This chapter introduces the important variance reduction method low-mode averaging and some of its many variants. No original results are presented here.
+   \item[\cref{ch:p2:subspace-deflation}]: The novelty in this chapter is the deflation of arbitrary subspaces required later.
+   \item[\cref{ch:p2:lc}]: Local coherence is a concept known in literature. This chapter briefly introduces the concept. No original results are presented here.
+   \item[\cref{ch:p2:multigrid}]: Multigrid preconditioning is an established concept and widely used in the field. The original research consists of the decomposition of the propagator, its usage as variance reduction method and developments that follow. This was developed by me based on advise and feedback of colleagues and collaborators.
+   \item[\cref{ch:p2:numerics}]: I have developed the observable evaluation code, the recursive multigrid and all results were generated by me. The gauge fields used for the numerical analysis of the method, apart from the lattice F7~\cite{online:cls}, were generated by Tim Harris. Feedback from my supervisor Marina Marinković and Tim Harris helped improve the simulation strategy.
+   \item[\cref{ch:p2:chirality}]: Theoretical insight from this chapter are my own. Textbook results from numerical range theory were used, but also indicated if so. Ideas about preservation of chirality are partially based on existing literature.
+   \item[\cref{ch:p2:conclusions}]: This chapter was written by me and reflects my own views and conclusions.
+   \end{description}
+\item[\cref{ch:summary}]: This chapter was written by me and reflects my own views and conclusions.
+\end{description}
+
+% The main contributions of this thesis are as follows:
+
+% \begin{enumerate}
+%    \item \textbf{GPU integration into \openqxd}: Development of a feature to offload inversions to the solver suite of \quda into the core components of \openqxd targeted at observable evaluation. Implementation of \Cstar boundary conditions and the QCD+QED Wilson-Clover Dirac operator in \quda.
+%    \item \textbf{Versatile interface API}: Development of useful features such as the dual process grid (\cref{sec:interface:openqxd:dual}) or the asynchronous solver (\cref{sec:interface:solver:async}) allowing heterogeneous computing. The API was designed for easy porting of existing programs in \openqxd that aim to leverage solvers on the GPU.
+%    \item \textbf{Performance evaluation}: Performance of all implemented features was carefully measured on state-of-the-art HPC infrastructure and real-world production problems and setups.
+%    \item \textbf{CI/CD testing pipeline}: Integration of a CI/CD pipeline into the Git development-repository of \openqxd~\cite{gitlab:openqxd-devel} running on local compute resources as well as on GH200 nodes at CSCS.
+%    \item \textbf{Field memory management proposal}: Design and proof-of-concept test of a memory management system to minimize CPU-GPU field transfers useful for a continuation of this work considering gauge field generation.
+%    \item \textbf{Development of a novel variance reduction method}: Development, implementation and assessment of a new method called \emph{multigrid low-mode averaging} for $\bigO(a)$-improved Wilson-type fermions, and application of such to the evaluation of the leading order connected light-quark HVP of the muon $g-2$.
+%    \item \textbf{Theoretical considerations of chirality}: Investigation and analysis of chirality, spectral properties, numerical ranges and conditions of coarse and fine Dirac operators.
+% \end{enumerate}
 
 \section{Structure of the thesis}
 
 This document is split into two parts which are to a large extent independent of each other but pulling on the same rope.
 \Cref{part:gpu} deals with the advancements in software development, GPU porting and the interface to \quda.
-It deals with contributions \numrange{1}{5}.
+It deals with \worktodo{contributions \numrange{1}{5}}.
 Its heart piece provides a documentation of the design choices, all the functionality that have entered the codebase, and finishes with an assessment of performance.
-\Cref{part:variance} deals with the remaining contributions \numrange{6}{7}, introduces the new variance reduction method which we call \emph{multigrid low-mode averaging} and investigates its application to an observable that is sensitive to it.
+\Cref{part:variance} deals with the remaining \worktodo{contributions \numrange{6}{7}}, introduces the new variance reduction method which we call \emph{multigrid low-mode averaging} and investigates its application to an observable that is sensitive to it.
 Results are compared to traditional estimators.
 It finishes with theoretical considerations about chirality on coarse subspaces.
 Both parts have separate outlines and introductions.

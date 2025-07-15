@@ -8,6 +8,9 @@
 %\worktodo{initQuda, endQuda, loadCloverQuda loadGaugeQuda newMultigridQuda, createCloverQuda, updateMultigridQuda, freeCloverQuda, destroyMultigridQuda}
 
 In this chapter, we outline some of the main features, design choices and peculiarities of \quda, the library we offload Dirac equation solves to.
+We go through an example of a simple kernel and how it is being called internally (\cref{sec:quda:kernel:invocation}), followed by how lattice fields are abstracted (\cref{sec:quda:fields}).
+\Quda comes with mixed precision solvers allowing fields to change their floating point precision (\cref{sec:quda:precision}) and it supports compressed gauge field formats exploiting the gauge group symmetry (\cref{quda:compresed:formats}).
+We finish with a list of important functions exposed via \quda's header file (\cref{sec:quda:interface}) and a brief summary (\cref{sec:quda:summary}).
 
 \tldr{what is quda}
 \Quda \cite{QUDApaper} is a library written in CUDA C++ that contains a suite of efficient kernels and solvers to implement lattice QCD simulations. It can be used as a plug and play substitute for certain compute intensive tasks.
@@ -21,6 +24,7 @@ It has a very powerful and customizable solver suite, including a state-of-the-a
 The current release version 1.1.0 complies with the C++14 and 17 standards and is released under an NVIDIA license similar to the MIT license.
 
 \section{Kernel invocation}
+\label{sec:quda:kernel:invocation}
 
 \tldr{overloading, templates, functors, backend abstraction}
 The codebase heavily relies on C++ features such as operator overloading and templates. Device kernels, launched on backends such as CUDA, HIP, SYCL, or threading models, are typically represented as functors -- functions that carry internal state, implemented in C++ as classes overloading the function-call operator, \code{operator()}. This approach enables seamless abstraction of implementation details from the underlying backends.
@@ -44,6 +48,7 @@ This function acts on fields already transferred to \quda, thus there is no gamm
 %The codebase heavily utilizes the template engine of C++.
 
 \section{Field representations}
+\label{sec:quda:fields}
 
 \tldr{field are object instances, inheritance}
 Naturally, fields on the lattice are represented as objects, and pointers to the fields' values as well as various meta information about the field are accessible via their properties and accessors.
@@ -75,12 +80,13 @@ Thus, input fields might have different $\gamma$-basis conventions than output f
 This is part of the data reordering procedure.
 
 \section{Precisions}
+\label{sec:quda:precision}
 
 \tldr{template make it easy for precisions}
 The usage of C++ templates enables simple replacements for the precision of fields on the lattice in terms of floating point numbers as illustrated in \cref{fig:quda:gamma5,fig:quda:copy}. \Quda allows kernels and fields to operate with the usual IEEE 754 floats like double, single, half and quarter. Assigning fields of different precision to each other triggers conversion. This makes implementations of mixed precision solvers straightforward and readable.
 
 \section{Compression formats}
-\label{quda:compresed_formats}
+\label{quda:compresed:formats}
 
 \tldr{internal dof with symmetries}
 For fields whose internal degrees of freedom carry additional symmetry, such as the \ggrp{SU}{3}-valued gauge field, \quda provides compression formats for efficient representation in memory.
@@ -102,6 +108,7 @@ Comparing \code{QUDA\_RECONSTRUCT\_NO} with \code{QUDA\_RECONSTRUCT\_8}, we see 
 % }, 
 
 \section{Important interface functions}
+\label{sec:quda:interface}
 
 \tldr{some interface functions in quda.h}
 In the following, we will list interface functions exposed by \quda's interface via \code{quda.h} that are relevant in the remainder of this document, especially for the discussion of the interface, \cref{ch:p1:interface}.
@@ -126,6 +133,7 @@ These functions may trigger field transfers or reordering:
 \end{itemize} 
 
 \section{Summary}
+\label{sec:quda:summary}
 
 %\worktodo{summary of quda}
 

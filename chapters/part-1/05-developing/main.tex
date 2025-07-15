@@ -22,9 +22,12 @@
 \readit{1}
 
 \tldr{develop intro}
-This section describes how to easily port an existing program within the framework of \openqxd to use the solvers available through the interface to \quda from the viewpoint of an \openqxd application level developer.
+This chapter describes how to easily port an existing program within the framework of \openqxd to use the solvers available through the interface to \quda from the viewpoint of an \openqxd application level developer.
+It starts with the general procedure of porting (\cref{sec:develop:overview}), followed by a description of the many ways how the solver can be accessed (\cref{sec:develop:solver}).
+The chapter concludes with a brief summary including limitations of the code (\cref{sec:develop:summary}).
 
-\section{Overview}
+\section{General procedure}
+\label{sec:develop:overview}
 
 \tldr{basic header inclusion}
 % A main program in \openqxd that wants to leverage QUDAs solvers may be changed in the following way.
@@ -443,6 +446,7 @@ contract(i, last_solution, MPI_COMM_WORLD, ...); /* wind-down */
 % This interface makes all variants of the iterative solver algorithms in the QUDA library for Wilson fermions accessible in openQxD, including the conjugate gradient (CG), generalized conjugate residuals (GCR) and the adaptive multi-grid preconditioner (MG)~\cite{Babich:2010qb} which is similar to the inexact deflation method implemented natively in openQxD and many more.
 
 \section{Summary}
+\label{sec:develop:summary}
 
 We have seen how to use the interface to port existing applications written in \openqxd, write new ones and how to easily implement heterogeneous computing by overlapping solves on the GPU with arbitrary workload on the CPU.
 Through the parameter and revision tracking system, the interface allows flexible usage over many use cases and stays consistent with \openqxd's internal state.

@@ -26,8 +26,15 @@
 \tldr{lc intro}
 In the last chapter, we have introduced a subspace with spinors and operators acting on it.
 We did not yet take an attempt to interpret its structure.
-In this chapter, with the concept of local coherence of low quark modes~\cite{Luescher2007}, also known as weak approximation property~\cite{Babich:2010qb} we will change that by introducing a coarse lattice.
+In this chapter -- with the concept of local coherence of low quark modes~\cite{Luescher2007}, also known as weak approximation property~\cite{Babich:2010qb} -- we will change that by introducing the coarse lattice (\cref{sec:lc:coarse}).
 Referring to operators restricted to these subspaces as \emph{coarse} operators will then be manifest.
+The degree to which the Wilson-Clover Dirac operator exhibits local coherence of low modes is quantified numerically \cref{sec:lc:deficit} and preliminary consideration about the coarse spin structure are made (\cref{sec:lc:spin}) before summarizing the chapter (\cref{sec:lc:summary}).
+
+
+
+
+\section{Definition and coarse lattice}
+\label{sec:lc:coarse}
 
 \tldr{free theory low modes and staircase functions}
 In momentum space, the low modes of the Dirac operator in the free quark theory are sharp delta functions at small momenta $\lvert p \rvert$ making them smooth, slowly oscillating plane waves in position space $x$, whose amplitude only depends on $p$ and is spread over the whole lattice.
@@ -110,6 +117,26 @@ This will become clear later.
 The block index $\coarse{y} \in \coarse{\idxspacetime}$ is straightforwardly interpreted as coarse spacetime index and finally the coarse spin is trivial for now.
 This gives us $(\coarse{N}_s, \coarse{\Nc}) = (1, \lvert \mathcal{B} \rvert)$ as well as a coarse volume as product of the coarse lattice extents and coarse spinors defined on the coarse lattice with coarse internal degrees of freedom given by the coarse spin and colors.
 
+This leads to a redefinition of the restrictor and prolongator, since for every field in $\Pi(\mathcal{B})$ one can associate a coarse lattice index $\coarse{x} \in \coarse{\idxspacetime}$ and a coarse color $\coarse{a} \in \coarse{\idxcolor} = \{0, \ldots, \coarse{N}_c-1 \}$.
+The restrictor then acts on a fine-grid spinor $\psi$ as
+\begin{equation} \label{eq:R:redef:1}
+\fieldxa{(R \psi)}{\coarse{x}}{\coarse{a}} = \sprod{\phi_{\coarse{x}, \coarse{a}}}{\psi} \;,
+\quad
+\phi_{\coarse{x}, \coarse{a}} \in \Pi(\mathcal{B}) \;,
+\end{equation}
+whereas the prolongator acts on a coarse-grid spinor $\coarse{\psi}$ as
+\begin{equation} \label{eq:T:redef:1}
+\prolongator \coarse{\psi} =
+\sum_{\coarse{x} \in \coarse{\idxspacetime}}
+\sum_{\coarse{a} \in \coarse{\idxcolor}}
+    \fieldxa{\coarse{\psi}}{\coarse{x}}{\coarse{a}} \phi_{\coarse{x}, \coarse{a}} \;.
+\end{equation}
+The field index $i$ from \cref{eq:R,eq:T} just became a multi-index $i = (\coarse{x}, \coarse{a})$.
+We note that restrictor and prolongator are block diagonal and applying them involves no communication unless blocks span multiple nodes.
+
+\section{Quality of approximation}
+\label{sec:lc:deficit}
+
 \tldr{deficit}
 The quality of the approximation can be quantified with the deficit
 \begin{equation}
@@ -177,11 +204,10 @@ If $\coarse{\Nc} = 12$ we obtain exactly the same lattice, $\coarse{\lattice} = 
 % projected to a block decomposition of the lattce where the momentum resolution of the modes is fine on the scale of the block size.
 
 \section{Spin degrees of freedom}
-
 \label{sec:lc:spin}
 
 \tldr{spins intro}
-For the sake of completion, in this section we will discuss the possibility to preserve spin degrees of freedom on the coarse grid, while its theoretical analysis will be deferred to its own chapter, see \cref{ch:p2:chirality}.
+For the sake of completion, we will discuss briefly the possibility to preserve spin degrees of freedom on the coarse grid, while its theoretical analysis will be deferred to its own chapter, see \cref{ch:p2:chirality}.
 
 \tldr{spin indices and preserving them}
 Wilson Dirac spinors have \num{4} spin degrees of freedom.

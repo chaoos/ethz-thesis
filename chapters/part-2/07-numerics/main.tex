@@ -26,9 +26,21 @@
 \vskip 1em
 
 \tldr{numerical study intro}
-In this chapter, we study the application of multigrid low-mode averaging to the connected two-point light-quark meson correlator introduced in \cref{ch:p2:2pt-corr}, that contributes the dominant error to the leading order HVP of the Muon $g-2$.
-Numerical data shows the ability of the method to reach gauge variance with significantly smaller cost as compared to the naive stochastic estimator, but also compared to low-mode averaging -- the state-of-the-art method for this class of observables.
-We will show numerical evidence of its linear volume scaling (constant number of low modes), as opposed to the quadratic scaling of low-mode averaging.
+In this chapter, we study the application of multigrid low-mode averaging to the connected two-point light-quark meson correlator introduced in \cref{ch:p2:2pt-corr}, that contributes the dominant error to the leading order HVP of the muon $g-2$.
+We start with defining the measurement methodology (\cref{sec:numerics:methodology}), followed by a formal definition of the total and gauge variances (\cref{sec:numerics:total:variance,sec:numerics:gauge:variance}).
+We plot and investigate relative and absolute variance contributions (\cref{sec:numerics:rel:variance,sec:numerics:abs:variance}) and determine work required to reach the minimal variance (\cref{sec:numerics:reaching:gauge:variance}) on all estimators.
+Numerical data shows the ability of the method to reach minimal variance with significantly smaller cost as compared to the naive stochastic estimator, but also compared to low-mode averaging -- the state-of-the-art method for this class of observables.
+We will show numerical evidence of its linear volume scaling, as opposed to the quadratic scaling of low-mode averaging (\cref{sec:numerics:volume:scaling}) and compare the cost of the different estimators (\cref{sec:cost}) before summarizing the chapter (\cref{sec:numerics:summary}).
+
+%%%% sec:numerics:methodology
+%%%% sec:numerics:total:variance
+%%%% sec:numerics:gauge:variance
+%%%% sec:numerics:rel:variance
+%%%% sec:numerics:abs:variance
+%%%% sec:numerics:reaching:gauge:variance
+%%%% sec:numerics:volume:scaling
+%%%% sec:cost
+%%%% sec:numerics:summary
 
 The numerical study was carried out using $\Nf=2$ flavours of non-perturbative $\bigO(a)$-improved Wilson-Clover fermions all with the same bare quark masses and lattice parameters.
 They were generated starting from the CLS ensemble labelled F7~\cite{online:cls} and their specifications are collected in \cref{tab:mglma:ensembles}.
@@ -148,6 +160,7 @@ All estimators use the same $\Nc=50$ low modes.
 \end{table}
 
 \section{Total variance}
+\label{sec:numerics:total:variance}
 
 The form of the total absolute variance depends on the number of stochastic sources $\Nst$ and includes a contribution from the stochastic noise.
 It is defined as
@@ -194,6 +207,7 @@ The black dashed line with grey error bands represents $\sigma_{\mathcal{G}}(t)$
 \end{figure}
 
 \section{Relative variance}
+\label{sec:numerics:rel:variance}
 
 We start with presenting relative variance plots for all ensembles in \cref{fig:rel:variance}.
 The plots compare the LMA estimator with a 2-level MG LMA estimator.
@@ -228,6 +242,7 @@ This shows that the cost of sampling the data scales linear in the volume.
 \end{figure}
 
 \section{Absolute variance}
+\label{sec:numerics:abs:variance}
 
 We now have a qualitative picture of the variance contributions.
 Next, we will investigate the absolute variances of one single stochastic source in \cref{fig:E7:abs:variance,fig:F7:abs:variance,fig:G7:abs:variance,fig:H7:abs:variance}.
@@ -318,6 +333,7 @@ The blue solid line represents the pure stochastic estimator without any deflati
 \end{figure}
 
 \section{Reaching gauge variance}
+\label{sec:numerics:reaching:gauge:variance}
 
 In order to determine how many sources are required on every level to reach the gauge variance, we consult the plot series in \cref{fig:E7:var:vs:sources,fig:F7:var:vs:sources,fig:G7:var:vs:sources}.
 The required numbers are assembled in \cref{tab:cost}.

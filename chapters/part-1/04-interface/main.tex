@@ -14,8 +14,10 @@
 This chapter documents the code required for interfacing \openqxd with \quda and describes design choices made.
 A working interface requires substantial code additions and changes in both applications.
 Therefore, this chapter is divided into two major sections: developments made in \quda (\cref{sec:interface:quda}) and developments made in \openqxd (\cref{sec:interface:openqxd}).
-The first section describes how to access interface functions, translation of lattice coordinates, field transfer, how \Cstar boundaries and QCD+QED are implemented and the various ways to interface the solver.
-The second section documents from the perspective of \openqxd how to setup solvers and how the dual process grid works.
+The first section describes how to access interface functions, translation of lattice coordinates, field transfer, how \Cstar boundaries and QCD+QED are introduced to \quda and the various ways to interface the solver.
+The second section documents the code that entered \openqxd, how to setup solvers and how the dual process grid was 
+implemented.
+The chapter ends with a summary (\cref{sec:interface:summary}).
 
 \section{Changes and additions to \quda}
 \label{sec:interface:quda}
@@ -421,7 +423,7 @@ To respect the rank placement of \openqxd, we change this function to achieve sh
 The QCD+QED Dirac operator acts on the \ggrp{U}{3}-valued gauge fields which are the combined \ggrp{SU}{3} links with a \ggrp{U}{1} phase.
 \Quda allows arbitrary gauge links and has compressed formats for \ggrp{U}{3} valued links.
 Depending on the gauge group, the code decides which compressed format should be instantiated by \quda.
-This is \code{QUDA\_RECONSTRUCT\_8} in case of \ggrp{SU}{3} and \code{QUDA\_RECONSTRUCT\_9} for \ggrp{U}{3}, see \cref{quda:compresed_formats}.
+This is \code{QUDA\_RECONSTRUCT\_8} in case of \ggrp{SU}{3} and \code{QUDA\_RECONSTRUCT\_9} for \ggrp{U}{3}, see \cref{quda:compresed:formats}.
 
 \tldr{Clover term transfer or generate}
 \Quda does not support simulating Wilson-Clover QCD+QED natively.

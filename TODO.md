@@ -9,7 +9,7 @@
 * [x] dual lattice cleanup with shared memory and process block grid
 * [ ] asynch solver is a bit scattered around
 * [x] part1 intro end
-* [ ] consistency in notation of lattice size TxL^3 or L_0 L_1 ...
+* [ ] consistency in notation of lattice size TxL^3 or L_0 L_1: Choose: L_0, L_1, L_2, L_3 everywhere!
 * [x] chirality: numerical range plots
 * [ ] overall summary?
 * [ ] publish zenodo
@@ -17,27 +17,47 @@
 * [x] read through once, add \readit{n} to chapter headers, where n is the number of times read through it; continue at "Exact estimator on coarsest level"
 * [ ] "full correlator" -> "Euclidean time correlator" everywhere
 * [ ] Ns, \hat{Ns}, same for Nc
-* [ ] "MG-LMA" -> "MG LMA"
+* [x] "MG-LMA" -> "MG LMA"
 * [x] check evans and steves presentations
 * [x] cheryls corrections, continue at chapter 7
-* [ ] i.e -> \ie, and others
+* [x] i.e. -> \ie
+* [ ] c.f. -> \cf and add command
 * [ ] Fix ordering of publications and references [P1] to [P11], but then the refs start at [12]
 * [ ] For all figures: check font sizes relative to main text font size
-* [ ] Longer chapter titles, like "Performance" --> "Performance plot of GPU stuff blabla"
+* [x] Longer chapter titles, like "Performance" --> "Performance plot of GPU stuff blabla"
 * [ ] `openQ*D` or `openQxD`
 * [ ] Go through refs and check if they look correct
-* [ ] Search for "section" and check if it should be "chapter"
+* [x] Search for "section" and check if it should be "chapter"
+* [x] Add "publications" to ToC
+* [ ] Maybe have a separation between chapters and appendices and page incating "Appendix" or so
+* [x] The doctoral students must clearly declare their own achievements according to article 13 of the (https://ethz.ch/content/dam/ethz/special-interest/phys/department/doctoral/documents/Detailed%20Stipulations_D-PHYS_2022.pdf). It is recommended that this declaration be summarised in a separate section. -> Currently I have "Summary of contributions" in the overall intro ...
+* [x] "Muon" or "muon"
+* [x] Chirality figures: check if i=1 -> ID (1) and so on
+* [x] The little intros with section references, like the "structure of the thesis" but for the chapter
+* [ ] Thesis feedback Tim: v1
+* [ ] Thesis feedback Tim: v2
+* [ ] Thesis feedback Tim: v2
+* [ ] Thesis feedback Tim: v2
+* [ ] Thesis feedback Tim: v2
+* [ ] Thesis feedback Letizia: step1
+* [ ] Thesis feedback Letizia: step2
+* [ ] "Proposal for Field Memory Management in Heterogeneous Architectures" is a bit too long
 
+
+## TODO for Monday:
+
+* [x] check if LMA chapter has all I want to say about it -> variants, AMA, V2, X-term probs, ...
+* [x] read Part 2 intro, 2pt, LMA, subspace deflation and check if it makes sense now.
 
 ## Final things to check
 
 * [ ] No more red things -> no red last page
 * [ ] Line break layout of \code{} fragments
-* [ ] Captions and their figures on the same page
+* [ ] Captions and their figures/cost listings on the same page
 * [ ] No unmet references
 * [ ] check all \code{} parts, also in captions, footnotes, figures, etc
 * [ ] Also in images/schemes!
-* [ ] Table of contents: only depth 2
+* [x] Table of contents: only depth 2
 * [ ] Remove TLDRs
 * [ ] Check crefs in clover picture
 

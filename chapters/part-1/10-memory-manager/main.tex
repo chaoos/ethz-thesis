@@ -6,6 +6,8 @@
 \tldr{mm intro}
 In future developments, we plan to unify spinor fields among \openqxd and \quda.
 This chpater describes a proposal for a memory management system for fields that does not come with tremendous implementation efforts, providing backward compatibility for already written programs and a framework to write programs utilizing the GPU with little porting effort, maximal flexibility for the developer and minimizing CPU-GPU traffic.
+It starts by motivating the need for such a system (\cref{sec:mm:motivation}) with explicit example codes and continues with a field unification scheme (\cref{sec:mm:unified:fields}).
+For minimal code refactoring on the side of \openqxd, we propose an (optional) procedure to automatically transfer fields from the GPU to CPU (\cref{sec:mm:implicit:transfers}) using \posix mechanisms, before concluding the chapter (\cref{sec:mm:summary}).
 
 \tldr{keep track of state on field level}
 The key idea is to not deal with fields on the CPU separately from fields on the GPU.
@@ -19,6 +21,7 @@ This will enable us to work in the framework of \openqxd in the same way as befo
 Existing software with minimal adjustments will benefit from such a memory management system too.
 
 \section{Motivation}
+\label{sec:mm:motivation}
 
 \tldr{intermediate phase, minimize unneeded transfers, porting of functions}
 \Openqxd is a pure MPI code that runs efficiently on CPUs.
@@ -105,6 +108,7 @@ Finally, we want to state requirements of the memory management system in descen
 \end{requirements}
 
 \section{Unified fields}
+\label{sec:mm:unified:fields}
 
 \tldr{unify field, state attached to every field}
 The first step will be a unification of fields.
@@ -162,6 +166,7 @@ In the current stage of the memory management system, the GPU needs to explicitl
 In the next section, we will introduce a mechanism to loosen this requirement of explicit transfers while still respecting all requirements.
 
 \section{Implicit transfers}
+\label{sec:mm:implicit:transfers}
 
 \tldr{dilemma of implicit transfer + transition to concepts}
 When loosening the requirement mentioned in the previous section, we are posed with two problems:

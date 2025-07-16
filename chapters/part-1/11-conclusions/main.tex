@@ -19,9 +19,10 @@
 % }
 
 \tldr{lay groundwork, offloading heavy lifting}
-The main goal of this project was to enable the \RCstar collaboration to run the observable evaluation part of dynamic QCD+QED simulations on GPU-accelerated computing centers.
-Offloading of the heavy-lifting parts -- repeated solves of the Dirac equation -- was the focus of the developments in particular, since it represents the most expensive kernel of lattice simulations.
-This work marks by no means the end of the story; the above implementations merely lay crucial foundation for ongoing software developments.
+The main goal of this part of the thesis was to enable the \RCstar collaboration to run the observable evaluation part of non-perturbative QCD+QED simulations on GPU-accelerated computing centers.
+%Offloading of the heavy-lifting parts -- repeated solves of the Dirac equation -- was the focus of the developments in particular, since it represents the most expensive kernel of lattice simulations.
+Offloading repeated solves of the Dirac equation was the focus of the developments in particular, since it represents the most expensive kernel of lattice simulations.
+This work marks by no means the end of the story; the work merely lays crucial foundation for ongoing software developments.
 
 \tldr{enabled more funding, compute allocations}
 As a direct outcome, this work enabled the collaboration to acquire substantial compute allocations at leading supercomputing facilities, advancing the collaboration's physics programme and securing a second round of funding~\cite{online:pasc2025}.
@@ -31,7 +32,7 @@ Future work, including support for configuration generation and unified field tr
 \tldr{cicd, easy integration}
 The \openqxd package now interfaces seamlessly with solver kernels provided by \quda, offering flexible and abstracted integration that reduces the complexity for application-level developers.
 %The software package \openqxd is now able to interface all solver kernels from \quda in versatile forms, where implementation details are abstracted away for the programmer of \openqxd.
-Existing tools can benefit from the improvements with low implementation effort.
+Existing tools can benefit from the improvements with low porting effort.
 Code robustness and stability was improved by introducing an automated CI/CD pipeline.
 
 \tldr{scientific software is hard to do right}
@@ -46,6 +47,19 @@ One lesson learned was that testing should reflect production use cases ideally 
 Due to its parallel nature and utilization of multi-threading, multi-processing, CPUs, GPUs and being cutting edge in hardware and software developments, systematic testing of scientific software is more essential than ever.
 This is particularly true when we compute observables for which no independent validation exists yet.
 In such cases, trust in the software must be earned through rigorous and reproducible validation workflows.
+
+\tldr{summary of interface, challenges overcome}
+The interface allows accessing solvers in various ways; directly via \openqxd mechanisms suitable for application-level developers, directly after initialization simplifying new programs that only use the GPU solver, asynchronously ideal for heterogeneous workloads where CPU work and GPU solves overlap.
+Programs alternating or overlapping CPU workloads with GPU solves may lead to imbalanced scaling due to their differing performance characteristics.
+The dual grid approach resolves this by enabling strong scaling of the CPU part separate to the GPU part.
+The above mentioned features can be combined and all of them are capable of solving for multiple right-hand sides improving the energy footprint and time to solution.
+
+\tldr{summary performance data}
+The performance data shows that the GH200 node can efficiently be utilized.
+The excellent weak scaling indicates readiness of the code for larger problem sizes.
+As discussed in the last paragraph, many mechanisms exist to help mitigate strong scaling challenges, especially those inherent to multigrid solvers.
+While the dual grid performance impact is negligible, CPU-GPU data transfer overheads remain a concern.
+We proposed a field memory management system aiming at these overheads and reducing node internal PCI express or NVLink chip-to-chip interconnect pressure.
 
 \tldr{transition to part 2}
 In the next part, we will approach the problem of efficient utilization of computational resources from an orthogonal perspective: through algorithmic development informed by physical insight.

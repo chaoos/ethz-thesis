@@ -496,9 +496,9 @@ A non-zero chiral condensate $\langle \bar{\psi} \psi \rangle = \langle \bar{\ps
 For taking the continuum limit $a \to 0$, one needs to compute the observables of interest for several values of the lattice spacing $a$.
 The lattice spacing serves as a regulator of the theory; it makes divergent quantities finite by cutting off the divergent parts of integrals at the short (UV) distances, \ie it cuts off UV divergences.
 As $a \to 0$ they turn into terms proportional to $a^{-n}$ for some $n \geq 1$.
-In order to recover continuous QCD, the infinite-volume limit $L \to \infty$ has to be taken too, where $L$ is the extent of the lattice box.
+In order to recover continuous QCD, the infinite-volume limit $L \to \infty$ has to be taken too, where $L$ is the extent of the 4D lattice box of volume $L^{4}$.
 The finite volume is another regulator of the theory; it regularizes the long (IR) distance divergences, leading to finite-volume corrections scaling power-like $L^{-m}$ for some $m \geq 1$ or exponentially $e^{-m_{\pi} L}$.
-Both limits should be considered together to recover continuous QCD.
+Both regulator limits should be considered together to recover continuous QCD.
 
 Naively taking the continuum limit without tuning the bare parameters to the lines of constant physics will yield divergent results.
 On the other hand, results should not depend on the regulator and renormalization is the process of removing the dependency of the regulator from physical quantities.
@@ -569,12 +569,18 @@ In search of new fundamental physics, lattice field theory
 can predict non-perturbative quantities from first principles
 %can non-perturbatively predict physical quantities using first principles
 to directly probe the standard model (SM) of particle physics.
-This is to search for indirect proofs of its validity.
-A strong-enough tension with an experimental quantity would proof the standard model is not sufficient to describe fundamental interactions.
-One hopes to find an observable where physics not described by the standard model has non-negligible influence in its value.
-One such quantity which became very prominent in the last years is the the anomalous magnetic moment of the muon, whose beyond the standard model (BSM) effects might arise from unknown virtual particles outside the energy range of modern particle colliders.
-For many years now, it is a promising candidate and gave hints for BSM physics, because of its longstanding tension between the SM prediction and experiment of about $3-4 \sigma$ \cite{snowmass:2020} very close to a discovery.
-Although current results seem to relax the tension, but they introduce new puzzles from tensions between data-driven and lattice determinations~\cite{snowmass:2025}.
+\worktodo{This is to search for indirect proofs of its validity.
+A strong-enough tension with an experimental quantity would proof the standard model is not sufficient to describe fundamental interactions.}
+A persistent tension between experimental measurements and SM predictions would indicate that the standard model is not sufficient to describe the interactions between particles.
+In recent years, the anomalous magnetic moment of the muon $g-2$ has held a prominent role in the search of beyond standard model (BSM) physics, due to the longstanding discrepancy of $3-4\sigma$ \cite{snowmass:2020} between its measurement and its theoretical prediction.
+In this context, lattice QCD plays a crucial role, as it provides first-principles, non-perturbative calculations of the hadronic contributions to the $g-2$, which are currently the dominant sources if uncertainty in its theoretical prediction.
+Although current results seem to relax the tension~\cite{Muong-2:2025xyk,snowmass:2025}], tensions between data-driven and lattice determinations of the main hadronic contribution to the muon $g-2$ persists~\cite{snowmass:2025}.
+
+% One hopes to find an observable where physics not described by the standard model has non-negligible influence in its value.
+% One such quantity which became very prominent in the last years is the the anomalous magnetic moment of the muon, whose beyond the standard model (BSM) effects might arise from unknown virtual particles outside the energy range of modern particle colliders.
+% For many years now, it is a promising candidate and gave hints for BSM physics, because of its longstanding tension between the SM prediction and experiment of about $3-4 \sigma$ \cite{snowmass:2020} very close to a discovery.
+% Although current results seem to relax the tension, but they introduce new puzzles from tensions between data-driven and lattice determinations~\cite{snowmass:2025}.
+
 Light may be shed on those questions by decreasing error bars from both theory and experiments resulting in a resolution or tightening of the tension and ultimately a better understanding of nature.
 Dominant sources of error come from the leading order (LO) hadronic vacuum polarization (HVP) term at order $\bigO(\alpha^{2})$ and the subdominant hadronic light-by-light scattering (HLbL) term at order $\bigO(\alpha^{3})$.
 %It seems to be promising candidate to lead to an indirect evidence for beyond the standard model (BSM) physics.
@@ -616,8 +622,16 @@ where $m_{\ell}$ is the mass of the lepton and $\Lambda$ is the energy scale whe
 This suggests that the anomalous magnetic moment of the heaviest known lepton, the tau with a mass of about \SI{1.8}{\GeV} (see \cref{tab:leptons}), should be the best candidate to lead to new physics.
 Admittedly the tau is very short lived with a lifetime of about \num{0.3} pico-seconds making it hard to access in experiments.
 Nevertheless it is being investigated~\cite{Fael:2013ij,BaBar:2015ard} as an alternative path to new physics.
-The lepton with the longest lifetime, the electron with a lifetime of many years is unfortunately very light and thus unlikely to produce heavy virtual particles.
-This leaves the muon with a lifetime accessible to nowadays experiments and a squared mass of about forty thousand times the one of the electron making it the most promising candidate for indirect new physics searches~\cite{jegerlehner2009muon}.
+The lepton with the longest lifetime, the electron with a lifetime of many years, is unfortunately very light and thus unlikely to produce heavy virtual particles.
+Furthermore the electrons $g-2$ is experimentally measured to about \num{0.13} ppb~\cite{Fan:2022eto}, whereas the muon's to \num{127} ppb\cite{Muong-2:2025xyk}.
+Taking this in account, the sensitivity to BSM physics is thus
+\begin{equation}
+\text{BSM sensitivity} \sim \frac{m_{\ell}^{2}}{\sigma_{\text{exp}}} \;,
+\end{equation}
+where $\sigma_{\text{exp}}$ is the experimental measurement precision.
+%Plugging in the numbers results in the muon being the best candidate for BSM physics.
+This leaves the muon with a lifetime accessible to nowadays experiments and a squared mass of about forty thousand times the one of the electron~\cite{jegerlehner2009muon}.
+However its overall sensitivity is only about forty times higher than that of the electron, still making it the most promising candidate for indirect new physics searches.
 
 \begin{table}
 \begin{tabular}{ccc}
@@ -644,14 +658,14 @@ Lepton masses and their mean lifetimes.}
 \subsection{Which contribution?}
 
 As stated previously, the largest error contribution stems from the LO-HVP contribution to the anomalous magnetic momentum of the muon.
-As the current SM prediction~\cite{snowmass:2020} includes the data-driven result for this contribution, the next iteration of will most likely include its lattice determination.
+As the previous official SM prediction by the Muon $g-2$ Theory Initiative~\cite{online:gm2} includes the data-driven result for this contribution~\cite{snowmass:2020}, the current iteration includes the determination on the lattice as official consensus result~\cite{snowmass:2025}.
 The reasons for this are manifold.
 The data-driven result -- in tension with the experimental value~\cite{Muong-2:2006rrc,Muong-2:2021ojo} -- is itself obtained using experimental data, namely from the cross-section $\sigma(e^{+} e^{-} \rightarrow \text{hadrons})$ as a function of the center of mass energy $\sqrt{s}$~\cite{davier:2017zfy,keshavarzi:2018mgv,colangelo:2018mtw,hoferichter:2019mqg,davier:2019can,keshavarzi:2019abf}.
 This is certainly not a first principles theory prediction but was until recently the only one whose error was competitive with the experimental error estimations.
 Algorithmic, theoretical and computational advancements over the years made the quantity accessible in the framework of lattice QCD.
-It is thus to be expected that future Muon $g-2$ Theory Initiative releases will not only include a lattice result for the HVP as of now but also make it part of the official consensus result.
+%It is thus to be expected that future Muon $g-2$ Theory Initiative releases will not only include a lattice result for the HVP as of now but also make it part of the official consensus result.
 %whose error quickly become comparable to the data-driven approach.
-This work will focus on the leading order hadronic vacuum polarization contribution $a_{\mu}^{\text{LO-HVP}}$ to the muon $g-2$ which renders the most challenging contribution to reduce the variance of.
+In particular \cref{part:variance} of this work will focus on the leading order hadronic vacuum polarization contribution $a_{\mu}^{\text{LO-HVP}}$ to the muon $g-2$ which renders the most challenging contribution to reduce the variance of.
 
 \subsection{The leading order HVP contribution}
 \label{sec:lohvp}
@@ -672,16 +686,16 @@ where $q$ is the charge of the quark, $\psi$ is the Grassmann-valued quark spino
 C_{\mu \nu}(x;y) = \langle j_{\mu}(x) j_{\nu}(y) \rangle \;,
 \end{align}
 with a source $y$ and a sink $x$.
-In order to relate this quantity to the energy states of the system, we perform the Fourier transform over the spatial components of the sink variable $x$, project to zero momentum, average over the spatial components of the current and exploit translation invariance of the expression by averaging over some (at this point unspecified) set of distinct source points $y \in \Omega$,
-\begin{align}
-%G_y(t) = - \frac{1}{3} \sum_{k=1}^{3} \int \dd^3 \vect{x} \; C_k(t + y_0, \vect{x}; y).
-C(x_0;y_0) = - \frac{1}{3 \lvert \Omega \rvert} \sum_{y \in \Omega} \sum_{k=1}^{3} \int \dd^3 \vect{x} \; C_{kk}(x; y) \;.
-\end{align}
-Furthermore, the correlation function only depends on the time difference $t = x_0 - y_0$ and we finally define the Euclidean time correlator
+In order to relate this quantity to the energy states of the system, we perform the Fourier transform over the spatial components of the sink variable $x$, project to zero momentum, average over the spatial components of the current and exploit translation invariance of the expression by averaging over some (at this point unspecified) set of distinct source points $y \in \Omega$.
+Furthermore, the correlation function only depends on the time difference between source and sink point $t = x_0 - y_0$ and we finally define the Euclidean time correlator
+% \begin{align}
+% %G_y(t) = - \frac{1}{3} \sum_{k=1}^{3} \int \dd^3 \vect{x} \; C_k(t + y_0, \vect{x}; y).
+% C(x_0;y_0) = - \frac{1}{3 \lvert \Omega \rvert} \sum_{y \in \Omega} \sum_{k=1}^{3} \int \dd^3 \vect{x} \; C_{kk}(x; y) \;.
+% \end{align}
 %where $t$ is the time difference between the two spacetime points $(t + y_0, \vect{x})$ and $y$.
 %We can exploit translation invariance of the expression and average over some points $y \in \Omega$,
 \begin{align} \label{eq:coor1}
-G(t) = - \frac{1}{3 \lvert \Omega \rvert} \sum_{y \in \Omega} \sum_{k=1}^{3} \int \dd^3 \vect{x} \; C_k(t+y_0, \vect{x}; y) \;.
+G(t) = - \frac{1}{3 \lvert \Omega \rvert} \sum_{y \in \Omega} \sum_{k=1}^{3} \int \dd^3 \vect{x} \; C_{kk}(t+y_0, \vect{x}; y) \;.
 \end{align}
 
 The LO-HVP contribution can then be written as~\cite{Bernecker:2011}
@@ -727,7 +741,7 @@ with
 \begin{equation}
 \Theta(t_0, t_1, \Delta) = \frac{1}{2} \left( 1 + \tanh\left( \frac{t_0 - t_1}{\Delta} \right) \right) \;.
 \end{equation}
-The function is smooth and has a width parameterized by $\Delta$, to which the community agreed for $\Delta = 0.15$ fm, $t_0 = 0.4$ fm and $t_1 = 1.0$ fm.
+The function is smooth and has a width parameterized by $\Delta$, to which the community agreed for $\Delta = 0.15$ fm, $t_0 = 0.4$ fm and $t_1 = 1.0$ fm~\cite{RBC_2018}.
 Through this choice, the intermediate window (W) is less sensitive to discretization effects, dominant in the short-distance window (SD) as well as the signal-to-noise ratio problem, dominant in the long-distance window (LD).
 
 
@@ -761,19 +775,19 @@ Through this choice, the intermediate window (W) is less sensitive to discretiza
 % }
 
 \tldr{theory: high-precision lattice is +QED}
-The last section about the muon $g-2$ demands high precision determinations of physical quantities on the lattice such as the anomalous magnetic moment of the muon.
+The last section demands high precision determinations of physical quantities on the lattice such as the anomalous magnetic moment of the muon.
 Such determinations are required to 
 %Further motivation for such an undertaking come from recent theoretical determinations of the hadronic vacuum polarization contribution (HVP) to the muon g-2 which
 target sub-percent precision on the resulting quantity~\cite{RBC_2024, bmw_2017, Djukanovic:2024cmq, bmw_2024, milc_gm2, ExtendedTwistedMass:2022jpw, FermilabLattice:2024yho,snowmass:2020,snowmass:2025}.
 This poses major challenges for a number of conceptual and computational reasons.
 
 High precision determinations of gold-plated hadronic quantities like the one mentioned require us to consider quantum electrodynamic (QED) effects, because their contribution to this observable exceeds the sub-percent.
-This can be done perturbatively in a QCD only simulation in the observable evaluation phase (often refereed to as RM123 method~\cite{deDivitiis:2011eh,deDivitiis:2013xla}) or by dynamically simulating both theories QCD+QED already in the gauge field sampling phase~\cite{Lucini:2015,10.1143/PTP.120.413,PhysRevLett.117.072002,Blum:2017cer,Feng:2018qpx}.
+This can be done perturbatively in a QCD-only simulation in the observable evaluation phase (often refereed to as RM123 method~\cite{deDivitiis:2011eh,deDivitiis:2013xla}) or by dynamically simulating both theories QCD+QED already in the gauge field sampling phase~\cite{Lucini:2015,10.1143/PTP.120.413,PhysRevLett.117.072002,Blum:2017cer,Feng:2018qpx}.
 
 \tldr{our theory approach: we do QCD+QEDC + Cstar boundaries}
 The approach of the \RCstar collaboration for high precision lattice determinations is to non-perturbatively simulate QCD+QED directly in the Hybrid Monte Carlo algorithm when sampling gauge fields.
-This is accomplished through the use of \Cstar spatial boundary conditions~\cite{cstar:Wiese1992,cstar:Polley1993,cstar:Kronfeld1991,cstar:Kronfeld1993} which respect locality and Gauss' law, while at the same time reducing finite-size effects compared to periodic boundaries or other lattice QED formulations.
-This approach allows for a local and gauge-invariant formulation of QED in a finite volume.
+This is accomplished through the use of \Cstar spatial boundary conditions~\cite{cstar:Wiese1992,cstar:Polley1993,cstar:Kronfeld1991,cstar:Kronfeld1993} which respect locality and Gauss' law, while at the same time reducing finite-size effects compared to periodic boundaries or other lattice QCD+QED formulations.
+This approach allows for a local and gauge-invariant formulation of QCD+QED in a finite volume.
 We will briefly introduce these boundaries and the dynamic incorporation of QED in the next two subsections.
 
 \subsection{C\texorpdfstring{$^{\star}$}{*} boundary conditions}
@@ -807,7 +821,16 @@ Fields are only periodic up to charge conjugation, that is
     U_{\mu}(x + L_k \hat{k})    &= U_{\mu}^{\mathcal{C}}(x)    = U_{\mu}^{*}(x),
   \end{split}
 \end{align}
-where $\psi$ is a fermion field, $A$ the $U(1)$-valued photon field and $U$ the $SU(3)$-valued gluon field and the subscript $\mathcal{C}$ stands for the charge conjugated field. The vector $\hat{k}$ is the unit vector in spatial $k$-direction with $k=1,2,3$, $\mu=0,1,2,3$ denotes the space-time direction and $L_k$ is the spatial lattice extent in direction $k$. The star symbol $U^{*}$ denotes element-wise complex conjugation. Finally $C$ is the invertible charge conjugation matrix obeying
+where $\psi$ is a fermion field.
+The vector $\hat{k}$ is the unit vector in spatial $k$-direction with $k=1,2,3$, $\mu=0,1,2,3$ denotes the space-time direction and $L_k$ is the spatial lattice extent in direction $k$.
+The star symbol $U^{*}$ denotes element-wise complex conjugation.
+$A_{\mu}(x) \in \mathfrak{u}(1)$ is the Lie-algebra-valued photon field, $U_{\mu}(x) \in \ggrp{SU}{3}$ the Lie-group-valued gluon field and the subscript $\mathcal{C}$ stands for the charge conjugated field.
+Together they form the \ggrp{U}{3}-valued compound field
+\begin{equation}
+W_{\mu}(x) = e^{i q A_\mu(x)} U_\mu(x) \in \ggrp{U}{3} \;,
+\end{equation}
+with $q$ the charge.
+Finally $C$ is the invertible charge conjugation matrix obeying
 \begin{equation}
   C^{-1} \gamma_{\mu} C = - \gamma_{\mu}^{\text{T}}
   \quad
@@ -831,10 +854,11 @@ Finally, the part of the extended lattice where fields are charge conjugated wil
 
 \tldr{Extended lattice is requirement not implementation trick}
 Therefore, the photon and the gluon field on the mirror lattice are completely determined by charge conjugating their values on the physical lattice.
-Their integration measures in the path integral \cref{eq:eclidean:exp:value} are given by
+Their integration measure in the path integral \cref{eq:eclidean:exp:value} is simply the Haar measure and is given by
 \begin{align}
-\DD U \big\rvert_{\lat{phys}} &= \prod_{\mu=0}^{3} \prod_{x \in \lat{phys}} \dd U_{\mu}(x) \;, \\
-\DD A \big\rvert_{\lat{phys}} &= \prod_{\mu=0}^{3} \prod_{x \in \lat{phys}} \dd A_{\mu}(x) \;.
+%\DD U \big\rvert_{\lat{phys}} &= \prod_{\mu=0}^{3} \prod_{x \in \lat{phys}} \dd U_{\mu}(x) \;, \\
+%\DD A \big\rvert_{\lat{phys}} &= \prod_{\mu=0}^{3} \prod_{x \in \lat{phys}} \dd A_{\mu}(x) \;.
+\DD W \big\rvert_{\lat{phys}} &= \prod_{\mu=0}^{3} \prod_{x \in \lat{phys}} \dd W_{\mu}(x) \;.
 \end{align}
 On the other hand, $\psi$ and $\bar{\psi}$ are independent Grassmann variables on the physical lattice, whereas on the extended lattice $\bar{\psi}$ is completely determined by $\psi$. In the path integral the integration measure of the Grassmann variables therefore turns into
 \begin{equation}
@@ -860,7 +884,7 @@ Such a comparison is highly non-trivial as has not been fully carried out as of 
 \tldr{QED in Dop}
 For QCD+QED simulations, the Dirac operator \cref{eq:Dw} has to be modified to include electromagnetic interactions and it has to act on the pseudofermion doublet $(\psi, \bar{\psi})$ simultaneously.
 We will use the symbol $\psi$ in the following to represent the pseudofermion doublet field on the extended lattice.
-In addition to the \ggrp{SU}{3}-valued QCD gauge field $U_\mu(x)$, we have the compact \ggrp{U}{1}-valued QED gauge field $A_\mu(x)$ which when combined, results in a \ggrp{U}{3}-valued field $e^{i q A_\mu(x)} U_\mu(x)$ with $q$ the charge of a quark.
+In addition to the \ggrp{SU}{3}-valued QCD gauge field $U_\mu(x)$, we have the compact \ggrp{U}{1}-valued QED gauge field $A_\mu(x)$ which when combined, results in a \ggrp{U}{3}-valued field $W_{\mu}(x) = e^{i q A_\mu(x)} U_\mu(x)$ with $q$ the charge of a quark.
 These links are produced by multiplying the \ggrp{U}{1} phase to the \ggrp{SU}{3} matrices.
 
 \tldr{QED SW term}
@@ -891,7 +915,7 @@ This is usually set to its tree-level improvement value \num{1}~\cite{RCstar22}.
 Its deviation from \num{1} is small due to small quantum corrections in the Abelian case, $c_\mathrm{sw}^{U(1)} = 1 + \bigO(\alpha_{em})$ with $\alpha_{em} \sim 1/137$ the electromagnetic coupling constant.
 
 \tldr{Full QCD+QED Wilson Clover Dop}
-Therefore, the full QCD+QED Wilson-Clover Dirac operator applied to a pseudofermion field $\psi$ is
+Therefore, the full QCD+QED Wilson-Clover Dirac operator of a given flavor applied to a pseudofermion field $\psi$ is
 \begin{equation}
 \begin{aligned} \label{eq:Dw:QCD+QED}
 D_\mathrm{w} \psi(x) = \left( 4 + m \right) &\psi(x) + \frac{1}{2} \sum_{\mu=0}^3
@@ -939,7 +963,7 @@ Its dimension is double the periodic case and neighboring points $x \pm \hat{\mu
 
 
 
-\section{Motivation}
+\section{Motivation of this thesis}
 \label{sec:intro:motivation}
 
 % \worktodo{
@@ -962,8 +986,8 @@ a_{\mu}^{\text{SM}} = a_{\mu}^{\text{QED}} + a_{\mu}^{\text{EW}} + a_{\mu}^{\tex
 \end{equation}
 from QED, electroweak interactions, the leading order HVP and the hadronic light-by-light, see \cref{tab:a:mu:contributions} for their respective values.
 We find a variance (square of the error) contributions as in \cref{fig:a_mu:sm:variances}.
-Clearly the variance of the leading order HVP contribution that is determined on the lattice is dominant with 97\% contribution to the total variance.
-We can decompose $a_{\mu}^{\text{LO-HVP}}$ further into flavor contributions
+Clearly the variance of the leading order HVP contribution that is determined on the lattice is dominant with 97\% contribution to the total variance~\cite{snowmass:2025}.
+From the lattice perspective, it is convenient to decompose $a_{\mu}^{\text{LO-HVP}}$ further into flavor contributions
 \begin{equation}
 a_{\mu}^{\text{LO-HVP}} = a_{\mu}^{\text{LO-HVP}}(ud) + a_{\mu}^{\text{LO-HVP}}(s) + a_{\mu}^{\text{LO-HVP}}(c) + a_{\mu}^{\text{LO-HVP}}(disc) \;.
 \end{equation}
@@ -971,6 +995,7 @@ a_{\mu}^{\text{LO-HVP}} = a_{\mu}^{\text{LO-HVP}}(ud) + a_{\mu}^{\text{LO-HVP}}(
 Dominant is the light-quark connected contribution, $a_{\mu}^{\text{LO-HVP}}(ud)$ (see \cref{fig:a_mu:lohvp:variances}), followed by a non-negligible contribution from disconnected diagrams.
 It is the light-quark connected contribution that suffers from signal loss in the large distance regime, which is the leading source of the large error.
 %This is where \cref{part:variance} of this thesis is aiming at.
+
 The light quark masses and large, fine lattices cause standard evaluation methods to break down, and very expensive low mode deflation methods enter the game.
 The variance reduction method developed in \cref{part:variance} of this thesis is aiming at the evaluation of exactly this piece, where it has maximal impact.
 
@@ -1025,11 +1050,13 @@ Looking at a different decomposition of $a_{\mu}^{\text{LO-HVP}}$ into window co
 a_{\mu}^{\text{LO-HVP}} = a_{\mu}^{\text{SD}} + a_{\mu}^{\text{W}} + a_{\mu}^{\text{LD}} + a_{\mu}^{\text{IB}} \;,
 \end{equation}
 where here the isospin-symmetric component was decomposed into windows and a remainder accounts for the first order strong and QED isospin-breaking corrections due to the mass difference between up and down quarks and QED effects.
-For the variance contributions, we find \cref{fig:a_mu:windows:variances}.
-Again, the dominant overall contribution comes from the large distance regime (LD) where the signal-to-noise ratio problem is severe, but also from the IB contribution.
+%For the variance contributions, we find \cref{fig:a_mu:windows:variances}.
+%Again, the dominant overall contribution comes from the large distance regime (LD) where the signal-to-noise ratio problem is severe, but also from the IB contribution.
+Concerning variance contributions (see \cref{fig:a_mu:windows:variances}), the dominant overall contribution comes from the large distance regime (LD) where the signal-to-noise ratio problem is severe, but also from the IB contribution.
 Contributions to the value of $a_{\mu}^{\text{LO-HVP}}$ from these effects are expected to the in the 1\% regime, but we see dramatic variance contribution.
 Good prescriptions to add QED dynamically to the simulation, rather than perturbatively to a QCD-only simulation afterwards, are thus desperately needed.
-First results suggest that errors decrease by a factor of \num{3}, when doing so~\citeOwn{qcd_qed_paola}.
+%First results suggest that errors decrease by a factor of \num{3}, when doing so~\citeOwn{qcd_qed_paola}.
+First results suggest that simulating QCD+QED directly, instead of adding IB effects perturbatively on the top of QCD-only results, can be beneficial for the uncertainty of the IB term~\citeOwn{qcd_qed_paola}.
 
 \begin{figure}
 \centering
@@ -1073,13 +1100,13 @@ Summarizing the motivation, all aspects of this thesis crucially aim to maximize
 \label{sec:intro:objectives}
 
 This thesis aims to focus on the following objectives:
-\begin{itemize}
+\begin{enumerate}
    \item Design and efficient implementation to offload of expensive solves of the Dirac equation to the GPU. This includes dealing with \Cstar boundary conditions and QCD+QED Dirac operators as of \cref{eq:Dw:QCD+QED}. This should be done in a modular and versatile fashion for convenient usage for application-level developers and lay foundation for future developments.
    \item Performance assessment and benchmark of all implemented features on target HPC infrastructure including GPUs.
    \item Establishment of a CI/CD automated testing pipeline running on target hardware and production problems.
    \item Algorithmic development of variance reduction methods based on the low-mode deflation technique targeted at observables sensitive to low-mode noise suffering from the signal-to-noise ratio problem.
    \item Theoretical understanding of spectral properties of Dirac operators and their coarse-grid variants.
-\end{itemize}
+\end{enumerate}
 The above objectives all target efficient evaluation of observables from a machine-centric but also from an algorithmic perspective.
 
 The scope of these developments concerns offloading inversions to the GPU and does not extend generally to the generation of gauge configurations, although design decisions were made with that in mind.
@@ -1102,7 +1129,7 @@ Publications related to this can be found in refs.~\citeOwn{lattice22:roman,latt
 
 \section{Summary of contributions}
 
-In this section, I declare my own achievements and contributions to this thesis according to article \num{13} of \cite{eth:doctorate:stipulations}.
+In this section, I declare my own achievements and contributions to this thesis according to article \num{13} of ``Detailed stipulations regarding the doctorate''~\cite{eth:doctorate:stipulations}.
 I wrote all chapters myself.
 I received valuable feedback from colleagues and collaborators, which helped improve the presentation and clarity of this thesis.
 All figures, plots and images were produced by me.
@@ -1112,26 +1139,26 @@ Some were taken from the publication~\cite{mglma}.
 \item[\cref{ch:introduction}]: This chapter is introductory, based on established literature and does not contain original research.
 \item Part I: GPU Porting of Dirac Solvers
    \begin{description}
-   \item[\cref{ch:p1:introduction}]: This chapter is introductory, is based on established literature and does not contain original research.
+   \item[\cref{ch:p1:introduction}]: This chapter is introductory, based on established literature and does not contain original research.
    \item[\cref{ch:p1:openqxd}]: I compiled this chapter based on access to the source code of \openqxd and its documentation. No original results are presented here.
    \item[\cref{ch:p1:quda}]: I compiled this chapter based on access to the source code of \quda and its documentation. No original results are presented here.
    \item[\cref{ch:p1:interface,ch:p1:develop}]: These chapters describe the software components I developed as part of this project. I was responsible for implementing the core functionality of interfacing \openqxd with \quda. The design of the code was discussed and refined in collaboration with members of the \RCstar collaboration, CSCS engineers and group member related to the PASC project~\cite{online:pasc2025}. The latter also contributed to specific components and architectural decisions. All documentation and the write-up of this chapter were done by me.
    %\item[\cref{ch:p1:develop}]: \worktodo{todo}
-   \item[\cref{ch:p1:performance}]: This chapter shows performance data of interface components. I conducted all related runs independently and the analysis of data was done by me. Feedback from members of the \RCstar collaboration was incorporated.
+   \item[\cref{ch:p1:performance}]: This chapter shows performance data of interface components. I conducted all related runs independently and the analysis of data was done by me. Feedback from members of the group and the \RCstar collaboration was incorporated.
    \item[\cref{ch:p1:cicd}]: The automated testing pipeline was designed and introduced to the development repository~\cite{gitlab:openqxd-devel} by me. CSCS engineers were involved in consultation for best practices.
    \item[\cref{ch:p1:memory}]: The memory management proposal was developed by me and a small proof-of-concept program was written by me too.
    \item[\cref{ch:p1:conclusions}]: This chapter was written by me and reflects my own views and conclusions.
    \end{description}
 \item Part II: Variance Reduction for Two-Point Functions
    \begin{description}
-   \item[\cref{ch:p2:introduction}]: This chapter is introductory, is based on established literature and does not contain original research.
+   \item[\cref{ch:p2:introduction}]: This chapter is introductory, based on established literature and does not contain original research.
    \item[\cref{ch:p2:2pt-corr}]: This chapter introduces the relevant formulae required later. Apart from notation, no original results are presented here.
    \item[\cref{ch:p2:lma}]: This chapter introduces the important variance reduction method low-mode averaging and some of its many variants. No original results are presented here.
    \item[\cref{ch:p2:subspace-deflation}]: The novelty in this chapter is the deflation of arbitrary subspaces required later.
    \item[\cref{ch:p2:lc}]: Local coherence is a concept known in literature. This chapter briefly introduces the concept. No original results are presented here.
    \item[\cref{ch:p2:multigrid}]: Multigrid preconditioning is an established concept and widely used in the field. The original research consists of the decomposition of the propagator, its usage as variance reduction method and developments that follow. This was developed by me based on advise and feedback of colleagues and collaborators.
-   \item[\cref{ch:p2:numerics}]: I have developed the observable evaluation code, the recursive multigrid and all results were generated by me. The gauge fields used for the numerical analysis of the method, apart from the lattice F7~\cite{online:cls}, were generated by Tim Harris. Feedback from my supervisor Marina Marinković and Tim Harris helped improve the simulation strategy.
-   \item[\cref{ch:p2:chirality}]: Theoretical insight from this chapter are my own. Textbook results from numerical range theory were used, but also indicated if so. Ideas about preservation of chirality are partially based on existing literature.
+   \item[\cref{ch:p2:numerics}]: I have developed the observable evaluation code, based on functionality of \openqxd, the recursive multigrid and all results were generated by me. The gauge fields used for the numerical analysis of the method, apart from the lattice F7~\cite{online:cls}, were generated by Tim Harris. Feedback from my supervisor Marina Marinković and Tim Harris helped improve the simulation strategy.
+   \item[\cref{ch:p2:chirality}]: Theoretical insight from this chapter are my own. Textbook results from numerical range theory were used, but also indicated if so. Ideas about preservation of chirality are partially based on existing literature. Many of the formal proofs are original results.
    \item[\cref{ch:p2:conclusions}]: This chapter was written by me and reflects my own views and conclusions.
    \end{description}
 \item[\cref{ch:summary}]: This chapter was written by me and reflects my own views and conclusions.
@@ -1153,9 +1180,9 @@ Some were taken from the publication~\cite{mglma}.
 
 This document is split into two parts which are to a large extent independent of each other but pulling on the same rope.
 \Cref{part:gpu} deals with the advancements in software development, GPU porting and the interface to \quda.
-It deals with \worktodo{contributions \numrange{1}{5}}.
+It deals with objectives \numrange{1}{3} as stated in \cref{sec:intro:objectives} associated to \cref{ch:p1:interface,ch:p1:develop,ch:p1:performance,ch:p1:cicd,ch:p1:memory}.
 Its heart piece provides a documentation of the design choices, all the functionality that have entered the codebase, and finishes with an assessment of performance.
-\Cref{part:variance} deals with the remaining \worktodo{contributions \numrange{6}{7}}, introduces the new variance reduction method which we call \emph{multigrid low-mode averaging} and investigates its application to an observable that is sensitive to it.
+\Cref{part:variance} deals with the remaining objectives \numrange{4}{5} as stated in \cref{sec:intro:objectives} associated to \cref{ch:p2:subspace-deflation,ch:p2:lc,ch:p2:multigrid,ch:p2:numerics,ch:p2:chirality}, introduces the new variance reduction method which we call \emph{multigrid low-mode averaging} and investigates its application to an observable that is sensitive to it.
 Results are compared to traditional estimators.
 It finishes with theoretical considerations about chirality on coarse subspaces.
 Both parts have separate outlines and introductions.

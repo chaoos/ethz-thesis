@@ -49,6 +49,7 @@ The same decomposition holds for the propagator
 \propxy{x}{y} = \sum_{n=0}^{12V-1} \frac{1}{\lambda_{n}} \fieldx{\evec_{n}}{x} \fieldx{\evec_{n}^{\dagger}}{y} \gamma^{5} \;,
 \end{equation}
 where the $\gamma^{5}$ at the end is because $\prop = Q^{-1} \gamma^{5}$.
+This is actually a singular value decomposition\footnote{To be more precise, $S = \sum_n \sigma_n \psi_{n} \phi_{n}^{\dagger}$, where $\sigma_n = \frac{1}{\lvert \lambda_{n} \rvert}$ are the singular values with $\psi_{n} = \text{sign}(\lambda_n) \evec_{n}$ and $\phi_{n} = \gamma^{5} \evec_{n}$ the left and right singular vectors, respectively.}.
 Analogously, we emphasize just as \cref{eq:prop:pt-to-all} is an exact point-to-all propagator (no approximation involved), the above is an exact all-to-all propagator.
 
 In its current state, this propagator is not appropriate for numerical computations, because the full eigen-decomposition into all $12V$ modes is numerically inaccessible.

@@ -28,7 +28,7 @@
 
 \tldr{intro}
 This chapter will present performance assessments of the various implementations discussed in \cref{ch:p1:interface}.
-The goal is to determine production readiness of the code to run on current accelerator-based super-computing centers, focusing on good performance on the very recent GH200 node at CSCS~\cite{fusco2024}.
+The goal is to determine production readiness of the code to run on current accelerator-based super-computing centers, focusing on good performance on the very recent GH200 (Grace-Hopper) node at CSCS~\cite{fusco2024}.
 All machines involved in data taking are specified in \cref{sec:perf:hardware}.
 The physics program of the \RCstar collaboration is centered around lattices with \Cstar boundary conditions and occasionally periodic ones.
 Thus, we ran performance tests on lattices specified in \cref{sec:perf:ensembles}, whereas the methodology of measurements is discussed in \cref{sec:perf:methodology}.
@@ -524,7 +524,7 @@ The data still shows some non-negligible contributions of H2D and D2H transfers 
 In future developments, the H2D transfers could be eliminated to a large extent by setting up the source vector directly on the GPU, especially when dealing with random or point sources.
 Instead of handing over the field data, we hand over a description of the field instead.
 Field transfers in general can be reduced by employing a memory management system keeping track of field status.
-A system mitigating CPU-GPU traffic will be introduced in \cref{ch:p1:memory}.
+A system minimizing CPU-GPU traffic will be introduced in \cref{ch:p1:memory}.
 
 \subsection{Limitations}
 

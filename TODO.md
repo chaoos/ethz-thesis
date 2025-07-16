@@ -41,8 +41,9 @@
 * [ ] Thesis feedback Tim: v2
 * [ ] Thesis feedback Letizia: step1
 * [ ] Thesis feedback Letizia: step2
-* [ ] "Proposal for Field Memory Management in Heterogeneous Architectures" is a bit too long
-
+* [ ] "Proposal for Field Memory Management in Heterogeneous Architectures" title is a bit too long
+* [ ] Get Diss. No. from doctoral office
+* [ ] Summary of the thesis: its bullet point in the overview (left in firefox) should have less intendation
 
 ## TODO for Monday:
 

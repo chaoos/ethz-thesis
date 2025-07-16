@@ -13,13 +13,27 @@
 }
 
 We have introduced a novel variance reduction method called \emph{multigrid low-mode averaging} (MG LMA), combining the efficient multigrid preconditioner with low-mode deflation.
-The method can be applied to any $n$-point function, but benefits are only expected for observable sensitive to low-mode noise.
-This is the case for a large class of observables, including meson two-point functions important in the high-precision determination of the leading-order HVP of the muon $g-2$, but also baryon three-point functions important for hadron spectroscopy.
+%The method can be applied to any $n$-point function, but benefits are only expected for observable sensitive to low-mode noise.
+The method can be applied to any $n$-point function.
+Beneficial are expected specially where full translation averaging is challenging and the long distance (LD) regime is of interest.
+This is the case for a large class of observables, including meson two-point functions important in the high-precision determination of the leading-order HVP of the muon $g-2$, but also baryon correlators important for hadron spectroscopy.
 For disconnected diagrams leading to one-point functions, we do not expect a huge gain in variance reduction, since the success of methods like frequency splitting suggest that noise originates from the high modes, rather than the low modes.
 However, as a rule of thumb, whenever LMA is beneficial, MG LMA should be too.
 
-The insights when studying chirality on the subspaces and the fact that most lattice discretizations differ in their treatment of chiral symmetry, lead to the conclusion that MG LMA has to be investigated and possibly adjusted on each discretization separately.
-Although, the introduced method will constantly benefit from the rapid theoretical and algorithmic developments of multigrid algorithms.
+\tldr{recap of method and results, challenges overcome, idea of the method, local coherence, volume scaling, reach gauge variance}
+The proposed method shows linear cost scaling in the volume, overcoming the $V^{2}$-problem.
+The method shifts expensive Dirac equation solves to cheap coarse-grid Dirac equation solves, reducing the problem size by factors \numrange{30}{500} -- a factor that can be reinvested directly into additional statistics for the translation average in the long distance.
+Two concepts were crucial for this.
+First, local coherence of low modes allows building efficient large approximate low-mode subspaces with good overlap to the true subspace using only a small number of precisely determined lowest modes.
+Most importantly, numerical results show that this number is independent of the lattice volume.
+Second, strongly preserving chirality on the coarse subspaces empirically led to well-conditioned coarse operators resulting in efficient solves of the coarse Dirac equation.
+We showed numerically that the method can reach the minimal (gauge) variance on all investigated lattices with cost linear in the volume, as opposed to the standard stochastic estimator and traditional LMA that requires substantially more low modes.
+
+\tldr{chirality on other discretizations}
+The insights when studying chirality on the subspaces and the fact that most lattice discretizations differ in their treatment of chiral symmetry, lead to the conclusion that MG LMA has to be studied and possibly adjusted on each discretization separately.
+%The rapid theoretical and algorithmic developments of multigrid algorithms are expected to benefit the introduced methods constantly.
+As multigrid algorithms continue to evolve rapidly, the introduced method has the potential to gain from these improvements.
+%Although, the introduced method will constantly benefit from the rapid theoretical and algorithmic developments of multigrid algorithms.
 
 \tldr{twisted mass and MG}
 For twisted mass fermions multigrid had to be adjusted by introducing a pure algorithmic parameter -- a factor for the coarse twisted mass~\cite{Alexandrou:2016izb} -- to improve the condition of the coarse grid twisted mass Dirac operator.
@@ -30,13 +44,13 @@ This trade off might be fine for a preconditioner but might impact the variance 
 \tldr{staggered and MG}
 The staggered fermion Dirac operator shows spurious eigenvalues on coarse grids~\cite{Brower:2018ymy} making it especially challenging to obtain a performant multigrid implementation.
 The solution seems to be a transformation of the operator by the Kähler-Dirac spin structure~\cite{Becher:1982ud,Bodwin:1987ah} before coarsening.
-This results in a spectrum similar to the Wilson one and multigrid can be successfully formulated on the Kähler-Dirac transformed operator which was verified on the Schwinger model~\cite{Brower:2018ymy} and later on full lattice QCD~\cite{Ayyar:2022krp}.
-A straightforward application of MG LMA without taking these developments into consideration is not expected to perform well.
+This results in a spectrum similar to the Wilson operator and multigrid can be successfully formulated on the Kähler-Dirac transformed operator which was verified on the Schwinger model~\cite{Brower:2018ymy} and later on full lattice QCD~\cite{Ayyar:2022krp}.
+A straightforward application of MG LMA without taking these developments into consideration may not perform well.
 
 \tldr{domain wall and MG}
-For Domain Wall fermions with its Dirac operator spectrum enclosing the origin one usually coarsens the normal HPD system $D_{\text{DW}}^{\dagger} D_{\text{DW}}$~\cite{Cohen:2011ivh,Boyle:2014rwa} or the Pauli-Villars operator~\cite{Brower:2020xmc}.
-Although the latter has only been tested on the 2D Schwinger model.
-As proven in \cref{thm:cond:hpd}, the former case which is a HPD system, the coarse operators will always be at least as good conditioned as the fine one, no matter if chirality is preserved or not.
+For Domain Wall fermions with its Dirac operator spectrum enclosing the origin one usually coarsens the normal HPD system $D_{\text{DW}}^{\dagger} D_{\text{DW}}$~\cite{Cohen:2011ivh,Boyle:2014rwa} or a related operator (called the Pauli-Villars operator~\cite{Brower:2020xmc}).
+The latter has only been tested on the 2D Schwinger model.
+As proven in \cref{thm:cond:hpd} for the former which is a HPD system, the coarse operators will always be at least as well conditioned as the fine one, no matter how it is coarsened.
 Admittedly this operator is more expensive to apply and complex to coarsen as it is a distance-two stencil.
 On the other hand, when naively coarsening $D_{\text{DW}}$, coarse operators show spurious eigenvalues~\cite{Brower:2020xmc} similar to the staggered case.
 Again, we do not expect a naive application of MG LMA to the Domain Wall discretization to be successful without considering the developments made in recent multigrid literature.
@@ -46,9 +60,8 @@ Multigrid low-mode averaging -- despite being very successful on the Wilson disc
 There is still a lot of theoretical and algorithmic work to do.
 
 \tldr{outlook: baryons}
-A promising imminent application without fundamental changes would be three-point functions which emerge when considering baryon correlators.
-They show a severe signal-to-noise ratio problem and low-mode averaging is applied to these problems with success.
-We expect a clear improvement of MG LMA when applied.
+A promising imminent application without fundamental changes would be baryon correlators which suffer from expensive translation averaging.
+As low-mode averaging is applied to these problems with success, potential exists for MG LMA to perform well.
 %Most promising might be an application to three-point functions which emerge when considering baryon correlators.
 
 

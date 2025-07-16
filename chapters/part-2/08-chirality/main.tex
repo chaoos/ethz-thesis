@@ -156,9 +156,10 @@ The are certain coarsening choices that reinstantiate strict separability and ma
 %Finally, if we coarsen using the chiral projectors \cref{eq:bootstrap:chiral} leaving the chiral indices explicit and coarsening the remaining spin indices $N_s=2$, we again find $\rho^{5} = \chi^{5}$ and $\id_{\coarse{S}} = 1$ as a number.
 %Alternatively we could coarsen the chiral indices and leave the non-chiral ones explicit.
 %This would analogously result in $\rho^{5} = 1$ and $\id_{\coarse{S}} = \id_S$.
-\Cref{tab:spins} summarizes most of the sensible choices and some of their properties.
-We explicitly distinguish between chiral and non-chiral indices.
-We see that some preserve the trace on the fine-grid $\tr(\Gamma^{5})=0$, some preserve chirality $[P, \Gamma^{5}] = 0$ and some preserve fine-grid low modes $P \evec_i = \evec_i$, \cref{eq:fine:low:modes}.
+%\Cref{tab:spins} summarizes most of the sensible choices and some of their properties.
+\Cref{tab:spins} summarizes many choices, some of which are listed only to investigate coarse chirality implications and to help identify a sufficient condition for \cref{eq:cond:init}.
+%We explicitly distinguish between chiral and non-chiral indices.
+Some preserve the trace on the fine-grid $\tr(\Gamma^{5})=0$, some preserve chirality $[P, \Gamma^{5}] = 0$ and some preserve fine-grid low modes $P \evec_i = \evec_i$, \cref{eq:fine:low:modes}.
 
 Even though case \caseX{2wc} produces a Hermitian coarse operator $\coarse{K}$, it falls out immediately, since the coarse subspace must contain the low modes (last column).
 This is a restriction of LMA and multigrid LMA that by design require to capture the low mode subspace.
@@ -166,7 +167,7 @@ Projecting parts away would be counter productive.
 However, the remaining choices are all valid.
 Cases \caseX{2sc} and \caseX{2sv} are physically equivalent, they only differ in basis.
 When appearing in traces, they evaluate to the same result.
-Case \caseX{1} preserves no spin degrees of freedom, case \caseX{2nc} preserved the non-chiral ones and cases \caseXfour{2sc}{2sv}{2wc}{4} preserve chiral degrees of freedom, \caseX{4} even both.
+Case \caseX{1} preserves no spin degrees of freedom, case \caseX{2nc} preserves the non-chiral ones and cases \caseXfour{2sc}{2sv}{2wc}{4} preserve chiral degrees of freedom, \caseX{4} even both.
 
 Preservation of the trace $\tr(\coarse{\Gamma^5})=0$ implies that both chiral degrees of freedom are treated symmetrically, \ie both are explicit on coarse subspaces, none is preferred over the other.
 We therefore define the term \df{weak chirality preservation} of coarse subspaces as subspaces whose projector obeys
@@ -364,6 +365,7 @@ K = \sum_{i} \lvert \lambda_i \rvert (\Gamma^{5} \psi_i) \tilde{\psi}_i^{\dagger
 where the $\psi_i$ and $\lambda_i$ are eigenmodes and eigenvalues of the Hermitian operator $\Gamma^{5} K$ and $\tilde{\psi}_i = \text{sign}(\lambda_i) \psi_i$.
 %The magnitudes of the eigenvalues $\lvert \lambda_i \rvert$ are the singular values of $K$.
 The singular values $\sigma_i = \lvert \lambda_i \rvert$ are the magnitudes of eigenvalues $\lambda_i$ of $\Gamma^{5} K$.
+We note that the case \caseX{2sv} resembles the singular value decomposition of $D$.
 %The SVD above is not unique, but the singular values are.
 
 \begin{lemma}[Coarse singular value decomposition] \label{lemma:svd:coarse}

@@ -43,8 +43,8 @@
 * [ ] Thesis feedback Letizia: step2
 * [ ] Thesis feedback Marina
 * [ ] "Proposal for Field Memory Management in Heterogeneous Architectures" title is a bit too long
-* [ ] Get Diss. No. from doctoral office
-* [ ] Summary of the thesis: its bullet point in the overview (left in firefox) should have less intendation
+* [x] Summary of the thesis: its bullet point in the overview (left in firefox) should have less intendation
+* [x] Summary in the TOC: before and after 10pt vertical space
 * [ ] fix "Motivation of this thesis" with letizias comments -> streamline it
 
 ## TODO for Monday:
@@ -63,6 +63,11 @@
 * [x] Table of contents: only depth 2
 * [ ] Remove TLDRs
 * [ ] Check crefs in clover picture
+
+## TODO after hand-in of the thesis
+
+* [ ] Get Diss. No. from doctoral office
+
 
 <!-- Funny quote
 // If this code works, it was written by Paul DiLascia. If not, I don't know

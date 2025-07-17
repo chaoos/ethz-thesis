@@ -217,14 +217,18 @@
 \def\dir{chapters/part-2/09-conclusions}
 \include{\dir/main}
 
+% Indentation back to normal
+\bookmarksetup{startatroot}
+
+% To have a little vertical space of 10pt from the rest in the toc
+\addtocontents{toc}{\protect\vspace{10pt}}
+
 % PYTHON: main or conclusion or concl
 \cleardoublepage%
 \def\dir{chapters/11-conclusion-outlook}
 \include{\dir/main}
 
 % Appendices
-\bookmarksetup{startatroot}
-
 \appendix
 
 % PYTHON: back or appendix or appendices or appendixA or appA or A or build

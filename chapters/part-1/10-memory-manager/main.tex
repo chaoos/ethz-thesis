@@ -221,7 +221,8 @@ This will register a signal handler that receives additional information trigger
 We will need this information later.
 The flag \code{SA\_RESTART} will continue the code by restarting the system call which caused the segmentation fault after the signal handler has returned.
 
-\subsection{Putting the pieces together}
+%\subsection{Putting the pieces together}
+\subsection{Implicit transfers through memory protection and signals}
 
 \tldr{Engineering the scheme to force entering signal handler}
 We now have everything to assemble a scheme to trigger implicit field transfers for us.

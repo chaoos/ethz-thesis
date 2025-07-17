@@ -181,7 +181,7 @@ It is interfaced to both \quda and Grid.
 % Computing hadronic observables to subpercent precision, as needed for example to interpret the most recent muon g-2 measurements~\cite{Muong-2:2023cdq,Gerardin:2020gpp}, poses formidable challenges. It requires simulating four dynamical quark flavors, incorporating quantum electrodynamics (QED) effects, using fine lattice spacings for reasonable continuum extrapolation, using physical quark masses, and high statistics. Meeting these demands substantially increases computational requirements for generating Monte Carlo samples of gauge field configurations as well as evaluation of observables on large lattices.
 % % ~footnote{See, for example, Ref.~\cite{Gerardin:2020gpp} for a more detailed picture of the complexities involved in computing hadronic contributions to $(g-2)_\mu$ to subpercent precision using lattice QCD.}.
 
-% The growing adoption of GPU-accelerated supercomputing in major facilities, largely driven by machine learning needs, presents new opportunities for using GPUs for lattice QCD codes. As lattice simulations are constrained by memory bandwidth rather than floating point operations, the high-memory throughput of GPUs is expected to give a speed-up for calculations.
+% The growing adoption of GPU-accelerated supercomputing in major facilities, largely driven by machine learning needs, presents new opportunities for using GPUs for lattice QCD codes. As lattice simulations are constrained by memory bandwidth rather than floating-point operations, the high-memory throughput of GPUs is expected to give a speed-up for calculations.
 
 % Our code, openQxD-1.1~\cite{openqxd}, extends the widely used openQCD-1.6 package~\cite{online:openqcd}, which supports the $O(a)-$improved Wilson fermion discretization (from now on, we will refer to these codebases simply as openQxD and openQCD, respectively). openQxD extends openQCD by allowing the simulation of QCD together with quantum electrodynamics (QED). This is accomplished through the use of C$^\star$ spatial boundary conditions \cite{cstar:Wiese1992,cstar:Polley1993,cstar:Kronfeld1991,cstar:Kronfeld1993}, which respect locality and Gauss's law at the same time reducing finite-size effects compared to periodic boundaries or other lattice QED formulations. These features make openQxD a versatile tool for achieving higher levels of precision. The codebase is designed for efficient parallel execution on CPU-based supercomputing architectures.
 
@@ -224,14 +224,19 @@ The rest of this part is arranged as follows.
 %The remainder of this chapter introduces the theoretical background for QCD and QCD+QED lattice simulations. 
 \Cref{ch:p1:openqxd,ch:p1:quda} introduce the \openqxd and \quda codebases, their design choices, memory layouts and other features relevant for this work.
 \Cref{ch:p1:interface}
-, the main piece of this part,
+%, the main piece of this part,
 details the process of interfacing \openqxd with the \quda library: it discusses the modifications to the memory layout of lattice fields, the implementation of $C^\star$ boundary conditions in \quda, the extension of \quda to handle QCD+QED simulations and the various ways to access the interface.
-\Cref{ch:p1:develop} describes the steps needed to call \quda solvers in various scenarios from within \openqxd, that is initialization, parameter setup, error handling, and finalization.
+\Cref{ch:p1:develop} describes the steps needed to call \quda solvers
+%in various scenarios
+from within \openqxd.
+% that is initialization, parameter setup, error handling, and finalization.
 %\Cref{ch:p1:building} explains how to build \openqxd with \quda support.
 %The \quda solver expects the input file to describe various solver parameters. How this may look like is described in \cref{ch:p1:running}.
 \Cref{ch:p1:performance} presents benchmark tests of various components of the interface.
 The strategy for continuous integration and continuous delivery (CI/CD) is discussed in \cref{ch:p1:cicd}.
-Finally, \cref{ch:p1:memory} proposes a way to continue the developments regarding the continuation of the PASC project~\cite{online:pasc2025} when considering gauge field configuration generation on GPUs.
+Finally, \cref{ch:p1:memory} proposes a way to continue the developments
+%regarding the continuation of the PASC project~\cite{online:pasc2025}
+considering gauge field configuration generation on GPUs.
 
 % \section{Dirac operator}
 

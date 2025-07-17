@@ -25,13 +25,13 @@
 * [ ] Fix ordering of publications and references [P1] to [P11], but then the refs start at [12]
 * [ ] For all figures: check font sizes relative to main text font size
 * [x] Longer chapter titles, like "Performance" --> "Performance plot of GPU stuff blabla"
-* [ ] `openQ*D` or `openQxD`
+* [ ] `openQ*D` or `openQxD`? -> `openQxD`
 * [ ] Go through refs and check if they look correct
 * [x] Search for "section" and check if it should be "chapter"
 * [x] Add "publications" to ToC
-* [ ] Maybe have a separation between chapters and appendices and page incating "Appendix" or so
+* [ ] Maybe have a separation between chapters and appendices and page indicating "Appendices" or so
 * [x] The doctoral students must clearly declare their own achievements according to article 13 of the (https://ethz.ch/content/dam/ethz/special-interest/phys/department/doctoral/documents/Detailed%20Stipulations_D-PHYS_2022.pdf). It is recommended that this declaration be summarised in a separate section. -> Currently I have "Summary of contributions" in the overall intro ...
-* [x] "Muon" or "muon"
+* [x] "Muon" or "muon" -> "muon"
 * [x] Chirality figures: check if i=1 -> ID (1) and so on
 * [x] The little intros with section references, like the "structure of the thesis" but for the chapter
 * [ ] Thesis feedback Tim: v1
@@ -39,11 +39,13 @@
 * [ ] Thesis feedback Tim: v2
 * [ ] Thesis feedback Tim: v2
 * [ ] Thesis feedback Tim: v2
-* [ ] Thesis feedback Letizia: step1
+* [x] Thesis feedback Letizia: step1
 * [ ] Thesis feedback Letizia: step2
+* [ ] Thesis feedback Marina
 * [ ] "Proposal for Field Memory Management in Heterogeneous Architectures" title is a bit too long
 * [ ] Get Diss. No. from doctoral office
 * [ ] Summary of the thesis: its bullet point in the overview (left in firefox) should have less intendation
+* [ ] fix "Motivation of this thesis" with letizias comments -> streamline it
 
 ## TODO for Monday:
 

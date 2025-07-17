@@ -353,7 +353,7 @@ When \quda initializes its communication grid topology, we specify the neighbors
 The function reads the \code{cstar} property from the \code{Topology} struct that can take values \num{0}, \num{1}, \num{2} or \num{3} denoting the number of spatial directions with \Cstar boundaries, where \code{cstar=0} corresponds to its default value indicating periodic boundaries.
 To respect the rank placement of \openqxd, we change this function to achieve shifted boundary conditions as in \cref{fig:cstar:orbi}: consider the case of two ranks, one of which contains all physical points, the other the mirror points. The neighbor of the physical lattice in "upward" direction is the mirror rank (and vice versa) which is different from periodic boundary conditions.
 
-\subsection{QCD+QED}
+\subsection{Lattice QCD+QED}
 \label{sec:interface:qcd+qed}
 
 % The Wilson-Clover Dirac operator in QCD simulations applied onto a spinor field $\psi(x)$ is (the lattice spacing is set to $a = 1$)
@@ -420,15 +420,16 @@ To respect the rank placement of \openqxd, we change this function to achieve sh
 %\worktodo{... which can be done in \openqxd. For a QCD+QED operator in \quda, we just upload these \ggrp{U}{3}-valued links instead of the $SU(3)$ ones.}
 
 \tldr{Gauge field always U3 in 8/9 compressed fmt}
-The QCD+QED Dirac operator acts on the \ggrp{U}{3}-valued gauge fields which are the combined \ggrp{SU}{3} links with a \ggrp{U}{1} phase.
+The lattice QCD+QED Dirac operator acts on the \ggrp{U}{3}-valued gauge fields which are the combined \ggrp{SU}{3} links with a \ggrp{U}{1} phase.
 \Quda allows arbitrary gauge links and has compressed formats for \ggrp{U}{3} valued links.
 Depending on the gauge group, the code decides which compressed format should be instantiated by \quda.
 This is \code{QUDA\_RECONSTRUCT\_8} in case of \ggrp{SU}{3} and \code{QUDA\_RECONSTRUCT\_9} for \ggrp{U}{3}, see \cref{quda:compresed:formats}.
 
 \tldr{Clover term transfer or generate}
-\Quda does not support simulating Wilson-Clover QCD+QED natively.
+\Quda does not support simulating Wilson-Clover QCD+QED natively, especially the QED Clover term is missing.
 This feature involves modifying the clover term and by this the Wilson-Dirac operator.
-The QCD+QED Clover term consists of both the \ggrp{SU}{3} and the \ggrp{U}{1} term which can be calculated in \openqxd.
+The QCD+QED Clover term consists of both the QCD \ggrp{SU}{3} and the QED \ggrp{U}{1} term.
+Both can be calculated in \openqxd.
 The resulting term is still diagonal in space-time and chirality and is Hermitian in color and spin.
 Therefore, it has the same representation in memory as the \ggrp{SU}{3} clover term alone and we can upload this new clover field to \quda using the clover field reordering class as discussed in \cref{sec:interface:field_reordering}.
 Thus, we decide on the gauge group whether the clover term is generated natively in \quda or transferred from \openqxd.
@@ -568,7 +569,8 @@ Solid lined arrows indicate that the pointed function is called every time by th
 %\worktodo{todo, discuss the solver \code{openQCD\_qudaInvert()}}
 
 \tldr{Main solver function + arg discussion}
-The main piece of this work is the capability of offloading Dirac equation solves to the GPU.
+%The main piece of this work is the capability of offloading Dirac equation solves to the GPU.
+Next, we enable offloading Dirac equation solves to the GPU.
 This is achieved by interfacing \quda's solvers.
 From the side of \openqxd, this kernel exposes itself by the interface function
 \begin{minted}[]{cpp}
@@ -596,7 +598,7 @@ The function may be called at any time after \code{quda\_init()}, see \cref{sec:
 It will read in the input file provided to the interface by \code{quda\_init()}, parse the parameter and populate the solver parameters internally.
 The whole tracking mechanism discussed in \cref{sec:interface:track_params} is applied before this function calls the actual solver in \quda.
 That means Dirac operator parameters like $\kappa, \hat{q}$ or the SW-coefficients will be synchronized, gauge and clover field may be transferred or generated and multigrid subspaces will be generated or updated if necessary.
-This makes the function very versatile and suitable for many different use cases, some of which are discussed in \cref{sec:develop:solver}.
+This makes the function versatile and suitable for different use cases, some of which are discussed in \cref{sec:develop:solver}.
 
 %The function solves the currently loaded and configured Clover-Wilson Dirac operator, \ie the linear system of equations $D \psi = \eta$.
 
@@ -666,9 +668,9 @@ Therefore, if Dirac operator parameters in \openqxd are changed \emph{after} cal
 
 \tldr{dispatch function is instantaneous}
 The dispatch function \code{openQCD\_qudaInvertAsyncDispatch} takes the remaining subset of arguments of the synchronous solver call, namely the source and solution spinors and a status variable.
-The function returns immediately, since all it does is adding a solve to the end of a worker queue.
-It can be called many times successively with different source and solution spinors to register multiple solves.
-They will be worked through in the same order as the calling of this function.
+The function exit immediately, since all it does is adding a solve to the end of a worker queue.
+It can be called many times successively with different source and solution spinors to register multiple solves without invoking the actual solver yet.
+This is the job of the start function discussed next.
 
 \subsubsection{Start}
 \label{sec:interface:solver:async:start}
@@ -676,7 +678,8 @@ They will be worked through in the same order as the calling of this function.
 \tldr{start function is instant for main thread}
 The start function \code{openQCD\_qudaInvertAsyncStart} takes no arguments.
 %This can be either \code{OPENQCD\_SOLVE\_SERIAL} implying to work through the queue in consecutive order, one solve at a time, or \code{OPENQCD\_SOLVE\_MRHS} to solve all registered solves concurrently calling the multiple right-hand sides solver in \quda\footnote{This is not yet available in the interface.}.
-It will fire up the previously registered solves asynchronously.
+It will fire up the solves registered by \code{openQCD\_qudaInvertAsyncDispatch} asynchronously.
+The solves will be worked through in order of dispatching.
 Every rank entering this function will spawn its own worker thread using \code{pthread\_create} that enters the \quda solver in place of the main thread, \cref{fig:interface:async}.
 The main thread returns from the function immediately after spawning the worker thread ready to continue executing code on the CPU.
 
@@ -773,7 +776,7 @@ void quda_mpi_init(int *argc, char ***argv);
 \end{minted}
 rather than the usual \code{MPI\_Init} to ensure that MPI is initialized with the correct thread support and throws an error if initialization fails.
 
-\subsection{Initialization}
+\subsection{\Quda Initialization}
 \label{sec:interface:openqxd:init}
 
 \tldr{Init of quda + arg discussion}
@@ -1026,8 +1029,10 @@ The function is a mere wrapper around \code{openQCD\_qudaFinalize}, see \cref{se
 \section{Summary}
 \label{sec:interface:summary}
 
-The two previous sections introduced a comprehensive interface to access all solvers in \quda from within \openqxd with great versatility.
-Solvers can be accessed in numerous ways; directly, with multiple RHS or in the case of partial CPU workloads; in a heterogeneous way or by defining a dual lattice.
+\worktodo{Add a bit more to this summary}
+
+This chapter introduced a comprehensive interface to access all solvers in \quda from within \openqxd with great versatility.
+Solvers can be accessed in numerous ways; either directly, with multiple RHS, or in the case of partial CPU workloads; in a heterogeneous way, or by defining a dual lattice.
 Even combining the heterogeneous solver call with multiple RHSs and the dual grid all at once is possible.
 This provides a lot of flexibility to the programmer accessing the functionality and for the person running the code efficiently in various production environments.
 

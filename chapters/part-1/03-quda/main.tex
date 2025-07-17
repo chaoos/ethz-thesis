@@ -9,7 +9,7 @@
 
 In this chapter, we outline some of the main features, design choices and peculiarities of \quda, the library we offload Dirac equation solves to.
 We go through an example of a simple kernel and how it is being called internally (\cref{sec:quda:kernel:invocation}), followed by how lattice fields are abstracted (\cref{sec:quda:fields}).
-\Quda comes with mixed precision solvers allowing fields to change their floating point precision (\cref{sec:quda:precision}) and it supports compressed gauge field formats exploiting the gauge group symmetry (\cref{quda:compresed:formats}).
+\Quda comes with mixed precision solvers allowing fields to change their floating-point precision (\cref{sec:quda:precision}) and it supports compressed gauge field formats exploiting the gauge group symmetry (\cref{quda:compresed:formats}).
 We finish with a list of important functions exposed via \quda's header file (\cref{sec:quda:interface}) and a brief summary (\cref{sec:quda:summary}).
 
 \tldr{what is quda}
@@ -66,7 +66,7 @@ Field transfers between CPU and GPU, as well as reordering of its data, is fully
 \tldr{spinor equating example}
 We illustrate this in \cref{fig:quda:copy}.
 For example, when equating two fields of type \code{ColorSpinorField}, the copy-assignment operator is triggered which initiates the copy process.
-After some instantiation of template parameters such as the floating point precision of the source \code{src} and destination \code{dst} fields (both \code{double} in this example), spin and color degrees of freedom (\num{4} and \num{3}, respectively) and the order classes for the source and destination (more on reordering in \cref{sec:interface:field_reordering}), the copy functor \code{CopyColorSpinor\_} is launched through the tuning procedure with the correct gamma basis transformation as argument.
+After some instantiation of template parameters such as the floating-point precision of the source \code{src} and destination \code{dst} fields (both \code{double} in this example), spin and color degrees of freedom (\num{4} and \num{3}, respectively) and the order classes for the source and destination (more on reordering in \cref{sec:interface:field_reordering}), the copy functor \code{CopyColorSpinor\_} is launched through the tuning procedure with the correct gamma basis transformation as argument.
 The remainder of the diagram after the last point (indicated by \code{...}) is very similar to the call graph of \code{gamma5}, \cref{fig:quda:gamma5}.
 \begin{figure}
   \includestandalone[width=\linewidth]{\dir/img/copy}
@@ -79,11 +79,11 @@ Thus, input fields might have different $\gamma$-basis conventions than output f
 \Quda transforms every field coming from an external application on the CPU into its preferred internal $\gamma$-basis representation and transforms back when storing the field to the applications memory region.
 This is part of the data reordering procedure.
 
-\section{Precisions}
+\section{Floating-point precision}
 \label{sec:quda:precision}
 
 \tldr{template make it easy for precisions}
-The usage of C++ templates enables simple replacements for the precision of fields on the lattice in terms of floating point numbers as illustrated in \cref{fig:quda:gamma5,fig:quda:copy}. \Quda allows kernels and fields to operate with the usual IEEE 754 floats like double, single, half and quarter. Assigning fields of different precision to each other triggers conversion. This makes implementations of mixed precision solvers straightforward and readable.
+The usage of C++ templates enables simple replacements for the precision of fields on the lattice in terms of floating-point numbers as illustrated in \cref{fig:quda:gamma5,fig:quda:copy}. \Quda allows kernels and fields to operate with the usual IEEE 754 floats like double, single, half and quarter. Assigning fields of different precision to each other triggers conversion. This makes implementations of mixed precision solvers straightforward and readable.
 
 \section{Compression formats}
 \label{quda:compresed:formats}

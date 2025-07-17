@@ -14,7 +14,7 @@ We continue explaining how \Cstar boundary conditions (\cref{sec:openqxd:cstar})
 
 \tldr{openqxd and openqcd intro}
 The \openqxd code~\cite{openqxd} is an extension of the state-of-the-art lattice QCD Markov Chain Monte Carlo code openQCD~\cite{online:openqcd,Luscher:2012av} which complies to the C89 standard with MPI parallelization and has proven strong-scalability to hundreds of CPU-based nodes including specific optimizations for x86 architectures.
-Due to the extensive suite of legacy applications based on \openqcd as well as its renowned stability and reproducibility, our goal is to accelerate the code by offloading the solution to the Dirac equation \cref{eq:dirac:equation} to the GPU accelerator using the \quda library.
+Due to the extensive suite of legacy applications based on \openqcd as well as its renowned stability and reproducibility, our goal is to accelerate measurement routines by offloading the solution to the Dirac equation \cref{eq:dirac:equation} to the GPU accelerator using the \quda library.
 
 % The Wilson-Clover Dirac operator $\Dw$ is a nearest-neighbor stencil operator
 % acting on a linear space of quark (or spinor) fields defined on a regular 4D
@@ -132,7 +132,7 @@ typedef struct
 \caption{The spinor field struct}
 \label{lst:openqxd:spinor}
 \end{codelisting}
-An individual field does not carry any further information apart from its actual data. Meta information like the local size of the field are globally available in terms of compile time constants and the precision of the underlying floating point number is encoded in the naming of the struct.
+An individual field does not carry any further information apart from its actual data. Meta information like the local size of the field are globally available in terms of compile time constants and the precision of the underlying floating-point number is encoded in the naming of the struct.
 Furthermore, there is a single precision variant of this struct called \code{spinor} holding structs of type \code{su3\_vector} again holding \code{complex}.
 
 \tldr{complex numbers}
@@ -176,7 +176,7 @@ typedef struct
 \caption{The gauge field struct}
 \label{lst:gauge}
 \end{codelisting}
-As can be seen, there is no enforcement of the matrices being $\ggrp{SU}{3}$ nor compression of the gauge field exploiting the gauge group symmetry. All \num{9} complex numbers are explicitly written out as row-major matrix. An advantage of such a storage model is that it can easily be extended to arbitrary gauge groups. This made implementing QCD+QED which has a gauge group of $\ggrp{U}{3}$ straightforward, see \cref{sec:openqxd:qcd+qed}. A clear downside is performance. By exploiting the Lie-algebra structure of $\liealg{su}{3}$, the gauge field could be stored with \num{8} real degrees of freedom instead. This would reduce the size of the struct to \num{8} floating point numbers instead of \num{18}. In memory bound kernels this would result in a speedup of about two.
+As can be seen, there is no enforcement of the matrices being $\ggrp{SU}{3}$ nor compression of the gauge field exploiting the gauge group symmetry. All \num{9} complex numbers are explicitly written out as row-major matrix. An advantage of such a storage model is that it can easily be extended to arbitrary gauge groups. This made implementing QCD+QED which has a gauge group of $\ggrp{U}{3}$ straightforward, see \cref{sec:openqxd:qcd+qed}. A clear downside is performance. By exploiting the Lie-algebra structure of $\liealg{su}{3}$, the gauge field could be stored with \num{8} real degrees of freedom instead. This would reduce the size of the struct to \num{8} floating-point numbers instead of \num{18}. In memory bound kernels this would result in a speedup of about two.
 
 \tldr{gauge field index}
 The gauge field has indices $(x_{odd}, \pm \mu, a, b)$, where $x_{odd}$ is the lattice index (only odd points, $V_\mathrm{L}/2$ elements), $\mu \in \{\pm 0, \pm 1, \pm 2, \pm 3\}$ is the direction of the gauge link (in positive as well as negative direction, \ie 8 possibilities) and $a,b$ parameterize the row and column of the $\ggrp{SU}{3}$-valued gauge link (row-major).
@@ -275,13 +275,13 @@ The gauge fields are copied to the mirror lattice sites and charge conjugated.
 This implementation has advantages and disadvantages:
 it is simple to extend code that already operates on periodic fields but the gauge fields are redundant in memory making an application of the Dirac operator roughly twice as expensive as it could be. %without further optimizations.
 
-\section{QCD+QED}
+\section{Implementation of QCD+QED}
 \label{sec:openqxd:qcd+qed}
 
 \tldr{gauge groups and how they're stored}
 The code stores the $\ggrp{SU}{3}$ gauge fields internally as an array of structs \cref{lst:gauge} which are \num{9} complex numbers.
 The $\ggrp{U}{1}$ field is stored in terms of its Lie-algebra $\liealg{u}{1}$, which are real phases $A_{\mu}(x)$, as simple array of double precision floats.
-This is done such that when the charge $\hat{q}$ changes in \cref{eq:Dw:QCD+QED} the $\ggrp{U}{1}$-value can be regenerated without taking logarithms followed by re-exponentiation.
+This is done such that, when the charge $\hat{q}$ changes in \cref{eq:Dw:QCD+QED} the $\ggrp{U}{1}$ value can be regenerated without taking logarithms and re-exponentiating.
 Additionally, the compound $\ggrp{U}{3}$-valued field $e^{i \hat{q} A_{\mu}(x) U_{\mu}(x)}$ is held in memory as an array of structs of type \cref{lst:gauge}.
 This is not a problem, since the \code{su3\_dble} struct parametrizes all \num{9} complex numbers of an arbitrary $3 \times 3$ complex matrix.
 All functions using the gauge field, such as the Dirac operator, now operate on the compound field instead of the $\ggrp{SU}{3}$-valued one.

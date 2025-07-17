@@ -34,11 +34,10 @@
 * [x] "Muon" or "muon" -> "muon"
 * [x] Chirality figures: check if i=1 -> ID (1) and so on
 * [x] The little intros with section references, like the "structure of the thesis" but for the chapter
-* [ ] Thesis feedback Tim: v1
-* [ ] Thesis feedback Tim: v2
-* [ ] Thesis feedback Tim: v2
-* [ ] Thesis feedback Tim: v2
-* [ ] Thesis feedback Tim: v2
+* [ ] Thesis feedback Tim: v1 overall intro
+* [ ] Thesis feedback Tim: v2 p2intro
+* [ ] Thesis feedback Tim: v2 chirality
+* [ ] Thesis feedback Tim: v2 conclusions + summary
 * [x] Thesis feedback Letizia: step1
 * [ ] Thesis feedback Letizia: step2
 * [ ] Thesis feedback Marina
@@ -54,15 +53,17 @@
 
 ## Final things to check
 
-* [ ] No more red things -> no red last page
+* [ ] No more red things
+* [ ] No red last page
 * [ ] Line break layout of \code{} fragments
-* [ ] Captions and their figures/cost listings on the same page
-* [ ] No unmet references
-* [ ] check all \code{} parts, also in captions, footnotes, figures, etc
+* [ ] Captions and their figures/code listings on the same page
+* [ ] No unmet references -> from log output
+* [ ] check sizes of all \code{} parts, also in captions, footnotes, figures, etc
 * [ ] Also in images/schemes!
 * [x] Table of contents: only depth 2
 * [ ] Remove TLDRs
 * [ ] Check crefs in clover picture
+* [ ] ToC: are the vertical spaces correct? before part 1 and 2, before and after summary, before bib
 
 ## TODO after hand-in of the thesis
 

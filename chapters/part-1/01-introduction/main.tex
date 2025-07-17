@@ -102,7 +102,7 @@ The main computational kernel is thus the application of this stencil operator t
 Even though Lattice QCD simulations are a somewhat different kind of computational problem compared to machine learning, they can profit from the hardware advancements
 %and take the opportunity
 on GPU accelerators utilizing modern clusters.
-Most lattice simulations consist of two parts with slightly different computational motives; sampling of gauge fields and evaluation of observables.
+Most lattice simulations consist of two parts with slightly different computational motifs; sampling of gauge fields and evaluation of observables.
 However, both are dominated by repeated solves of the Dirac equation.
 For gauge field sampling, the gauge field defining the Dirac operator might change from solve to solve.
 On the other hand in case of observable evaluation, the gauge field does not change too frequently, meaning that the same linear system of equations has to be solved for possibly thousands of right-hand sides.

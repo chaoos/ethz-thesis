@@ -1,11 +1,11 @@
 \chapter{Introduction}
 \label{ch:introduction}
 
-\dictum[Dante Alighieri]{%
+\dictum[Dante Alighieri, Inferno]{%
   Abandon all hope, ye who enter here. }%
 \vskip 1em
 
-\readit{2}
+\readit{3}
 
 % \worktodo{
 %    * we focus on these publications (MG LMA, GPU stuff, not cstar HVP stuff)
@@ -28,7 +28,7 @@
 The Standard Model of particle physics is one of the most successful frameworks for theoretical predictions of physical quantities.
 Its agreement with experimental data is unprecedented.
 %Lattice field theory (LFT) is still the only regularization of quantum field theory (QFT) and by this the only ab initio method that allows non-perturbative access to observables.
-Lattice field theory is currently the only non-perturbative regularization of quantum field theory that allows for the numerical computation of non-perturbative observables from first principles.
+Lattice field theory is currently the only regularization of quantum field theory that allows for the numerical computation of non-perturbative observables from first principles.
 %Due to its statistical nature, determinations from lattice field theory can be systematically improved.
 Moreover, determinations from lattice field theory can be systematically improved.
 Gold-plated observables like the hadronic contributions to the anomalous magnetic momentum of the muon $g-2$, where low energy behavior of QCD plays an important role are accessible from basic principles only non-perturbatively with the application of lattice QCD.
@@ -36,10 +36,17 @@ When adopting lattice regularization, the fields of the continuum theory are dis
 The discretization of the theory naturally regularizes ultraviolet and infrared divergences occurring in the continuum theory, due to its finite resolution and volume description.
 Feynman's path integral description of QFT is used as a representation, where the functional integral over field degrees of freedom turns into a high-dimensional regular integral.
 %Dimensionality may go up to $10^{8}$, which introduces the need of modern high-performance computing (HPC) infrastructure for their evaluation.
-A typical lattice QCD ensemble, with a volume on the order of a few fermi and lattice spacings well below \num{1} fermi\footnote{To simulate nucleons for instance, one requires lattice extents of a few fermi because the nucleon radius is about \num{1} fm, whereas the lattice spacing must be significantly smaller than that to give a proper resolution.}, contains at least $\bigO(10^8)$ degrees of freedom, including flavors, colors, and space-time indices.
-This introduces the need of modern high-performance computing (HPC) infrastructure for their evaluation\footnote{This is not the only reason. Such large lattice would fit into memory of a big node nowadays, e.g. HPE Superdome Flex~\cite{online:superdome} systems come with a maximal memory capacity of \SI{48}{\tera \byte}. The bottleneck is usually the memory bandwidth, not capacity, and by this time to solution. The bandwidth can be multiplied by distribution over several nodes reducing time to solution.}.
+A typical lattice QCD ensemble, with a volume on the order of a few fermi and lattice spacings well below \num{1} fermi\footnote{To simulate nucleons for instance, one requires lattice extents of a few fermi because the nucleon radius is about \num{1} fm, whereas the lattice spacing must be significantly smaller than that for a proper resolution.}, contains at least $\bigO(10^8)$ degrees of freedom, including flavors, colors, and space-time indices.
+This introduces the need for modern high-performance computing (HPC) infrastructure for their evaluation\footnote{
+This is not the only reason.
+Such large lattices would fit into memory of a large node nowadays, e.g. HPE Superdome Flex~\cite{online:superdome} systems come with a maximal memory capacity of \SI{48}{\tera \byte}.
+The bottleneck is usually the memory bandwidth, not capacity, and by this time to solution.
+Bandwidth can be multiplied by distribution over several nodes, reducing time to solution.
+Furthermore, slow decorrelation along the Molecular Dynamics trajectory leads to large autocorrelation times and a substantial increase in time to solution for sampling independent gauge fields -- a process inherently serial due to its Markov chain nature.
+This phenomenon is known as critical slowing down.
+}.
 Careful understanding of systematic and statistical errors allows studying physical quantities of interest and thorough comparison to experiment.
-\worktodo{Tim: Maybe you go into this later, but it would be nice to go into a bit more depth here.}
+%\worktodo{Tim: Maybe you go into this later, but it would be nice to go into a bit more depth here.}
 Discretizing a theory comes with many decisions and choices; each with its advantages and disadvantages.
 Independent research groups in the field, working with different discretizations, regularly compare their results and discuss systematics.
 Once extrapolated to the continuum, lattice results should show independence of these choices and agree within their error estimates -- this is often called universality.
@@ -62,20 +69,20 @@ In this equation, the fundamental degrees of freedom are the fields $\psi$, $\ba
 $S$ denotes the action of the theory and $Z = \int \DD \psi \DD \bar{\psi} \DD A e^{i S[\psi, \bar{\psi}, A]}$ the partition function.
 The observable $\observable{O}$ is a functional of the fields and can be any time-ordered correlation function.
 Here, $\psi$ and $\bar{\psi}$ may represent fermionic particles and $A$ a gauge boson.
-The bosonic field is vectorial and the fermionic one spinorial and Grassmann-valued.
+The bosonic field is vectorial, the fermionic one spinorial and Grassmann-valued.
 It is a standard result in fermionic QFT that the fermion degrees of freedom in the partition function $Z$ can be integrated out, such that
 \begin{equation}
 Z = \int \DD A \det(D) e^{i S[A]} \;.
 \end{equation}
 The non-locality of the determinant encodes all possible paths of the fermion represented by $\psi$.
-For the first time, we encounter the operator that has a central role in this document; the Dirac operator $D$, here in its continuum form $D = i \gamma^{\mu} D_{\mu} - m$ with the Dirac matrices obeying the Clifford algebra $\{\gamma^{\mu}, \gamma^{\nu}\} = 2 \eta^{\mu \nu}$, where $\eta$ is the Minkowski spacetime metric\footnote{In particle physics notation usually of signature $(+---)$.}, $m$ is the fermion mass and $D_{\mu}$ are covariant derivatives
+For the first time, we encounter the operator that has a central role in this document; the Dirac operator $D$, here in its continuum form $D = i \gamma^{\mu} D_{\mu} - m$ with the Dirac matrices obeying the Clifford algebra $\{\gamma^{\mu}, \gamma^{\nu}\} = 2 \eta^{\mu \nu}$, where $\eta$ is the Minkowski spacetime metric\footnote{In particle physics notation usually of signature $(+---)$.}, $m$ the fermion mass and $D_{\mu}$ are covariant derivatives
 \begin{equation}
 D_{\mu} = \partial_{\mu} + ig A_{\mu}^{a} T^{a} \;,
 \end{equation}
 where the $T^{a}$ are the generators of the gauge group's Lie-algebra and $g$ the coupling.
 These derivatives were introduced to retain Lorentz-invariance of the kinetic fermion part of the action $S$.
 Inevitably, this introduced another field $A$ which is vector-valued, massless and mediates the interaction among fermions.
-In the context of QED with gauge group $\ggrp{U}{1}$, this results in the photon mediating the electromagnetic interaction, whereas for an $\ggrp{SU}{3}$ gauge group this results in the \num{8} gluons mediating the strong interaction of quantum chromodynamics (QCD).
+In the context of quantum electrodynamics (QED) with gauge group $\ggrp{U}{1}$, this results in the photon mediating the electromagnetic interaction, whereas for an $\ggrp{SU}{3}$ gauge group this results in the \num{8} gluons mediating the strong interaction of quantum chromodynamics (QCD).
 
 The fermionic quark fields belong to the $N_c$-dimensional fundamental representation of the color gauge group $\ggrp{SU}{N_c}$, antiquark fields to the complex conjugate representation of $\ggrp{SU}{N_c}$ which is $N_c$-dimensional too, and gluon fields to the adjoin representation which is $(N_c^{2}-1)$-dimensional.
 
@@ -137,12 +144,13 @@ The coupling constant $g$ is a free parameter of the theory and the structure co
 
 \subsection{Dirac operator}
 
-Discretizing the QCD action \cref{eq:continuum:YM:action} and replacing derivatives with symmetric differences results in the Wilson action~\cite{Gattringer:2010zz}
+Discretizing the QCD action \cref{eq:continuum:YM:action} and replacing derivatives with symmetric differences results in the Wilson action~\cite{Gattringer:2010zz},
 \begin{align}
 S &= S_G + S_F \;, \\
 S_G &= \frac{1}{g^2} \sum_{x \in a \Lambda} \sum_{\mu, \nu} \Re \tr \left[ \delta_{\mu \nu} \id - U_{\mu \nu}(x) \right] \;, \label{eq:wilson:action:gauge} \\
 S_F &= a^4 \sum_{x \in a \Lambda} \bar{\psi}(x) (D_{\text{naive}}[U] \psi)(x) \;.
 \end{align}
+
 The gauge part of the action $S_G$ turns into a sum over plaquettes (see \cref{fig:plaquette} for an illustration)
 \begin{equation} \label{eq:plaquette}
 U_{\mu \nu}(x)
@@ -156,6 +164,7 @@ U_{\mu}(x)
 \end{equation}
 as exponential of the Lie-algebra-valued field $A$ and $\hat{\mu}$ is the unit 4-vector in direction $\mu$.
 As constructed in \cref{eq:gauge:field}, gauge links are explicitly defined in between lattice sites.
+
 The fermion part $S_F$ introduces the discretized Dirac operator -- the naive lattice Dirac operator
 \begin{equation} \label{eq:D:naive}
 % (D \psi)(x) = (4+m)\psi(x) \\
@@ -201,7 +210,7 @@ Such states decouple in the continuum limit, but the term above breaks chiral sy
 Even more troubling, every discretization in four spacetime dimensions with the correct continuum limit and respecting locality, either comes with fermion doublers or breaks chiral symmetry.
 This is the famous Nielsen-Ninomiya no-go theorem~\cite{Nielsen:1980rz,Nielsen:1981xu}.
 
-An additional term proportional to $a$ was introduced later~\cite{sw1985} to cancel the $\bigO(a)$ discretization effects introduced by the Wilson-term systematically, while still eliminating the doublers,
+Another term proportional to $a$ was introduced later~\cite{sw1985} to cancel the $\bigO(a)$ discretization effects introduced by the Wilson-term systematically, while still eliminating the doublers,
 \begin{equation} \label{eq:dirac:wilson:clover}
 D_{WC}[U] = D_W[U] + c_\mathrm{sw}^{SU(3)} a \frac{i}{4} \sum_{\mu, \nu} \sigma_{\mu \nu} \hat{F}_{\mu \nu} \;.
 \end{equation}
@@ -237,12 +246,12 @@ Following an effective field theory analysis, it gives $\bigO(a)$ improvement à
 
 \begin{figure}
 \centering
-\subfloat[The plaquette]{%
+\subfloat[The plaquette $U_{\mu \nu}(x)$]{%
   \includestandalone[width=0.5\textwidth]{\dir/img/plaquette}
   \label{fig:plaquette}
 }
 \hfill
-\subfloat[The clover term]{%
+\subfloat[The clover term $Q_{\mu \nu}(x)$]{%
   %\includestandalone[width=0.45\textwidth]{\dir/img/clover}
 \resizebox{0.3\textwidth}{!}{%
 \begin{tikzpicture}
@@ -321,7 +330,7 @@ Staggered fermions~\cite{PhysRevD.11.395} reduce the \num{16} doublers to \num{4
 Domain-wall fermions~\cite{Kaplan:1992bt,Shamir:1993zy} suppress doublers through the introduced fifth dimension of extent $L_s$ and exact chiral symmetry is obtained in the limit\footnote{Typically $L_s$ is chosen to be around \numrange{12}{48}.} $L_s \to \infty$.
 Twisted-mass fermions~\cite{Frezzotti:2000nk} remove doublers with the Wilson term and chiral symmetry breaking effects are improved by the mass twisting.
 Overlap fermions~\cite{Neuberger:1997fp,Neuberger:1998wv} entirely remove doublers and retain exact chiral symmetry.
-This is in agreement with Nielsen-Ninomiya~\cite{Nielsen:1980rz,Nielsen:1981xu}, because their Dirac operator is non-local (but exponentially local~\cite{Hernandez:1998et,Boyle:2016imm}) making it computationally very expensive.
+This is in agreement with Nielsen-Ninomiya~\cite{Nielsen:1980rz,Nielsen:1981xu}, because their Dirac operator is non-local, but exponentially local~\cite{Hernandez:1998et,Boyle:2016imm}, making it computationally very expensive.
 
 Summarizing, the QCD Wilson-Clover Dirac operator -- which for simplicity we will call $D$ in the remainder of this document -- is a nearest-neighbor stencil operator acting on a linear space of quark (or spinor) fields defined on a regular 4D cubic lattice of $V$ sites, typically in the range $10^6-10^8$.
 Applied to a spinor field $\psi(x)$ the Dirac operator can then be written as a stencil (the lattice spacing is set to $a = 1$)
@@ -353,7 +362,7 @@ The system of linear equations of interest is the Dirac equation
   D \psi = \eta \;,
 \end{equation}
 where different choices for the right-hand side $\eta$ result in different propagator expressions.
-Solves of this equation appear repeatedly in lattice field theory and will be a central computational, algorithmic and theoretical motive throughout this thesis.
+Solves of this equation appear repeatedly in lattice field theory and will be a central computational, algorithmic and theoretical motif throughout this thesis.
 
 \subsection{Lattice expectation values}
 
@@ -376,7 +385,7 @@ P(U) = \frac{1}{Z} \det(D) e^{- S_G[U]} \;,
 \end{equation}
 importance sample a set of $\Nconf$ gauge fields according to it $\{U_i\}_{i=1}^{\Nconf}$ and estimate the expectation value of the observable as a mean over the samples
 \begin{equation}
-\langle \observable{O}[\psi, \bar{\psi}, U] \rangle \approx \frac{1}{\Nconf} \sum_{i=1}^{\Nconf} \observable{O}[U_i]
+\langle \observable{O}[\psi, \bar{\psi}, U] \rangle \approx \frac{1}{\Nconf} \sum_{i=1}^{\Nconf} \observable{O}[U_i] \;,
 \end{equation}
 with variance $\observable{O}^{2} / N$.
 
@@ -407,7 +416,7 @@ This comes from the standard Gaussian integral formula
 \det(D^{\dagger} D) \sim \int \DD \phi^{\dagger} \DD \phi e^{- \phi^{\dagger} ( D^{\dagger} D )^{-1} \phi} \;.
 \end{equation}
 We emphasize that this is not calculating the determinant, but sampling \emph{according} to the determinant.
-Furthermore this requires repeatedly solving the Dirac equation \cref{eq:dirac:equation}.
+Furthermore this requires repeatedly solving the Dirac equation, \cref{eq:dirac:equation}.
 
 Hamiltonian's equations are used to evolve the fields $U, \pi$ in the fictitious simulation time $\tau$,
 \begin{equation}
@@ -420,9 +429,9 @@ The process of obtaining a new proposal for the fields $U, \pi$ is called a mole
 
 After an MD trajectory (one or multiple steps in $\tau$), we accept or reject the new proposal $U^{\prime}, \pi^{\prime}$ according to the accept probability
 \begin{equation}
-P_{\text{accept}} = \min \left( 1, e^{-(\mathcal{H}[U^{\prime}, \pi^{\prime}] - \mathcal{H}[U, \pi])} \right)
+P_{\text{accept}} = \min \left( 1, e^{-(\mathcal{H}[U^{\prime}, \pi^{\prime}] - \mathcal{H}[U, \pi])} \right) \;.
 \end{equation}
-Since the MD integration is not exact, this step corrects for that.
+Since the MD integration is not exact, the accept-reject step corrects for that.
 This is called the Metropolis-Hastings algorithm~\cite{10.1063/1.1699114,10.1093/biomet/57.1.97} and the HMC is a special instance of it, where the new proposal is physics-inspired via Hamiltonian evolution.
 
 We may define the autocorrelation time as the (fictitious) time in MD trajectories until the algorithm yields an independent sample.
@@ -486,7 +495,7 @@ It implies that laws of physics are the same for left-handed and right-handed pa
 
 \tldr{spontaneous chiral symmetry breaking}
 In QCD with multiple light quark flavors in the fundamental representation, spontaneous breaking of chiral symmetry~\cite{PhysRev.117.648} is a non-perturbative feature of the QCD vacuum.
-The chiral condensate $\langle \bar{\psi} \psi \rangle$ is a measure of it -- in fact it is the order parameter of chiral symmetry breaking.
+The chiral condensate $\langle \bar{\psi} \psi \rangle$ is a measure of it -- in fact, it is the order parameter of chiral symmetry breaking.
 If the vacuum were to respect this symmetry, the chiral condensate would be exactly zero.
 The fact that this is not the case breaks chiral symmetry from
 \begin{equation}
@@ -523,9 +532,9 @@ To recover continuum quantum field theory from the lattice, we have to take the 
 For the limit $a \to 0$, one needs to compute the observables of interest for several values of the lattice spacing $a$.
 The lattice spacing serves as a regulator of the theory; it makes divergent quantities finite by cutting off the divergent parts of integrals at the short (UV) distances, \ie it cuts off UV divergences.
 As $a \to 0$ they turn into terms proportional to $a^{-n}$ for some $n \geq 1$.
-In order to recover continuous QCD, the infinite-volume limit $L \to \infty$ has to be taken too, where $L$ is the extent of the 4D lattice box of volume $L^{4}$.
+In order to recover continuum QCD, the infinite-volume limit $L \to \infty$ has to be taken too, where $L$ is the extent of the 4D lattice box of volume $L^{4}$.
 The finite volume is another regulator of the theory; it regularizes the long (IR) distance divergences, leading to finite-volume corrections scaling power-like $L^{-m}$ for some $m \geq 1$ or exponentially $e^{-m_{\pi} L}$.
-Both regulator limits should be considered together to recover continuous QCD.
+Both regulator limits should be considered together to recover continuum QCD.
 
 Naively taking the continuum limit without tuning the bare parameters to the lines of constant physics will yield divergent results.
 On the other hand, results should not depend on the regulator and renormalization is the process of removing the dependency of the regulator from physical quantities.
@@ -543,7 +552,7 @@ For typical lattice QCD simulations with dynamical fermions, the computational s
 \end{equation}
 where $z$ and $p$ are exponents that depend on the action, physics parameters, and algorithms involved.
 However, the exponent associated to the lattice constant is in the regime $z \geq 5$ and the volume scaling $p = 1-2$.
-These numbers are deeply related to what is known in the field as \emph{critical slowing down}.
+These numbers are deeply related to \emph{critical slowing down}.
 
 \tldr{autocorrelation time dependency}
 As lattice spacings become finer, the autocorrelation time of the Markov chain diverges, configurations evolve slowly in the phase space and more molecular dynamics trajectories are required to generate statistically independent configurations.
@@ -601,7 +610,7 @@ A strong-enough tension with an experimental quantity would proof the Standard M
 A persistent tension between experimental measurements and SM predictions would indicate that the Standard Model is not sufficient to describe the interactions between particles.
 In recent years, the anomalous magnetic moment of the muon $g-2$ has held a prominent role in the search of beyond Standard Model (BSM) physics, due to the longstanding discrepancy of $3-4\sigma$ \cite{snowmass:2020} between its measurement and its theoretical prediction.
 In this context, lattice QCD plays a crucial role, as it provides first-principles, non-perturbative calculations of the hadronic contributions to the $g-2$, which are currently the dominant sources if uncertainty in its theoretical prediction.
-Although current results seem to relax the tension~\cite{Muong-2:2025xyk,snowmass:2025}], tensions between data-driven and lattice determinations of the main hadronic contribution to the muon $g-2$ persists~\cite{snowmass:2025}.
+Although current results seem to relax the tension~\cite{Muong-2:2025xyk,snowmass:2025}, tensions between data-driven and lattice determinations of the main hadronic contribution to the muon $g-2$ persists~\cite{snowmass:2025}.
 
 % One hopes to find an observable where physics not described by the Standard Model has non-negligible influence in its value.
 % One such quantity which became very prominent in the last years is the the anomalous magnetic moment of the muon, whose beyond the Standard Model (BSM) effects might arise from unknown virtual particles outside the energy range of modern particle colliders.
@@ -609,7 +618,7 @@ Although current results seem to relax the tension~\cite{Muong-2:2025xyk,snowmas
 % Although current results seem to relax the tension, but they introduce new puzzles from tensions between data-driven and lattice determinations~\cite{snowmass:2025}.
 
 Light may be shed on those questions by decreasing error bars from both theory and experiments resulting in a resolution or tightening of the tension and ultimately a better understanding of nature.
-Dominant sources of error come from the leading order (LO) hadronic vacuum polarization (HVP) term at order $\bigO(\alpha^{2})$ and the subdominant hadronic light-by-light scattering (HLbL) term at order $\bigO(\alpha^{3})$.
+Dominant sources of error come from the leading order hadronic vacuum polarization (LO-HVP) term at order $\bigO(\alpha^{2})$ and the subdominant hadronic light-by-light scattering (HLbL) term at order $\bigO(\alpha^{3})$.
 %It seems to be promising candidate to lead to an indirect evidence for beyond the Standard Model (BSM) physics.
 
 \subsection{The anomalous magnetic moment}
@@ -626,7 +635,7 @@ Therefore, we find for the magnetic moment of a \spinhalf particle
 \vect{\mu} = g \frac{q e}{2 m} \vect{S}.
 \end{equation}
 We have sneaked in a dimensionless proportionality factor $g$ here.
-Classically we would clearly expect $g=1$ if spin behaved like angular momentum.
+Classically we would clearly expect $g=1$, if spin behaved like angular momentum.
 However, when interacting with an electromagnetic field, the relativistic treatment leads to an additional term that doubles the expected magnetic moment.
 This magnetic moment can be characterized in terms of the dimensionless Landé g-factor also known as the gyro-magnetic ratio, parametrized by $g$ in the formula above.
 In 1928, Dirac formulated the Dirac equation for relativistic \spinhalf particles and derived their magnetic moment~\cite{dirac1928quantum}.
@@ -648,7 +657,7 @@ Since all virtual particles contribute to the magnetic moment, it can be argued~
 where $m_{\ell}$ is the mass of the lepton and $\Lambda$ is the energy scale where new physics appear, \ie roughly the mass of a new unknown heavy virtual particle.
 This suggests that the anomalous magnetic moment of the heaviest known lepton, the tau with a mass of about \SI{1.8}{\GeV} (see \cref{tab:leptons}), should be the best candidate to lead to new physics.
 Admittedly the tau is very short lived with a lifetime of about \num{0.3} ps making it hard to access in experiments.
-Nevertheless it is being investigated~\cite{Fael:2013ij,BaBar:2015ard} as an alternative path to new physics.
+Nevertheless, it is being investigated as an alternative path to new physics~\cite{Fael:2013ij,BaBar:2015ard}.
 The lepton with the longest lifetime, the electron with a lifetime of many years, is unfortunately very light and thus unlikely to produce heavy virtual particles.
 Furthermore the electrons $g-2$ is experimentally measured to about \num{0.13} ppb~\cite{Fan:2022eto}, whereas the muon's to \num{127} ppb\cite{Muong-2:2025xyk}.
 Taking this in account, the sensitivity to BSM physics is thus
@@ -686,11 +695,11 @@ Lepton masses and their mean lifetimes.}
 
 \worktodo{check flow}
 
-As stated previously, the largest error contribution stems from the LO-HVP contribution to the anomalous magnetic momentum of the muon.
+The largest error contribution stems from the LO-HVP contribution to the anomalous magnetic momentum of the muon.
 As the previous official SM prediction by the Muon $g-2$ Theory Initiative~\cite{online:gm2} includes the data-driven result for this contribution~\cite{snowmass:2020}, the current iteration includes the determination on the lattice as official consensus result~\cite{snowmass:2025}.
 The reasons for this are manifold.
 The data-driven result -- in tension with the experimental value~\cite{Muong-2:2006rrc,Muong-2:2021ojo} -- is itself obtained using experimental data, namely from the cross-section $\sigma(e^{+} e^{-} \rightarrow \text{hadrons})$ as a function of the center of mass energy $\sqrt{s}$~\cite{davier:2017zfy,keshavarzi:2018mgv,colangelo:2018mtw,hoferichter:2019mqg,davier:2019can,keshavarzi:2019abf}.
-This is certainly not a first principles theory prediction but was until recently the only one whose error was competitive with the experimental error estimations.
+This is certainly not a first principles theory prediction, but was until recently the only one whose error was competitive with the experimental error estimations.
 Algorithmic, theoretical and computational advancements over the years made the quantity accessible in the framework of lattice QCD.
 %It is thus to be expected that future Muon $g-2$ Theory Initiative releases will not only include a lattice result for the HVP as of now but also make it part of the official consensus result.
 %whose error quickly become comparable to the data-driven approach.
@@ -710,7 +719,7 @@ a_{\mu}^{\text{LO-HVP}} = a_{\mu}^{\text{LO-HVP}}(ud) + a_{\mu}^{\text{LO-HVP}}(
 \end{equation}
 %If we zoom in further into the LO-HVP contribution and split it into flavor contributions, we find \cref{fig:a_mu:lohvp:variances}.
 Dominant is the light-quark connected contribution, $a_{\mu}^{\text{LO-HVP}}(ud)$ (see \cref{fig:a_mu:lohvp:variances}), followed by a non-negligible contribution from disconnected diagrams.
-It is the light-quark connected contribution that suffers from signal loss in the large distance regime, which is the leading source of the large error.
+It is the light-quark connected contribution that suffers from a lacking translation average in the large distance regime, which is the leading source of the large error.
 %This is where \cref{part:variance} of this thesis is aiming at.
 \begin{table}
 \begin{tabular}{lr}
@@ -764,18 +773,19 @@ Data for this plot was taken from ref.~\cite{snowmass:2025}.
 \subsection{The leading order HVP contribution}
 \label{sec:lohvp}
 
-The goal of the Muon $g-2$ Theory Initiative is to reach a relative error contribution to the whole LO-HVP in the regime of a per mill~\cite{online:gm2,snowmass:2025}.
+The goal of the Muon $g-2$ Theory Initiative is to achieve a relative error contribution of the whole LO-HVP in the regime of a per mill~\cite{online:gm2,snowmass:2025}.
 This poses an immense theoretical, algorithmic and computational challenge.
 Compared to hadronic scales the muon mass is small, implying the largest contribution to $a_{\mu}$ must come from large distances.
 
 The observable of interest is the connected two-point isovector vector current correlator in the time-momentum representation \cite{Bernecker:2011}.
-The local electromagnetic vector current is defined as \worktodo{maybe add flavor index, also later in \cref{eq:a:mu:lohvp} such that if looks like the flavor decomposition?}
+The local electromagnetic vector current is defined as
+%\worktodo{maybe add flavor index, also later in \cref{eq:a:mu:lohvp} such that if looks like the flavor decomposition?}
 \begin{align}
 j_{\mu}(x) = q \bar{\psi}(x) \gamma_{\mu} \psi(x) \;,
 \quad
 \mu=0,1,2,3,
 \end{align}
-where $q$ is the charge of the quark, $\psi$ is the Grassmann-valued quark spinor field and $\gamma_{\mu}$ exposes the quantum numbers of a vector particle. From this current, we can define the two-point function
+where $q$ is the charge of the quark, $\psi$ is the Grassmann-valued quark spinor field and $\gamma_{\mu}$ exposes the quantum numbers of a vector particle. From this current, we can define the two-point correlation function
 \begin{align} \label{eq:C_corr_xy}
 C_{\mu \nu}(x;y) = \langle j_{\mu}(x) j_{\nu}(y) \rangle \;,
 \end{align}
@@ -791,6 +801,7 @@ Furthermore, the correlation function only depends on the time difference betwee
 \begin{align} \label{eq:coor1}
 G(t) = - \frac{1}{3 \lvert \Omega \rvert} \sum_{y \in \Omega} \sum_{k=1}^{3} \int \dd^3 \vect{x} \; C_{kk}(t+y_0, \vect{x}; y) \;.
 \end{align}
+This correlator contains all the non-perturbative hadronic information.
 
 The LO-HVP contribution can then be written as~\cite{Bernecker:2011}
 \begin{equation} \label{eq:a:mu:lohvp}
@@ -836,19 +847,19 @@ with
 \Theta(t_0, t_1, \Delta) = \frac{1}{2} \left( 1 + \tanh\left( \frac{t_0 - t_1}{\Delta} \right) \right) \;.
 \end{equation}
 The function is smooth and has a width parameterized by $\Delta$, to which the community agreed for $\Delta = 0.15$ fm, $t_0 = 0.4$ fm and $t_1 = 1.0$ fm~\cite{RBC_2018}.
-Through this choice, the intermediate window (W) is less sensitive to discretization effects, dominant in the short-distance window (SD) as well as the signal-to-noise ratio problem, dominant in the long-distance window (LD).
+Through this choice, the intermediate window (W) is less sensitive to discretization effects and the signal-to-noise ratio problem which are dominant in the short-distance (SD) and long-distance (LD) window, respectively.
 
 
 \tldr{motivation of QCD+QED}
-Looking at a different decomposition of $a_{\mu}^{\text{LO-HVP}}$ into window contributions, \cref{eq:a:mu:lohvp:windows}, and IB corrections
+It is instructive to look at the decomposition into windows as in \cref{eq:a:mu:lohvp:windows} and isospin-breaking (IB) corrections
 \begin{equation}
 a_{\mu}^{\text{LO-HVP}} = a_{\mu}^{\text{SD}} + a_{\mu}^{\text{W}} + a_{\mu}^{\text{LD}} + a_{\mu}^{\text{IB}} \;,
 \end{equation}
 where here the isospin-symmetric component was decomposed into windows and a remainder accounts for the first order strong and QED isospin-breaking (IB) corrections due to the mass difference between up and down quarks and QED effects.
 %For the variance contributions, we find \cref{fig:a_mu:windows:variances}.
 %Again, the dominant overall contribution comes from the large distance regime (LD) where the signal-to-noise ratio problem is severe, but also from the IB contribution.
-Concerning variance contributions (see \cref{fig:a_mu:windows:variances}), the dominant overall contribution comes from the large distance regime (LD) where the signal-to-noise ratio problem is severe, but also from the IB contribution.
-Contributions to the value of $a_{\mu}^{\text{LO-HVP}}$ from the IB effects are expected to the in the 1\% regime, but we see dramatic variance contribution.
+Concerning variance contributions (see \cref{fig:a_mu:windows:variances}), the dominant overall contribution comes from the large distance regime, where a full translation average is prohibitively expensive, but also from the IB contribution.
+Contributions to the \emph{value} of $a_{\mu}^{\text{LO-HVP}}$ from the IB effects are expected to be in the 1\% regime, but we see dramatic contribution to the variance.
 \begin{figure}
 \centering
 \includegraphics[scale=0.5]{\dir/img/a_mu_windows_variances_squares}
@@ -931,15 +942,15 @@ The prescription used throughout this thesis is \QED{C} by employing spatial \Cs
 Fields are only periodic up to charge conjugation, that is
 \begin{align} \label{eq:cstar:bcs}
   \begin{split}
-    \psi(x + L_k \hat{k})       &= \psi^{\mathcal{C}}(x)       = C^{-1}\bar{\psi}^{\text{T}}(x), \\
-    \bar{\psi}(x + L_k \hat{k}) &= \bar{\psi}^{\mathcal{C}}(x) = -\psi^{\text{T}}(x)C, \\
-    A_{\mu}(x + L_k \hat{k})    &= A_{\mu}^{\mathcal{C}}(x)    = - A_{\mu}(x), \\
-    U_{\mu}(x + L_k \hat{k})    &= U_{\mu}^{\mathcal{C}}(x)    = U_{\mu}^{*}(x),
+    \psi(x + L_k \hat{k})       &= \psi^{\mathcal{C}}(x)       = C^{-1}\bar{\psi}^{\text{T}}(x) \;, \\
+    \bar{\psi}(x + L_k \hat{k}) &= \bar{\psi}^{\mathcal{C}}(x) = -\psi^{\text{T}}(x)C \;, \\
+    A_{\mu}(x + L_k \hat{k})    &= A_{\mu}^{\mathcal{C}}(x)    = - A_{\mu}(x) \;, \\
+    U_{\mu}(x + L_k \hat{k})    &= U_{\mu}^{\mathcal{C}}(x)    = U_{\mu}^{*}(x) \;,
   \end{split}
 \end{align}
 where $\psi$ is a fermion field.
 The vector $\hat{k}$ is the unit vector in spatial $k$-direction with $k=1,2,3$, $\mu=0,1,2,3$ denotes the space-time direction and $L_k$ is the spatial lattice extent in direction $k$.
-The star symbol $U^{*}$ denotes element-wise complex conjugation.
+The star symbol $U^{*}$ denotes element-wise complex conjugation (no transposition).
 $A_{\mu}(x) \in \mathfrak{u}(1)$ is the Lie-algebra-valued photon field, $U_{\mu}(x) \in \ggrp{SU}{3}$ the Lie-group-valued gluon field and the subscript $\mathcal{C}$ stands for the charge conjugated field.
 Together they form the \ggrp{U}{3}-valued compound field
 \begin{equation}
@@ -958,8 +969,8 @@ with the Euclidean $\gamma$-matrices.
 Charge conjugating the fields twice should yield back the original field.
 Thus shifting by twice the spatial lattice extent, the fermion field transforms as
 \begin{align}
-  \psi(x + 2 L_k \hat{k}) &= C^{-1}\bar{\psi^{\text{T}}}(x + L_k \hat{k}) = - C^{-1} C^{\text{T}} \psi(x), \\
-  \bar{\psi}(x + 2 L_k \hat{k}) &= -\psi^{\text{T}}(x + L_k \hat{k})C = - \bar{\psi}(x) (C^{-1})^{\text{T}} C
+  \psi(x + 2 L_k \hat{k}) &= C^{-1}\bar{\psi^{\text{T}}}(x + L_k \hat{k}) = - C^{-1} C^{\text{T}} \psi(x) \;, \\
+  \bar{\psi}(x + 2 L_k \hat{k}) &= -\psi^{\text{T}}(x + L_k \hat{k})C = - \bar{\psi}(x) (C^{-1})^{\text{T}} C \;.
 \end{align}
 If we chose the matrix $C$ to be skew-symmetric $C^{\text{T}} = -C$, the RHS equals $\psi(x)$ and $\bar{\psi}(x)$, respectively and the fermion field is periodic in space in twice the lattice extent $L_k$. Such a matrix $C$ always exists in four dimensions.
 
@@ -1001,7 +1012,7 @@ Such a comparison is highly non-trivial as has not been fully carried out~\cite{
 \tldr{QED in Dop}
 For QCD+QED simulations, the Dirac operator \cref{eq:Dw} has to be modified to include electromagnetic interactions and it has to act on the pseudofermion doublet $(\psi, \bar{\psi})$ simultaneously.
 We will use the symbol $\psi$ in the following to represent the pseudofermion doublet field on the extended lattice.
-In addition to the \ggrp{SU}{3}-valued QCD gauge field $U_\mu(x)$, we have the compact \ggrp{U}{1}-valued QED gauge field $A_\mu(x)$ which when combined, results in a \ggrp{U}{3}-valued field $W_{\mu}(x) = e^{i q A_\mu(x)} U_\mu(x)$ with $q$ the charge of a quark.
+In addition to the \ggrp{SU}{3}-valued QCD gauge field $U_\mu(x)$, we have the compact $\mathfrak{u}(1)$-valued QED gauge field $A_\mu(x)$ which when combined, results in a \ggrp{U}{3}-valued field $W_{\mu}(x) = e^{i q A_\mu(x)} U_\mu(x)$ with $q$ the charge of a quark.
 These links are produced by multiplying the \ggrp{U}{1} phase to the \ggrp{SU}{3} matrices.
 
 \tldr{QED SW term}
@@ -1159,7 +1170,7 @@ This obligates us as researchers to treat the resources we are allowed to use wi
 
 \tldr{algorithmic improvements are needed}
 As important as software developments and efficient utilization of available resources are, the field will not advance without algorithmic developments.
-Specially methods to systematically and iteratively improve estimations of observables by reducing their variance are pivotal for numerical high precision studies of physical quantities.
+Specially methods to systematically and iteratively improve estimations of observables by obtaining minimal variance are pivotal for numerical high precision studies of physical quantities.
 As traditional estimators either fail the translation average or become prohibitively expensive as we approach large, physical lattices, we need efficient variance reduction methods utilizing the available resources more efficiently.
 
 
@@ -1187,7 +1198,7 @@ Establishment of a CI/CD automated testing pipeline running on target hardware a
 \emph{Corresponding chapters: \labelcref{ch:p1:cicd}.}
 }
 \item{
-Algorithmic development of variance reduction methods based on the low-mode deflation technique targeted at observables sensitive to low-mode noise suffering from the signal-to-noise ratio problem.
+Algorithmic development of variance reduction methods based on the low-mode deflation technique targeted at observables sensitive to low-mode noise where full translation averaging is infeasible.
 \emph{Corresponding chapters: \labelcref{ch:p2:subspace-deflation,ch:p2:lc,ch:p2:multigrid,ch:p2:numerics}.}
 }
 \item{
@@ -1198,8 +1209,8 @@ Theoretical understanding of spectral properties of Dirac operators and their co
 The above objectives all target efficient evaluation of observables from a machine-centric but also from an algorithmic perspective.
 
 The scope of these developments concerns offloading inversions to the GPU and does not extend generally to the generation of gauge configurations, although design decisions were made with that in mind.
-A direct proposal for a direct continuation of the software developments in the direction of gauge field generation is stated in \cref{ch:p1:memory}, it is not the only possibility to continue.
-Benchmarks are restricted to systems with NVIDIA GPUs, because of availability of compute resources, although data for AMD GPUs has been investigated too, taken on the Finnish machine \emph{LUMI}.
+A proposal for a direct continuation of the software developments in the direction of gauge field generation is stated in \cref{ch:p1:memory}, it is not the only possibility to continue.
+Benchmarks are restricted to systems with NVIDIA GPUs, because of availability of compute resources, although data for AMD GPUs has been investigated too, collected on the Finnish machine \emph{LUMI}.
 Some of this can be found in ref.~\citeOwn{lattice24:roman} and currently unpublished in ref.~\citeOwn{pasc24}, where also data from the decommissioned \emph{Daint hybrid} machine at CSCS can be found.
 This data is from an old version of the code and was therefore left out of this document.
 
@@ -1245,7 +1256,7 @@ Some were taken from the publication~\cite{mglma}.
    \item[\cref{ch:p2:subspace-deflation}]: The novelty in this chapter is the deflation of arbitrary subspaces required later.
    \item[\cref{ch:p2:lc}]: Local coherence is a concept known in literature. This chapter briefly introduces the concept. No original results are presented here.
    \item[\cref{ch:p2:multigrid}]: Multigrid preconditioning is an established concept and widely used in the field. The original research consists of the decomposition of the propagator, its usage as variance reduction method and developments that follow. This was developed by me based on advise and feedback of colleagues and collaborators.
-   \item[\cref{ch:p2:numerics}]: I have developed the observable evaluation code, based on functionality of \openqxd, the recursive multigrid and all results were generated by me. The gauge fields used for the numerical analysis of the method, apart from the lattice F7~\cite{online:cls}, were generated by Tim Harris. Feedback from my supervisor Marina Marinković and Tim Harris helped improve the simulation strategy.
+   \item[\cref{ch:p2:numerics}]: I have developed the observable evaluation code, based on functionality of \openqxd, the recursive multigrid code and all results were generated by me. The gauge fields used for the numerical analysis of the method, apart from the lattice F7~\cite{online:cls}, were generated by Tim Harris. Feedback from my supervisor Marina Marinković and Tim Harris helped improve the simulation strategy.
    \item[\cref{ch:p2:chirality}]: Theoretical insight from this chapter are my own. Textbook results from numerical range theory were used, but also indicated if so. Ideas about preservation of chirality are partially based on existing literature. Many of the formal proofs are original results.
    \item[\cref{ch:p2:conclusions}]: This chapter was written by me and reflects my own views and conclusions.
    \end{description}
@@ -1270,7 +1281,7 @@ This document is split into two parts which are to a large extent independent of
 \Cref{part:gpu} deals with the advancements in software development, GPU porting and the interface to \quda.
 It deals with objectives \numrange{1}{3} as stated in \cref{sec:intro:objectives} associated to \cref{ch:p1:interface,ch:p1:develop,ch:p1:performance,ch:p1:cicd,ch:p1:memory}.
 Its heart piece provides a documentation of the design choices, all the functionality that have entered the \openqxd and \quda codebases, and finishes with an assessment of performance.
-\Cref{part:variance} deals with the remaining objectives \numrange{4}{5} as stated in \cref{sec:intro:objectives} associated to \cref{ch:p2:subspace-deflation,ch:p2:lc,ch:p2:multigrid,ch:p2:numerics,ch:p2:chirality}, introduces the new variance reduction method which we call \emph{multigrid low-mode averaging} and investigates its application to an observable that is sensitive to it.
-Results are compared to traditional estimators.
+\Cref{part:variance} deals with the remaining objectives \numrange{4}{5} as stated in \cref{sec:intro:objectives} associated to \cref{ch:p2:subspace-deflation,ch:p2:lc,ch:p2:multigrid,ch:p2:numerics,ch:p2:chirality}, introduces the new variance reduction method which we call \emph{multigrid low-mode averaging} and investigates its application to an observable where the full translation average is infeasible.
+Results are compared to established estimators.
 It finishes with theoretical considerations about chirality on coarse subspaces.
 Both parts have separate outlines and introductions.

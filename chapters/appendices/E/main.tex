@@ -1,29 +1,118 @@
-\chapter{Appendix: License and Availability}
-\label{ch:appendix:license}
+\chapter{Appendix: Notation}
+\label{ch:appendix:notation}
 
-\dictum[Richard Stallman]{%
-  Free software is a matter of liberty, not price. To understand the concept, you should think of ``free'' as in ``free speech'', not as in ``free beer''.}%
-\vskip 1em
+\section{Frequently used names}%
+\vskip -2em
+\begin{tabularx}{\textwidth}{lX}
+  %\toprule%
+  %\tableheadline{Symbol} & \tableheadline{Meaning} \\
+  %\midrule%
+  openQCD & A framework for lattice QCD simulations on CPUs. \\
+  openQxD & A framework for lattice QCD+QED simulations on CPUs based on openQCD v1.6. \\
+  QUDA & A library for performing calculations in lattice QCD on GPUs. \\
+  %\bottomrule
+\end{tabularx}
 
-\readit{1}
+\section{Physical constants}
+\sisetup{separate-uncertainty=false}
+\vskip -2em
+\begin{tabularx}{\textwidth}{lX}
+  $\hbar$ & reduced Planck constant, $\hbar=\u{1.054571817d-34}{\joule\second}$ \\
+  $e$     & elementary electric charge, $e=\u{1.602176634d-19}{\coulomb}$ \\
+\end{tabularx}
+\begin{flushright}
+\cite{codata:2022}
+\end{flushright}
+\sisetup{separate-uncertainty=true}
 
-%\worktodo{Reproducibility and Software Availability: code availability, licence, compilers, ...}
+\section{Frequently used symbols and conventions}%
+% \vskip -2em
+% \begin{tabularx}{\textwidth}{lX}
+%   %\toprule%
+%   %\tableheadline{Symbol} & \tableheadline{Meaning} \\
+%   %\midrule%
+%   $E$ & energy \\
+%   $m$ & rest mass \\
+%   $p$ & momentum \\
+%   %\bottomrule
+% \end{tabularx}
 
-\doclicenseThis
+\paragraph{Units.}
+We shall work with natural units $\hbar = c = 1$.
 
-\section{Code availablility}
+\paragraph{Spinor product.}
+%The spinor product is denoted by $\sprod{\cdot}{\cdot}$ and is the obvious one where by convention the first component is conjugated.
+$\sprod{\cdot}{\cdot}$ denotes the standard spinor product where by convention the first component is conjugated.
 
-All code produced for \cref{part:gpu} of this thesis is licenced under the GNU General Public License (GPL), either version 2 of the License, or any later version.
-The interface code implemented in \openqxd can be found in the Gitlab repository~\cite{gitlab:openqxd-devel}, under the branch name \code{main-thesis-release}.
-The related interface code in \quda can be found in the GitHub repository~\cite{github:quda:chaoos} under the branch name \code{tree/feature/openqxd}.
-Both merge-requests are currently under review.
+\paragraph{Spinor norm.}
+The spinor norm is defined to be the one induced by the spinor product, $\norm{\psi} = \sqrt{\sprod{\psi}{\psi}}$.
 
-All code produced for \cref{part:variance} of this thesis is licenced under the GNU General Public License (GPL), either version 2 of the License, or any later version.
-The code implemeting the mulrgrid low-mode averaging method in \openqxd can be found in the Gitlab repository~\cite{gitlab:openqxd-devel}, under the branch name \code{34-lma-scheme}.
+\paragraph{Hermitian transpose.}
+The conjugate transpose of a linear operator $A$ or a spinor $\psi$ is denoted with the dagger symbol $A^\dagger$, $\psi^\dagger$ and usually applies to all indices unless stated otherwise.
 
-\section{Data availablility}
+\paragraph{Dirac adjoint.}
+The Dirac adjoint of a spinor $\psi$ is denoted by $\bar{\psi}$ and defined as $\bar{\psi} = \psi^\dagger i \gamma^0$.
 
-All data produced can be found under ref.~\cite{online:zenodo}.
-A description of the datasets and structure of the data can be found on the Zenodo page.
+\section{Index notation}
+\label{sec:notation:index}
 
-%\worktodo{jsons and HDF5 files, maybe zenodo}
+A vector $v$ may have multiple indices associated to it.
+With only one index unless stated otherwise, the $i$-th component of the vector $v$ will be denoted with a special subscript resembling array-notation as $v_{[i]}$.
+On the other hand, a regular super- or subscript as $v_i$ or $v^{i}$ will denote the $i$-th element of a list of vectors.
+By this we can easily write $v_{i [j]}$ denoting the $j$-th \emph{component} of the $i$-th \emph{vector}.
+
+\paragraph{Spacetime indices.}
+Spacetime indices are denoted with Latin letters starting from $x, y, z, w, \ldots$
+
+\paragraph{Spinor indices.}
+Spinor indices are denoted with Greek letters starting from $\alpha, \beta, \ldots$
+
+\paragraph{Lorentz indices.}
+Lorentz indices are denoted with Greek letters starting from $\mu, \nu, \rho, \sigma, \ldots$
+
+\paragraph{Color indices.}
+Color indices are denoted with Latin letters starting from $a, b, c, \ldots$
+
+An example carrying multiple indices is the propagator $S$, for instance
+\begin{equation}
+\propxyab{x}{y}{\alpha}{\beta}{a}{b} \;.
+\end{equation}
+
+
+\section{\texorpdfstring{$\gamma$}{Gamma}-matrix basis}
+
+We work in the Weyl basis,
+\begin{align} \label{eq:gamma:weyl:basis}
+\gamma_0 &=
+\begin{pmatrix}
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1 \\
+1 & 0 & 0 & 0 \\
+0 & 1 & 0 & 0
+\end{pmatrix} \;,
+&
+\gamma_1 &=
+\begin{pmatrix}
+0 & 0 & 0 & 1 \\
+0 & 0 & 1 & 0 \\
+0 & -1 & 0 & 0 \\
+-1 & 0 & 0 & 0
+\end{pmatrix} \;, \\
+\gamma_2 &=
+\begin{pmatrix}
+0 & 0 & 0 & -i \\
+0 & 0 & i & 0 \\
+0 & -i & 0 & 0 \\
+i & 0 & 0 & 0
+\end{pmatrix} \;,
+&
+\gamma_3 &=
+\begin{pmatrix}
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & -1 \\
+-1 & 0 & 0 & 0 \\
+0 & 1 & 0 & 0
+\end{pmatrix} \;,
+\end{align}
+but all conclusions drawn in this document hold for other choices too.
+

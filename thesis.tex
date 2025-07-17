@@ -89,13 +89,13 @@
 % Mainmatter
 %
 
-% PYTHON: main or notation
-\cleardoublepage\pagenumbering{arabic}%
-\def\dir{chapters/00-notation}
-\include{\dir/main}
+% PYTHON: deprecated and (main or notation)
+%\cleardoublepage\pagenumbering{arabic}%
+%\def\dir{chapters/00-notation}
+%\include{\dir/main}
 
 % PYTHON: main or intro or introduction
-\cleardoublepage%\pagenumbering{arabic}%
+\cleardoublepage\pagenumbering{arabic}%
 \def\dir{chapters/01-introduction}
 \include{\dir/main}
 
@@ -227,29 +227,34 @@
 
 \appendix
 
-% PYTHON: back or appendix or appendices or appendixA or appA or A
+% PYTHON: back or appendix or appendices or appendixA or appA or A or build
 \cleardoublepage%
 \def\dir{chapters/appendices/A}
 \include{\dir/main}
 
-% PYTHON: back or appendix or appendices or appendixB or appB or B
+% PYTHON: back or appendix or appendices or appendixB or appB or B or run
 \cleardoublepage%
 \def\dir{chapters/appendices/B}
 \include{\dir/main}
 
-% PYTHON: back or appendix or appendices or appendixC or appC or C
+% PYTHON: back or appendix or appendices or appendixC or appC or C or nrsh
 \cleardoublepage%
 \def\dir{chapters/appendices/C}
 \include{\dir/main}
 
-% PYTHON: back or appendix or appendices or appendixC or appD or D
+% PYTHON: back or appendix or appendices or appendixD or appD or D or sym
 \cleardoublepage%
 \def\dir{chapters/appendices/D}
 \include{\dir/main}
 
-% PYTHON: back or appendix or appendices or appendixC or appE or E
+% PYTHON: back or appendix or appendices or appendixE or appE or E or notation
 \cleardoublepage%
 \def\dir{chapters/appendices/E}
+\include{\dir/main}
+
+% PYTHON: back or appendix or appendices or appendixF or appF or F or license or lic
+\cleardoublepage%
+\def\dir{chapters/appendices/F}
 \include{\dir/main}
 
 % PYTHON: back or bibliography or bib or refs

@@ -53,27 +53,32 @@ def main():
     ax.axhline(y=0, linewidth=0.75, color='k')
     ax.set_xlim(-xmax, xmax)
 
+  kwargs = {
+    "fontsize": "xx-large",
+  }
+
   axes[0].set_xticks([-1, 1]*xmax)
-  axes[0].set_xticklabels([r"$-\pi/a$", r"$\pi/a$"])
-  axes[0].set_xlabel(r"$p$")
-  axes[0].set_ylabel(r"$\psi(p)$")
+  axes[0].set_xticklabels([r"$-\pi/a$", r"$\pi/a$"], **kwargs)
+  axes[0].set_xlabel(r"$p$", **kwargs)
+  axes[0].set_ylabel(r"$\psi(p)$", **kwargs)
 
   axes[1].set_xticks([-1, 1]*xmax)
-  axes[1].set_xticklabels([r"$-L_{\mu} a/2$", r"$L_{\mu} a/2$"])
-  axes[1].set_xlabel(r"$x$")
-  axes[1].set_ylabel(r"$\psi(x)$")
+  axes[1].set_xticklabels([r"$-L_{\mu} a/2$", r"$L_{\mu} a/2$"], **kwargs)
+  axes[1].set_xlabel(r"$x$", **kwargs)
+  axes[1].set_ylabel(r"$\psi(x)$", **kwargs)
   axes[1].set_ylim(0, 2*max(Y_pos))
-  axes[1].legend()
+  axes[1].legend(**kwargs)
 
   axes[2].set_xticks([-1, 1]*xmax)
-  axes[2].set_xticklabels([r"$-L_{\mu} a/2$", r"$L_{\mu} a/2$"])
-  axes[2].set_xlabel(r"$x$")
-  axes[2].set_ylabel(r"$\psi(x)$")
+  axes[2].set_xticklabels([r"$-L_{\mu} a/2$", r"$L_{\mu} a/2$"], **kwargs)
+  axes[2].set_xlabel(r"$x$", **kwargs)
+  axes[2].set_ylabel(r"$\psi(x)$", **kwargs)
   axes[2].set_ylim(0, 2*max(Y_pos))
-  axes[2].legend()
+  axes[2].legend(**kwargs)
 
   for ax, t in zip(axes, ["a)", "b)", "c)"]):
     ax.title.set_text(t)
+    ax.title.set_fontsize(20)
     ax.set_yticks([])
 
   plt.tight_layout()

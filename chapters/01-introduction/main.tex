@@ -609,6 +609,11 @@ to directly probe the Standard Model (SM) of particle physics.
 A strong-enough tension with an experimental quantity would proof the Standard Model is not sufficient to describe fundamental interactions.}
 A persistent tension between experimental measurements and SM predictions would indicate that the Standard Model is not sufficient to describe the interactions between particles.
 In recent years, the anomalous magnetic moment of the muon $g-2$ has held a prominent role in the search of beyond Standard Model (BSM) physics, due to the longstanding discrepancy of $3-4\sigma$ \cite{snowmass:2020} between its measurement and its theoretical prediction.
+
+\tldr{SM prediction and goals}
+The Standard Model (SM) prediction of the anomalous magnetic moment of the muon $a_{\mu}^{\text{SM}}$ has -- as of now -- a precision of \num{532} ppb (parts per billion)~\cite{snowmass:2025}, roughly the precision of the former E821 experiment at BNL~\cite{PhysRevD.73.072003}.
+The SM prediction has not yet reached its precision goal of about \num{127} ppb~\cite{online:gm2} which is the final precision of the ongoing E989 experiment at Fermilab~\cite{Muong-2:2025xyk}.
+Another experiment measuring the quantity with a different method is in preparation at J-PARC~\cite{10.1093/ptep/ptz030}, that can serve as a independent cross check.
 In this context, lattice QCD plays a crucial role, as it provides first-principles, non-perturbative calculations of the hadronic contributions to the $g-2$, which are currently the dominant sources if uncertainty in its theoretical prediction.
 Although current results seem to relax the tension~\cite{Muong-2:2025xyk,snowmass:2025}, tensions between data-driven and lattice determinations of the main hadronic contribution to the muon $g-2$ persists~\cite{snowmass:2025}.
 
@@ -692,6 +697,7 @@ Lepton masses and their mean lifetimes.}
 \end{table}
 
 \subsection{Which contribution?}
+\label{sec:gm2:contribution}
 
 \worktodo{check flow}
 
@@ -714,7 +720,7 @@ from QED, electroweak interactions, the leading order HVP and the hadronic light
 We find a variance (square of the error) contributions as in \cref{fig:a_mu:sm:variances}.
 Clearly the variance of the leading order HVP contribution that is determined on the lattice is dominant with 97\% contribution to the total variance~\cite{snowmass:2025}.
 From the lattice perspective, it is convenient to decompose $a_{\mu}^{\text{LO-HVP}}$ further into flavor contributions
-\begin{equation}
+\begin{equation} \label{eq:a:mu:lohvp:quarks}
 a_{\mu}^{\text{LO-HVP}} = a_{\mu}^{\text{LO-HVP}}(ud) + a_{\mu}^{\text{LO-HVP}}(s) + a_{\mu}^{\text{LO-HVP}}(c) + a_{\mu}^{\text{LO-HVP}}(disc) \;.
 \end{equation}
 %If we zoom in further into the LO-HVP contribution and split it into flavor contributions, we find \cref{fig:a_mu:lohvp:variances}.
@@ -790,8 +796,9 @@ where $q$ is the charge of the quark, $\psi$ is the Grassmann-valued quark spino
 C_{\mu \nu}(x;y) = \langle j_{\mu}(x) j_{\nu}(y) \rangle \;,
 \end{align}
 with a source $y$ and a sink $x$.
-In order to relate this quantity to the energy states of the system, we perform the Fourier transform over the spatial components of the sink variable $x$, project to zero momentum, average over the spatial components of the current and exploit translation invariance of the expression by averaging over some (at this point unspecified) set of distinct source points $y \in \Omega$.
-Furthermore, the correlation function only depends on the time difference between source and sink point $t = x_0 - y_0$ and we finally define the Euclidean time correlator
+In order to relate this quantity to the energy states of the system, we perform the Fourier transform over the spatial components of the sink variable $x$, project to zero momentum and average over the spatial components of the current $\mu=\nu = 1,2,3$.
+Finally we exploit translation invariance of the expression by averaging over some (at this point unspecified) set of distinct source points $y \in \Omega$.
+Furthermore, the correlation function only depends on the time difference between source and sink point $t = x_0 - y_0$ and we finally find the Euclidean time correlator
 % \begin{align}
 % %G_y(t) = - \frac{1}{3} \sum_{k=1}^{3} \int \dd^3 \vect{x} \; C_k(t + y_0, \vect{x}; y).
 % C(x_0;y_0) = - \frac{1}{3 \lvert \Omega \rvert} \sum_{y \in \Omega} \sum_{k=1}^{3} \int \dd^3 \vect{x} \; C_{kk}(x; y) \;.
@@ -802,6 +809,11 @@ Furthermore, the correlation function only depends on the time difference betwee
 G(t) = - \frac{1}{3 \lvert \Omega \rvert} \sum_{y \in \Omega} \sum_{k=1}^{3} \int \dd^3 \vect{x} \; C_{kk}(t+y_0, \vect{x}; y) \;.
 \end{align}
 This correlator contains all the non-perturbative hadronic information.
+
+The set of source spacetime points $\Omega$ emphasizes the translation invariance of the expression.
+In the continuum, \cref{eq:coor1} evaluates to the same result for every source point $y$.
+It is the lattice version of \cref{eq:coor1}, precisely defined in \cref{ch:p2:2pt-corr}, where the average over many source points $y \in \Omega$ becomes crucial\footnote{The same applies to the average over the \num{3} spatial components $k=1,2,3$.} to achieve minimal variance of $G(t)$.
+Current high-precision determinations of the connected light-quark LO-HVP do not manage to realize the translation average in the long distance to reach minimal variance of \cref{eq:coor1}.
 
 The LO-HVP contribution can then be written as~\cite{Bernecker:2011}
 \begin{equation} \label{eq:a:mu:lohvp}
@@ -850,7 +862,7 @@ The function is smooth and has a width parameterized by $\Delta$, to which the c
 Through this choice, the intermediate window (W) is less sensitive to discretization effects and the signal-to-noise ratio problem which are dominant in the short-distance (SD) and long-distance (LD) window, respectively.
 
 
-\tldr{motivation of QCD+QED}
+\tldr{Motivation of QCD+QED}
 It is instructive to look at the decomposition into windows as in \cref{eq:a:mu:lohvp:windows} and isospin-breaking (IB) corrections
 \begin{equation}
 a_{\mu}^{\text{LO-HVP}} = a_{\mu}^{\text{SD}} + a_{\mu}^{\text{W}} + a_{\mu}^{\text{LD}} + a_{\mu}^{\text{IB}} \;,
@@ -1087,7 +1099,7 @@ Its dimension is double the periodic case and neighboring points $x \pm \hat{\mu
 
 
 
-\section{Motivation of this thesis}
+\section{Motivations of this thesis}
 \label{sec:intro:motivation}
 
 % The motivation for this thesis stems from two main sources.
@@ -1105,15 +1117,35 @@ Its dimension is double the periodic case and neighboring points $x \pm \hat{\mu
 
 
 \tldr{high-precision and QED}
-In search for BSM physics, lattice QCD has entered the era of high-precision studies.
-Achieving high-precision QCD+QED simulations is essential for computing observables where isospin-breaking (IB) effects are no longer negligible, as it is the case for hadronic contributions to the muon $g-2$ discussed in \cref{sec:intro:gm2}, but also other processes like leptonic~\cite{Boyle:2022lsi,PhysRevD.91.074506} and semi-leptonic~\cite{Tantalo:2013ty} decays of pions and kaons.
+In the search for BSM physics, lattice QCD has entered the era of sub-percent precision.
+At this level of accuracy, electromagnetic corrections can no longer be neglected and must be included alongside QCD in the lattice simulations.
+This is the case, for example, for the LO-HVP contribution to g-2, discussed in \cref{sec:intro:gm2}, but also for other processes like leptonic~\cite{Boyle:2022lsi,PhysRevD.91.074506} and semi-leptonic~\cite{Tantalo:2013ty} decays of pions and kaons.
+%In search for BSM physics, lattice QCD has entered the era of high-precision studies.
+%Achieving high-precision QCD+QED simulations is essential for computing observables where isospin-breaking (IB) effects are no longer negligible, as it is the case for hadronic contributions to the muon $g-2$ discussed in \cref{sec:intro:gm2}, but also other processes like leptonic~\cite{Boyle:2022lsi,PhysRevD.91.074506} and semi-leptonic~\cite{Tantalo:2013ty} decays of pions and kaons.
 To address this, our collaboration has developed a code, \openqxd, to simulate QCD+QED dynamically and non-perturbatively, making use of the advantages of \Cstar boundary conditions.
+
+% \tldr{need GPU code and variance reduction}
+% The motivation for this thesis stems from two main sources.
+% First, large scale lattices simulations are crucial for the continuum limit.
+% Observables such as the LO-HVP, where an estimation of the full translation average becomes infeasible, require variance reduction methods that are able to achieve minimal variance independent of the lattice volume.
+% Second, since the \openqxd code was originally designed for CPU-only clusters, which are being phased out in favor of modern GPU-based architectures, the software needs to be modernized to take full advantage of current GPU architectures.
 
 \tldr{need GPU code and variance reduction}
 The motivation for this thesis stems from two main sources.
-First, since the code was originally designed for CPU-only clusters, which are being phased out in favor of modern GPU-based architectures, the software needs to be modernized to take full advantage of current GPU architectures.
-Second, large scale lattices simulations are crucial for the continuum limit.
-Observables such as the LO-HVP, where an estimation of the full translation average becomes infeasible, require variance reduction methods that are able to achieve minimal variance independent of the lattice volume.
+First, for observables sensitive to long-distance correlations, such as the light-quark connected LO-HVP, large-scale lattice simulations are necessary.
+Computing the full translation average with sufficient statistics to control the noise at large time separations quickly becomes computationally prohibitive.
+Variance reduction techniques that efficiently suppress noise while maintaining minimal variance\footnote{
+The term \emph{minimal} or \emph{gauge variance} will be rigorously defined in \cref{sec:numerics:gauge:variance}.
+It is the reminiscent variance due to the gauge field fluctuations obtained by performing the full spacetime volume average of \cref{eq:coor1} on the lattice.
+} independent of lattice volume are essential.
+Second, since the \openqxd code was originally designed for CPU-only clusters, which are being phased out in favor of modern GPU-based architectures, the software needs to be modernized to take full advantage of current GPU architectures.
+
+
+% Another challenge arises with observables sensitive to long-distance correlators, such as the light-quark component of the LO-HVP contribution to g−2, discussed in ?."
+% [Large scale simulations issue]
+% "To capture this quantity, large-scale lattice simulations are necessary. However, computing the full translational average with sufficient statistics to control the noise at large time separations quickly becomes computationally prohibitive."
+% [Need for variance reduction]
+% "Variance reduction techniques that efficiently suppress noise while maintaining minimal variance independent of lattice volume are essential.“
 
 
 %\worktodo{Letizia: Precision lattice QCD era > need for QED+QCD lattice computations > openQxD was invented for this > the code has to be maintained up to date and continuously improved > so I did this and that > and btw the variance reduction technique is not only useful to us, but it's a more general technique}
@@ -1124,20 +1156,28 @@ Observables such as the LO-HVP, where an estimation of the full translation aver
 %       * variance reduction methods for the long-distance light-quark contribution
 % }
 
-\subsection{Muon $g-2$ and high precision physics}
+%\subsection{Muon $g-2$ and high precision physics}
+\subsection{Long distance noise reduction for high-precision physics}
 
 %\worktodo{check flow}
 
-\tldr{SM prediction and goals}
-The Standard Model (SM) prediction of the anomalous magnetic moment of the muon $a_{\mu}^{\text{SM}}$ has -- as of now -- a precision of \num{532} ppb (parts per billion)~\cite{snowmass:2025}, roughly the precision of the former E821 experiment at BNL~\cite{PhysRevD.73.072003}.
-The SM prediction has not yet reached its precision goal of about \num{127} ppb~\cite{online:gm2} which is the final precision of the ongoing E989 experiment at Fermilab~\cite{Muong-2:2025xyk}.
-Another experiment measuring the quantity with a different method is in preparation at J-PARC~\cite{10.1093/ptep/ptz030}, that can serve as a independent cross check.
+% \tldr{SM prediction and goals}
+% The Standard Model (SM) prediction of the anomalous magnetic moment of the muon $a_{\mu}^{\text{SM}}$ has -- as of now -- a precision of \num{532} ppb (parts per billion)~\cite{snowmass:2025}, roughly the precision of the former E821 experiment at BNL~\cite{PhysRevD.73.072003}.
+% The SM prediction has not yet reached its precision goal of about \num{127} ppb~\cite{online:gm2} which is the final precision of the ongoing E989 experiment at Fermilab~\cite{Muong-2:2025xyk}.
+% Another experiment measuring the quantity with a different method is in preparation at J-PARC~\cite{10.1093/ptep/ptz030}, that can serve as a independent cross check.
 
 %According to the variance contributions \cref{fig:a_mu:lohvp:variances} the light quark masses con
 %also \cref{fig:a_mu:windows:variances} the LD regime!!
 
+
+%sec:gm2:contribution
+
+
 \tldr{LD: currently no translation average}
-The light quark masses contribute dominantly with about \SI{80}{\percent} to the error (\cref{fig:a_mu:lohvp:variances}) and large, fine lattices cause standard evaluation methods to break down.
+As discussed in \cref{sec:gm2:contribution}, the uncertainty in the Standard Model prediction for $g-2$ is dominated by the leading-order hadronic vacuum polarization (LO-HVP) contribution.
+When computed on the lattice, the main source of uncertainty within LO-HVP comes from the light-quark connected contribution ($a_{\mu}^{\text{LO-HVP}}(ud)$ in \cref{eq:a:mu:lohvp:quarks}), which accounts for about \SI{80}{\percent} to the error (\cref{fig:a_mu:lohvp:variances}).
+Large, fine lattices cause standard evaluation methods to break down for such light quark masses.
+%The light quark masses contribute dominantly with about \SI{80}{\percent} to the error (\cref{fig:a_mu:lohvp:variances}) and large, fine lattices cause standard evaluation methods to break down.
 Furthermore, the long distance (LD) regime contributes about \SI{70}{\percent} the total variance of the SM prediction (\cref{fig:a_mu:windows:variances}).
 % and expensive low mode deflation methods for translation averaging the LD regime enter the game.
 Current determinations do not achieve minimal variance in the LD regime, not even with the expensive low mode deflation methods that attempt a translation average.
@@ -1148,25 +1188,41 @@ While tested on Wilson fermions, the method is more general and potentially usef
 % Achieving high-precision QCD+QED simulations is essential for computing observables where isospin-breaking (IB) effects are no longer negligible, as it is the case for hadronic contributions to the muon $g-2$ discussed in \cref{sec:intro:gm2} or other processes like leptonic and semi-leptonic decays of pions and kaons (for CKM matrix elements, \worktodo{find some refs}).
 Due to the large error contribution of the isospin-breaking (IB) corrections of over \SI{30}{\percent} (\cref{fig:a_mu:windows:variances}), good prescriptions for dynamic QCD+QED simulations are thus desperately needed, rather than perturbative expansions of QCD-only simulations.
 %First results suggest that errors decrease by a factor of \num{3}, when doing so~\citeOwn{qcd_qed_paola}.
-First results suggest that simulating QCD+QED directly, instead of adding IB effects perturbatively on the top of QCD-only results, can be beneficial for the uncertainty of the IB term~\citeOwn{qcd_qed_paola}.
-
+First results from our collaboration suggest that simulating QCD+QED directly, instead of adding IB effects perturbatively on the top of QCD-only results, can be beneficial for the uncertainty of the IB term~\citeOwn{qcd_qed_paola}.
+The details of this contribution, however, fall outside the scope of this thesis.
 
 \subsection{Efficient usage of HPC resources}
 
-\tldr{keep up with the HPC-dashians}
-Since modern HPC infrastructure tend towards massively parallel GPU systems or heterogeneous machines, research in computational sciences has the responsibility to utilize these new compute resources efficiently and sensibly.
-If that does not happen a stagnation of the field is inevitable.
-Efficient usage is only possible if current lattice gauge theory simulation frameworks are utilizing the GPU.
-As available pure-CPU compute resources are decreasing yearly, it is expected for them to vanish entirely in the not so far future.
-%Enabling \openqxd to run on GPUs thus opens important doors for the \RCstar collaboration and lays crucial groundwork for future software developments.
-Enabling \openqxd to run on GPUs thus opens important doors for exploring isospin-breaking corrections to hadronic observables with \Cstar boundaries.
-It is evident that HPC hardware continues to change\footnote{An example for a new hardware trend is the intelligence processing unit~\cite{ipu} (IPU) specially designed for machine learning workloads.}.
-As soon as the GPU is harvested in terms of efficient usage, the HPC community may continue with practicing heterogeneous computing -- it already does.
-Therefore, we explored heterogeneous computing as well.
-
-\tldr{energy}
+\tldr{world energy politics}
 In the current world, reducing energy consumption is more important than ever.
 This obligates us as researchers to treat the resources we are allowed to use with extra care, specially in the field of computational lattice field theory -- one of the biggest consumers of HPC.
+Since modern HPC infrastructure trends towards massively parallel GPU systems or heterogeneous architectures, research in computational sciences has the responsibility to utilize these new compute resources efficiently and sensibly.
+As available pure-CPU compute resources are decreasing yearly, it is expected for them to vanish entirely in the not-so-far future.
+Heterogeneous systems can be significantly more energy efficient than the legacy CPU-only clusters when the computational power of GPUs is properly utilized.
+%Modern HPC infrastructure is increasingly based on massively parallel GPU systems or heterogeneous architectures, which can be significantly more energy efficient than CPU-only machines when the computational power of GPUs is properly utilized.
+%Since lattice QCD is one of the biggest consumers of HPC, we have a responsibility to use these new architectures sensibly.
+If that does not happen, a stagnation of the field is inevitable.
+Only large collaborations will thrive, and the field may lose in terms of diversity of independent techniques that help cross-check and confirm results.
+
+
+% \tldr{keep up with the HPC-dashians}
+% Since modern HPC infrastructure tends towards massively parallel GPU systems or heterogeneous machines, research in computational sciences has the responsibility to utilize these new compute resources efficiently and sensibly.
+% If that does not happen, a stagnation of the field is inevitable.
+% Efficient usage is only possible if current lattice gauge theory simulation frameworks are utilizing the GPU.
+% As available pure-CPU compute resources are decreasing yearly, it is expected for them to vanish entirely in the not-so-far future.
+%Enabling \openqxd to run on GPUs thus opens important doors for the \RCstar collaboration and lays crucial groundwork for future software developments.
+
+\tldr{keep up with the HPC-dashians}
+Enabling \openqxd to run on GPUs as realized in \cref{part:gpu}, thus opens important doors for exploring isospin-breaking corrections to hadronic observables with \Cstar boundaries.
+It is evident that HPC hardware continues to change\footnote{An example for a new hardware trend is the intelligence processing unit~\cite{ipu} (IPU) specially designed for machine learning workloads.}.
+As soon as the GPU is harvested in terms of efficient usage, the HPC community may continue with practicing heterogeneous computing\footnote{Heterogeneous computing refers to the \emph{simultaneous} utilization of different types of compute units such as CPUs or GPUS within a single system.} -- it already does.
+Therefore, we explored heterogeneous computing as well in \cref{sec:develop:async:way}.
+
+%8. This is a bit out of the blue now, I would move some of it up and merge it with the first sentence. E.g.: 'Energy consumption is more important than ever, and this obligates us as researchers to treat the resources we are allocated with extra care. Modern HPC infrastructure is increasingly based on massively parallel GPU systems or heterogeneous architectures, which can be significantly more energy efficient than CPU-only machines when the computational power of GPUs is properly utilized. Since lattice QCD is one of the biggest consumers of HPC resources, we have a responsibility to use these new architectures sensibly. At the same time, adapting to these architectures isn’t just a responsible choice: without doing so, we risk losing access to HPC resources.' (Another thought: Only large collaborations will thrive, and the field may lose in terms of diversity of independent techniques that help cross-check and confirm results.)
+
+% \tldr{world energy politics}
+% In the current world, reducing energy consumption is more important than ever.
+% This obligates us as researchers to treat the resources we are allowed to use with extra care, specially in the field of computational lattice field theory -- one of the biggest consumers of HPC.
 
 \tldr{algorithmic improvements are needed}
 As important as software developments and efficient utilization of available resources are, the field will not advance without algorithmic developments.
@@ -1180,7 +1236,8 @@ As traditional estimators either fail the translation average or become prohibit
 \section{Thesis objectives and scope}
 \label{sec:intro:objectives}
 
-This thesis aims to focus on the following objectives:
+The list below provides a comprehensive summary of the objectives of this thesis, all aimed at addressing the challenges outlined in \cref{sec:intro:motivation}.
+%This thesis aims to focus on the following objectives:
 \begin{enumerate}
 \item{
 Design and efficient implementation to offload of expensive solves of the Dirac equation to the GPU.

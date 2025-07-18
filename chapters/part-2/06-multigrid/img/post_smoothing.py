@@ -96,14 +96,20 @@ def main():
   axes[1].plot(X, Y_smooth, '--', color="mygray", label="alpha=0")
   axes[1].plot(X, Y_conv, '-', color="plot1", label="alpha=0.85")
 
+  kwargs = {
+    "fontsize": "xx-large",
+  }
+
   for ax in axes:
     ax.axhline(y=0, linewidth=0.75, color='k')
-    ax.set_xticks(np.linspace(0, 1, num=11)*xmax)
-    ax.set_xticklabels([0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1])
+    #ax.set_xticks(np.linspace(0, 1, num=11)*xmax)
+    #ax.set_xticklabels([0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1], **kwargs)
+    ax.set_xticks(np.linspace(0, 1, num=3)*xmax)
+    ax.set_xticklabels([0, 0.5, 1], **kwargs)
     ax.set_xlim(0, xmax)
-    ax.set_xlabel(r"$x/L$")
+    ax.set_xlabel(r"$x/L$", **kwargs)
   
-  axes[0].set_ylabel(r"$\psi(x)$")
+  axes[0].set_ylabel(r"$\psi(x)$", **kwargs)
 
   #for ax, t in zip(axes, ["a)", "b)", "c)"]):
   #  ax.title.set_text(t)

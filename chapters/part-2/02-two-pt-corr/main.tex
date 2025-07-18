@@ -633,7 +633,16 @@ This analysis shows that a stochastic evaluation of \cref{eq:G:corr:connected} a
 %\worktodo{remove lma}
 
 We have introduced the main observable of interest in this thesis -- the connected leading order hadronic vacuum polarization contribution (LO-HVP) to the anomalous magnetic moment of the muon, $a_{\mu}$.
-Two common simple strategies for its evaluation have been discussed.
+Two common simple strategies for its evaluation have been discussed
+
+First, a direct evaluation using point sources that goes along the choice of the set of sources points (called $\Omega$ in the text).
+Its cost is linear in the cardinality of that set $\lvert \Omega \rvert$ and to obtain a full translation average (\ie minimal variance) the set has to be equal to be full lattice $\Omega = \idxspacetime$, resulting in at least a quadratic cost scaling in the volume $\bigO(V^{2})$.
+
+Second, a stochastic estimator using random wall-sources; the Hutchinson method.
+With its stochastic identity fixed on a time-slice, it introduces an implicit translation average over the spatial lattice $\lvert \Omega \rvert = L_1 L_2 L_3$.
+Although reducing the variance proportional to the spatial volume, it introduces additional non-negligible variance due to its stochastic nature that has to be suppressed separately by increasing the number of samples.
+We will see later that on large lattices, this number becomes proportional to the volume and a $\bigO(V^{2})$ cost scaling arises again.
+
 The next chapter will introduce the state-of-the-art method how this observable is evaluated for high-precision studies.
 %The connected two point correlation function which dominates the error contribution to the muon $g-2$ comes with high computational cost for sub-percent precision.
 %Low-mode averaging as state-of-the-art method for this class of problems was introduced and its main limiters were stated in form of the $V^{2}$- and the cross-term problem.

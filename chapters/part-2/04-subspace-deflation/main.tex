@@ -3,22 +3,22 @@
 
 \readit{3}
 
-\worktodo{
-* Subspace deflation (2 lvl, loop, hat notation)
-  * Lattice
-  * R and T (non-square ops)
-  * Subspace ops defined as hatA = R A T (square iff A square)
-  * Inverse (prop) decomposition (Ainv decomp)
-  * Solver preconditioning, A x=b: L A x = L b with L = T hatAinv R
-  * 2pt correlator decomp maybe
-  * lma
-    * eg: 2pt corr estimator -> its prop decomp, [Q,P]=0 <=> phi = modes of Q
-    * extensions to LMA
-      * AMA with its prop decomp
-    * problems -> volume scaling, expensive modes, memory, ...
-      * X-term problem
-      * V2 problem
-}
+% \worktodo{
+% * Subspace deflation (2 lvl, loop, hat notation)
+%   * Lattice
+%   * R and T (non-square ops)
+%   * Subspace ops defined as hatA = R A T (square iff A square)
+%   * Inverse (prop) decomposition (Ainv decomp)
+%   * Solver preconditioning, A x=b: L A x = L b with L = T hatAinv R
+%   * 2pt correlator decomp maybe
+%   * lma
+%     * eg: 2pt corr estimator -> its prop decomp, [Q,P]=0 <=> phi = modes of Q
+%     * extensions to LMA
+%       * AMA with its prop decomp
+%     * problems -> volume scaling, expensive modes, memory, ...
+%       * X-term problem
+%       * V2 problem
+% }
 
 \tldr{subspace deflation intro}
 The method of low-mode averaging from the last chapter will be generalized to cover not only subspaces spanned by low modes but arbitrary subspaces spanned by an arbitrary set of (currently unspecified) orthonormal basis fields (\cref{sec:sd:def}).
@@ -203,4 +203,6 @@ This led to a definition of linear operators restricted to that subspace which w
 This chapter introduced the deflation of arbitrary subspaces specified by an orthonormal basis set of spinor fields.
 To move data from the fine to the coarse subspace and vice versa, we specified inter-grid operators referred to as restrictor and prolongator.
 This led to the observation that low-mode averaging is variant of subspace deflation with a specific basis choice making the coarse operator diagonal.
-We will motivate why the Hilbert space $\coarse{\vslattice}$ is coined ``coarse'' in the next chapter.
+In the next chapter we introduce the decomposition of the lattice into blocks.
+This will make it clear, why the Hilbert space $\coarse{\vslattice}$ was called ``coarse''.
+%We will motivate why the Hilbert space $\coarse{\vslattice}$ is coined ``coarse'' in the next chapter.

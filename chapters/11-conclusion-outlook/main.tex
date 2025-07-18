@@ -1,10 +1,8 @@
 \chapter{Summary of the thesis}
 \label{ch:summary}
 
-% To have a little vertical space of 10pt before the appdices
-\addtocontents{toc}{\protect\vspace{10pt}}
 
-\readit{1}
+\readit{0}
 
 % \dictum[Vincent van Gogh]{%
 %    \worktodo{I dream my painting and I paint my dream.} }
@@ -14,34 +12,193 @@
 %   \code{// I'm sorry.} }%
 % \vskip 1em
 
+\newcommand{\boldy}[1]{\textbf{#1}}
+
+% \worktodo{
+   % * Little intro
+   % * Summary: the 5 objectives reached, briefly summarize each one
+   %    * interface
+   %    * performance
+   %    * CICD
+   %    * MGLMA
+   %    * chirality
+   % * Broader Impact / Scientific Contex, bigger picture
+   %    * GPU
+   %       * enables openqxd to run on modern cluster
+   %       * multiple GPU vendors
+   %       * larger impact due to openqcd being widely used in the field
+   %    * MGLMA
+   %       * solves translation average in LD
+   %       * linear volume scaling!
+   %       * impact for other collabs, Wilson-Clover solved, other discretizations have to be studied
+   % * Critical discussion and Limits, problems
+   %    * poor coarse grid solver -> implementation issue
+   %    * Physical pion mass (not rigorously tested, only indicative)
+   %    * Large intermediate operators (appearing in large lattices) require mRHS solvers -> higher overall complexity
+   %    * V2 will hit again. It is just deferred to later (as usual)
+   %    * Lots of H2D, D2H transfers -> memory manager
+   %    * But gauge/clover field H2D stays mostly
+   %    * QED clover can be implemented in QUDA
+   %    * bad strong scaling of MG will also hit MGLMA eventually, but no need to 100-node jobs -> memory
+   %    * chirality: condition number is not a formal proof, only strong numerical evidence
+   % * Outlook
+   %    * GPU:
+   %       * new PASC
+   %       * QED clover in QUDA
+   %       * continuing developments tackling the HMC
+   %       * field management
+   %       * Accessing QUDAs contraction routines
+   %       * best strategy: heterogeneous (opinion) -> hide CPU/GPU part -> hide H2D/D2H transfers and bad strong scaling
+   %    * MGLMA
+   %       * implementation-wise: Use QUDAs true multigrid solver for MGLMA
+   %       * physics-wise: MGLMA apply to different observables, like baryons, ...
+   %       * physics-wise: MG on determinant
+   %       * physics-wise: other discretizations
+% }
+
 %\worktodo{Summary here.}
 
+\tldr{intro}
 Both parts of this thesis address different aspects of improved efficiency in lattice QCD simulations, namely offloading observable evaluation to GPUs and scalable variance reduction in long-distance correlation functions.
 Nevertheless, they both contribute to the same shared objective of high-precision lattice studies.
-%While \cref{part:gpu,part:variance} address different aspects of high-precision lattice field theory, they ultimately pull in the same direction.
-The software developments in \cref{part:gpu} are clearly directly applicable to \cref{part:variance}.
-With access to a powerful multigrid solver on the GPU, all ingredients are given to substantially improve our modest coarse-grid solver.
+Furthermore, the software developments in \cref{part:gpu} are directly applicable to \cref{part:variance}.
 
-We briefly revisit the objectives stated at the beginning in \cref{sec:intro:objectives}.
+\tldr{summary of objectives}
+%We briefly revisit the objectives stated at the beginning in \cref{sec:intro:objectives}.
+The objectives reached in this thesis are: 
 \begin{itemize}
-   \item \textbf{Interface to \quda}: The interface to the solver suite in \quda was implemented and is ready to be used in production lattice QCD computations. Several utilities are already utilizing the interface for inversions and are used in production, \worktodo{such as?}. The developments led to a second round of funding in terms of a PASC project~\cite{online:pasc2025} aimed at a continuation of this work. For hybrid workloads, we have implemented the dual process grid enabling to scale out general remaining CPU-workload. The asynchronous solver allows heterogeneous computing and multiple right-hand sides solvers provide better strong scaling.
-   \item \textbf{Performance assessment and benchmark}: All parts of the interface were benchmarked in isolation and together with other relevant components. The benchmarks show clearly that the code is ready for larger problem sizes, crucial to go to the continuum and infinite volume limits. On intermediate problems, many ways to improve scaling behavior are present, like multiple right-hand sides or heterogeneous solvers.
+   \item \textbf{Interface to \quda}: The interface to the solver suite in \quda was implemented and is ready to be used in production lattice QCD computations. Several utilities are already utilizing the interface for inversions and are used in production, such as two-point correlation functions, RM123 sea-quark diagrams or valence RM123 contributions. The developments led to a second round of funding in terms of a PASC project~\cite{online:pasc2025} aimed at a continuation of this work. For hybrid workloads, we have implemented the dual process grid enabling to scale out the remaining CPU-workload independent of the GPU work. The asynchronous solver allows heterogeneous computing and multiple right-hand side solvers provide better strong scaling.
+   \item \textbf{Performance assessment and benchmark}: All parts of the interface were benchmarked in isolation and together with other relevant components. The benchmarks show clearly readiness of the code for larger problem sizes, crucial to go to the continuum and infinite volume limits. On intermediate problems, many ways to improve scaling behavior are present, like multiple right-hand sides or heterogeneous solvers.
    \item \textbf{CI/CD automated testing}: An automated testing pipeline covering all functionality provided by the interface was implemented in the development repository, running on local resources and on GH200 (Grace-Hopper) nodes at CSCS.
-   \item \textbf{Algorithmic development of variance reduction methods}: A new variance reduction method called multigrid low-mode averaging was introduced. It is inspired by multigrid, the powerful solver preconditioner, and low-mode averaging, the state-of-the-art method for high-precision determination of observables suffering from the signal-to-noise ratio. The number of required low modes is independent of the lattice volume as opposed to traditional LMA schemes, thus its overall computational cost scales linear in the volume, not quadratic anymore solving the $V^{2}$-problem. The method is specially powerful on large physical lattices, where traditional estimators break down. An explicit demonstration on $\bigO(a)$-improved Wilson-Clover fermion was given.
-   \item \textbf{Theoretical understanding of spectral properties of Dirac operators}: We formalized chirality on coarse subspaces, collected relevant results from the field of numerical ranges, studied spectral properties and variance contributions of coarse systems and proposed a sufficient condition for well conditioned coarse systems.
+   \item \textbf{Algorithmic development of variance reduction methods}: A new variance reduction method called multigrid low-mode averaging was introduced. It is inspired by multigrid, the powerful solver preconditioner, and low-mode averaging, the state-of-the-art method for high-precision determinations of observables suffering from the high translation average cost in the long distance. The most important result: the number of required low modes of the Dirac operator to reach minimal variance is independent of the lattice volume as opposed to traditional LMA schemes. Thus its overall computational cost scales linear in the volume, not quadratic solving the $V^{2}$-problem. This makes the translation average in the long distance feasible and minimal variance can be reached as demonstrated systematically in \cref{ch:p2:numerics}. The method is especially powerful on large physical lattices, where traditional estimators cannot reach minimal variance at feasible cost anymore. An explicit methodical demonstration using $\bigO(a)$-improved Wilson-Clover fermion was given.
+   \item \textbf{Theoretical understanding of spectral properties of Dirac operators}: We formalized chirality on coarse subspaces, collected relevant results from the field of numerical ranges, studied spectral properties and variance contributions of coarse systems. We proposed that strong chirality preservation \cref{eq:strong:chrality:preservation}, leads to well conditioned coarse systems for $\gamma^{5}$-Hermitian Dirac operators. This proposal is backed by strong numerical evidence.
 \end{itemize}
 
-\subsection{Outlook}
+% * Broader Impact / Scientific Contex, bigger picture
+%    * GPU
+%       * enables openqxd to run on modern cluster
+%       * multiple GPU vendors
+%       * larger impact due to openqcd being widely used in the field
+%    * MGLMA
+%       * solves translation average in LD
+%       * linear volume scaling!
+%       * impact for other collabs, Wilson-Clover solved, other discretizations have to be studied
 
-Software developments will continue with some sort of field unification as proposed in \cref{ch:p1:memory}, followed by offloading as much as possible in the Hybrid Monte Carlo (HMC) algorithm for generating gauge field configurations.
+\tldr{broader impact, scientific context, big picture, GPU}
+The advancements of this thesis enable the \RCstar collaboration to harvest the power of modern GPU-based clusters for observable evaluation with the \openqxd software package.
+Based on \openqcd, the interface developments in \openqxd are directly applicable to \openqcd too.
+Since \openqcd is widely used in the field, this enables a large part of the lattice community to profit from the interface code developed in this thesis with minimal additional investment.
+
+\tldr{broader impact, scientific context, big picture, noise reduction}
+The variance reduction method MG LMA solves the challenging translation average in the long distance regime with cost linear in the volume.
+%We demonstrated this for Wilson-Clover fermions which are used by various lattice collaborations throughout the world.
+With our successful demonstration using Wilson-Clover fermions in \cref{ch:p2:numerics}, the method is ready for use by that part of the community and a potential for broader adoption across other discretizations is conceivable with suitable modification.
+
+\tldr{broader impact, scientific context, big picture, observables for MGLMA}
+%Many long distance correlators suffer from expensive translation average costs.
+Many correlators are affected by the high cost of translation averaging in the long distance.
+MG LMA, designed to address this issue, can be applied to such observables with the potential to improve efficiency.
+
+%While \cref{part:gpu,part:variance} address different aspects of high-precision lattice field theory, they ultimately pull in the same direction.
+
+\section{Limitations}
+
+% * Critical discussion and Limits, problems
+%    * GPU
+%        * Lots of H2D, D2H transfers -> memory manager
+%        * But gauge/clover field H2D stays mostly
+%        * QED clover can be implemented in QUDA
+%        * bad strong scaling of MG will also hit MGLMA eventually, but no need to 100-node jobs -> memory
+%    * MGLMA
+%        * poor coarse grid solver -> implementation issue
+%        * Physical pion mass (not rigorously tested, only indicative)
+%        * Large intermediate operators (appearing in large lattices) require mRHS solvers -> higher overall complexity
+%        * chirality: condition number is not a formal proof, only strong numerical evidence
+%        * V2 will hit again. It is just deferred to later (as usual)
+
+Ever though the GH200 node offers zero-copy memory access among CPUs and GPUs, we are still faced with recurring CPU-GPU interconnect pressure when accessing spinor fields residing on distant memory.
+On systems without unified memory architecture, this even includes \boldy{recurring explicit host–device data transfers}.
+The need for a field management system arises for an improvement of this inefficiency.
+
+Gauge and clover fields, although not critical in the observable evaluation phase, since they change only slowly or not at all, become problematic when considering the Hybrid Monte Carlo algorithm for gauge field generation.
+Repeated transfers will slow down the whole process.
+
+The current implementation transfers the entire clover field, when the gauge group is \ggrp{U}{3}, leading to an addition unnecessary transfer.
+Equipping \quda with the ability to generate the \ggrp{U}{1} clover term natively would make this transfer obsolete.
+
+When studying the strong scaling behavior of the multigrid solver in \cref{sec:perf:solver}, we observed quick \boldy{strong scaling degradation} on currently available lattice sizes.
+Although larger lattices showed better scaling, this is a clear restriction for current production runs in terms of node counts.
+We provide many mechanisms to alleviate this (the blocked or heterogeneous solver), although the amount of algorithmic parameters for performance tuning has increased substantially.
+
+Furthermore, the poor strong scaling behavior of multigrid is expected to impact the variance reduction method too, due to its heavy reliance on coarse lattices constructed via multigrid, limiting its ability to efficiently scale out.
+
+The variance reduction method was tested on \boldy{unphysical pion masses} of $m_{\pi} \approx $ \u{270}{\MeV} instead of the physical value $m_{\pi} \approx $ \u{135}{\MeV}.
+Since we have not rigorously studied the dependence of the pion mass
+%when varying it down to the its physical value
+to the variance contributions,
+this remains potential gap in the current analysis as presented in \cref{ch:p2:numerics}.
+%remains an open aspect of the study.
+
+%Since we only have indicate results about the variance scaling with respect to the pion mass
+The emergence \boldy{large intermediate coarse Dirac operators} with memory footprints exceeding that of the fine-grid as discussed in \cref{sec:numerics:performance:model} necessitate to introduce block- or multiple-RHS solvers.
+This introduces significant implementation overhead and requires careful tuning of additional algorithmic parameters.
+
+% chirality: condition number is not a formal proof, only strong numerical evidence
+%\worktodo{chirality}
+Even though many of the developments in \cref{ch:p2:chirality} about coarse chirality are formal and mathematically proven, its main result about coarse operators being better conditioned than fine ones, is solely backed by strong \boldy{numerical evidence}.
+The formal proofs are mere motivations, provide context or attempt to explain the heuristic main result.
+
+% V2 will hit again. It is just deferred to later (as usual)
+Finally, we want to clarify that the method does not \emph{solve} the $V^{2}$-problem (quadratic cost in the lattice volume) once and for all.
+This is an inherent scaling factor of lattice QCD simulations and we never changed its \emph{asymptotic} behavior.
+All we did is defer its quadratic effect to larger volumes, \ie we reduced the value of the coefficient in front of $V^{2}$.
+The problem is solved on lattice volumes accessible to the lattice community \boldy{currently and in the near future}.
+
+\section{Outlook}
+% To have a little vertical space of 10pt before the appdices
+\addtocontents{toc}{\protect\vspace{10pt}}
+
+% new PASC, continuing developments tackling the HMC, field management
+% QED clover in QUDA, Accessing QUDAs contraction routines
+Software developments will continue with a \boldy{field unification scheme} considering modern memory hierarchies as proposed in \cref{ch:p1:memory}, followed by offloading parts of the Hybrid Monte Carlo (HMC) algorithm to GPUs.
 This will be approached in terms of a continuing PASC project ``openQxD: Efficient QCD+QED Simulations with Various Boundary Conditions on GPUs''~\cite{online:pasc2025} in the next three years.
+Even regarding observable evaluation, further functionality such as the \ggrp{U}{1} clover field generation or access to \quda's contraction routines could be considered for offloading.
 
-The variance reduction method has to be studied on other lattice discretizations for applicability as explained above.
-Candidates for interesting observables to further test and apply the method are baryon correlators, baryon and meson spectroscopy studies, nucleon form factors, spectral density studies, decay constants or matrix elements.
+% best strategy: heterogeneous (opinion) -> hide CPU/GPU part -> hide H2D/D2H transfers and bad strong scaling
+Regarding code developments, we believe that a sustainable compute strategy includes \boldy{heterogeneous workflows}, organizing work in a way to process previous solver results on the CPU while performing the next solves on the GPU simultaneously.
+Such an approach introduces small changes to existing programs, but at the same time hides many of the current inefficiencies, like the recurring CPU-GPU field transfers, behind the simultaneous processing.
+Some of the current inefficiencies then become less imminent or vanish entirely and it does not hinder further developments.
+% moving their impacts into the background.
 
-Using the multigrid decomposition of the propagator, the determinant appearing in the gauge field generation could be decomposed as well.
-This might be an orthogonal interesting path for continuing research.
 
-And by this, I can only thank the reader for staying with me until the very end.
-At least for me, it was a wild ride!
+% implementation-wise: Use QUDAs true multigrid solver for MGLMA
+Our current implementation of the variance reduction lacks an efficient coarse grid solver.
+With access to a \boldy{true recursive multigrid solver on the GPU} that is capable of multiple RHSs, it is natural to build on this existing functionality when improving the implementation.
+Future developments should go in that direction as has the highest impact with lowest effort.
+With access to a powerful multigrid solver in \quda, all ingredients are given to substantially improve our modest coarse-grid solver degrading the performance of the variance reduction (\cref{sec:cost}).
+
+
+% physics-wise: other discretizations
+%The success of the variance reduction method using Wilson-Clover fermions does not guarantee 
+Since multigrid preconditioning has to be studied on every \boldy{Dirac operator discretization} separately to achieve a performant formulation, we expect our variance reduction method to require the same separate treatment.
+%The variance reduction method has to be studied on other lattice discretizations of the Dirac operator for applicability as discussed in \cref{ch:p2:conclusions}.
+Future research could be invested in one of the other commonly used discretizations.
+
+% physics-wise: MGLMA apply to different observables, like baryons, ...
+Plenty of observables suffer from \boldy{infeasible translation average costs in the long distance}.
+These provide promising applications of the variance reduction method with potential for reduced variance compared to current estimators.
+%Since the variance reduction method aims at minimal variance for long distance correlators
+Interesting such candidates are baryon correlators, baryon and meson spectroscopy studies, nucleon form factors, spectral densities, decay constants or matrix elements.
+%Candidates for interesting observables to further test and apply multigrid low-mode averaging (\cref{ch:p2:multigrid}) are 
+
+
+% physics-wise: MG on determinant
+%Using the multigrid decomposition of the propagator, the determinant appearing in the gauge field generation could be decomposed as well.
+%This might be an orthogonal interesting path for continuing research.
+
+
+%\worktodo{}
+
+%And by this, I can only thank the reader for staying with me until the very end.
+%At least for me, it was a wild ride!
 

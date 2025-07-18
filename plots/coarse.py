@@ -30,12 +30,19 @@ def coarse(r):
 plots = [
   {
     "active": True,
-    "filename": "/scratch/rgruber/67bc5d6d049e882b8a262db6/chapters/part-2/06-numerics/img/coarse_condition.pdf",
+    "filename": "/scratch/rgruber/67bc5d6d049e882b8a262db6/chapters/part-2/07-numerics/img/coarse_condition.pdf",
     #"name": "Solvers",
     "figsize": (6.0, 5.0),
+    "subplots_adjust": {
+      "bottom": 0.15,
+      "left": 0.15,
+    },
+    "ax": ["ax.tick_params(axis='both', labelsize=14)"],
+    "legend": {"fontsize": 14},
     "properties": {
       "xlabel": r'$\mathbb{C}$-dimension of Dirac operator',
-      "ylabel": "blabal",
+      "xaxis.label.fontsize": 16,
+      "yaxis.label.fontsize": 16,
       "yscale": "log",
       "xscale": "log",
       "position": [0.15, 0.1, 0.8, 0.85],
@@ -77,10 +84,18 @@ plots = [
   {
     "active": True,
     "hostname": ["geno"],
-    "filename": "/scratch/rgruber/67bc5d6d049e882b8a262db6/chapters/part-2/06-numerics/img/coarse_tts_vs_memory.pdf",
+    "filename": "/scratch/rgruber/67bc5d6d049e882b8a262db6/chapters/part-2/07-numerics/img/coarse_tts_vs_memory.pdf",
     "figsize": (6.0, 5.0),
+    "subplots_adjust": {
+      "bottom": 0.15,
+      "left": 0.15,
+    },
+    "ax": ["ax.tick_params(axis='both', labelsize=14)"],
+    "legend": {"fontsize": 14},
     "properties": {
       "xlabel": "Dirac operator size in memory [GB]",
+      "xaxis.label.fontsize": 16,
+      "yaxis.label.fontsize": 16,
       "ylabel": "time [sec]",
       "position": [0.15, 0.1, 0.8, 0.85],
     },

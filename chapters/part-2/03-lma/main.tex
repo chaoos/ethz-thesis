@@ -3,19 +3,19 @@
 
 \readit{1}
 
-\worktodo{
-* Separate chapter LMA
-    * 4p from intro
-    * spectral prop from 2pt
-    * V2 problem
-    * X-term problem
-}
+% \worktodo{
+% * Separate chapter LMA
+%     * 4p from intro
+%     * spectral prop from 2pt
+%     * V2 problem
+%     * X-term problem
+% }
 
 
 \tldr{LMA original and usages}
 This chapter introduces the variance reduction method of low-mode averaging~\cite{Neff_2001,DeGrand_2004,Giusti_2004} (LMA) and some of its many variants which had a large influence in this thesis.
 We start with the general propagator decomposition (\cref{sec:lma:prop:decomp}), followed by an individual discussion of the emerging terms related to the high modes (\cref{sec:lma:rr}), low modes (\cref{sec:lma:ee}) and the crossing term (\cref{sec:lma:x}).
-The chapter ends with an analysis of its problems in terms of unfortunate quadratic volume scaling and challenges that emerge when evaluating the pieces introduced through the propagator decomposition (\cref{sec:lma:conclusion}), finishing with a brief summary (\cref{sec:lma:summary}).
+The chapter ends with an analysis of its problems in terms of unfortunate quadratic volume scaling and challenges that emerge when evaluating the pieces introduced through the propagator decomposition (\cref{sec:lma:summary}).
 
 
 LMA consists of decomposing the quark propagator $\prop=D^{-1}$ into a truncated spectral decomposition and a remainder, defined precisely in the following.
@@ -232,11 +232,13 @@ In total $3 \Nc L_0$ solves to calculate the piece exactly!
 Many improved estimators will not include the whole time extend, all $\gamma$-matrices or all modes but a subset of them.
 Additionally, many LMA-scenarios employ heavily truncated solves on subsets for the above and correct the bias regularly with differences of high precision and truncated solves to obtain an unbiased estimator~\cite{bmw_2017,Kuberski_2023}.
 Alternatively one can introduce a stochastic estimator for the cross-term~\cite{lynch2023,fermi_2023}.
-However, the problem related to the expensive evaluation of the cross-term due to its non-negligible variance contribution, we will call the \emph{cross-term problem}.
+In all variants of LMA, this term comes at a large associated cost overhead due to its non-negligible variance contribution.
+We will call this the \emph{cross-term problem}.
+%However, the problem related to the expensive evaluation of the cross-term due to its non-negligible variance contribution, we will call the \emph{cross-term problem}.
 %We called this the \emph{cross-term problem}.
 
-Another noteworthy variant of LMA goes under the name of all-mode averaging (AMA)~\cite{Blum_2012,Blum_2015,CAA,RBC_2018}.
-It has a slightly different propagator decomposition
+Another noteworthy variant of LMA goes under the name of all-mode averaging (AMA)~\cite{Blum_2012,CAA,Blum_2015,RBC_2018}.
+It comes with a slightly different propagator decomposition
 \begin{equation}
 \prop
 = \underbrace{\prop - \prop_{\text{AMA}}}_{\prop_{\text{r}}}
@@ -251,8 +253,8 @@ Nevertheless, AMA merely moves the problem of the cross-term into the term inclu
 The polynomial's purpose is to extend the averaging from low modes to all modes, hence the name \emph{all}-mode averaging.
 However, in all scenarios the cost of this term poses one of the major limiters of LMA, a problem which we aim to solve in the remainder of this part.
 
-\section{Conclusion}
-\label{sec:lma:conclusion}
+\section{Summary}
+\label{sec:lma:summary}
 
 Clearly the cost and the effectiveness of LMA and variants critically depend on the number of low modes $\Nc$ where the spectral sum is truncated -- an algorithmic parameter not easy to chose properly.
 Due to Banks and Casher\cite{banks1980}, $\Nc$ need to be proportional to the lattice volume, a condition hard to satisfy on large lattices.
@@ -269,11 +271,6 @@ An often unmentioned issue is the immense memory footprint of $\bigO(1000)$ low 
 Many variants of LMA try to circumvent the cross-term problem by reducing the cost of its estimator.
 Still, these variants do not solve the problem at its root, the $V^2$-problem.
 Revisiting current high-precision determinations of the connected LO-HVP of the muon $g-2$, the numbers of \numrange{1000}{6000} low modes used in these studies~\cite{Djukanovic:2024cmq,RBC_2024,bmw_2024,Aubin:2022hgm} are not high enough; they are mere thresholds of what is affordable.
-
-\section{Summary}
-\label{sec:lma:summary}
-
-\worktodo{summary}
 
 We have introduces a new class of estimators for the connected LO-HVP contribution based on low-mode deflation.
 The propagator is decomposed into a truncated spectral sum and a remainder.

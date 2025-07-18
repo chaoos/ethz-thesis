@@ -44,14 +44,16 @@
 * [ ] "Proposal for Field Memory Management in Heterogeneous Architectures" title is a bit too long
 * [x] Summary of the thesis: its bullet point in the overview (left in firefox) should have less intendation
 * [x] Summary in the TOC: before and after 10pt vertical space
-* [ ] fix "Motivation of this thesis" with letizias comments -> streamline it
+* [ ] fix "Motivation of this thesis" with Letizias comments -> streamline it
+* [ ] Notation: add cardinality | A |.
+* [ ] All summaries: add critical discussion, limits, summary
 
-## TODO for Monday:
+## TODO for Monday (14.07.25):
 
 * [x] check if LMA chapter has all I want to say about it -> variants, AMA, V2, X-term probs, ...
 * [x] read Part 2 intro, 2pt, LMA, subspace deflation and check if it makes sense now.
 
-## Final things to check
+## Final things to check at Sunday (20.07.25)
 
 * [ ] No more red things
 * [ ] No red last page

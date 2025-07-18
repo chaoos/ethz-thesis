@@ -449,7 +449,7 @@ contract(i, last_solution, MPI_COMM_WORLD, ...); /* wind-down */
 \label{sec:develop:summary}
 
 We have seen how to use the interface to port existing applications written in \openqxd, write new ones and how to easily implement heterogeneous computing by overlapping solves on the GPU with arbitrary workload on the CPU.
-Through the parameter and revision tracking system, the interface allows flexible usage over many use cases and stays consistent with \openqxd's internal state.
+Through the parameter and field revision tracking system, the interface allows flexible usage over many use cases and stays consistent with \openqxd's internal state.
 
 %\worktodo{summary}
 
@@ -468,7 +468,7 @@ A conceptual solution to this problem is outlined in \cref{ch:p1:memory}.
 \tldr{Forced field transfers for all kernels}
 The same holds for some of the other kernels, like the Dirac operator or the $\gamma$-matrix application.
 Current versions of these kernels are just for illustration and testing purposes and should not be used in a production code.
-Since they transfer fields back and fourth and are themselves very lightweight as opposed to the solver kernel, these kernels are highly inefficient; the largest fraction of their runtime will be spent in the field transfers.
+Since they transfer fields back and forth and are themselves very lightweight as opposed to the solver kernel, these kernels are highly inefficient; the largest fraction of their runtime will be spent in the field transfers.
 Although some of them have versions which do not trigger transfers and operate directly on device fields.
 They serve as proof of concept examples to pave the ground for a possible continuation of developments in terms of \cref{ch:p1:memory}.
 

@@ -210,7 +210,10 @@ All of the fields have the Euclidean space-time index in common, so we begin by 
 
 \tldr{Arrays no good on GPUs}
 As discussed in \cref{sec:openqxd:index}, \openqxd implements the space-time index by means of the mapping array \code{ipt} that returns the actual base pointer offset when fed with the lexicographical local lattice index.
-Such mapping arrays are not recommended on GPUs due to shared memory contentions and memory usage.
+Such mapping arrays are not recommended on GPUs due to shared memory contentions and memory usage\footnote{
+Accessing a mapping array requires an additional memory read that goes through the whole cache hierarchy, whereas a pure function involves registers or arithmetic, removing pressure from the memory bus.
+In memory bound processes, such index mapping arithmetic adds no overhead.
+}.
 Instead, it is advisable to write a pure function $f \colon x \mapsto \hat{x}$ that implements the indexing array of \openqxd, \cref{eq:openqcd:ipt}, by calculating the index on the fly such that the compiler can properly inline the calculation.
 This has been implemented as \code{openqcd::ipt()} which is called in the load and save functions of all reorder classes.
 
@@ -320,7 +323,7 @@ The only difference to the spinor and clover field order classes is that the met
 For a fixed space-time $x$ and direction $\mu$, the remaining two color indices $(a,b)$ of the gauge field are row-major in both applications, thus we can copy $3\times 3$ consecutive complex numbers to or from \code{v}.
 The variable \code{dir} runs from $0$ to $3$ and denotes the positive link direction in \quda convention (see \cref{fig:gauge} right).
 
-\subsection{\CstarHeading boundary conditions}
+\subsection{Implementation of \CstarHeading boundary conditions in \quda}
 \label{sec:interface:cstar}
 
 \tldr{Cstar intro}
@@ -353,7 +356,7 @@ When \quda initializes its communication grid topology, we specify the neighbors
 The function reads the \code{cstar} property from the \code{Topology} struct that can take values \num{0}, \num{1}, \num{2} or \num{3} denoting the number of spatial directions with \Cstar boundaries, where \code{cstar=0} corresponds to its default value indicating periodic boundaries.
 To respect the rank placement of \openqxd, we change this function to achieve shifted boundary conditions as in \cref{fig:cstar:orbi}: consider the case of two ranks, one of which contains all physical points, the other the mirror points. The neighbor of the physical lattice in "upward" direction is the mirror rank (and vice versa) which is different from periodic boundary conditions.
 
-\subsection{Lattice QCD+QED}
+\subsection{Implementation of QCD+QED in \quda}
 \label{sec:interface:qcd+qed}
 
 % The Wilson-Clover Dirac operator in QCD simulations applied onto a spinor field $\psi(x)$ is (the lattice spacing is set to $a = 1$)
@@ -933,7 +936,7 @@ Constraints for the dual lattice are the same as for the native one with some ad
   \item Both global lattices have to be equal.
   \item The number of total processes in the native process grid $N_w$ must be an integer multiple of the number of processes in the dual lattice $N_q$. This is guaranteed by a valid choice of the native process block grid (more on that later).
   %\item A valid choice of the native process block grid (more on that later), making the number of total processes in the native process grid $N_w$ an integer multiple of the number of processes in the dual lattice $N_q$.
-  \item The z-direction, \code{L3} and \code{QUDA\_L3} have to be equal in both grids.
+  \item The z-direction, \code{L3} and \code{QUDA\_L3} have to be equal in both grids\footnote{This seems arbitrary. The restriction makes moving data from one lattice to the other simpler in terms of implementation.}.
 \end{enumerate}
 %Both global lattices have to be equal and
 %the number of total processes in the native process grid $N_w$ must be an integer multiple of the number of processes in the dual lattice $N_q$.
@@ -1029,12 +1032,46 @@ The function is a mere wrapper around \code{openQCD\_qudaFinalize}, see \cref{se
 \section{Summary}
 \label{sec:interface:summary}
 
-\worktodo{Add a bit more to this summary}
+%\worktodo{Add a bit more to this summary}
 
 This chapter introduced a comprehensive interface to access all solvers in \quda from within \openqxd with great versatility.
-Solvers can be accessed in numerous ways; either directly, with multiple RHS, or in the case of partial CPU workloads; in a heterogeneous way, or by defining a dual lattice.
-Even combining the heterogeneous solver call with multiple RHSs and the dual grid all at once is possible.
+Solvers can be accessed in numerous ways.%; either directly, with multiple RHS, or in the case of partial CPU workloads; in a heterogeneous way, or by defining a dual lattice.
+
+A possibility to invoke the solver resembling \openqxd's solvers is provided for seamless integration with minimal effort into existing programs.
+For new programs, the solver can also be called directly after initialization without detours to input file parsing, printing and validation common in \openqxd program, simplifying new developments.
+Recent new features of \quda, such as blocked or multiple RHS solvers are accessible through the interface explicitly or naturally via the asynchronous solver function.
+This function spawn a thread that performs the solve on the GPU while the main thread instantly exits the function, ready to perform further work on the CPU allowing simultaneous utilization of the CPU and GPU.
+With equal workload, this hides entirely one of the two tasks increasing the efficiency.
+
+In workloads where CPU and GPU phases alternate and both contribute significantly to the overall runtime, balancing the utilization of available resources becomes essential.
+To address the imbalance between CPU and GPU parallelism on heterogeneous architectures, we introduced the dual lattice feature (\cref{sec:interface:openqxd:dual}) that allows scaling out the CPU work across all MPI ranks, matching the hardware's asymmetric resource layout.
+%This enables fine-grained distribution of CPU work
+This improves scalability for CPU phases even in pure-MPI setups, without impacting the GPU phases.
+%without overloading the limited number of GPUs in pure-MPI environments.
+
+Certainly, the dual lattice feature can be considered a hack to circumvent the human labor required for re-implementing the CPU part of a code with thread support à la \openmp or similar.
+The critique is justified, because this is the exact reason for its existence\footnote{
+Even though it can be considered a hack or nothing special, it is one of my favorite features.
+It is beautiful, because it solves the problem at its root in a general way once and for all.
+Thread support can be implemented later, if desired.
+Existing programs can use the feature without a single line of change.
+It is a minimal-effort, maximal-outcome feature.
+And I foresee it as a ``temporary workaround'' that is permanent (and that is ok).
+}.
+%The feature aims to minimize required human resources by offering more flexibility, not to elegantly utilize all technology for efficiency.
+
+Combining the heterogeneous solver with multiple RHSs and the dual grid all at once is possible.
 This provides a lot of flexibility to the programmer accessing the functionality and for the person running the code efficiently in various production environments.
+
+Compatibility of the field memory layouts is guaranteed through reordering classes taking care of data translation from \openqxd to \quda and vise versa.
+Parameters and fields that may change throughout a run are tracked and updated in \quda accordingly if required before executing kernels dependent on them.
+
+The lattice QCD+QED Wilson-Clover Dirac operator as of \cref{eq:Dw:QCD+QED} is now supported in \quda and \Cstar boundary conditions were implemented analogous to \openqxd.
+The interface is capable of offloading Dirac equation solves of QCD-only lattices with periodic or \Cstar boundaries as well as QCD+QED lattices with \Cstar boundaries.
+
+
+
+
 
 %\worktodo{Linking \openqxd against \quda involves three major steps:}
 

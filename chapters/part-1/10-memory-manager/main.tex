@@ -10,7 +10,7 @@ It starts by motivating the need for such a system (\cref{sec:mm:motivation}) wi
 For minimal code refactoring on the side of \openqxd, we propose an (optional) procedure to automatically transfer fields from the GPU to CPU (\cref{sec:mm:implicit:transfers}) using \posix mechanisms, before concluding the chapter (\cref{sec:mm:summary}).
 
 \tldr{keep track of state on field level}
-The key idea is to not deal with fields on the CPU separately from fields on the GPU.
+The key idea is to not to deal with fields on the CPU separately from fields on the GPU.
 The system  keeps track of where each field currently resides (CPU, GPU or both), where it was last updated (CPU or GPU) and implicitly transfer the field if a function reads or writes to it.
 Such a system should be backward compatible with the memory layout of \openqxd.
 Using C macros, we may guide the compiler to the GPU-variants of certain functions that overwrite their CPU equivalents.
@@ -286,6 +286,16 @@ With this we have four different actions caused by the triggers:
 We proposed a memory management system for spinor fields that automatically keeps track of field states, unifies CPU and GPU fields and transfers field data from CPU to GPU and vice versa only if necessary.
 We require no modification of legacy \openqxd functions.
 Only the field allocation and deallocation functions need to be touched.
-This is a minimal-effort-maximal-outcome approach that allows \openqxd developers to continue working the way they are used to, while having the benefit of GPU offloaded functionality.
+This is a minimal-effort maximal-outcome approach that allows \openqxd developers to continue working the way they are used to, while having the benefit of GPU offloaded functionality.
 We also emphasize that this solution is meant for an intermediate phase, where certain functionality will stay on the CPU (probably for a long time) and we incrementally port kernel by kernel to the GPU without much overhead.
 This scheme was explained for spinor fields but can trivially be extended to gauge and clover fields.
+
+Since reads and writes cannot be distinguished on the CPU by the field management scheme, unnecessary field transfers are the result.
+Unless the underlying concept is changed, this cannot be easily solved.
+
+Furthermore, although working conceptually and tested in the small scale, it might be better to choose a scheme employing explicit transfers, rather than implicit ones.
+First, explicit transfers are visible in the code which increases its readability.
+Second, explicit transfers can be removed easily at wish for debugging or testing purposes.
+Third, the mechanism via the segmentation fault and memory protection exploits operating system features not meant for this kind of usage.
+This could backfire at some point.
+

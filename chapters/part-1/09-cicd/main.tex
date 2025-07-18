@@ -234,7 +234,7 @@ It consists of a directory with several YAML-files:
 
 \tldr{summary + transition to test stage}
 However, this builds a uenv image containing \quda built for the GH200 nodes with CUDA architecture \code{sm\_90} using the correct MPI implementation provided by CSCS.
-If this stage was successful, the test stage is being executed.
+If this stage was successful, the test stage is executed.
 
 \subsubsection{The test stage}
 
@@ -285,7 +285,19 @@ All parts of the interface are continuously tested on a daily basis.
 Testing on GH200 nodes at CSCS can manually be triggered, conveniently as comments in merge-requests.
 Occurring software bugs or compiler issues can be identified directly when they appear and future developments will not enter the codebase unless all tests are successful.
 Testing directly on target infrastructure increases quality, robustness, stability and trust in the code substantially while guaranteeing functionality.
+
 The direct deployment to CSCS user environment registries simplifies the process of setup, compile and run in a production environment, since the steps of setting up the correct environment and properly compiling the code essentially vanish from the workflow.
 Deploying the whole software environment rather than just the code considerably increases reproducibility of simulations.
+
+The pipeline as introduced in this chapter only tests components related to the interface between \openqxd and \quda.
+Substantial value would be added to the code, if \openqxd's core components would undergo a similar systematic verification.
+The above can be used as a basis for such an extension.
+
+For better communication with the upstream \quda development team, it would be advisable to integrate our CI/CD pipeline into theirs.
+Ideally their pipeline would trigger ours downstream and only report back successful if ours has passed too.
+Certainly this is only possible if the \openqxd developments repository is made public which is as of the writing of the thesis not the case.
+
+An interesting path to further pursue would be to add performance tests to the pipeline, for automatic regression detection.
+This would add another layer of trust into the code in the form of a performance verification.
 
 %\worktodo{AMD Mi300 runs?}

@@ -92,10 +92,10 @@ The loose cache coherency protocol, the wider memory bus, the reduced memory hie
 %However, this class of problems is suited well for processing on GPUs, since they have higher memory bandwidth than CPUs, because they were designed with a wider memory bus at the cost of latency, heavily optimized for sequential memory access and high throughput.
 
 \tldr{lattice is Dirac equation solves, sparse, SpMv, Krylov}
-Lattice QCD simulations are dominated by solves of the Dirac equation -- a large sparse linear system of equations governed by the Dirac operator.
-This is a derivative operator connecting nearest neighbor lattice points on a 4D Euclidean spacetime lattice with covariant derivatives that depend on an additional field connecting the links of the lattice called the gauge field.
+Lattice QCD simulations are dominated by solves of the Dirac equation \cref{eq:dirac:equation} -- a large sparse linear system of equations governed by the Dirac operator.
+This is a derivative operator connecting nearest neighbor lattice points on a 4D Euclidean spacetime lattice with covariant derivatives that depend on an additional field connecting the links of the lattice called the gauge field, \cref{eq:Dw:QCD+QED}.
 Solves of this equation are performed using Krylov subspace methods~\cite{krylov1931numerical,book:saad2003iterative}, that iteratively refine their solution up to a desired convergence criterion.
-This class of algorithms implicitly construct a polynomial in the Dirac operator applied to the right-hand side.
+This class of algorithms implicitly construct a polynomial in the Dirac operator applied to the right-hand side source.
 The main computational kernel is thus the application of this stencil operator to one or multiple vectors (SpMv).
 
 \tldr{computationally lattice is comparable to ML}

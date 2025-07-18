@@ -268,7 +268,7 @@ $17,19, \ldots, 31$ & 216-223 & 3 & 3 & 17 & 216 & 3 & 3 \\
 
 \tldr{dual: summary}
 We investigated the behavior and contributions of the dual process grid.
-Its contribution was insignificant in all cases and can even be pushed down further by increasing the number of nodes due to its perfect strong scaling.
+Its contribution was negligible in all cases and can even be pushed down further by increasing the number of nodes due to its perfect strong scaling.
 However, the solver algorithm does not strong scale perfectly as we will see later.
 This trade-off has to be taken into account when considering the setup.
 %However, the trade-off that the solver itself does not strong scale perfectly has to be taken into account when considering the node count.
@@ -385,7 +385,7 @@ Even more importantly the energy cost per solve decreases by a factor of about \
 \label{sec:perf:dop}
 
 \tldr{Dop important kernel in solvers}
-One of the most important kernels of every lattice application is the Dirac operator.
+One of the most important kernels of every lattice application is the Dirac operator, \cref{eq:Dw:QCD+QED}.
 It is crucial to have an efficient implementation of the Dirac stencil, since iterative Krylov solvers themselves call the operator once or twice in every iteration.
 We are interested in the pure nearest-neighbor stencil as it appears in solver algorithms.
 Thus, we assume the field to already reside in HBM memory on the GPU and the following plots will neither include H2D nor D2H transfers.
@@ -506,19 +506,20 @@ The base cases were chosen to be the smallest node count for the computation to 
 
 \tldr{performance data conclusion}
 Wrapping up the performance chapter, we conclude that on a cluster with GH200 nodes with lattices currently accessible to us, we can utilize the resources of the node efficiently.
-However, performing runs with more than \num{32} GH200 nodes is not advisable because we are clearly in the bad strong scaling region then unless we study larger lattices as the ones considered or increase the number of RHSs substantially.
+However, performing runs with more than \num{32} GH200 nodes is not advisable because then we are clearly in the bad strong scaling region unless we study larger lattices as the ones considered or increase the number of RHSs substantially.
 In a field where the total problem size naturally grows with the available compute power, good weak scaling makes our software stack future-proof.
 The fact that the largest lattice considered strong scales up to \num{512} GPUs indicates that the code is ready for the exascale.
 
 %On the other side, evaluating observables usually consists of computations on $\bigO(1000)$ independent gauge field configurations.
 %Solving the Dirac equation on all configs of an ensemble can easily be done embarrassingly parallel with one job of size \numrange{8}{16} nodes per config and a RHS batch size of \numrange{4}{32}.
 
-Computations on the CPU can efficiently be overlapped with concurrent solves on the GPU if power supply of the machine allows it as proven on \emph{Leonardo Booster}.
-Finally, for maximizing node utilization of CPU workloads, it can conveniently be scaled out within the node by using the dual process grid adding negligible performance overhead.
+Computations on the CPU can efficiently be overlapped with concurrent solves on the GPU, if power supply of the machine allows it as proven on \emph{Leonardo Booster}.
+Finally, for maximizing node utilization of reminiscent CPU workloads, it can conveniently be scaled out within the node by using the dual process grid adding negligible performance overhead.
 
 The inherent challenging strong scaling of multigrid is not a big problem for multiple reasons.
 First, we now have many tools available to mitigate it, such as overlapping multigrid solves with computations on the CPU or solving an array of RHSs in one batch.
 Second, in reality the only relevant metric usually boils down to time or energy to solution.
+
 
 The data still shows some non-negligible contributions of H2D and D2H transfers (red and green in \cref{fig:dual:bar}).
 In future developments, the H2D transfers could be eliminated to a large extent by setting up the source vector directly on the GPU, especially when dealing with random or point sources.
@@ -537,7 +538,7 @@ With the current interface gauge field generation is not efficient for multiple 
     \item As long as the gauge field is generated on the CPU, we have to transfer it every time it changes.
     \item Few solves imply few RHSs, reducing our possibilities to performance tune. Thus, the effect on performance of blocked solvers is degraded.
     \item Few RHSs cause H2D/D2H transfers of gauge and clover fields to contribute more to the overall solve.
-    \item To achieve reasonable throughput of generated gauge fields, it is common in the field to scale out. This requires good strong scaling behavior.
+    \item To achieve reasonable throughput of generated gauge fields, it is common in the field to scale out. This requires good strong scaling behavior which is challenging to achieve with multigrid.
 \end{itemize}
 
 % \section{TODO}

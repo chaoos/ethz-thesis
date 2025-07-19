@@ -19,24 +19,26 @@
 We have introduced a novel variance reduction method called \emph{multigrid low-mode averaging} (MG LMA), combining the efficient multigrid preconditioner with low-mode deflation.
 %The method can be applied to any $n$-point function, but benefits are only expected for observable sensitive to low-mode noise.
 The method can be applied to any $n$-point function.
-Beneficial are expected specially where full translation averaging is challenging and the long distance (LD) regime is of interest.
+Benefits are expected specially where full translation averaging is challenging and the long distance (LD) regime is of interest.
 This is the case for a large class of observables, including meson two-point functions important in the high-precision determination of the leading-order HVP of the muon $g-2$, but also baryon correlators important for hadron spectroscopy.
-For disconnected diagrams leading to one-point functions, we do not expect a huge gain in variance reduction, since the success of methods like frequency splitting suggest that noise originates from the high modes, rather than the low modes.
+For disconnected diagrams leading to one-point functions, we do not expect a huge gain in variance reduction, since the success of methods like hierarchical probing and frequency splitting suggest that noise originates from the high modes, rather than the low modes.
 However, as a rule of thumb, whenever LMA is beneficial, MG LMA should be too.
 
 \tldr{recap of method and results, challenges overcome, idea of the method, local coherence, volume scaling, reach gauge variance}
 The proposed method shows linear cost scaling in the volume, overcoming the $V^{2}$-problem.
-The method shifts expensive Dirac equation solves to cheap coarse-grid Dirac equation solves, reducing the problem size by factors \numrange{30}{500} -- a factor that can be reinvested directly into additional statistics for the translation average in the long distance.
+The method shifts expensive Dirac equation solves to cheap coarse-grid Dirac equation solves, reducing the problem orders of magnitude -- a factor that can be reinvested directly into additional statistics on the coarse grid for the translation average in the long distance.
 Two concepts were crucial for this.
+
 First, local coherence of low modes allows building efficient large approximate low-mode subspaces with good overlap to the true subspace using only a small number of precisely determined lowest modes.
 Most importantly, numerical results show that this number is independent of the lattice volume.
+
 Second, strongly preserving chirality on the coarse subspaces empirically led to well-conditioned coarse operators resulting in efficient solves of the coarse Dirac equation.
 We showed numerically that the method can reach the minimal (gauge) variance on all investigated lattices with cost linear in the volume, as opposed to the standard stochastic estimator and traditional LMA that requires substantially more low modes.
 
 \tldr{chirality on other discretizations}
 The insights when studying chirality on the subspaces and the fact that most lattice discretizations differ in their treatment of chiral symmetry, lead to the conclusion that MG LMA has to be studied and possibly adjusted on each discretization separately.
 %The rapid theoretical and algorithmic developments of multigrid algorithms are expected to benefit the introduced methods constantly.
-As multigrid algorithms continue to evolve rapidly, the introduced method has the potential to gain from these improvements.
+As multigrid algorithms continue to evolve rapidly, the introduced method has the potential to constantly gain from these improvements.
 %Although, the introduced method will constantly benefit from the rapid theoretical and algorithmic developments of multigrid algorithms.
 
 \tldr{twisted mass and MG}
@@ -65,7 +67,7 @@ There is still a lot of theoretical and algorithmic work to do.
 
 \tldr{outlook: baryons}
 A promising imminent application without fundamental changes would be baryon correlators which suffer from expensive translation averaging.
-As low-mode averaging is applied to these problems with success, potential exists for MG LMA to perform well.
+As low-mode averaging is applied to these problems with success, but high cost, potential exists for MG LMA to be a cost-effective substitute.
 %Most promising might be an application to three-point functions which emerge when considering baryon correlators.
 
 This conclusion is followed by a comprehensive overall summary and reflection of the thesis.

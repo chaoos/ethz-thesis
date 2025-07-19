@@ -5,13 +5,13 @@
   Teach your algorithm physics and it will perform better.}%
 \vskip 1em
 
-\readit{2}
+\readit{3}
 
-\worktodo{
-* local coherence
-	* Local coherence
-	* block decomp -> subspace deflation with non-trivial lattice index
-}
+% \worktodo{
+% * local coherence
+% 	* Local coherence
+% 	* block decomp -> subspace deflation with non-trivial lattice index
+% }
 
 % \worktodo{
 % * LMA -> as subspace deflation
@@ -28,7 +28,7 @@ In \cref{ch:p2:subspace-deflation}, we have introduced a subspace with spinors a
 We did not yet attempt to interpret its structure.
 In this chapter -- with the concept of local coherence of low quark modes~\cite{Luescher2007}, also known as weak approximation property~\cite{Babich:2010qb} -- we will introduce the coarse lattice (\cref{sec:lc:coarse}).
 Referring to operators restricted to these subspaces as \emph{coarse} operators will then be manifest.
-The degree to which the Wilson-Clover Dirac operator exhibits local coherence of low modes is quantified numerically \cref{sec:lc:deficit} and preliminary consideration about the coarse spin structure are made (\cref{sec:lc:spin}) before summarizing the chapter (\cref{sec:lc:summary}).
+The degree to which the Wilson-Clover Dirac operator exhibits local coherence of low modes is quantified numerically (\cref{sec:lc:deficit}) and preliminary consideration about the coarse spin structure are made (\cref{sec:lc:spin}) before summarizing the chapter (\cref{sec:lc:summary}).
 
 
 
@@ -37,13 +37,14 @@ The degree to which the Wilson-Clover Dirac operator exhibits local coherence of
 \label{sec:lc:coarse}
 
 \tldr{free theory low modes and staircase functions}
-In momentum space, the low modes of the Dirac operator in the free quark theory are sharp delta functions at small momenta $\lvert p \rvert$ making them smooth, slowly oscillating plane waves in position space $x$, whose amplitude only depends on $p$ and is spread over the whole lattice.
-A good approximation for them in position space are constant spinor fields.
+In momentum space, the low modes of the Dirac operator in the free quark theory are sharp delta functions at small momenta $\lvert p \rvert$ making them smooth, slowly oscillating plane waves in position space $x$.
+The waves amplitude only depends on the momentum $p$ and it is spread over the whole lattice.
+A good approximation for them in position space are constant spinor fields~\cite{Luescher2007}.
 In order to include the slow oscillations, we may project these fields to a block decomposition of the lattice whose block size catches well the resolution of the wave, see \cref{fig:free:theory}.
 \begin{figure}
     \centering
     \includegraphics[width=\linewidth]{\dir/img/free_theory}
-    \caption{Quantitative picture of low modes in the free theory. Panel a) shows the sharp peak in momentum space centered around zero, whereas panel b) shows the same mode in position space on a finite lattice. Panel c) shows the approximation when using constant modes projected to blocks. The fact that the low modes are flat in position space makes the approximation suitable.}
+    \caption{Quantitative picture of low modes in the free theory. Panel a) shows the sharp peak in momentum space centered around zero, whereas panel b) shows the same mode in position space on a finite lattice. Panel c) shows the approximation when using constant modes projected to blocks. The fact that the low modes are flat in position space makes the approximation appropriate.}
     \label{fig:free:theory}
 \end{figure}
 The actual modes can then be approximated by staircase-shaped functions constant on each block.
@@ -65,7 +66,7 @@ The key equation describing the property is that
 \vslattice_{\mathcal{M}} \subsetsim \vslattice_{\Pi(\mathcal{B})}
 \end{equation}
 holds up to small deficits.
-Local coherence of low modes means that the $N \gg \coarse{\Nc}$ lowest modes of the Dirac operator can be well represented using a block-projected basis out of the $\coarse{\Nc}$ lowest modes.
+Local coherence of low modes means that the $N \gg \cNc$ lowest modes of the Dirac operator can be well represented using a block-projected basis out of the $\cNc$ lowest modes.
 
 \tldr{block projection and coarse lattice}
 A few things still need to be formalized for the above procedure, for instance the block projection.
@@ -98,7 +99,7 @@ The $\coarse{y}$ are new coarse coordinates in a coarse lattice $\coarse{\idxspa
 \tldr{block projection def and gram schmidt reorthonormalization}
 The block projection is defined via projectors to the blocks $B_{\coarse{y}}$ acting on spinor fields $\psi$ as
 \begin{equation}
-P_{\coarse{y}} \fieldx{\psi}{x} =
+\fieldx{\left( P_{\coarse{y}} \psi \right)}{x} =
 \begin{cases}
 \fieldx{\psi}{x} & \text{if } x \in B_{\coarse{y}} \;, \\
 0 & \text{otherwise.}
@@ -115,7 +116,7 @@ This procedure specifies a second coarser lattice $\coarse{\lattice}$ analogue t
 As of now, we will interpret the field index $\coarse{a}$ in $\psi_{\coarse{a}} \in \mathcal{B}$ for some (arbitrary) enumeration of the fields as coarse color.
 %This will become clear later.
 The block index $\coarse{y} \in \coarse{\idxspacetime}$ is straightforwardly interpreted as coarse spacetime index and finally the coarse spin is trivial for now.
-This gives us $(\coarse{N}_s, \coarse{\Nc}) = (1, \lvert \mathcal{B} \rvert)$ as well as a coarse volume as product of the coarse lattice extents and coarse spinors defined on the coarse lattice with coarse internal degrees of freedom given by the coarse spin and colors.
+This gives us $(\coarse{N}_s, \cNc) = (1, \lvert \mathcal{B} \rvert)$ as well as a coarse volume as product of the coarse lattice extents and coarse spinors defined on the coarse lattice with coarse internal degrees of freedom given by the coarse spin and colors.
 
 This leads to a redefinition of the restrictor and prolongator, since for every field in $\Pi(\mathcal{B})$ one can associate a coarse lattice index $\coarse{x} \in \coarse{\idxspacetime}$ and a coarse color $\coarse{a} \in \coarse{\idxcolor} = \{0, \ldots, \coarse{N}_c-1 \}$.
 The restrictor then acts on a fine-grid spinor $\psi$ as
@@ -155,23 +156,24 @@ We showcase local coherence of low modes of the Hermitian Dirac operator $Q = \g
 \begin{figure}
     \centering
     \includegraphics[width=0.7\linewidth]{\dir/img/lc}
-    \caption{Local coherence of the low modes of $Q$ tested on ensemble F7 of global lattice size $(L_0,L_1,L_2,L_3) = (96, 48, 48, 48)$, see \cref{tab:mglma:ensembles}. The figure shows the value of $1 - \epsilon_i = \norm{P \evec_i}$ on the y-axis versus the eigenmode number $i$ on the x-axis, where $\evec_i$ is the $i$-th normalized lowest mode for two different values of $\Nc$ and block sizes. \takenfull }
+    \caption{Local coherence of the low modes of $Q$ tested on ensemble F7 of global lattice size $(L_0,L_1,L_2,L_3) = (96, 48, 48, 48)$, see \cref{tab:mglma:ensembles}. The figure shows the value of $1 - \epsilon_i = \norm{P \evec_i}$ on the y-axis versus the eigenmode number $i$ on the x-axis, where $\evec_i$ is the $i$-th normalized lowest mode for two different values of $\cNc$ and block sizes. \takenfull }
     \label{fig:lc}
 \end{figure}
-The plot shows the fraction of the \num{350} lowest modes that are contained in the blocked subspace constructed from only the $\coarse{\Nc} = 20, 100$ lowest ones, $\mathcal{B} = \{ \evec_i \mid 0 \leq i < \coarse{\Nc} \}$.
+The plot shows the fraction of the \num{350} lowest modes that are contained in the blocked subspace constructed from only the $\cNc = 20, 100$ lowest ones, $\mathcal{B} = \{ \evec_i \mid 0 \leq i < \cNc \}$.
 The modes were determined up to relative precision of $\norm{Q \evec - \lambda \evec}/\norm{\evec} \leq 10^{-12}$ for an eigenmode $\evec$ with eigenvalue $\lambda$.
-Different number of low modes $\coarse{\Nc}$ and block extents where used for the bootstrap set to generate subspaces of differing sizes.
+Different number of low modes $\cNc$ and block extents where used for the bootstrap set to generate subspaces of differing sizes.
 Block sizes of $b_{\mu} = 4, 8$ correspond to physical extents of $b_{\mu} a \approx $ \u{0.25}{\femto\metre} and $b_{\mu} a \approx $ \u{0.5}{\femto\metre} respectively.
 As analytically expected, the spinors in the bootstrap set are represented exactly with no deficit, \ie $1 - \epsilon_i = 1$ for $\psi \in \mathcal{B}$.
 Spinors in $\mathcal{M} \setminus \mathcal{B}$ on the other hand have deficits larger than zero, but nevertheless they are well represented.
-The effect of a finer block grid or an increase in low modes results in better overlaps as expected.
-Even with a very modest number of $\coarse{\Nc}=20$ low modes and a block size of $4^4$, we already contain $85-90\%$ of the $350$ lowest modes.
-Notice that for $\coarse{\Nc}=100$ and block size of $4^4$, the dimension $\coarse{d}$ of the coarse-grid operator $\coarse{Q}$ is already $3.2\%$ of the dimension $d$ of the fine-grid Dirac operator $Q$.
+The effect of a finer block grid or an increase in low modes results in better overlaps.
+Even with a very modest number of $\cNc=20$ low modes and a block size of $4^4$, we already contain $85-90\%$ of the $350$ lowest modes.
+Notice that for $\cNc=100$ and block size of $4^4$, the dimension $\coarse{d}$ of the coarse-grid operator $\coarse{Q}$ is already $3.2\%$ of the dimension $d$ of the fine-grid Dirac operator $Q$.
 %One might be tempted to drive the number of low modes to the extreme, while having very small blocks
 %, but the number of blocks has a negative impact on the condition of $\coarse{Q}$.
 
 \tldr{used in inexact deflation and MG algos}
 We note that this property has been crucial to create subspaces with inexact rough low modes to obtain powerful preconditioners for Krylov subspace solvers, called inexact deflation~\cite{Luescher2007} or multigrid~\cite{Babich:2010qb}.
+They will be discussed in \cref{ch:p2:multigrid}.
 Furthermore, the property has been used to accelerate the Lanczos algorithm to generate low modes~\cite{Clark_2018}.
 The extension of what will follow to using modes determined with a low accuracy is straightforward as we will not assume any special properties of the fields in the bootstrap set.
 
@@ -185,7 +187,7 @@ LMA has $\Pi(\mathcal{B}) = \mathcal{B}$ and the deficits of modes not in the bo
 \qquad
 \psi \in \mathcal{M} \setminus \mathcal{B} \;.
 \end{equation}
-Therefore, \cref{fig:lc} for that choice will be a shifted Heaviside function as $\theta(\coarse{\Nc} -1 - i)$ where
+Therefore, \cref{fig:lc} for that choice will be a shifted Heaviside function as $\theta(\cNc -1 - i)$ where
 \begin{equation}
 \theta(i) = \begin{cases}
 1 & i \geq 0 \;,  \\
@@ -196,9 +198,9 @@ Therefore, \cref{fig:lc} for that choice will be a shifted Heaviside function as
 \tldr{extreme blocking as identity}
 It is instructive to shortly touch upon the other extreme, where the block extents are as \emph{small} as possible $b_{\mu} = 1$.
 This choice results in a coarse lattice geometry equal to the fine one, $\coarse{\idxspacetime} = \idxspacetime$.
-A valid choice as long as $\coarse{\Nc} \leq 12$, because else the Gram-Schmidt reorthonormalization will certainly fail.
+A valid choice as long as $\cNc \leq 12$, because else the Gram-Schmidt reorthonormalization will certainly fail.
 The coarsening then only affects the internal degrees of freedom of a spinor field.
-If $\coarse{\Nc} = 12$ we obtain exactly the same lattice, $\coarse{\lattice} = \lattice$, possibly rotated mixing spins and colors but with the same physics contents.
+If $\cNc = 12$ we obtain exactly the same lattice, $\coarse{\lattice} = \lattice$, possibly rotated mixing spins and colors but with the same physics contents.
 
 
 %and corresponding block projectors $P_{B_x}$,
@@ -212,7 +214,7 @@ For the sake of completion, we will discuss briefly the possibility to preserve 
 
 \tldr{spin indices and preserving them}
 Wilson Dirac spinors have \num{4} spin degrees of freedom.
-Two of them are chiral the other two non-chiral and the Dirac spin is the tensor product of those.
+Two of them are chiral, the other two non-chiral and the Dirac spin is the tensor product of those.
 For the spin index set $\idxspin$, we can write
 \begin{equation}
 \idxspin = \idxchiral \otimes \{0, 1\} \;,
@@ -220,8 +222,8 @@ For the spin index set $\idxspin$, we can write
 \idxchiral = \{ +, - \} \;,
 \end{equation}
 where $\idxchiral$ contains the positive and negative chiralities.
-Based on that, we can either preserve the two chiralities, the two other spin indices, all four spin indices explicitly or non of them on the coarse subspace, $\coarse{N_s} = 1,2$ or $4$.
-The $\coarse{N_s} = 1$ case is already discussed above.
+Based on that, we can either preserve the two chiralities, the two other spin indices, all four spin indices explicitly or non of them on the coarse subspace, $\cNs = 1,2$ or $4$.
+The $\cNs = 1$ case is already discussed above.
 The other options are readily carried into execution by defining projectors for them.
 
 \subsection{Chirality preservation}
@@ -235,16 +237,18 @@ P_{\pm}^{2} = P_{\pm} = P_{\pm}^{\dagger} \;,
 \qquad
 P_{\pm} P_{\mp} = 0 \;,
 \end{equation}
-we can easily extent the construction in \cref{ch:p2:lc} to include these projectors.
+we can easily extent the construction in \cref{sec:lc:coarse} to include these projectors.
 Consider the set extension
 \begin{equation} \label{eq:bootstrap:chiral}
 \mathcal{B} \longmapsto P_{+} \mathcal{B} \cup P_{-} \mathcal{B} \;.
 \end{equation}
-This will preserve the chiral structure of a spinor projected to the subspace by the projector in \cref{eq:lc:projector} leading to an important but simple equation
+This will preserve the chiral structure of a spinor projected to the subspace
+% by the projector in \cref{eq:lc:projector}
+leading to an important but simple equation
 \begin{equation} \label{eq:P:g5:commute}
 [P, \gamma^{5}] = 0 \;.
 \end{equation}
-The coarse lattice still exposes these chiral indices $\coarse{N_s} = 2$ with $\coarse{\idxspin} = \idxchiral$.
+The coarse lattice still exposes these chiral indices $\cNs = 2$ with $\coarse{\idxspin} = \idxchiral$.
 We will see in \cref{ch:p2:chirality} that this choice has huge impact in the coarse operator condition number and the variance contribution of the two-point correlator and that \cref{eq:P:g5:commute} alone is not sufficient.
 
 \tldr{preserving the chiral ones with LR, singular vectors}
@@ -273,7 +277,7 @@ Analogous to before we can extend the bootstrap set by projecting all vectors
 \begin{equation} \label{eq:bootstrap:spin}
 \mathcal{B} \longmapsto \bigcup_{\sigma \in \idxspin} P_{\sigma} \mathcal{B} \;.
 \end{equation}
-In this case, the coarse lattice has all the spin indices preserved $\coarse{N_s} = 4$.
+In this case, the coarse lattice has all the spin indices preserved $\cNs = 4$.
 The fine and the coarse spins are equal $\coarse{\idxspin} = \idxspin$.
 
 \section{Summary}
@@ -284,7 +288,7 @@ Motivated through the free theory, we introduced the property of local coherence
 A property that is successfully leveraged in efficient preconditioning methods for Krylov subspace solvers.
 Indeed, our numerical verification showed high degree of local coherence of low modes.
 
-Locally constant modes can be obtained by block projection, leading to a new coarser lattice by interpreting the spacetime index of the block as coarse lattice index.
+Locally constant modes can be obtained via block projection, leading to a new coarser lattice by interpreting the spacetime index of the block as coarse lattice index.
 Field indices from the bootstrap set can be interpreted as new coarse color degrees of freedom, whereas coarse spins can be inherited from the fine grid.
 In this framework, low-mode averaging defines a trivial spacetime lattice with a single coarse spacetime point, leaving only coarse color degrees of freedom.
 

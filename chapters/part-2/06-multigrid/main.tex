@@ -5,23 +5,23 @@
   It is a tale told by an idiot, full of sound and fury signifying nothing. }%
 \vskip 1em
 
-\readit{3}
+\readit{4}
 
-\worktodo{
-* Multigrid
-  * Local coherence
-  * block decomp -> subspace deflation with non-trivial lattice index
-  * MG decomposition -> as subspace defl., LMA as subsp. defl. with trivial lattice index
-    * recursion
-    * solver precond -> multiplicative vs. additive
-  * MG LMA
-    * prop decomp
-    * Estimator for 2pt vector corr.
-}
+% \worktodo{
+% * Multigrid
+%   * Local coherence
+%   * block decomp -> subspace deflation with non-trivial lattice index
+%   * MG decomposition -> as subspace defl., LMA as subsp. defl. with trivial lattice index
+%     * recursion
+%     * solver precond -> multiplicative vs. additive
+%   * MG LMA
+%     * prop decomp
+%     * Estimator for 2pt vector corr.
+% }
 
 \tldr{mg intro}
-In this chapter we will discuss multigrid as a concept and its prominent role as a solver preconditioner (\cref{sec:mg:precond}).
-After that, we will construct a decomposed propagator in terms of contributions from multigrid levels (\cref{sec:mg:prop}).
+In this chapter we will discuss multigrid and its prominent role as a solver preconditioner (\cref{sec:mg:precond}).
+After that, we will construct a propagator decomposition in terms of contributions from multigrid levels (\cref{sec:mg:prop}).
 By inserting this decomposition into the connected two-point correlator introduced in \cref{ch:p2:2pt-corr}, it enables us to define a new hierarchical stochastic sampling scheme, where every multigrid level is evaluated with separate statistics.
 This defines a new class of variance reduction methods which we call \emph{multigrid low-mode averaging} (\cref{sec:mg:lma}).
 The method will be applied to the two-point correlator (\cref{sec:mg:2pt}) and the section finished with a summary (\cref{sec:mg:summary}).
@@ -39,8 +39,8 @@ A suitable class of iterative solvers for this kind of problem are Krylov subspa
 We will additionally assume the Dirac operator $D$ to be non-normal, non-Hermitian\footnote{More important properties of the Wilson and Wilson-Clover Dirac operator will be delayed to \cref{ch:p2:chirality}.} and close to singular, \ie having a large condition number.
 This is a scenario that occurs often in simulations in the chiral regime, where chiral symmetry is spontaneously broken.
 The presence of eigenvalues near the complex origin (in the former called \emph{low modes} or \emph{near-null vectors}) pose problems when it comes to numerical inversion.
-The error of the iterative solution is then dominated by the low-mode contributions of the operator $D$ which converge the slowest or stall entirely.
-This can be easily seen, from the iterative solution $\psi$ from a Krylov solver, that is an implicitly generated polynomial of finite degree $n$ in the operator whose coefficients depend on the right-hand side $\eta$.
+The error of the iterative solution is then dominated by the low-mode contributions which converge the slowest or stall entirely.
+This can easily be seen, from the iterative solution $\psi$ from a Krylov solver, that is an implicitly generated polynomial of finite degree $n$ in the operator, whose coefficients depend on the right-hand side $\eta$.
 
 \tldr{show explicitly the low mode contributions}
 Let us assume for simplicity that the operator is the Hermitian Dirac operator $Q = \gamma^{5}D$, then the polynomial applied to the right-hand side is
@@ -49,7 +49,7 @@ Let us assume for simplicity that the operator is the Hermitian Dirac operator $
 \qquad
 \mathcal{P}_{n}^{(\eta)}(x) = \sum_{i=0}^{n} \alpha_{i}^{(\eta)} x^i \;.
 \end{equation}
-If we only keep the highest order term of the polynomial and write $\eta$ as linear combination of eigenvectors of $Q$, we find
+If we only keep the highest order term and write $\eta$ as linear combination of eigenvectors of $Q$, we find
 \begin{eqnarray}
 \psi
 \approx \sum_{i=0} \alpha_i Q^{n} \evec_i + \bigO\left(Q^{n-1}\right)
@@ -68,8 +68,8 @@ whereas the vectors $Q^{m} \eta$ have suppressed low mode components for increas
 % Low modes are associated with long-range interactions
 
 \tldr{instead: amplify low-mode components}
-In order to complement a Krylov solver, the above analysis shows that a preconditioner for ill-conditioned systems should preferably amplify and not suppress the low-mode components of the solution vector.
-The stalling of Krylov solvers due to near-singularity of the Dirac operator is sometimes referred to as critical slowing down near the chiral limit.
+In order to complement a Krylov solver, the above analysis shows that a preconditioner for ill-conditioned systems should preferably amplify, rather than suppress, the low-mode components of the solution vector.
+The stalling of Krylov solvers due to the near-singularity of the Dirac operator is sometimes referred to as critical slowing down near the chiral limit.
 
 \subsection{\texorpdfstring{$V^{2}$}{V2}-problem}
 \label{sec:mg:V2:problem}
@@ -94,7 +94,7 @@ Both are done to very low precision, where $m$ is \numrange{5}{10}.
 The numerical precision of such modes is in the regime \num{0.1}.
 
 \tldr{bootstrap set, MG left preconditioning, smoothing}
-The setup phase consist of a definition of a bootstrap set $\mathcal{B}$ that consists of $\Nc = 10-30$ approximate low modes and a description of a coarse lattice and spin degrees of freedom as in \cref{eq:coarse:lattice,sec:lc:spin} respectively.
+The setup phase consist of a definition of a bootstrap set $\mathcal{B}$ that consists of $\cNc = 10-30$ approximate low modes, a description of a coarse lattice (\cref{sec:lc:coarse}) and spin degrees of freedom (\cref{sec:lc:spin}).
 Using local coherence, we can thus generate powerful large subspaces at low cost having large overlap with the true low mode subspace as seen in \cref{fig:lc} using only a few approximate low modes.
 Therefore, we have a prolongator $\prolongator$, a restrictor $\restrictor$ and a coarse Dirac operator $\coarse{D} = RDT$.
 Instead of solving \cref{eq:var:dirac:equation}, we solve the left-preconditioned system
@@ -116,30 +116,30 @@ The coarse operator $\coarse{D}$ exhibits a blocked structure just as the fine-g
 \includestandalone[width=0.4\linewidth]{\dir/img/coarse}
 \caption{
 1D example ($\coarse{V} = 8$) of the structure of the Dirac operator $D$ and its coarse-grid representation $\coarse{D}$ using periodic boundary conditions.
-Each block is of size $N_c N_s \times N_c N_s$.
+Each block is of size $\cNc \cNs \times \cNc \cNs$.
 Nearest neighbor interactions of $D$ make neighboring blocks of $\coarse{D}$ occupied.
 Notice that in 4D every block has \num{8} neighbors.
-The matrix has $(2d+1)\coarse{V} N_c^2 N_s^2$ non-zero entries, where $d$ is the dimensionality of spacetime.
+The matrix has $(2d+1)\coarse{V} \cNc^2 \cNs^2$ non-zero entries, where $d$ is the dimensionality of spacetime.
 \takenfull
 }
 \label{fig:coarse:op:structure}
 \end{figure}
 The solver algorithm for the coarse system can be the same as for the fine system.
 Meaning that one can left-precondition the coarse system as well with an even coarser lattice.
-Multigrid is meant to be applied recursively by introducing multiple coarse lattices called levels.
+Multigrid is meant to be applied recursively by introducing multiple coarse lattices called \df{levels}.
 This is obtained by just applying multigrid preconditioning to the coarse system \cref{eq:coarse:dirac:equation} itself.
 We will refer to \cref{eq:var:dirac:equation:mg} as \emph{multiplicative} preconditioning.
 
 \tldr{solve coarsest system exactly}
 The coarsest system may be so small that it can be solved exactly to machine precision.
 Many multigrid implementations have a fixed coarsest grid with a trivial spacetime index set $\lvert \coarse{\idxspacetime} \rvert = 1$.
-The corresponding coarse operator has a small dimension only given by the coarse spin and color degrees of freedom $N_s N_c = \bigO(10)$ and its inverse can be held in memory up to machine precision.
+The corresponding coarse operator has a small dimension only given by the coarse spin and color degrees of freedom $\cNs \cNc = \bigO(10)$ and its inverse can be held in memory up to machine precision.
 
 \tldr{lüscher deflation, additive preconditioning}
 It is worth discussing a similar alternative to multigrid called inexact deflation developed independently in ref.~\cite{Luescher2007}.
 It can be seen as a special case of multigrid, although there are some differences.
-The subspace is built similarly, except that the spin degrees of freedom are coarsened away, $N_s = 1$.
-Apart from this the preconditioning \emph{subtracts} the low modes by solving
+The subspace is built similarly, except that the spin degrees of freedom are coarsened away, $\cNs = 1$.
+Apart from this, the preconditioning \emph{subtracts} the low modes by solving
 \begin{equation} \label{eq:var:dirac:equation:inexact:defl}
 L D \chi = L \eta \;,
 \qquad
@@ -159,12 +159,12 @@ Nevertheless the full solution vector $\psi$ is unique after projecting in \cref
 Both inexact deflation and multigrid, have a very flat scaling behavior in the pion mass and are scaling close to linear in the lattice volume $\bigO(V)$.
 This makes them ideal preconditioners for ill-conditioned large lattices.
 Although they have an expensive setup phase for generating the coarse subspaces, this cost is quickly amortized when solving for many right-hand sides.
-However, the high setup cost presents challenges for gauge field sampling, where the gauge field changes frequently.
+However, the high setup cost decreases its usefulness for gauge field sampling, where the gauge field changes frequently.
 The coarse subspace is then evolved incrementally with little computational effort instead of being rebuilt from scratch.
 
 \tldr{V2 problem solved}
 The coarse system is restricted to the low mode subspace of the operator.
-Evidently, if the subspaces are generated from low modes, we clearly reduce the error components of the solution vector $\psi$ associated to the low modes and the bias of Krylov solvers towards suppressing low-mode components as described above is solved.
+Evidently, if the subspaces are generated from low modes, we clearly reduce the error components of the solution vector $\psi$ associated to the low modes and the bias of Krylov solvers towards suppressing low-mode components as described above is lifted.
 
 \subsection{Smoothing}
 
@@ -191,7 +191,7 @@ Such solvers are sometimes referred to as \emph{communication-avoiding} solvers~
 
 \tldr{Illustration of post smoothing}
 Pre-smoothing aims to reduce the high frequency components of the current error before restricting, whereas post-smoothing aims to dampen those high frequency modes introduced during interpolation.
-Both types of smoothing are introduced to balance the reduction in the error of high and low mode components.
+Both types of smoothing are introduced to balance the alternating reduction in the error of high and low mode components.
 Without smoothing the high mode components might not be reduced properly.
 See \cref{fig:post:smoothing} for an illustration of the effect of post-smoothing.
 \begin{figure}
@@ -213,7 +213,7 @@ Information in the current solution vector on a certain lattice site slowly prop
 Even though the coarse Dirac operator is still nearest neighbor, information on the coarse grid travels faster through the lattice, because sites are further apart (\ie one coarse grid hop corresponds to multiple fine-grid hops depending on the choice of block size).
 This enhances non-local information exchange on the lattice with fewer iterations on the coarse grid.
 Additionally the coarse grid is constructed from approximate low modes which are associated to long-range interactions allowing long-distance propagation of information.
-This concept is illustrated in \cref{fig:coarse:stencil}.
+The concept is illustrated in \cref{fig:coarse:stencil}.
 
 \begin{figure}
 \centering
@@ -338,7 +338,7 @@ As an example consider a fine-grid lattice with extents that are not powers of t
 The first level of multigrid might be chosen by a block of size $\onlvl{b}{1}_{\mu} = 4$ resulting in a coarse lattice of extents $\onlvl{L}{1}_{\mu} = 48 / 4 = 12$.
 At this point, with the recursive formulation, we do not have much freedom to choose the next levels.
 In \cref{tab:mg:formulations:example}, we collected possible levels in such a scenario for the recursive and the relaxed formulation.
-We see the relaxed formulation allows coarse levels that are not valid coarsenings of each other, for instance \Ln{2} and \Ln{3} in \cref{tab:mg:formulations:example}, but all are valid coarsenings of the fine grid.
+The relaxed formulation allows coarse levels that are not valid coarsenings of each other, for instance \Ln{2} and \Ln{3} in \cref{tab:mg:formulations:example}, but all are valid coarsenings of the fine grid.
 
 % The second level may be defined relative to the first level with $\onlvl{b}{2}_{\mu} = 2$ resulting in a coarse lattice of extents $\onlvl{L}{2}_{\mu} = 12 / 2 = 6$.
 % This is recursive coarsening as described above.
@@ -382,6 +382,7 @@ The recursive variant allows control of pre- and post-smoother between all level
 \tldr{we use loop variant in implementation}
 Implementation effort as well as performance of the two variants clearly differ and we will not discuss them further.
 The implementation used for this project is the relaxed variant allowing more freedom in the coarse grid creation, \ie the one where level \num{0} is coarsened for all levels.
+Existing multigrid implementations for solver preconditioning although tend to follow the recursive approach.
 The formulation of the method and its subsequent analysis that will follow are independent of the choice of formulation made at this point.
 
 % \subsection{Final propagator decomposition}
@@ -398,13 +399,12 @@ The formulation of the method and its subsequent analysis that will follow are i
 \section{Multigrid low-mode averaging}
 \label{sec:mg:lma}
 
-We are now equipped to formulate a novel variance reduction method to evaluate $n$-point functions.
-
-\worktodo{We note that the method will only lead to a fair variance reduction on observables sensitive to low mode noise.
-The method is expected to be beneficial whenever low-mode averaging is beneficial.}
+%\worktodo{We note that the method will only lead to a fair variance reduction on observables sensitive to low mode noise.
+%The method is expected to be beneficial whenever low-mode averaging is beneficial.}
 
 \tldr{n-pt function decomposition, grouping and illustration}
-We will use the decomposition of the quark propagator established in the last section, resulting in a hierarchical $\Nlvl$-level scheme which naturally arises from the hierarchical decomposition of the fine-grid lattice.
+We are now equipped to formulate a novel variance reduction method to evaluate $n$-point functions.
+We will use the decomposition of the quark propagator established in the last section, resulting in a hierarchical $\Nlvl$-level scheme, which naturally arises from the hierarchical decomposition of the fine-grid lattice.
 For generality we will start with a connected $n$-point function
 \begin{equation} \label{eq:Cxyz}
 C(x_1;x_2;\ldots;x_n) = \tr \left\{
@@ -453,7 +453,7 @@ C_{\Ln{k}}(x_1;x_2;\ldots;x_n)
 \end{align}
 for $k \in \{0, \ldots, \Nlvl-1\}$.
 The sum in $\lvl_i$ is trivial only participating one summand with $\lvl_i=k$.
-Using this grouping of levels, the full correlator \cref{eq:Cxyz} can be recovered by summing over all levels,
+Using this grouping of levels, the full correlator \cref{eq:Cxyz} can be recovered by summing over the individual levels,
 \begin{align}
 C(x_1;x_2;\ldots;x_n) = \sum_{k=0}^{\Nlvl-1} C_{\Ln{k}}(x_1;x_2;\ldots;x_n) \;.
 \end{align}
@@ -468,12 +468,15 @@ This decomposition into level-contributions comes natural as illustrated in \cre
 \centering
 \subfloat[rank-$1$ tensor]{%
   \includestandalone[height=0.27\textheight]{\dir/img/mg_corr_1d}
+  \label{fig:mg:corr:1}
 }
 \subfloat[rank-$2$ tensor]{%
   \includestandalone[height=0.27\textheight]{\dir/img/mg_corr_2d}
+  \label{fig:mg:corr:2}
 }
 \subfloat[rank-$3$ tensor]{
   \includestandalone[height=0.27\textheight]{\dir/img/mg_corr_3d}
+  \label{fig:mg:corr:3}
 }
 % \begin{subfigure}{0.057\textwidth}
 % \includestandalone[width=\linewidth]{\dir/img/mg_corr_1d}
@@ -492,7 +495,7 @@ This decomposition into level-contributions comes natural as illustrated in \cre
 Crucial about this decomposition is that every level can be evaluated separately with a different strategy in terms of number and type of sources.
 An evaluation of $C_{\Ln{k}}$ requires only inversions of the Dirac operator $\onlvl{D}{k}$ on level $k$ and coarser levels but not on finer levels $0, \ldots, k-1$.
 $C_{\Ln{0}}$ requires fine-grid solves.
-The fact that the coarse Dirac operators have exactly the same sparsity structure as the fine one (see \cref{fig:coarse:op:structure}) allows to use the same solvers algorithms for inversions.
+%The fact that the coarse Dirac operators have exactly the same sparsity structure as the fine one (see \cref{fig:coarse:op:structure}) allows to use the same solvers algorithms for inversions.
 
 \section{Two-point connected correlator}
 \label{sec:mg:2pt}
@@ -512,8 +515,8 @@ and the rank-2 correlator tensor
 C_{ij}(x; y) = \tr \left\{ \opxy{\prop_{i}}{x}{y} \Gamma_1 \opxy{\prop_{j}}{y}{x} \Gamma_2 \right\} \;,
 \qquad i,j \in \{0, \ldots, \Nlvl-1\} \;.
 \end{equation}
-The contribution into levels for a two-point function is depicted in \cref{fig:mg:corr} (b).
-Therefore, the Euclidean time correlator \cref{eq:G:corr:connected} can be written as sum of level contributions
+The contribution into levels for a two-point function is depicted in \cref{fig:mg:corr:2}.
+Therefore, the Euclidean time correlator \cref{eq:2pt:G} can be written as sum of level contributions
 \begin{align}
 G(t) = \sum_{k=0}^{\Nlvl-1} G_{\Ln{k}}(t) \;.
 \end{align}
@@ -538,14 +541,14 @@ G(t) = G_{\Ln{0}}(t) + G_{\Ln{1}}(t) \;,
 \end{equation}
 where we can choose different evaluation strategies for the two terms.
 Clearly for every sample of the fine-grid \Ln{0}-term we have to solve the full Dirac equation, $D \psi = \eta$ for some source $\eta$, whereas for the coarse-grid \Ln{1}-term we have to solve the coarse Dirac equation $\coarse{D} \coarse{\psi} = \coarse{\eta}$ for some coarse source $\coarse{\eta}$ in the smaller subspace $\coarse{\vslattice}$.
-Solving the coarse system is significantly cheaper than solving the fine-grid system if the subspace was chosen properly.
+Solving the coarse system is significantly cheaper than solving the fine-grid system, if the subspace was chosen properly.
 This is, if the coarse dimension is much smaller than the fine one, $\dim_{\mathbb{C}}(\coarse{\vslattice}) \ll \dim_{\mathbb{C}}(\vslattice)$.
 Our strategy will be as follows: the expensive \Ln{0}-term will be evaluated with as few as possible sources, for instance \numrange{1}{10}, whereas the cheap \Ln{1}-term will be sampled with many sources, say \numrange{100}{1000}.
 We will present different estimators for the level contributions, but every estimator that is valid on the fine-grid correlator can be safely used on coarse levels too.
 
-\subsection{Point-source estimator on level $k$}
+% \subsection{Point-source estimator on level $k$}
 
-\worktodo{todo}
+% \worktodo{todo}
 
 \subsection{Stochastic estimator on level $k$}
 
@@ -581,7 +584,7 @@ Evaluating the above, requires us to solve the linear systems of equation
 \onlvl{\mathcal{\restrictor}}{\lvl  }
 \Gamma \eta_n^{\tslice{t}} \;,
 \end{align}
-on levels $\lvl = i, j, i+1, j+1$ and time-slice $t$ analogous to \cref{eq:stoch:C:solves}.
+on levels $\lvl = i, j, i+1, j+1$ for time-slice $t$ analogous to \cref{eq:stoch:C:solves}.
 According to \cref{eq:mg:rec:prop:decomp:inner:lvl}, the fine-grid stochastic propagator is evaluated as prolonged differences of these solves,
 \begin{align} \label{eq:prolonged:solves}
 \phi_{n(\lvl)}^{\Gamma \tslice{t}}
@@ -829,7 +832,7 @@ We may use the same stochastic source as sample on multiple levels, since these 
 
 \tldr{formulas for exact coarsest lvl}
 When estimating the coarsest grid contribution, its dimension might be small enough for an exact estimation.
-This is the case if its dimension no larger than say $10^{4}$.
+This is the case, if its dimension no larger than say $10^{4}$.
 The coarsest term can then be brought into a simpler form
 \begin{multline} \label{eq:mglma:coarsest:exact}
 G_{\Ln{(\Nlvl-1)}}(t)
@@ -862,7 +865,7 @@ Let us compare this form with the full lattice volume averaged correlator $\lver
 \end{equation}
 We see that it has exactly the same form, just with some replacements.
 The fine-grid $\Gamma$-matrices are replaced with the coarse ones, the fine-grid inverse Dirac operator $\prop=D^{-1}$ is replaced with the coarse one $(\onlvl{D}{\Nlvl-1})^{-1}$ and finally the trace over color, spin and space is replaced by a trace over coarse color, spin and space.
-Note that the original fine-grid trace over color, spin and space is moved to the $\Gamma$-matrices \cref{eq:gamma:partial:trace}.
+Note that the original fine-grid trace over color, spin and space is moved into the definition of the coarse $\Gamma$-matrices \cref{eq:gamma:partial:trace}.
 However, the term is calculated exactly and averaged over the full spacetime volume, its variance will be minimal, \ie the gauge variance of that level.
 
 \tldr{LMA does exact coarsest lvl, but without blocking}
@@ -886,7 +889,7 @@ G_{\Ln{1}}(t)
 (\coarse{Q}^{-1})_{[mn]}
 \left( \fieldx{\coarse{\gamma^{5} \Gamma_2}}{t+y_0} \right)_{[nk]} \;.
 \end{equation}
-Using the fact that in case of low-mode averaging the coarse Hermitian Dirac operator $\coarse{Q}$ is diagonal with eigenvalues along its diagonal, $(\coarse{Q}^{-1})_{[kl]} = \delta_{kl} \lambda_k^{-1}$, and reversing the definition of the coarse $\Gamma$-matrices as in \cref{eq:coarse:index};
+Using the fact that, in case of low-mode averaging, the coarse Hermitian Dirac operator $\coarse{Q}$ is diagonal with eigenvalues along its diagonal, $(\coarse{Q}^{-1})_{[kl]} = \delta_{kl} \lambda_k^{-1}$, and reversing the definition of the coarse $\Gamma$-matrices as in \cref{eq:coarse:index};
 \begin{multline}
 G_{\Ln{1}}(t)
 = \frac{1}{\lvert \idxspacetime \rvert} \sum_{y_0=0}^{L_0-1} \sum_{k,m}
@@ -951,7 +954,7 @@ Even though such a layer does add only negligible cost, it is only useful for sm
 
 \tldr{summary MG as preconditioner}
 As a preliminary foundation, we looked at multigrid as a preconditioner which is specially powerful on ill-conditioned systems, because it lifts the low-mode suppression inherent to Krylov solvers.
-Multigrid scales close to linear in the lattice volume, even though the dimension of the low-mode subspace does so too, because it harnesses the local coherence of low modes as of \cref{ch:p2:lc}.
+Multigrid scales close to linear in the lattice volume, even though the dimension of the low-mode subspace does so too, because it harnesses local coherence of low modes as of \cref{ch:p2:lc}.
 Low-mode error components (associated to long distances) in the iterative solution are treated by solving the coarse Dirac equation to low precision in every outer Krylov iteration.
 
 \tldr{summary MG as prop decomposition}
@@ -967,28 +970,28 @@ Low-mode averaging is a special case of this decomposition with a trivial coarse
 \tldr{recursice vs loop: different features regarding smoothing and flexibility}
 When approaching the multigrid propagator decomposition, some features do depend of the mathematical formulation of it.
 We can either formulate it in a recursive way, resulting a slightly reduced flexibility in choices for coarse lattice sizes.
-Or alternatively through a formulation where every level is a coarsening of the fine grid only, giving more flexibility.
+Or alternatively through a relaxed formulation where every level is a coarsening of the fine grid only, giving more flexibility.
 
 \tldr{vrm prefers loop}
 As we will see when investigating numerical results in \cref{ch:p2:numerics}, the latter is preferred for the variance reduction method due to its flexibility.
-The former on the other hand is preferred for preconditioning where inter-grid data movement is crucial.
+The former on the other hand is preferred for solver preconditioning, where inter-grid data movement is performance critical.
 The method's elegant integration with existing multigrid implementations is appealing, yet may be outweighed by its preference for higher flexibility.
 %Although, the variance reduction method builds elegantly on top of existing multigrid implementations by harnessing the existing building blocks, its usefulness might be limited due to the preference of the method for higher flexibility.
 
 \tldr{coarse ops: same sparsity pattern, but less sparse, potential inefficient}
 Coarse Dirac operators, although showing the same sparsity pattern as fine ones, are less sparse in general due to the increased number of colors.
 In certain setups, the reduced sparsity results in performance inefficiencies as we will see in \cref{ch:p2:numerics}.
-Solving these inefficiencies requires further algorithmic treatment, resulting in higher overall algorithm complexity.
+Solving these inefficiencies requires further algorithmic treatment, resulting in higher overall complexity.
 
 \tldr{bad strong scaling due to reduced problem size, hard on GPUs}
-Furthermore, coarse systems have a significantly reduced problem size.
+Furthermore, coarse systems are considerably smaller in problem size.
 Despite having better convergence properties and lower computational cost, the small problem size negatively impacts strong scaling of algorithms that rely on coarse-grid solves.
 Obtaining good strong scaling with multigrid on GPUs is especially challenging.
 
 \tldr{many algorithmic parameters like number of level, block sizes, low modes, spins, etc}
 The introduction of multigrid comes with many new algorithmic parameters to take into consideration.
-Most of them are not trivial to tune, such as the number of levels, block sizes, spins and colors on each level or smoothing choices between levels.
-Every algorithm based on multigrid requires careful tuning and understanding of the effect of these parameters on performance, efficiency and stability.
+Most of them are not trivial to choose and tune, such as the number of levels, block sizes, spins and colors on each level or smoothing choices between levels.
+Every algorithm based on multigrid requires careful tuning and understanding of the effects of these parameters on performance, efficiency and stability.
 With the newly introduced variance reduction method, their effect on variance contribution must be considered too.
 
 The next chapter will numerically investigate the novel variance reduction method applied to the connected LO-HVP, as introduced in \cref{ch:p2:2pt-corr}, compare it to standard stochastic and LMA estimators, and determine the cost to reach minimal variance.

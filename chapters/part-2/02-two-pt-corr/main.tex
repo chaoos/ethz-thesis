@@ -1,18 +1,18 @@
 \chapter{Two-point correlator}
 \label{ch:p2:2pt-corr}
 
-\readit{3}
+\readit{4}
 
-\worktodo{
-* 2pt corr
-  * estimators
-    * basically different prop decomps
-    * point prop
-    * stochastic prop
-      * spin diagonal
-      * time dilution
-    * LMA prop? in the traditional formulation, eq (12) in lma-final.tex
-}
+% \worktodo{
+% * 2pt corr
+%   * estimators
+%     * basically different prop decomps
+%     * point prop
+%     * stochastic prop
+%       * spin diagonal
+%       * time dilution
+%     * LMA prop? in the traditional formulation, eq (12) in lma-final.tex
+% }
 
 \tldr{intro}
 We will introduce the light-quark connected meson correlator -- the observable of interest -- in this chapter.
@@ -172,7 +172,7 @@ The chapter ends with a brief summary (\cref{sec:2pt:summary}).
 % \end{equation}
 
 The observable of interest in this part is the the connected leading order hadronic vacuum polarization contribution (LO-HVP) to the anomalous magnetic moment of the muon as introduced in \cref{sec:intro:gm2}.
-The connected LO-HVP piece which dominates the error budget is itself a comparably simple observable, but suffers from the numerically infeasible long distance translation average on large lattices.
+The connected LO-HVP piece which dominates the error budget is itself a comparably simple observable, but suffers from the numerically infeasible long distance translation average cost on large lattices.
 The piece we calculate on the lattice is the Euclidean time correlator \cref{eq:coor1}, which in a post-processing phase enters the main integral for the connected LO-HVP contribution \cref{eq:a:mu:lohvp}.
 Before we move on, we need to define the degrees of freedom on a spacetime lattice.
 
@@ -196,13 +196,13 @@ The fine-grid lattice is defined as the triple $\lattice = (\idxspacetime, \idxs
     \idxcolor &= \expcolor \;,
 \end{aligned} \label{eq:index:sets}
 \end{align}
-where $\Lt,L_i,N_s,\Nc \in \mathbb{N}$.
-The product $V = \Lt \Lx \Ly \Lz$ is called the \df{lattice volume}, whereas the product $N_s \Nc$ parametrizes the internal degrees of freedom of a spinor field on each lattice point.
-The product of the two $d = V N_s \Nc$ gives us the dimension over the complex numbers $\mathbb{C}$ of spinor fields and operators acting on spinor fields on the lattice.
-The native lattice where fermion fields live with $(N_s, \Nc) = (4,3)$, we will call the \df{fine-grid lattice} $\lattice$.
+where $\Lt,L_i,\Ns,\Nc \in \mathbb{N}$.
+The product $V = \Lt \Lx \Ly \Lz$ is called the \df{lattice volume}, whereas the product $\Ns \Nc$ parametrizes the internal degrees of freedom of a spinor field on each lattice point.
+The product of the two $d = V \Ns \Nc$ gives us the dimension over the complex numbers $\mathbb{C}$ of spinor fields and operators acting on spinor fields on the lattice.
+The native lattice where fermion fields live with $(\Ns, \Nc) = (4,3)$, we will call the \df{fine-grid lattice} $\lattice$.
 Furthermore, the Hilbert space of spinor fields $\vslattice$ is the tensor product of Hilbert spaces,
 \begin{equation}
-\vslattice = \mathcal{H}_{L_0} \otimes \mathcal{H}_{L_1} \otimes \mathcal{H}_{L_2} \otimes \mathcal{H}_{L_3} \otimes \mathcal{H}_{N_s} \otimes \mathcal{H}_{N_c} \cong \mathbb{C}^{d} \;,
+\vslattice = \mathcal{H}_{L_0} \otimes \mathcal{H}_{L_1} \otimes \mathcal{H}_{L_2} \otimes \mathcal{H}_{L_3} \otimes \mathcal{H}_{\Ns} \otimes \mathcal{H}_{N_c} \cong \mathbb{C}^{d} \;,
 \end{equation}
 where each individual space corresponds to an index set in \cref{eq:index:sets} and is isomorphic to $\mathcal{H}_{N} \cong \mathbb{C}^{N}$.
 We note, the Dirac operator which is an endomorphism on this Hilbert space, $D \colon \vslattice \rightarrow \vslattice$, is not separable into a tensor product, because its action to a spinor field couples and mixes all individual degrees of freedom non-trivially, compare \cref{eq:Dw:QCD+QED}.
@@ -219,7 +219,7 @@ We will use Wick's theorem ($\prop = D^{-1}$ is the quark propagator)
 \langle \fieldxaa{\psi}{x}{\alpha}{a} \fieldxaa{\bar{\psi}}{y}{\beta}{b} \rangle =
 a^{-4} \propxyab{x}{y}{\alpha}{\beta}{a}{b} \;,
 \end{equation}
-to get rid of the Grassmann fields and obtain an expression in terms of quark propagators\footnote{We note that continuum objects like the spinor field $\psi(x)_{\alpha \atop a}$ will have a discretized lattice analogue $\psi[x]_{[\alpha] \atop [a]}$, emphasizing that spinors are just vectors with a multi-index or multi-dimensional arrays put on a computer.}.
+to get rid of the Grassmann fields and obtain an expression in terms of quark propagators\footnote{We note that continuum objects like the spinor field $\psi(x)_{\alpha \atop a}$ will have a discretized lattice analogue $\psi[x]_{[\alpha] \atop [a]}$, emphasizing that spinors are just vectors with a multi-index or multi-dimensional arrays on a computer.}.
 We obtain connected and disconnected contributions,
 \begin{align}
 C_{\mu \nu}(x;y) &= C_{\mu \nu}^{\text{conn}}(x;y) + C_{\mu \nu}^{\text{disc}}(x;y) \;, \\
@@ -233,8 +233,8 @@ C_{\mu \nu}^{\text{disc}}(x;y) &=
 \tr \left\{ \propxy{y}{y} \gamma_{\nu} \right\} \;,
 \end{align}
 where the trace is over color and spin indices.
-As motivated in \cref{sec:intro:motivation}, we will concentrate on the connected (light-quark) piece, that contributes about 98\% of the value of $a_{\mu}^{\text{LO-HVP}}$ and 97\% to the variance (see \cref{fig:a_mu:sm:variances,fig:a_mu:lohvp:variances} and ref.~\cite{snowmass:2025}).
-On the lattice the Fourier integral of the connected bare isovector vector correlator, \cref{eq:coor1}, turns into a sum over spatial lattice points and can be evaluated using the result in \cref{eq:C_corr_Dinv:connected} as
+As motivated in \cref{sec:intro:motivation}, we will concentrate on the connected (light-quark) piece, that contributes about 98\% to the value of $a_{\mu}^{\text{LO-HVP}}$ and 97\% to the variance the full anomalous magnetic momentum $a_{\mu}^{\text{SM}}$ (see \cref{fig:a_mu:sm:variances,fig:a_mu:lohvp:variances} and ref.~\cite{snowmass:2025}).
+On the lattice, the Fourier integral of the connected bare isovector vector correlator, \cref{eq:coor1}, turns into a sum over spatial lattice points and can be evaluated using the result in \cref{eq:C_corr_Dinv:connected} as
 \begin{equation} \label{eq:G:corr:connected}
 G^{\text{conn}}(t) =
 - \frac{a^{3}}{3 \lvert \Omega \rvert}
@@ -632,7 +632,7 @@ This analysis shows that a stochastic evaluation of \cref{eq:G:corr:connected} a
 
 %\worktodo{remove lma}
 
-We have introduced the main observable of interest in this thesis -- the connected leading order hadronic vacuum polarization contribution (LO-HVP) to the anomalous magnetic moment of the muon, $a_{\mu}$.
+We have introduced the main observable of interest in this thesis -- the connected leading order hadronic vacuum polarization contribution (LO-HVP) to the anomalous magnetic moment of the muon.
 Evaluated on large lattices, the connected LO-HVP is numerically infeasible in the long distance translation average.
 Two common simple strategies for its evaluation have been discussed
 

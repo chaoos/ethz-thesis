@@ -1,7 +1,7 @@
 \chapter{Subspace deflation}
 \label{ch:p2:subspace-deflation}
 
-\readit{3}
+\readit{4}
 
 % \worktodo{
 % * Subspace deflation (2 lvl, loop, hat notation)
@@ -48,13 +48,13 @@ Revisiting LMA shows that it is a special case of subspace deflation (\cref{sec:
 %     \idxcolor &= \expcolor,
 % \end{aligned} \label{eq:index:sets}
 % \end{align}
-% where $\Lt,L_i,N_s,\Nc \in \mathbb{N}$.
-% The product $V = \Lt \Lx \Ly \Lz$ is called the \df{lattice volume}, whereas the product $N_s \Nc$ parametrize the internal degrees of freedom of a spinor field on each lattice point.
-% The product of the two $d = V N_s \Nc$ gives us the dimension over the complex numbers $\mathbb{C}$ of spinor fields and operators acting on spinor fields on the lattice.
-% The native lattice where $(N_s, \Nc) = (4,3)$, we will call the \df{fine-grid lattice} $\lattice$.
+% where $\Lt,L_i,\cNs,\cNc \in \mathbb{N}$.
+% The product $V = \Lt \Lx \Ly \Lz$ is called the \df{lattice volume}, whereas the product $\cNs \cNc$ parametrize the internal degrees of freedom of a spinor field on each lattice point.
+% The product of the two $d = V \cNs \cNc$ gives us the dimension over the complex numbers $\mathbb{C}$ of spinor fields and operators acting on spinor fields on the lattice.
+% The native lattice where $(\cNs, \cNc) = (4,3)$, we will call the \df{fine-grid lattice} $\lattice$.
 % Furthermore, the Hilbert space of spinor fields $\vslattice$ is the tensor product of Hilbert spaces,
 % \begin{equation}
-% \vslattice = \mathcal{H}_{L_0} \otimes \mathcal{H}_{L_1} \otimes \mathcal{H}_{L_2} \otimes \mathcal{H}_{L_3} \otimes \mathcal{H}_{N_s} \otimes \mathcal{H}_{N_c} \cong \mathbb{C}^{d} \;,
+% \vslattice = \mathcal{H}_{L_0} \otimes \mathcal{H}_{L_1} \otimes \mathcal{H}_{L_2} \otimes \mathcal{H}_{L_3} \otimes \mathcal{H}_{\Ns} \otimes \mathcal{H}_{\Nc} \cong \mathbb{C}^{d} \;,
 % \end{equation}
 % where each individual space corresponds to an index set in \cref{eq:index:sets} and is isomorphic to $\mathcal{H}_{N} \cong \mathbb{C}^{N}$.
 % We note, the Dirac operator which is an endomorphism on this Hilbert space, $D \colon \vslattice \rightarrow \vslattice$, is not separable into a tensor product, because its action to a spinor field couples and mixes all individual degrees of freedom non-trivially, compare \cref{eq:Dw:QCD+QED}.
@@ -110,8 +110,8 @@ P^{2} = P = P^{\dagger} \;.
 
 \tldr{coarse operator definition}
 Next, we define operators on the subspace from operators acting on the lattice $\lattice$.
-We consider such operators acting on the subspace as \df{coarsenings} on fine-grid operators.
-For an operator on the lattice $K \colon \vslattice \longrightarrow \vslattice$, we define the coarse operator as
+We consider such operators acting on the subspace as \df{coarsenings} of fine-grid operators.
+For an operator on the lattice $K \colon \vslattice \longrightarrow \vslattice$, we define its coarse operator as
 \begin{equation} \label{eq:sd:coarse:op}
 \coarse{K} = \restrictor K \prolongator \colon \coarse{\vslattice} \longrightarrow \coarse{\vslattice} \;.
 \end{equation}
@@ -149,7 +149,7 @@ $\coarse{K}$ is the restriction of $K$ to the subspace spanned by the $\phi_{i} 
 As long as $N < 12V$, the coarse operator is smaller in dimension as depicted in \cref{fig:coarsen}.
 \begin{figure}
   \includestandalone[width=0.6\linewidth]{\dir/img/coarsen}
-  \caption{Depiction of the fact that the prolongator and restrictor are non-square matrices and coarse operator are restrictions of their fine-grid versions by dimensional reduction.}
+  \caption{Depiction of the fact that the prolongator and restrictor are non-square matrices and coarse operator is a restriction of the fine-grid one by dimensional reduction.}
   \label{fig:coarsen}
 \end{figure}
 Trivially, when taking $K = \id$ we find the $\coarse{d} \times \coarse{d}$ identity on the subspace,
@@ -161,10 +161,10 @@ Trivially, when taking $K = \id$ we find the $\coarse{d} \times \coarse{d}$ iden
 \label{sec:sd:lma}
 
 \tldr{LMA as specific choice of subspace deflation}
-We can immediately see that low-mode averaging as introduced in the last chapter is a variant of subspace deflation with a particular choice for the fields spanning the subspace $\coarse{\vslattice}$ and the operator $K$ as
+We can immediately see that low-mode averaging as introduced in \cref{ch:p2:lma} is a variant of subspace deflation with a particular choice for the fields spanning the subspace $\coarse{\vslattice}$ and the operator $K$ as
 \begin{align}
 K &= \gamma^{5} D \:.  &  &\text{ the Hermitian Dirac operator,} \\
-\phi_i &= \evec_i \;,  &  &\text{ the $N=\Nc$ exact lowest modes of $Q$.}
+\phi_i &= \evec_i \;,  &  &\text{ the $N=\cNc$ exact lowest modes of $Q$.}
 \end{align}
 %This choice makes the coarse Hermitian Dirac operator $\coarse{K}$ (as well as its inverse $\coarse{K}^{-1}$) diagonal with the eigenvalues $\lambda_i$ (and their reciprocal values respectively) along the diagonal.
 We assume the eigenvalues of $K$ are enumerated in increasing order with respect to their magnitudes $\lvert \lambda_0 \rvert \leq \lvert \lambda_1 \rvert \leq \ldots \leq \lvert \lambda_{N-1} \rvert$.
@@ -180,7 +180,7 @@ Furthermore, with the $\phi_i$ eigenmodes the projector commutes with the operat
 \prop_{e} &= PS = \prolongator \coarse{Q}^{-1} \restrictor \gamma^5 \;,
 \end{align}
 compare \cref{eq:prop:lma}.
-This shows us, that $S_e$ is a low-rank approximation to $S$ in terms of its spectral decomposition with
+This shows, that $S_e$ is a low-rank approximation to $S$ in terms of its spectral decomposition with
 \begin{equation}
 \norm{S_e - S}_2
 % = \norm{\sum_{i=N}^{12 V} \frac{1}{\lambda_i} \evec_i \evec_i^{d\dagger} }
@@ -200,7 +200,7 @@ Although this parameter is under direct user control the memory requirements of 
 We have generalized the idea of low-mode averaging to deflation of an arbitrary subspace.
 This led to a definition of linear operators restricted to that subspace which we refer to as coarsenings or coarse-grid operators.
 %These dimensionally reduced operators are projected to the features of the subspace.
-Such operators constitutes a form of dimension reduction via feature projection.
+Such operators constitutes a form of dimensional reduction via feature projection.
 %Such operators need not be diagonal, as is the case for LMA.
 %This chapter introduced the deflation of arbitrary subspaces specified by an orthonormal basis set of spinor fields.
 To move data from the fine to the coarse subspace and vice versa, we specified inter-grid operators referred to as restrictor and prolongator.

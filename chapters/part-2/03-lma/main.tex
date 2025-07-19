@@ -1,7 +1,7 @@
 \chapter{Low-mode averaging}
 \label{ch:p2:lma}
 
-\readit{1}
+\readit{2}
 
 % \worktodo{
 % * Separate chapter LMA
@@ -15,7 +15,7 @@
 \tldr{LMA original and usages}
 This chapter introduces the variance reduction method of low-mode averaging~\cite{Neff_2001,DeGrand_2004,Giusti_2004} (LMA) and some of its many variants which had a large influence in this thesis.
 We start with the general propagator decomposition (\cref{sec:lma:prop:decomp}), followed by an individual discussion of the emerging terms related to the high modes (\cref{sec:lma:rr}), low modes (\cref{sec:lma:ee}) and the crossing term (\cref{sec:lma:x}).
-The chapter ends with an analysis of its problems in terms of unfortunate quadratic volume scaling and challenges that emerge when evaluating the pieces introduced through the propagator decomposition (\cref{sec:lma:summary}).
+The chapter ends with an analysis of its problems in terms of the appearance of a quadratic volume scaling on large lattices and challenges that emerge when evaluating the pieces introduced through the propagator decomposition (\cref{sec:lma:summary}).
 
 
 LMA consists of decomposing the quark propagator $\prop=D^{-1}$ into a truncated spectral decomposition and a remainder, defined precisely in the following.
@@ -53,18 +53,18 @@ This is actually a singular value decomposition\footnote{To be more precise, $S 
 Analogously, we emphasize just as \cref{eq:prop:pt-to-all} is an exact point-to-all propagator (no approximation involved), the above is an exact all-to-all propagator.
 
 In its current state, this propagator is not appropriate for numerical computations, because the full eigen-decomposition into all $12V$ modes is numerically inaccessible.
-Although we can truncate the sum in \cref{eq:prop:all-to-all} and only take the $\Nc \ll 12 V$ modes with lowest magnitude eigenvalues, \ie the largest $\frac{1}{\lambda_{n}}$.
+Although we can truncate the sum in \cref{eq:prop:all-to-all} and only take the $\cNc \ll 12 V$ modes with lowest magnitude eigenvalues, \ie the largest $\frac{1}{\lambda_{n}}$.
 These are the modes that contribute most to the propagator and to the variance~\cite{DeGrand_2004}.
-To do this, we define an orthogonal projector to the space of the $\Nc$ lowest modes as
+To do this, we define an orthogonal projector to the space of the $\cNc$ lowest modes as
 \begin{equation} \label{eq:lma:projector}
-P = \sum_{n=0}^{\Nc-1} \evec_n \evec_n^{\dagger} \;,
+P = \sum_{n=0}^{\cNc-1} \evec_n \evec_n^{\dagger} \;,
 \qquad
 P^{2} = P = P^{\dagger} \;.
 \end{equation}
 The full all-to-all propagator is then decomposed into two terms
 \begin{equation} \label{eq:prop:lma}
 \prop
-= \underbrace{\sum_{n=0}^{\Nc-1}
+= \underbrace{\sum_{n=0}^{\cNc-1}
   \frac{1}{\lambda_{n}} \evec_{n} \evec_{n}^{\dagger} \gamma^{5}}_{=\prop_e}
 + \underbrace{(1-P) Q^{-1} \gamma^{5}}_{=\prop_r} \;,
 \end{equation}
@@ -74,7 +74,7 @@ We note that this decomposition is an exact equality.
 The two-point connected correlator \cref{eq:G:corr:connected} has two slots for propagators.
 We can either plug \cref{eq:prop:lma} in only one slot or in both of them.
 Both options result in different valid estimators.
-We will continue with the latter and since the propagator is now a sum of two terms, we obtain four individual terms,
+We will continue with the latter and since the propagator is now a sum of two terms, we obtain four individual terms for the correlator,
 \begin{equation}
 G^{\text{conn}}(t)
 = G_{ee}^{\text{conn}}(t)
@@ -124,7 +124,7 @@ The eigen-eigen term can be worked out as
 G_{ee}^{\text{conn}}(t)
 % = - \frac{a^{3}}{3 V}
 % \sum_{k=1}^{3}
-% \sum_{n,m=0}^{\Nc-1} \frac{1}{\lambda_{n} \lambda_{m}}
+% \sum_{n,m=0}^{\cNc-1} \frac{1}{\lambda_{n} \lambda_{m}}
 % \sum_{y_0=0}^{L_0-1} \;
 % \sprod{
 %   \evec_{n}^{(y_0)}
@@ -143,7 +143,7 @@ G_{ee}^{\text{conn}}(t)
 % }.
 = - \frac{a^{3}}{3 V}
 \sum_{k=1}^{3}
-\sum_{n,m=0}^{\Nc-1} \frac{1}{\lambda_{n} \lambda_{m}}
+\sum_{n,m=0}^{\cNc-1} \frac{1}{\lambda_{n} \lambda_{m}}
 \sum_{\vect{x},y} \;
 \sprod{
   \fieldx{\evec_{n}}{y}
@@ -165,7 +165,7 @@ where the $\sprod{\cdot}{\cdot}$ denotes the standard spinor product on the latt
 Since the eigenmodes are defined on every lattice point, we can easily perform a full volume average of this contribution $\lvert \Omega \rvert = V$ as seen in the prefactor.
 This is characteristic to this type of estimator but also crucial, because now the eigen-eigen term is at the minimal variance (its gauge noise level) and its variance cannot be lowered further for a fixed gauge config\footnote{Without employing multi-level sampling schemes.}.
 Due to the exact averaging over the subspace of low modes, this class of estimators is known under the name low-mode \emph{averaging}.
-All deflated low modes have to be in memory at the same time, because the above is a all-to-all contraction in the eigenvector indices $n,m$.
+All deflated low modes have to be in memory at the same time, because the above is a all-to-all contraction in the eigenvector indices $n$ and $m$.
 We will later see that it can be written as a trace of objects living in the eigenspace.
 
 \section{The cross-term}
@@ -176,7 +176,7 @@ The two crossing terms, rest-eigen and eigen-rest, show some symmetry,
 G_{er}^{\text{conn}}(t) &=
 \frac{a^{3}}{3 L^{3} \lvert \mathcal{T} \rvert}
 \sum_{y_0 \in \mathcal{T}} \;
-\sum_{n=0}^{\Nc-1} \; \frac{1}{\lambda_{n}}
+\sum_{n=0}^{\cNc-1} \; \frac{1}{\lambda_{n}}
 \sum_{k=1}^{3} \;
 \sprod{
   \tilde{\prop}
@@ -190,7 +190,7 @@ G_{er}^{\text{conn}}(t) &=
 G_{re}^{\text{conn}}(t) &=
 \frac{a^{3}}{3 L^{3} \lvert \mathcal{T} \rvert}
 \sum_{y_0 \in \mathcal{T}} \;
-\sum_{n=0}^{\Nc-1} \frac{1}{\lambda_{n}} \;
+\sum_{n=0}^{\cNc-1} \frac{1}{\lambda_{n}} \;
 \sum_{k=1}^{3} \;
 \sprod{
   \gamma^{5}
@@ -227,8 +227,8 @@ Clearly the cross-term is expensive to calculate exactly, since we need to solve
 \begin{equation}
 D \psi = (1-P) \gamma_k \evec_{n}^{\tslice{t}} \;,
 \end{equation}
-for all $k = 1,2,3$, $t \in \stime$ and $n = 0, \ldots, \Nc-1$.
-In total $3 \Nc L_0$ solves to calculate the piece exactly!
+for all $k = 1,2,3$, $t \in \stime$ and $n = 0, \ldots, \cNc-1$.
+In total $3 \cNc L_0$ solves to calculate the piece exactly!
 Many improved estimators will not include the whole time extend, all $\gamma$-matrices or all modes but a subset of them.
 Additionally, many LMA-scenarios employ heavily truncated solves on subsets for the above and correct the bias regularly with differences of high precision and truncated solves to obtain an unbiased estimator~\cite{bmw_2017,Kuberski_2023}.
 Alternatively one can introduce a stochastic estimator for the cross-term~\cite{lynch2023,fermi_2023}.
@@ -242,12 +242,12 @@ It comes with a slightly different propagator decomposition
 \begin{equation}
 \prop
 = \underbrace{\prop - \prop_{\text{AMA}}}_{\prop_{\text{r}}}
-+ \underbrace{\sum_{n=0}^{\Nc-1} \frac{1}{\lambda_n} \evec_n \evec_n^{\dagger} \gamma^{5}
++ \underbrace{\sum_{n=0}^{\cNc-1} \frac{1}{\lambda_n} \evec_n \evec_n^{\dagger} \gamma^{5}
 + P_n(Q) P \gamma^{5}}_{\prop_{\text{AMA}}} \;.
 \end{equation}
 Here $P_n(Q)$ is a polynomial in $Q$ usually obtained from an implicitly generated polynomial of a truncated solve (TSM)~\cite{Bali_2009} preconditioned by the eigenmodes and $P$ is defined as in \cref{eq:lma:projector}.
 Here, the TSM does not need bias correction, since the above is a exact decomposition, irrespective of the truncation scheme.
-For this estimator, it is also possible to set $N_c=0$ \cite{Blum_2012}.
+For this estimator, it is also possible to set $\cNc=0$ \cite{Blum_2012}.
 The terms involving $\prop_{r}$ are treated with very few sources, since they do not contribute much to the overall variance.
 Nevertheless, AMA merely moves the problem of the cross-term into the term including $\prop_{\text{AMA}}$ without solving it at its root.
 The polynomial's purpose is to extend the averaging from low modes to all modes, hence the name \emph{all}-mode averaging.
@@ -262,13 +262,13 @@ The two-point correlator involving the spectral sum can be easily volume average
 Unfortunately, this breaks down as lattice size increases, because determining low modes scaling with lattice volume becomes computationally prohibitive.
 % We mentioned limits of LMA in terms of the two related problems: the $V^2$-problem (number of low modes required is proportional to the lattice volume) and the cross-term problem (remaining cross piece still contributes non-negligibly to the overall variance).
 
-Clearly the cost and the effectiveness of LMA and variants critically depend on the number of low modes $\Nc$ where the spectral sum is truncated -- an algorithmic parameter not easy to chose properly.
-Due to Banks and Casher\cite{banks1980}, $\Nc$ needs to be proportional to the lattice volume, a condition hard to satisfy on large lattices.
+Clearly the cost and the effectiveness of LMA and variants critically depend on the number of low modes $\cNc$ where the spectral sum is truncated -- an algorithmic parameter not easy to chose properly.
+Due to Banks and Casher\cite{banks1980}, $\cNc$ needs to be proportional to the lattice volume, a condition hard to satisfy on large lattices.
 We called this the \emph{$V^{2}$-problem}.
 It refers to the asymptotic quadratic cost scaling that recurrently arises when increasing the lattice size, specifically but not exclusively in the context of LMA.
 
 We encounter two competing motives.
-First, the number of low modes should be large enough to capture all the LD behavior of the correlator and ensure that the cross-term contributes negligibly to the overall variance.
+First, the number of low modes should be large enough to capture all the long distance behavior of the correlator and ensure that the cross-term contributes negligibly to the overall variance.
 Second, the number of low modes should be small enough to keep the cross-term computationally affordable.
 A non-trivial interplay between computational cost and variance reduction.
 

@@ -16,7 +16,6 @@
 * [x] caption of figures in part 2: add ref to MGLMA paper, where they are taken.
 * [x] read through once, add \readit{n} to chapter headers, where n is the number of times read through it; continue at "Exact estimator on coarsest level"
 * [ ] "full correlator" -> "Euclidean time correlator" everywhere
-* [ ] Ns, \hat{Ns}, same for Nc
 * [x] "MG-LMA" -> "MG LMA"
 * [x] check evans and steves presentations
 * [x] cheryls corrections, continue at chapter 7
@@ -55,11 +54,58 @@
 * [x] Part 1: Always tease the next chapter in summaries
 * [x] Part 2: Always tease the next chapter in summaries
 * [x] Ada Lovelace quote
+* [ ] \Ns, N_s -> \cNs (for coarse spins)
+* [ ] \Nc, N_c -> \cNc (for coarse colors)
+* [ ] In all plots: \Ns, N_s -> \cNs (for coarse spins)
+* [ ] In all plots: \Nc, N_c -> \cNc (for coarse colors)
 
 ## TODO for Monday (14.07.25):
 
 * [x] check if LMA chapter has all I want to say about it -> variants, AMA, V2, X-term probs, ...
 * [x] read Part 2 intro, 2pt, LMA, subspace deflation and check if it makes sense now.
+
+## Final read through:
+
+* [x] Title pages
+* [x] Abstract
+* [x] Zusammenfassung
+* [x] DoO
+* [x] Ackn
+* [x] ToC
+* [ ] Overall Intro
+* [ ] Part 1
+	* [ ] Part 1: Intro
+	* [ ] Part 1: openqxd
+	* [ ] Part 1: quda
+	* [ ] Part 1: interface
+	* [ ] Part 1: develop
+	* [ ] Part 1: performance
+	* [ ] Part 1: CI/CD
+	* [ ] Part 1: mem manager
+	* [ ] Part 1: Conclusions
+* [x] Part 2
+	* [x] Part 2: Intro
+	* [x] Part 2: 2pt
+	* [x] Part 2: LMA
+	* [x] Part 2: subspace deflation
+	* [x] Part 2: local coherence
+	* [x] Part 2: Multigrid
+	* [x] Part 2: Numerics
+	* [x] Part 2: Chirality
+	* [x] Part 2: Conclusions
+* [x] Overall Summary
+* [ ] Appendices
+	* [ ] Appendix A: Building
+	* [ ] Appendix B: Running
+	* [ ] Appendix C: NR and SH
+	* [ ] Appendix D: Symmetries
+	* [ ] Appendix E: Notation
+	* [ ] Appendix F: License
+* [ ] Bibliography
+* [ ] List of Figures
+* [ ] List of Tables
+* [ ] Publications
+
 
 ## Final things to check at Sunday (20.07.25)
 

@@ -671,7 +671,7 @@ Therefore, if Dirac operator parameters in \openqxd are changed \emph{after} cal
 
 \tldr{dispatch function is instantaneous}
 The dispatch function \code{openQCD\_qudaInvertAsyncDispatch} takes the remaining subset of arguments of the synchronous solver call, namely the source and solution spinors and a status variable.
-The function exit immediately, since all it does is adding a solve to the end of a worker queue.
+The function exits immediately, since all it does is adding a solve to the end of a worker queue.
 It can be called many times successively with different source and solution spinors to register multiple solves without invoking the actual solver yet.
 This is the job of the start function discussed next.
 

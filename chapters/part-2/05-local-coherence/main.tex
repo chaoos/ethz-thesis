@@ -280,11 +280,15 @@ The fine and the coarse spins are equal $\coarse{\idxspin} = \idxspin$.
 \label{sec:lc:summary}
 
 \tldr{lc summary}
-We have introduced the property of local coherence of low modes stating that low modes of the Dirac operator are well approximated by locally constant modes.
-A property that is exploited in efficient preconditioning methods for Krylov subspace solvers.
-Such modes can be obtained by block projection which leads to a new coarser lattice by interpreting the block spacetime index as coarse lattice index.
-Field indices from the bootstrap set can be interpreted as coarse color degrees of freedom.
-In this framework, low-mode averaging imposes a trivial spacetime lattice with a single coarse spacetime index.
+Motivated through the free theory, we introduced the property of local coherence of low modes stating that low modes of the Dirac operator are well approximated by locally constant modes.
+A property that is successfully leveraged in efficient preconditioning methods for Krylov subspace solvers.
+Indeed, our numerical verification showed high degree of local coherence of low modes.
+
+Locally constant modes can be obtained by block projection, leading to a new coarser lattice by interpreting the spacetime index of the block as coarse lattice index.
+Field indices from the bootstrap set can be interpreted as new coarse color degrees of freedom, whereas coarse spins can be inherited from the fine grid.
+In this framework, low-mode averaging defines a trivial spacetime lattice with a single coarse spacetime point, leaving only coarse color degrees of freedom.
+
+The next chapter will put the concept of subspace deflation as in \cref{ch:p2:subspace-deflation} and coarse lattices as introduced in this chapter together to define a hierarchy of grids.
 
 % \worktodo{
 %     * block projection generates a new lattice analogue to the fine one but coarser

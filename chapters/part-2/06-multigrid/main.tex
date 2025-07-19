@@ -78,7 +78,7 @@ The stalling of Krylov solvers due to near-singularity of the Dirac operator is 
 Related to the problem in the near chiral limit is the $V^{2}$ problem~\cite{Luescher2007} which we have already touched in \cref{ch:p2:introduction} when reviewing the variance reduction method low-mode averaging.
 It states that the dimension of the low mode subspace scales linear in the volume of the lattice~\cite{banks1980}.
 This is the main motivation behind preconditioning methods such as multigrid~\cite{Babich:2010qb}.
-The idea is to generate an approximate subspace having large overlaps with the true low mode subspace that is comparably cheap to obtain.
+The idea is to generate approximate subspaces having large overlaps with the true low mode subspace that is comparably cheap to obtain.
 This is not possible with traditional low mode deflation methods, as their cost, memory and storage requirements scale as $\bigO(V^{2})$.
 This is a variant of critical slowing down.
 The property of local coherence (\cref{ch:p2:lc}) is crucial for a computationally cheap generation of such a subspace.
@@ -157,8 +157,10 @@ Nevertheless the full solution vector $\psi$ is unique after projecting in \cref
 
 \tldr{flat in pion mass and linear in V}
 Both inexact deflation and multigrid, have a very flat scaling behavior in the pion mass and are scaling close to linear in the lattice volume $\bigO(V)$.
-This makes them ideal preconditioners for ill-conditioned systems.
-Although they have an expensive setup phase for generating the coarse subspaces, when solving for many right-hand sides this cost is amortized quickly.
+This makes them ideal preconditioners for ill-conditioned large lattices.
+Although they have an expensive setup phase for generating the coarse subspaces, this cost is quickly amortized when solving for many right-hand sides.
+However, the high setup cost presents challenges for gauge field sampling, where the gauge field changes frequently.
+The coarse subspace is then evolved incrementally with little computational effort instead of being rebuilt from scratch.
 
 \tldr{V2 problem solved}
 The coarse system is restricted to the low mode subspace of the operator.
@@ -200,6 +202,8 @@ See \cref{fig:post:smoothing} for an illustration of the effect of post-smoothin
 \end{figure}
 
 \subsection{Summary}
+
+%Multigrid preconditioning comes with a high setup cost of generating the multigrid subspace with approximate low modes.
 
 \tldr{intuitive argument}
 Multigrid preconditioning of the Dirac equation as $L D \psi = L \eta$ can be seen through the following intuitive argument.
@@ -303,7 +307,7 @@ with smoother acting on level $\lvl$,
 \subsection{Propagator decomposition}
 
 \tldr{N-lvl MG prop decomposition}
-Now, we are ready to discuss a propagator decomposition using $\Nlvl$ levels of multigrid.
+Now, we are ready to discuss the propagator decomposition using $\Nlvl$ levels of multigrid.
 A general decomposition into $\Nlvl$ levels as in \cref{eq:mg:prop:decomp:2lvl} can be obtained by repeatedly plugging \cref{eq:mg:rec:prop:decomp:onlvl} into the full propagator $\prop=D^{-1}$.
 With the notation from the previous section, we obtain a decomposition as
 \begin{equation} \label{eq:mg:rec:prop:decomp:main}
@@ -912,31 +916,86 @@ we readily find \cref{eq:Gconn:eigen-eigen} identically, with the bootstrap vect
 In fact even in a multigrid scenario with more than \num{2} levels, one has the freedom to choose the coarsest lattice to be trivial resulting in a final layer of traditional low-mode averaging.
 Even though such a layer does add only negligible cost, it is only useful for small enough lattices as we will see in the numerical study in \cref{ch:p2:numerics}.
 
-\subsection{$V^2$ problem of LMA}
+% \subsection{$V^2$ problem of LMA}
 
-\worktodo{where to put this?}
+% \worktodo{where to put this?}
 
-\subsection{Cross-term problem of LMA}
+% \subsection{Cross-term problem of LMA}
 
-\worktodo{where to put this?}
+% \worktodo{where to put this?}
 
-\worktodo{Motivated by the previous sections and the results in refs. \cite{Clark_2018, Alcalde_2017}, we want to use the subspace $\coarse{\vslattice}$ generated from the lattice $\coarse{\lattice} = (\coarse{\idxspacetime}, \coarse{\idxspin}, \coarse{\idxcolor})$ as averaging- or sample-subspace in our LMA-scenario.}
+% \worktodo{Motivated by the previous sections and the results in refs. \cite{Clark_2018, Alcalde_2017}, we want to use the subspace $\coarse{\vslattice}$ generated from the lattice $\coarse{\lattice} = (\coarse{\idxspacetime}, \coarse{\idxspin}, \coarse{\idxcolor})$ as averaging- or sample-subspace in our LMA-scenario.}
 
 \section{Summary}
 \label{sec:mg:summary}
 
+%\worktodo{
+%* Summary
+%  * mg precond treats the low modes suppressed by kylov solvers
+%  * V2 prob
+%  * mg vs. luschers inexact deflation
+%  * coarse op move data faster through lattice
+%  * mg prop decomp
+%  * mg n-pt func decomp
+%  * 2pt 2-lvl example
+%  * estimator on levels
+%  * LMA
+% * critical discussion, limits
+%   * recursice vs loop: different features regarding smoothing and flexibility
+%   * coarse ops: same sparsity pattern, but less sparse, potantial for inefficiency
+%   * bad strong scaling due to reduced problem size, hard on GPUs!
+%   * many algorithmic parameters like number of level, block sizes, low modes, spins, etc ...
+%   * HMC problematic
+% }
+
+
 \tldr{summary MG as preconditioner}
-As a preliminary foundation, we looked at multigrid as a preconditioner which is specially powerful on ill-conditioned systems, because of the low-mode suppression inherent to Krylov solvers.
-Multigrid scales close to linear in the lattice volume, even though the dimension of the low-mode subspace does so too.
-Low-mode error components in the iterative solution are treated by solving the coarse Dirac equation to low precision in every outer Krylov iteration.
+As a preliminary foundation, we looked at multigrid as a preconditioner which is specially powerful on ill-conditioned systems, because it lifts the low-mode suppression inherent to Krylov solvers.
+Multigrid scales close to linear in the lattice volume, even though the dimension of the low-mode subspace does so too, because it harnesses the local coherence of low modes as of \cref{ch:p2:lc}.
+Low-mode error components (associated to long distances) in the iterative solution are treated by solving the coarse Dirac equation to low precision in every outer Krylov iteration.
 
 \tldr{summary MG as prop decomposition}
 The quark propagator (the inverse of the Dirac operator) can be decomposed into a contribution along the multigrid subspace and a remainder.
 This can be repeated recursively, leading to a decomposition of an arbitrary $n$-point function into $\Nlvl$ multigrid level contributions in a natural way.
-Every level can be evaluated individually with a different evaluation strategy.
+Every level can be evaluated individually with a different estimator.
 Low-mode averaging is a special case of this decomposition with a trivial coarse lattice.
 
-\worktodo{expand with critical discussion, limits and summary}
+
+% * critical discussion, limits
+%   * HMC problematic
+
+\tldr{recursice vs loop: different features regarding smoothing and flexibility}
+When approaching the multigrid propagator decomposition, some features do depend of the mathematical formulation of it.
+We can either formulate it in a recursive way, resulting a slightly reduced flexibility in choices for coarse lattice sizes.
+Or alternatively through a formulation where every level is a coarsening of the fine grid only, giving more flexibility.
+
+\tldr{vrm prefers loop}
+As we will see when investigating numerical results in \cref{ch:p2:numerics}, the latter is preferred for the variance reduction method due to its flexibility.
+The former on the other hand is preferred for preconditioning where inter-grid data movement is crucial.
+The method's elegant integration with existing multigrid implementations is appealing, yet may be outweighed by its preference for higher flexibility.
+%Although, the variance reduction method builds elegantly on top of existing multigrid implementations by harnessing the existing building blocks, its usefulness might be limited due to the preference of the method for higher flexibility.
+
+\tldr{coarse ops: same sparsity pattern, but less sparse, potential inefficient}
+Coarse Dirac operators, although showing the same sparsity pattern as fine ones, are less sparse in general due to the increased number of colors.
+In certain setups, the reduced sparsity results in performance inefficiencies as we will see in \cref{ch:p2:numerics}.
+Solving these inefficiencies requires further algorithmic treatment, resulting in higher overall algorithm complexity.
+
+\tldr{bad strong scaling due to reduced problem size, hard on GPUs}
+Furthermore, coarse systems have a significantly reduced problem size.
+Despite having better convergence properties and lower computational cost, the small problem size negatively impacts strong scaling of algorithms that rely on coarse-grid solves.
+Obtaining good strong scaling with multigrid on GPUs is especially challenging.
+
+\tldr{many algorithmic parameters like number of level, block sizes, low modes, spins, etc}
+The introduction of multigrid comes with many new algorithmic parameters to take into consideration.
+Most of them are not trivial to tune, such as the number of levels, block sizes, spins and colors on each level or smoothing choices between levels.
+Every algorithm based on multigrid requires careful tuning and understanding of the effect of these parameters on performance, efficiency and stability.
+With the newly introduced variance reduction method, their effect on variance contribution must be considered too.
+
+The next chapter will numerically investigate the novel variance reduction method applied to the connected LO-HVP, as introduced in \cref{ch:p2:2pt-corr}, compare it to standard stochastic and LMA estimators, and determine the cost to reach minimal variance.
+
+%   * HMC problematic
+
+%\worktodo{expand with critical discussion, limits and summary}
 
 % \worktodo{
 %   * Krylov solvers supress low mode contributions

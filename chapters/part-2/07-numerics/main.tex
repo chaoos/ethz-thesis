@@ -801,16 +801,6 @@ Ratio $\ratio$ for the modeled cost of the different MG LMA estimators used in t
 \section{Summary}
 \label{sec:numerics:summary}
 
-We have shown the consistency and performance of the new method, we refer to as multigrid low-mode averaging as compared to the plain stochastic and the traditional low-mode averaging estimators.
-The most important finding in this chapter is that the achieved variance reduction is flat in the lattice volume as opposed to traditional sampling schemes.
-Due to the good overlap with the true low-mode subspace, we observe speedups of more than an order of magnitude compared to the plain stochastic and LMA estimators.
-
-The majority of the variance is contained in the cheap parts, whereas the expensive remainder shows suppressed variance contribution.
-This hierarchical sampling scheme leads to a flat scaling behavior in the required number of low modes, leading to a linear volume-scaling in computational cost, effectively eliminating the $V^{2}$-problem inherent to this class of problems.
-Since coarse operators are better conditioned than fine ones, sampling coarse subspaces is always less expensive than sampling fine ones, keeping the cost factor under control.
-
-\worktodo{expand with critical discussion, limits and summary}
-
 % \worktodo{
 %    * We showed, the method works for O(a)-improved Wilson-Clover fermions
 %    * Subspace captures the low mode behavior, \ie the majority of noise
@@ -824,3 +814,45 @@ Since coarse operators are better conditioned than fine ones, sampling coarse su
 %    * Coarse operators are better conditioned
 %    * perf model assuming MRHS solvers
 % }
+
+We applied the new method, we refer to as multigrid low-mode averaging (MG LMA) to the light-quark connect LO-HVP correlator suffering from the infeasible translation average cost in the long distance.
+We have shown the consistency and performance of the new method as compared to the plain stochastic and the traditional low-mode averaging estimators.
+The most important finding in this chapter is that the achieved variance reduction is flat in the lattice volume as opposed to traditional sampling schemes and that the long distance translation average can be performed resulting in minimal variance.
+Due to the good overlap with the true low-mode subspace, we observe cost reductions of more than an order of magnitude compared to the plain stochastic and LMA estimators.
+
+The majority of the variance is contained in the cheap parts, whereas the expensive remainder shows suppressed variance contribution.
+This hierarchical sampling scheme leads to a flat scaling behavior in the required number of low modes, leading to a linear volume-scaling in computational cost, effectively lifting the $V^{2}$-problem inherent to this class of problems.
+Since coarse operators are better conditioned than fine ones, sampling coarse subspaces is always less expensive than sampling fine ones, keeping the cost factor under control.
+
+\tldr{performance model too optimistic}
+To take into account our inefficient coarse solver, we presented a performance model based on multiple right-hand side solvers (as evaluated in \cref{sec:perf:solver:mrhs} for the fine-grid operator) that aims to dampen the negative effect of large intermediate coarse Dirac operators.
+Although multiple RHS are more favorable on small problems, the performance model might be too optimistic, since it removes the dependence of coarse operator's memory footprint entirely.
+In reality, it is a non-trivial interplay between spatial and temporal cache locality, communication overhead, latency and the operator memory footprint.
+Thus, the performance model becomes less accurate when the operator memory footprint dominates, even in the presence of many right-hand sides.
+
+\tldr{compare to LMA with 1000 modes}
+Clearly, the low-mode averaging estimator in this chapter requires substantially more low modes to capture the long distance noise properly on the large lattices.
+We compared the MG LMA and LMA estimators with equal number of \num{50} low modes, because we wanted to study the \emph{volume scaling} when keeping this number constant.
+However, on the large lattices, one could compare the MG LMA estimator to an LMA estimator with increasing number of low modes proportionally to the volume.
+Although coming with a significant cost increase for the LMA estimator, this would compare both estimators how they are meant to be applied.
+
+\tldr{physical pion masses}
+Finally, the numerical study in this chapter is based on lattices with unphysical pion masses, see \cref{tab:mglma:ensembles}.
+While the main results are not expected to change, a more complete study would investigate the volume scaling and variance contribution on an array of \emph{physical pion mass} lattices with increasing volume.
+
+\tldr{finisher}
+A study involving physical pion masses and a thorough comparison to an LMA estimator with thousands of low modes, as has been used in state-of-the-art high-precision determinations of the connected LO-HVP, would provide a conclusive and rigorous validation of the method.
+%increase the credibility and generality of the findings.
+
+The next chapter will investigate the concept of coarse chirality and its algorithmic and theoretical implications.
+
+%\worktodo{complete, general, unambiguous, undoubted, indisputable, conclusive, definitive, unassailable, comprehensive, rigorous}
+
+%\worktodo{
+%* critical discussion, limits
+%   * performance model: might be too optimistic, although mRHS are more favorable on small problems. the coarse op memory footprint cannot be just ignored; it is a nontrivial interplay between cache locality, ... and ... 
+%    * large intermediate coarse ops
+%   * no comparison to LMA with 1000s of low modes -> "unfair"
+%   * physical spion masses
+%}
+

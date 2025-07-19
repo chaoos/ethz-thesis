@@ -474,31 +474,63 @@ The base cases were chosen to be the smallest node count for the computation to 
 \label{fig:daint:alps:inv:strong}
 \end{figure}
 
-\tldr{solver: scaling with mrhs (weak) on daint}
+% \tldr{solver: scaling with mrhs (weak) on daint}
+% The discussion in the previous paragraph suggests that if we saturate the GPU by exposing more parallelizability on the lattices which are too small, we should observe better scaling behavior.
+% This can be achieved by solving for multiple right-hand sides at the same time.
+% \Cref{fig:daint:alps:inv:weak:mrhs} shows a variant of a weak scaling study where not the local problem size was held constant but the computational work per node in terms of RHSs.
+% As the number of nodes increases the number of RHSs increases proportionally, thus, the local workload stays constant as opposed to the local lattice size.
+% The plot shows some interesting features worth mentioning.
+% The super-linear efficiency for the small node counts comes from the better data locality and increased arithmetic intensity when processing more than one RHS at the same time.
+% The improvement diminishes again quickly, since even though the local size of the RHSs stays constant, the local \emph{problem} size -- and by this the local operator size in memory -- decreases inversely proportional to the node count.
+% Processing multiple RHS turns matrix-vector into matrix-matrix multiplications, increasing the arithmetic intensity.
+% In the plot, the matrix representing the RHSs stays constant in total size but its dimensions change, whereas the operator matrix size decreases.
+% There are numerous competing concepts affecting the overall performance in this scenario.
+% As the number of RHS increases, we expect better temporal data locality and cache reuse until batch sizes exceed cache or shared memory capacity clearly visible in the plot.
+% Since the amount of local variables scales linear in the number of RHSs, we expect variables to the moved to slower memory resulting in register spilling~\cite{CHAITIN198147} as the number RHSs increases.
+% Finally, as the RHS matrix changes shape stride access pattern can cause data in cache to repeatedly being evicted resulting in cache thrashing~\cite{10.1145/1476589.1476705}.
+%However for intermediate node counts, we see good scaling behavior.
+% \begin{figure}
+% \centering
+% \includegraphics[width=0.9\linewidth]{\dir/img/daint_alps_inv_weak_mrhs}
+% \caption{
+% Variant of weak scaling of a multigrid solver w.r.t. number of RHSs (left panel) and average time to solution for all RHSs (right panel).
+% The base cases were chosen to be the smallest node count for the computation to fit in GPU memory.
+% \datataking{Daint-Alps}
+% \worktodo{remove red from plot}
+% }
+% \label{fig:daint:alps:inv:weak:mrhs}
+% \end{figure}
+
+
+\tldr{solver: scaling with mrhs (strong) on daint}
 The discussion in the previous paragraph suggests that if we saturate the GPU by exposing more parallelizability on the lattices which are too small, we should observe better scaling behavior.
 This can be achieved by solving for multiple right-hand sides at the same time.
-\Cref{fig:daint:alps:inv:weak:mrhs} shows a variant of a weak scaling study where not the local problem size was held constant but the computational work per node in terms of RHSs.
-As the number of nodes increases the number of RHSs increases proportionally, thus, the local workload stays constant as opposed to the local lattice size.
+
+\Cref{fig:daint:alps:inv:strong:mrhs} shows a variant of a strong scaling study where as the node count is increased the number of RHSs increases proportionally.
+% As the number of nodes increases the number of RHSs increases proportionally, thus, the local workload stays constant as opposed to the local lattice size.
 The plot shows some interesting features worth mentioning.
 The super-linear efficiency for the small node counts comes from the better data locality and increased arithmetic intensity when processing more than one RHS at the same time.
 The improvement diminishes again quickly, since even though the local size of the RHSs stays constant, the local \emph{problem} size -- and by this the local operator size in memory -- decreases inversely proportional to the node count.
+
 Processing multiple RHS turns matrix-vector into matrix-matrix multiplications, increasing the arithmetic intensity.
-In the plot, the matrix representing the RHSs stays constant in total size but its dimensions change, whereas the operator matrix size decreases.
+In the plot, the matrix representing the RHSs stays constant in total memory size but its dimensions change, whereas the operator matrix size decreases.
+
 There are numerous competing concepts affecting the overall performance in this scenario.
 As the number of RHS increases, we expect better temporal data locality and cache reuse until batch sizes exceed cache or shared memory capacity clearly visible in the plot.
 Since the amount of local variables scales linear in the number of RHSs, we expect variables to the moved to slower memory resulting in register spilling~\cite{CHAITIN198147} as the number RHSs increases.
 Finally, as the RHS matrix changes shape stride access pattern can cause data in cache to repeatedly being evicted resulting in cache thrashing~\cite{10.1145/1476589.1476705}.
-%However for intermediate node counts, we see good scaling behavior.
+
+Nevertheless the strong scaling improves.
+The degradation at about \num{64} nodes in \cref{fig:daint:alps:inv:strong:mrhs}, could be lifted by increasing the number of RHSs as the local problem size still diminishes quickly.
 \begin{figure}
 \centering
-\includegraphics[width=0.9\linewidth]{\dir/img/daint_alps_inv_weak_mrhs}
+\includegraphics[width=0.9\linewidth]{\dir/img/daint_alps_inv_strong_mrhs}
 \caption{
-Variant of weak scaling of a multigrid solver w.r.t. number of RHSs (left panel) and average time to solution for all RHSs (right panel).
+Strong scaling of a multigrid solver w.r.t. number of RHSs and nodes (left panel) and average time to solution for all RHSs (right panel).
 The base cases were chosen to be the smallest node count for the computation to fit in GPU memory.
 \datataking{Daint-Alps}
-\worktodo{remove red from plot}
 }
-\label{fig:daint:alps:inv:weak:mrhs}
+\label{fig:daint:alps:inv:strong:mrhs}
 \end{figure}
 
 \section{Summary}
@@ -540,6 +572,8 @@ With the current interface gauge field generation is not efficient for multiple 
     \item Few RHSs cause H2D/D2H transfers of gauge and clover fields to contribute more to the overall solve.
     \item To achieve reasonable throughput of generated gauge fields, it is common in the field to scale out. This requires good strong scaling behavior which is challenging to achieve with multigrid.
 \end{itemize}
+
+The next chapter introduces the CI/CD pipeline, including automated building, testing, and deployment.
 
 % \section{TODO}
 

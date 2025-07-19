@@ -262,7 +262,7 @@ plots = [
   },
 
   {
-    "active": True,
+    "active": False,
     "hostname": ["geno"],
     "filename": "/scratch/rgruber/67bc5d6d049e882b8a262db6/chapters/part-1/08-performance/img/daint_alps_inv_strong.pdf",
     "name": "CSCS Alps system (GH200) Solver, NVSHMEM=off, GDR=on",
@@ -303,7 +303,7 @@ plots = [
   },
 
   {
-    "active": False,
+    "active": True,
     "scaling": 1, # weak
     "hostname": ["geno"],
     "filename": "/scratch/rgruber/67bc5d6d049e882b8a262db6/chapters/part-1/08-performance/img/daint_alps_inv_weak_mrhs.pdf",
@@ -312,7 +312,7 @@ plots = [
       {"xlabel": "Nodes/Nrhs"},
       {"xlabel": "Nodes/Nrhs"},
     ],
-    "todo": "weak/strong? mg_mrhs_list=16",
+    #"todo": "weak/strong? mg_mrhs_list=16",
     "lines": [
       {
         "plot_args": {"label": "G8", "alpha": 1, "fmt": ""},
@@ -350,7 +350,7 @@ plots = [
       {"ylabel": "Speedup per RHS", "xlabel": "Nodes/Nrhs"},
       {"ylabel": "Average time per RHS [s]", "xlabel": "Nodes/Nrhs"},
     ],
-    "todo": "weak/strong? mg_mrhs_list=16",
+    #"todo": "weak/strong? mg_mrhs_list=16",
     "lines": [
 
       {

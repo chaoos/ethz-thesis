@@ -197,12 +197,17 @@ Although this parameter is under direct user control the memory requirements of 
 \label{sec:sd:summary}
 
 \tldr{subspace deflation summary}
-We have generalized the idea of low-mode averaging to a deflation of an arbitrary subspace.
+We have generalized the idea of low-mode averaging to deflation of an arbitrary subspace.
 This led to a definition of linear operators restricted to that subspace which we refer to as coarsenings or coarse-grid operators.
+%These dimensionally reduced operators are projected to the features of the subspace.
+Such operators constitutes a form of dimension reduction via feature projection.
 %Such operators need not be diagonal, as is the case for LMA.
-This chapter introduced the deflation of arbitrary subspaces specified by an orthonormal basis set of spinor fields.
+%This chapter introduced the deflation of arbitrary subspaces specified by an orthonormal basis set of spinor fields.
 To move data from the fine to the coarse subspace and vice versa, we specified inter-grid operators referred to as restrictor and prolongator.
-This led to the observation that low-mode averaging is variant of subspace deflation with a specific basis choice making the coarse operator diagonal.
+We encountered that low-mode averaging is special case of subspace deflation with a certain choice of basis making the coarse operator diagonal.
+
 In the next chapter we introduce the decomposition of the lattice into blocks.
-This will make it clear, why the Hilbert space $\coarse{\vslattice}$ was called ``coarse''.
+This will clarify why the Hilbert space $\coarse{\vslattice}$ was called ``coarse''.
 %We will motivate why the Hilbert space $\coarse{\vslattice}$ is coined ``coarse'' in the next chapter.
+
+

@@ -1,6 +1,10 @@
 \chapter{Spectral implications of chirality}
 \label{ch:p2:chirality}
 
+\dictum[Ada Lovelace ]{%
+  Understand well as I may, my comprehension can only be an infinitesimal fraction of all I want to understand. }%
+\vskip 1em
+
 \readit{2}
 
 % \worktodo{
@@ -33,7 +37,7 @@ The condition number of the coarse Dirac operator should be bounded from above b
 We will not mathematically proof this inequality, but provide strong numerical evidence for its truth under certain conditions.
 This section continues specifying spin and chirality, followed by the concept of coarse chirality (\cref{sec:chirality:coarse}) and continues with implications of its weak preservation (\cref{sec:chirality:weak}).
 Numerical ranges, spectral hulls and their symmetries of coarse and fine operators are investigated (\cref{sec:chirality:nr,sec:chirality:sh}), followed by a study of the chiral implications to low-lying spectra of Hermitian Dirac operators (\cref{sec:chirality:evs}) as well as their variance contribution (\cref{sec:chirality:variance}).
-The section ends with a description of the numerical methods (\cref{sec:chirality:methods}) and a summary (\cref{sec:chirality:summary}).
+The section ends with a description of the numerical methods used (\cref{sec:chirality:methods}) and a summary (\cref{sec:chirality:summary}).
 
 To achieve \cref{eq:cond:init}, we need to discuss the spin degrees of freedom carried over to the coarse grid as they have significant algorithmic and theoretical implications.
 %There are many ways how this can be achieved.
@@ -1271,8 +1275,8 @@ For this again the Generalized Davidson method with locally optimal restarting f
 The numerical range studies revealed important information about Wilson-type Dirac operators.
 Critically, the Wilson-Clover operator is not accretive, even more so for physical masses, \ie the operator itself, but also its coarse variants have the potential for zero or arbitrarily small modes in their spectra.
 %We thus need a coarsening strategy that .
-Weak chirality preservation $[P, \Gamma^{5}]=0$ is responsible for the inheritance of many properties, amongst others equal singular values for non-Hermitian $\coarse{K}$ and Hermitian $\coarse{\Gamma^{5} K}$ coarsenings.
-Empirically we observed spectral hull inclusion and overlap of the $\Nc$ lowest modes for coarsening schemes that strongly preserve chiral properties, no so for weak chiral, non-chiral or no spin preservation at all.
+Weak chirality preservation $[P, \Gamma^{5}]=0$ is responsible for the inheritance of many properties, among others, equal singular values for non-Hermitian $\coarse{K}$ and Hermitian $\coarse{\Gamma^{5} K}$ coarse operators.
+Empirically we observed spectral hull inclusion and overlap of the $\Nc$ lowest modes for coarsening schemes that strongly preserve chiral properties, no so for weak chiral, non-chiral or no spin preserving schemes at all.
 Therefore, it is the chiral degree of freedom alone and only if coarsened symmetrically, that is responsible for inheriting well behaved spectra.
 %Spectral hull inclusion guarantees well-conditioned coarse operators, which is crucial for MG LMA and multigrid as a preconditioner to be beneficial.
 
@@ -1287,7 +1291,7 @@ Therefore, it is the chiral degree of freedom alone and only if coarsened symmet
 %We systemically relaxed assumptions to the operator, still upholding this guarantee by studying their spectra. 
 %On this way, preserving spectral properties on coarse grids is crucial.
 For Hermitian positive definite systems, we are provably guaranteed to have better conditioned coarse systems, no matter how we coarsen.
-We believe that careful study of numerical range theory on other lattice discretizations reveals further algorithmic and theoretical insights.
+We believe that careful study of numerical range and spectral theory on other lattice discretizations reveals further algorithmic and theoretical insights.
 
 Concluding, the main finding of this chapter is:\\
 \textbf{
@@ -1307,4 +1311,6 @@ then coarse Dirac operators $\coarse{D}$ satisfy
 \end{equation}
 }
 
-\worktodo{expand with critical discussion, limits and summary}
+The next chapter will conclude the part about variance reduction for two-point functions by summarizing the key findings and discussing their broader implications.
+
+%\worktodo{expand with critical discussion, limits and summary}

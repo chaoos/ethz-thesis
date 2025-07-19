@@ -256,27 +256,31 @@ However, in all scenarios the cost of this term poses one of the major limiters 
 \section{Summary}
 \label{sec:lma:summary}
 
+We have introduced a new class of estimators for the connected LO-HVP contribution based on low-mode deflation.
+The propagator is decomposed into a truncated spectral sum and a remainder.
+The two-point correlator involving the spectral sum can be easily volume averaged pushing its variance to its gauge variance, whereas the variance on the remaining terms is considered small.
+Unfortunately, this breaks down as lattice size increases, because determining low modes scaling with lattice volume becomes computationally prohibitive.
+% We mentioned limits of LMA in terms of the two related problems: the $V^2$-problem (number of low modes required is proportional to the lattice volume) and the cross-term problem (remaining cross piece still contributes non-negligibly to the overall variance).
+
 Clearly the cost and the effectiveness of LMA and variants critically depend on the number of low modes $\Nc$ where the spectral sum is truncated -- an algorithmic parameter not easy to chose properly.
-Due to Banks and Casher\cite{banks1980}, $\Nc$ need to be proportional to the lattice volume, a condition hard to satisfy on large lattices.
+Due to Banks and Casher\cite{banks1980}, $\Nc$ needs to be proportional to the lattice volume, a condition hard to satisfy on large lattices.
 We called this the \emph{$V^{2}$-problem}.
-Furthermore, we encounter two competing motives.
-First, the number of low modes should be large enough to capture all the LD behavior and that the cross-term contributes negligibly to the overall variance.
-Second, the number of low modes should be small enough to have an affordable cross-term.
-This is a non-trivial interplay of computational cost and variance reduction.
+It refers to the asymptotic quadratic cost scaling that recurrently arises when increasing the lattice size, specifically but not exclusively in the context of LMA.
+
+We encounter two competing motives.
+First, the number of low modes should be large enough to capture all the LD behavior of the correlator and ensure that the cross-term contributes negligibly to the overall variance.
+Second, the number of low modes should be small enough to keep the cross-term computationally affordable.
+A non-trivial interplay between computational cost and variance reduction.
 
 %In order to achieve a fair variance reduction we want to drive the number of deflated low modes as high as we can afford.
 %On the other hand, the cost of the eigensolver and of the cross-term increase proportional.
-It is not feasible anymore on large lattices to drive the number of eigenmodes so high to suppress the variance on the cross-term such that its evaluation is cheap.
-An often unmentioned issue is the immense memory footprint of $\bigO(1000)$ low modes that have to be in memory all at the same time, sometimes even driving the required node count of the job into the bad strong scaling region.
+%It is not feasible anymore on large lattices to drive the number of eigenmodes so high to suppress the variance on the cross-term such that its evaluation is cheap.
 Many variants of LMA try to circumvent the cross-term problem by reducing the cost of its estimator.
-Still, these variants do not solve the problem at its root, the $V^2$-problem.
-Revisiting current high-precision determinations of the connected LO-HVP of the muon $g-2$, the numbers of \numrange{1000}{6000} low modes used in these studies~\cite{Djukanovic:2024cmq,RBC_2024,bmw_2024,Aubin:2022hgm} are not high enough; they are mere thresholds of what is affordable.
+Still, these variants do not solve the problem at its root, which is the $V^2$-problem.
+Revisiting current high-precision determinations of the connected LO-HVP of the muon $g-2$, the numbers of \numrange{1000}{6000} low modes used in these studies~\cite{Djukanovic:2024cmq,RBC_2024,bmw_2024,Aubin:2022hgm} are not high enough to suppress the cross-term variance; they are mere thresholds of what is affordable.
+An often unmentioned issue is the immense memory footprint of $\bigO(1000)$ low modes that have to be in memory all at the same time, sometimes even driving the required node count of the job into the bad strong scaling region.
 
-We have introduces a new class of estimators for the connected LO-HVP contribution based on low-mode deflation.
-The propagator is decomposed into a truncated spectral sum and a remainder.
-The two-point correlator involving the spectral sum can be easily volume averaged pushing its variance to its gauge variance, whereas the variance on the remaining terms is considered small.
-Unfortunately, this is not the case anymore, because a number of low modes proportional to the lattice volume is not affordable on modern large scale simulations.
-We mentioned limits of LMA in terms of the two related problems: the $V^2$-problem (number of low modes required is proportional to the lattice volume) and the cross-term problem (remaining cross piece still contributes non-negligibly to the overall variance).
+The next chapter will generalize the deflation of low modes to the deflation of arbitrary subspaces.
 
 %\tldr{V2 problem}
 %The method usually comes with two tasks, both of which are computationally expensive.

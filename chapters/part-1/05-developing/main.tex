@@ -22,7 +22,7 @@
 \readit{1}
 
 \tldr{develop intro}
-This chapter describes how to easily port an existing program within the framework of \openqxd to use the solvers available through the interface to \quda from the viewpoint of an \openqxd application level developer.
+This chapter describes how to easily port an existing program within the framework of \openqxd to use the solvers available through the interface to \quda from the viewpoint of an \openqxd application-level developer.
 It starts with the general procedure of porting (\cref{sec:develop:overview}), followed by a description of the many ways how the solver can be accessed (\cref{sec:develop:solver}).
 The chapter concludes with a brief summary including limitations of the code (\cref{sec:develop:summary}).
 
@@ -471,6 +471,8 @@ Current versions of these kernels are just for illustration and testing purposes
 Since they transfer fields back and forth and are themselves very lightweight as opposed to the solver kernel, these kernels are highly inefficient; the largest fraction of their runtime will be spent in the field transfers.
 Although some of them have versions which do not trigger transfers and operate directly on device fields.
 They serve as proof of concept examples to pave the ground for a possible continuation of developments in terms of \cref{ch:p1:memory}.
+
+The next chapter evaluates the performance of the interface components, their interplay, and their scaling.
 
 % Currently, there are some limits and known issues regarding the interface. The most important one is that we have one instance of \quda per rank, \ie the number of ranks and the number of \quda instances are in one-to-one correspondence. This limits applications that consists of a fixed CPU part utilizing inversions via GPU. An example of such a program would be a observable contraction code, that performs many inversions on the GPU and contracts its results on the CPU (see \cref{fig:develop:serial,lst:develop:serial}). Such programs have an alternating CPU-GPU pattern. The CPU code usually strong scales well with the number of ranks, so one should fill up all the CPU cores with processes. However on modern clusters we usually have 1-8 GPUs per node, but the number of CPU cores per node is significantly higher in the regime $\bigO(100)$. Currently these are the solutions for that problem (in order of increasing configuration or implementation effort)
 % \begin{enumerate}

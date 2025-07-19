@@ -172,7 +172,7 @@ The chapter ends with a brief summary (\cref{sec:2pt:summary}).
 % \end{equation}
 
 The observable of interest in this part is the the connected leading order hadronic vacuum polarization contribution (LO-HVP) to the anomalous magnetic moment of the muon as introduced in \cref{sec:intro:gm2}.
-The connected LO-HVP piece which dominates the error budget is itself a comparably simple observable, but suffers from the signal-to-noise ratio problem.
+The connected LO-HVP piece which dominates the error budget is itself a comparably simple observable, but suffers from the numerically infeasible long distance translation average on large lattices.
 The piece we calculate on the lattice is the Euclidean time correlator \cref{eq:coor1}, which in a post-processing phase enters the main integral for the connected LO-HVP contribution \cref{eq:a:mu:lohvp}.
 Before we move on, we need to define the degrees of freedom on a spacetime lattice.
 
@@ -633,17 +633,21 @@ This analysis shows that a stochastic evaluation of \cref{eq:G:corr:connected} a
 %\worktodo{remove lma}
 
 We have introduced the main observable of interest in this thesis -- the connected leading order hadronic vacuum polarization contribution (LO-HVP) to the anomalous magnetic moment of the muon, $a_{\mu}$.
+Evaluated on large lattices, the connected LO-HVP is numerically infeasible in the long distance translation average.
 Two common simple strategies for its evaluation have been discussed
 
-First, a direct evaluation using point sources that goes along the choice of the set of sources points (called $\Omega$ in the text).
-Its cost is linear in the cardinality of that set $\lvert \Omega \rvert$ and to obtain a full translation average (\ie minimal variance) the set has to be equal to be full lattice $\Omega = \idxspacetime$, resulting in at least a quadratic cost scaling in the volume $\bigO(V^{2})$.
+First, a direct evaluation using point sources that goes along the choice of a set of sources points (called $\Omega$ in the text, a subset of all lattice points).
+The cost is linear its cardinality $\lvert \Omega \rvert$ and to obtain a full translation average (\ie minimal variance) the set has to include all $V$ lattice points $\Omega = \idxspacetime$, resulting in a cost of $12 V$ Dirac equation solves -- at least a quadratic cost scaling in the volume $\bigO(V^{2})$.
 
-Second, a stochastic estimator using random wall-sources; the Hutchinson method.
-With its stochastic identity fixed on a time-slice, it introduces an implicit translation average over the spatial lattice $\lvert \Omega \rvert = L_1 L_2 L_3$.
-Although reducing the variance proportional to the spatial volume, it introduces additional non-negligible variance due to its stochastic nature that has to be suppressed separately by increasing the number of samples.
-We will see later that on large lattices, this number becomes proportional to the volume and a $\bigO(V^{2})$ cost scaling arises again.
+Second, we introduced the Hutchinson method, a stochastic estimator using random wall-sources.
+With its stochastic identity fixed at time-slice $z_0$, it introduces an implicit translation average over the spatial lattice $\lvert \Omega \rvert = L_1 L_2 L_3$.
+Although reducing the variance proportional to the spatial volume, it introduces additional, non-negligible variance, due to its stochastic nature.
+We will see numerically in \cref{ch:p2:numerics} that this additional stochastic variance is orders of magnitude larger than the minimal (gauge) variance.
+Suppressing it by increasing the number of samples, results in a sample number proportional to the volume and a $\bigO(V^{2})$ cost scaling arises again.
+%We will see later that on large lattices, this number becomes proportional to the volume and a $\bigO(V^{2})$ cost scaling arises again.
 
-The next chapter will introduce the state-of-the-art method how this observable is evaluated for high-precision studies.
+The next chapter will introduce the state-of-the-art method low-mode averaging, that attempts the long distance translation average for high-precision studies.
+% how this observable is evaluated for high-precision studies.
 %The connected two point correlation function which dominates the error contribution to the muon $g-2$ comes with high computational cost for sub-percent precision.
 %Low-mode averaging as state-of-the-art method for this class of problems was introduced and its main limiters were stated in form of the $V^{2}$- and the cross-term problem.
 

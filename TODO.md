@@ -42,15 +42,19 @@
 * [x] Thesis feedback Letizia: step2
 * [ ] Thesis feedback Marina 1
 * [ ] Thesis feedback Marina 2
-* [ ] "Proposal for Field Memory Management in Heterogeneous Architectures" title is a bit too long
+* [ ] Tim: For the abstract, I would add 2 sentences of “motivation”
+* [x] "Proposal for Field Memory Management in Heterogeneous Architectures" title is a bit too long
 * [x] Summary of the thesis: its bullet point in the overview (left in firefox) should have less intendation
 * [x] Summary in the TOC: before and after 10pt vertical space
 * [x] fix "Motivation of this thesis" with Letizias comments -> streamline it
 * [x] Notation: add cardinality | A |.
 * [x] Part 1: All summaries: add critical discussion, limits, summary
-* [ ] Part 2: All summaries: add critical discussion, limits, summary
-* [ ] Part 1: overall summary: add critical discussion, limits, summary
-* [ ] Part 2: overall summary: add critical discussion, limits, summary
+* [x] Part 2: All summaries: add critical discussion, limits, summary
+* [x] Part 1: overall summary: add critical discussion, limits, summary
+* [x] Part 2: overall summary: add critical discussion, limits, summary
+* [x] Part 1: Always tease the next chapter in summaries
+* [x] Part 2: Always tease the next chapter in summaries
+* [x] Ada Lovelace quote
 
 ## TODO for Monday (14.07.25):
 
@@ -70,6 +74,8 @@
 * [ ] Remove TLDRs
 * [ ] Check crefs in clover picture
 * [ ] ToC: are the vertical spaces correct? before part 1 and 2, before and after summary, before bib
+* [ ] Last section before appendix: add \addtocontents{toc}{\protect\vspace{10pt}} after \section{blabla}
+* [ ] Push to github, add tag, add permalink to tagged PDF
 
 ## TODO after hand-in of the thesis
 

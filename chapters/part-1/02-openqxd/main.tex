@@ -92,7 +92,7 @@ In the following, we discus the layouts of these fields and the way they are rep
 \tldr{spacetime convention and ordering}
 Denoting the rank-local lattice extent in direction $\mu=0,1,2,3$ by $L_\mu \in \mathbb{N}$, we can write the lattice coordinate as a 4-vector, $x = (x_0,x_1,x_2,x_3)$, where $x_\mu \in \{ 0, \dots, L_\mu -1 \}$. \Openqxd puts time coordinate first $x = (t, \vec{x})$ which we refer to as (\txyz)-convention. From that we can create a lexicographical index
 \begin{equation} \label{eq:lexi}
-\Lambda(x, L) := L_3 L_2 L_1 x_0 + L_3 L_2 x_1 + L_3 x_2 + x_3.
+\Lambda(x, L) := L_3 L_2 L_1 x_0 + L_3 L_2 x_1 + L_3 x_2 + x_3 \;.
 \end{equation}
 \Openqxd orders the indices in so called cache-blocks; a decomposition of the rank-local lattice into equal blocks of extent $B_\mu \in \mathbb{N}$ in direction $\mu$. Within a block, points are indexed lexicographically $\Lambda(b, B)$ as in \cref{eq:lexi}, but the $L_\mu$ replaced by $B_\mu$ and $x$ replaced by the block local Euclidean index $b$, such that $b_\mu = x_\mu \mod B_\mu \in \{ 0, \dots, B_\mu -1 \}$.
 Furthermore, the blocks themselves are indexed lexicographically within the rank-local lattice decomposition into blocks, \ie $\Lambda(n, N_B)$, where we denote the number of blocks in direction $\mu$ as $N_{B,\mu} = L_\mu / B_\mu$, and the Euclidean index of the block as $n$, such that $n_\mu = \lfloor x_\mu / B_\mu \rfloor \in \{ 0, \dots, N_{B,i} -1 \}$.
@@ -103,9 +103,9 @@ In addition, \openqxd employs even-odd ordering, that is all even-parity lattice
 \tldr{total spacetime index + illustration}
 Therefore, the total rank-local unique lattice index in \openqxd is
 \begin{align} \label{eq:openqcd:ipt}
-\hat{x} &= \biggl \lfloor \frac{1}{2} \Big( V_B \Lambda(n, N_B) + \Lambda(b, B) \Big) \biggr \rfloor + P(x) \frac{V}{2},
+\hat{x} &= \biggl \lfloor \frac{1}{2} \Big( V_B \Lambda(n, N_B) + \Lambda(b, B) \Big) \biggr \rfloor + P(x) \frac{V}{2} \;,
 \end{align}
-where $V_B = B_0 B_1 B_2 B_3$ is the volume of a block,
+where $V_B = B_0 B_1 B_2 B_3$ is the volume of a block, and
 \begin{align} \label{eq:parity}
 P(x)=\tfrac{1}{2}(1-(-1)^{\sum_\mu x_\mu})
 \end{align}
@@ -157,7 +157,7 @@ typedef struct
 \caption{The \capcodeA{complex} and \capcodeA{complex\_dble} struct}
 \label{lst:openqxd:complex_double}
 \end{codelisting}
-These are alignment-compatible to the C99 native data types \code{float complex} and \code{double complex}, respectively, thus they can be cast safely\footnote{When including \fncode{<complex.h>} for complex number support in C99 and newer, one has to be careful because the single precision complex struct in \openqxd has the same name as the complex datatype. Without renaming, there will be naming conflicts.}.
+These are alignment-compatible to the C99 native data types \codebreak{float complex} and \code{double complex}, respectively, thus they can be cast safely\footnote{When including \fncode{<complex.h>} for complex number support in C99 and newer, one has to be careful because the single precision complex struct in \openqxd has the same name as the complex datatype. Without renaming, there will be naming conflicts.}.
 Nevertheless, arithmetic using these structs is cumbersome and error-prone. 
 
 \tldr{spinor field indices}

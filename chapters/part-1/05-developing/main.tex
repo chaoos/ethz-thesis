@@ -119,6 +119,7 @@ If the input file provides a solver of that type, the function in the snippet wi
 The variable \code{id} in \cref{lst:example_solver} is the solver identifier from the input file.
 It has to be passed to the interface function because there could be multiple solver definitions; possibly with some offloaded, some not.
 The snippet assumes that the input file has been parsed already by \code{read\_solver\_parms()}.
+\begin{figure}
 \begin{codelisting}
 \begin{minted}[highlightlines={21-26}]{c}
 /**
@@ -157,6 +158,7 @@ void solve(int id, spinor_dble *source, spinor_dble *solution, int *status)
 \caption{Example function to dispatch to the right solver. The call to the solver in \quda is incorporated.}
 \label{lst:example_solver}
 \end{codelisting}
+\end{figure}
 
 %\subsection{The synchronous solver interface}
 %\label{sec:develop:sync:way}
@@ -220,7 +222,7 @@ Application-level developers and most existing programs in \openqxd are very use
 
 To support this programming paradigm, we made the interface flexible. % in the sense that the user can work in the same way as with legacy \openqxd code.
 It is fully integrated into the relevant core components of \openqxd, see \cref{sec:interface:legacy}.
-This means that the programmer can use the functions \code{read\_solver\_parms} to read solver sections from the input file, \code{print\_solver\_parms} to print information about the parsed solvers, \code{write\_solver\_parms} to write solver settings to disk and \code{check\_solver\_parms} to compare solver setups.
+This means that the programmer can use the functions \code{read\_solver\_parms} to read solver sections from the input file, \codebreak{print\_solver\_parms} to print information about the parsed solvers, \code{write\_solver\_parms} to write solver settings to disk and \codebreak{check\_solver\_parms} to compare solver setups.
 All these functions work with \quda solvers as well.
 For more details about these functions, see \cref{sec:interface:legacy}.
 We refer to \cref{ch:appendix:running} for an explanation on how the \quda interface code expects the input file to look like.

@@ -691,7 +691,7 @@ In the following, we will argue that this problem is in fact neither an issue an
 We will start with formalizing the cost of a single inversion involving operator $K$.
 Motivated by \cref{fig:coarse:memory}, our choice for the unit of cost is memory traffic,
 \begin{equation} \label{eq:numerics:perf:cost:single:rhs}
-\cost(K) = \iter(K) \left[ \mem(K) + (N_{K} + 1) \cdot \mem(\psi) \right]
+\cost(K) = \iter(K) \left[ \mem(K) + (N_{K} + 1) \cdot \mem(\psi) \right] \;,
 \end{equation}
 where $\iter(K)$ denotes the average number of iterations required to solve a linear system of equation with the operator $K$ for some right-hand side and some fixed relative residual.
 The memory traffic in bytes produced by applying an operator $K$ or reading a field $\psi$ is denoted by $\mem(K)$ and $\mem(\psi)$, respectively.

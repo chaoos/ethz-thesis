@@ -132,9 +132,11 @@ To build and install \quda as described in \cref{sec:building:quda} one would ca
 spack install quda@develop +mpi +multigrid +openqcd \
                            +wilson +clover cuda_arch=80
 \end{minted}
-with the appropriate CUDA architecture.
+with the appropriate CUDA architecture\footnote{
+We note that the command above only works as soon as the \fncode{feature/openqxd} branch merged into \qudas \fncode{develop} branch.
+}.
 
-\worktodo{Command above only works if feature/openqxd is merged into develop}
+%\worktodo{Command above only works if feature/openqxd is merged into develop}
 
 \section{Building \openqxd against \quda}
 \label{sec:building:openqxd}

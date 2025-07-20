@@ -348,8 +348,8 @@ The base case is a single right-hand side.
 The theoretical maximal speedup\footnote{
 This number is obtained by considering a performance model as
 \begin{align}
-\text{cost}(1)      &= \mem(D) + 2 x \cdot \mem(\psi)    &\text{single RHS} \,, \\
-\text{cost}(\infty) &= 2 x \cdot \mem(\psi)              &\text{for } \Nrhs \to \infty  \,,
+\text{cost}(1)      &= \mem(D) + 2 x \cdot \mem(\psi) \;,    &\text{single RHS} \,, \\
+\text{cost}(\infty) &= 2 x \cdot \mem(\psi) \;,              &\text{for } \Nrhs \to \infty  \,,
 \end{align}
 for the cost of an application of the Wilson-Clover Dirac operator, where $\mem(A)$ denotes the memory traffic of the object $A$.
 Naively $x=8$ for fetching \num{8} neighboring points and $x=1$ for perfect caching.

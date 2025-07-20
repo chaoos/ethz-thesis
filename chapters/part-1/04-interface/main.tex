@@ -36,7 +36,7 @@ Here, \code{h\_x} and \code{h\_b} are void pointers pointing to the host spinor 
 The \code{QudaInvertParam} struct parametrizes the solver (see \code{quda.h} and ref.~\cite{QUDApaper} for details).
 
 \tldr{2nd header file for the interface}
-The interface for \openqxd provides a second header file \codebreak{quda\_openqcd\_interface.h} which contains convenient \openqxd-specific interface functions.
+A second header file \code{quda\_openqcd\_interface.h} is provided by the interface which contains convenient \openqxd-specific interface functions.
 All functions provided in this header file have a naming pattern as
 \begin{minted}[linenos=false]{cpp}
 openQCD_qudaFunctionName(...);
@@ -550,7 +550,7 @@ The dashed lines pointing to the clover field in \quda are optional in the sense
 \tldr{Solver setup + its call graph}
 One of the most important functions provided by the interface is the solver setup, see \cref{fig:call_graph}.
 It is not meant to be called directly.
-\begin{minted}[]{cpp}
+\begin{minted}[linenos=false]{cpp}
 void *openQCD_qudaSolverGetHandle(int id);
 \end{minted}
 The solver identifier refers to the solver section of the input file that was passed when initializing.
@@ -957,7 +957,7 @@ Therefore, every $(N_w/N_q)$-th world rank will be part of the \quda communicato
 Their enumeration will be in order of the world rank enumeration.
 To determine dual ranks from native (world) ranks and vice versa, we have the mappings
 \begin{align}
-r_w(r_q) &= \left( N_w / N_q \right) r_q, \label{eq:dual:rank:d2n:mapping:periodic} \\
+r_w(r_q) &= \left( N_w / N_q \right) r_q \;, \label{eq:dual:rank:d2n:mapping:periodic} \\
 r_q(r_w) &= 
 \begin{cases}
   \left( N_q / N_w \right) r_w    & \text{if $c(r_w)=0$,} \\
@@ -1023,7 +1023,7 @@ With these functions, we can eliminate inter-node communication in the exact sam
 
 \tldr{finalize and where to call it}
 The finalize function
-\begin{minted}[]{c}
+\begin{minted}[linenos=false]{c}
 void quda_finalize(void);
 \end{minted}
 requires no arguments and returns nothing.

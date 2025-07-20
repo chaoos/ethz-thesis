@@ -19,7 +19,7 @@ An example may look as follows:
 verbosity QUDA_VERBOSE # general verbosity
 \end{minted}
 This defaults to \code{QUDA\_VERBOSE} and may be overwritten by verbosities set in solver sections.
-Possible values include (in order or increasing verbosity) \code{QUDA\_SILENT}, \code{QUDA\_SUMMARIZE}, \code{QUDA\_VERBOSE} and \code{QUDA\_DEBUG\_VERBOSE}.
+Possible values include (in order or increasing verbosity) \code{QUDA\_SILENT}, \code{QUDA\_SUMMARIZE}, \code{QUDA\_VERBOSE} and \codebreak{QUDA\_DEBUG\_VERBOSE}.
 
 \section{Parametrizing a simple solver}
 \label{sec:running:solver}
@@ -83,7 +83,11 @@ run_verify              QUDA_BOOLEAN_FALSE
 compute_null_vector     QUDA_COMPUTE_NULL_VECTOR_YES
 \end{minted}
 This addtional section describes the multigrid preconditioner to consist of 2 levels.
-The name of the section is fixed to be \code{[Solver <N> Multigrid]} where \code{<N>} has to be substituted with the identifier of the solver section that specifies \code{inv\_type\_precondition=QUDA\_MG\_INVERTER}.
+The name of the section is fixed to be
+\begin{minted}[linenos=false]{ini}
+[Solver <N> Multigrid]
+\end{minted}
+where \code{<N>} has to be substituted with the identifier of the solver section that specifies \code{inv\_type\_precondition=QUDA\_MG\_INVERTER}.
 The two levels are specified by two separate sections as
 \begin{minted}[]{ini}
 [Solver 4 Multigrid Level 0]
@@ -122,8 +126,15 @@ nu_post                     8
 omega                       0.8
 location                    QUDA_CUDA_FIELD_LOCATION
 \end{minted}
-Again, the section names are fixed to be \code{[Solver <N> Multigrid Level <M>]}, where \code{<N>} is the solver section identifier as above and \code{<M>} indicates the level, starting from zero being the finest coarse level.
-Assignable parameters for each level are those in the \code{QudaMultigridParam} struct that hold arrays of length \code{QUDA\_MAX\_MG\_LEVEL}, whereas all the other properties can be specified in the general multigrid section named \code{[Solver <N> Multigrid]}.
+Again, the section names are fixed to be
+\begin{minted}[linenos=false]{ini}
+[Solver <N> Multigrid Level <M>]
+\end{minted}
+where \code{<N>} is the solver section identifier as above and \code{<M>} indicates the level, starting from zero being the finest coarse level.
+Assignable parameters for each level are those in the \code{QudaMultigridParam} struct that hold arrays of length \code{QUDA\_MAX\_MG\_LEVEL}, whereas all the other properties can be specified in the general multigrid section named
+\begin{minted}[linenos=false]{ini}
+[Solver <N> Multigrid]
+\end{minted}
 By this, all possible parameters for a multigrid solver can be specified exhaustively.
 Some properties have no effect on the finest coarse level, some have no effect on the coarsest level.
 We refer the reader to the \quda documentation for further details.

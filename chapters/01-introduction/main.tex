@@ -112,13 +112,13 @@ Under certain conditions, Euclidean correlation functions can be analytically co
 Although this reconstruction is limited to time-reversible observables, its numerical inversion becomes non-trivial or ill-posed for real-time processes such as decay amplitudes, spectral functions or processes that involve a branch cut. 
 %\worktodo{Marina: Spend a few words on Wightman functions, their analytic continuation and Osterwalder Schrader}.
 
-Due to the Wick-rotation, correlation functions on the lattice $C(t_e)$ have to be interpreted in Euclidean time.
-\worktodo{Tims comment}
-Euclidean time evolution is thus exponentially decaying as opposed to oscillatory in Minkowski space,
-\begin{align}
-C(t_e) &= \sum_n A_n e^{ - E_n t_e} \;, &\makebox[\widthof{\text{(Minkowski)}}][l]{\text{(Euclidean)}} \\
-C(t_m) &= \sum_n A_n e^{-i E_n t_m} \;. &\text{(Minkowski)}
-\end{align}
+% Due to the Wick-rotation, correlation functions on the lattice $C(t_e)$ have to be interpreted in Euclidean time.
+% \worktodo{Tims comment}
+% Euclidean time evolution is thus exponentially decaying as opposed to oscillatory in Minkowski space,
+% \begin{align}
+% C(t_e) &= \sum_n A_n e^{ - E_n t_e} \;, &\makebox[\widthof{\text{(Minkowski)}}][l]{\text{(Euclidean)}} \\
+% C(t_m) &= \sum_n A_n e^{-i E_n t_m} \;. &\text{(Minkowski)}
+% \end{align}
 
 The Euclidean theory can be discretized by introducing a finite four dimensional spacetime lattice $\Lambda$ of Cartesian coordinates.
 %Lattice sites are usually evenly spaced by the dimensionful lattice spacing $a$ such that the coordinates are dimensionless.
@@ -341,7 +341,7 @@ Applied to a spinor field $\psi(x)$ the Dirac operator can then be written as a 
   U_{\mu}(x) (1-\gamma_{\mu}) \psi(x + \hat{\mu})
 + U_{\mu}(x-\hat{\mu})^{-1} (1+\gamma_{\mu}) \psi(x-\hat{\mu})
 \Big\} \\
-+&c_\mathrm{sw}^{SU(3)} \frac{i}{4} \sum_{\mu,\nu=0}^3 \sigma_{\mu \nu} F_{\mu \nu}(x) \psi(x),
++&c_\mathrm{sw}^{SU(3)} \frac{i}{4} \sum_{\mu,\nu=0}^3 \sigma_{\mu \nu} F_{\mu \nu}(x) \psi(x) \;,
 \end{aligned}
 \end{equation}
 where the gauge field $U_{\mu}(x)$ is the $SU(3)$-valued link between lattice points $x$ and $x + \hat{\mu}$.
@@ -525,7 +525,7 @@ A non-zero chiral condensate $\langle \bar{\psi} \psi \rangle = \langle \bar{\ps
 
 \subsection{Renormalization and the continuum limit}
 
-\worktodo{Marina: Add a discussion on dimensional transmutation here.}
+%\worktodo{Marina: Add a discussion on dimensional transmutation here.}
 
 \tldr{regulators, renormalization, cont limit}
 To recover continuum quantum field theory from the lattice, we have to take the continuum limit.
@@ -605,8 +605,8 @@ In search of new fundamental physics, lattice field theory
 can predict non-perturbative quantities from first principles
 %can non-perturbatively predict physical quantities using first principles
 to directly probe the Standard Model (SM) of particle physics.
-\worktodo{This is to search for indirect proofs of its validity.
-A strong-enough tension with an experimental quantity would proof the Standard Model is not sufficient to describe fundamental interactions.}
+% \worktodo{This is to search for indirect proofs of its validity.
+% A strong-enough tension with an experimental quantity would proof the Standard Model is not sufficient to describe fundamental interactions.}
 A persistent tension between experimental measurements and SM predictions would indicate that the Standard Model is not sufficient to describe the interactions between particles.
 In recent years, the anomalous magnetic moment of the muon $g-2$ has held a prominent role in the search of beyond Standard Model (BSM) physics, due to the longstanding discrepancy of $3-4\sigma$ \cite{snowmass:2020} between its measurement and its theoretical prediction.
 
@@ -631,13 +631,13 @@ Dominant sources of error come from the leading order hadronic vacuum polarizati
 Due to their charge, leptons create a magnetic field around them leading to a magnetic dipole moment.
 A classical charged point particle moving on a circular orbit generates a dipole magnetic moment $\vect{\mu}$ that is proportional to its orbital angular momentum $\vect{L}$ by
 \begin{equation}
-\vect{\mu} = \frac{q e}{2 m} \vect{L}.
+\vect{\mu} = \frac{q e}{2 m} \vect{L} \;.
 \end{equation}
 where $e$ is the elementary charge (see \cref{sec:physical:constants}), $q$ and $m$ are the integer charge and mass of the particle.
 In quantum mechanics angular momenta $\vect{L}$ are quantized and for a \spinhalf particle we may replace the angular momentum operator $\vect{L}$ by the spin angular momentum $\vect{S}$ which contributes to the angular momentum and is quantized in steps of size $\hbar/2$.
 Therefore, we find for the magnetic moment of a \spinhalf particle
 \begin{equation}
-\vect{\mu} = g \frac{q e}{2 m} \vect{S}.
+\vect{\mu} = g \frac{q e}{2 m} \vect{S} \;.
 \end{equation}
 We have sneaked in a dimensionless proportionality factor $g$ here.
 Classically we would clearly expect $g=1$, if spin behaved like angular momentum.
@@ -648,7 +648,7 @@ He obtained the g-factor to be $g=2$ exactly.
 This result is independent of the mass and holds for every fundamental \spinhalf particle including the electron, muon, tau and even the quarks\footnote{It does not hold for composite \spinhalf particles like the proton or neutron because they are not point-like; an assumption in Dirac's derivation.}.
 The anomalous magnetic moment is defined as the deviation of the g-factor from its tree level result encoding the effects of relativistic quantum field theory,
 \begin{equation}
-a_{\ell} = \frac{g_{\ell}-2}{2}.
+a_{\ell} = \frac{g_{\ell}-2}{2} \;.
 \end{equation}
 The one-loop correction to the electron $a_{e} = \frac{\alpha}{2 \pi}$ was already calculated analytically in 1948 by Schwinger~\cite{Schwinger:1948}.
 Impressive advancements of higher order corrections up to $\bigO(\alpha^{5})$ (\ie to tenth order in $e$!) have been carried out since then for the electron~\cite{laporta1996analytical,PhysRevLett.109.111807,PhysRevD.91.033006,nio2015qed}.
@@ -657,7 +657,7 @@ Impressive advancements of higher order corrections up to $\bigO(\alpha^{5})$ (\
 
 Since all virtual particles contribute to the magnetic moment, it can be argued~\cite{osti_4382322} that corrections $\delta a_{\ell}$ to the anomalous magnetic moment of leptons scale with the mass as
 \begin{equation}
-\delta a_{\ell} \sim \frac{m_{\ell}^{2}}{\Lambda^{2}},
+\delta a_{\ell} \sim \frac{m_{\ell}^{2}}{\Lambda^{2}} \;,
 \end{equation}
 where $m_{\ell}$ is the mass of the lepton and $\Lambda$ is the energy scale where new physics appear, \ie roughly the mass of a new unknown heavy virtual particle.
 This suggests that the anomalous magnetic moment of the heaviest known lepton, the tau with a mass of about \SI{1.8}{\GeV} (see \cref{tab:leptons}), should be the best candidate to lead to new physics.
@@ -699,7 +699,7 @@ Lepton masses and their mean lifetimes.}
 \subsection{Which contribution?}
 \label{sec:gm2:contribution}
 
-\worktodo{check flow}
+%\worktodo{check flow}
 
 The largest error contribution stems from the LO-HVP contribution to the anomalous magnetic momentum of the muon.
 As the previous official SM prediction by the Muon $g-2$ Theory Initiative~\cite{online:gm2} includes the data-driven result for this contribution~\cite{snowmass:2020}, the current iteration includes the determination on the lattice as official consensus result~\cite{snowmass:2025}.
@@ -1033,7 +1033,8 @@ For $\bigO(a)$-improvement, we add another SW-term with separate coefficient,
 D \rightarrow D + q c_\mathrm{sw}^{U(1)} \frac{i}{4} \sum_{\mu,\nu=0}^3 \sigma_{\mu \nu} \hat{A}_{\mu \nu}\,,
 \end{equation}
 where $q$ is the charge and the $U(1)$ field strength tensor $\hat{A}_{\mu \nu}(x)$ is defined as
-\begin{align*}
+\begin{equation}
+\begin{aligned}
 \hat{A}_{\mu \nu}(x) &= \frac{i}{4 q_{el}} \text{Im} \left\{
       z_{\mu \nu}(x)
     + z_{\mu \nu}(x-\hat{\mu})
@@ -1048,7 +1049,8 @@ z_{\mu \nu}(x) &= e^{i\left\{
     - A_{\mu}(x+\hat{\nu})
     - A_{\nu}(x)
 \right\}},
-\end{align*}
+\end{aligned}
+\end{equation}
 similar to the \ggrp{SU}{3} field strength with $q_{el} = \frac{1}{6}$ the elementary charge.
 We therefore have another algorithmic parameter to consider in the tuning; the $\ggrp{U}{1}$ SW-coefficient $c_\mathrm{sw}^{U(1)}$.
 This is usually set to its tree-level improvement value \num{1}~\cite{RCstar22}.

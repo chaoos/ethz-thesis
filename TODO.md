@@ -112,21 +112,24 @@
 
 ## Final things to check at Sunday (20.07.25)
 
-* [ ] No more red things
-* [ ] No red last page
-* [ ] Line break layout of \code{} fragments
-* [ ] Captions and their figures/code listings on the same page
-* [ ] No unmet references -> from log output
-* [ ] check sizes of all \code{} parts, also in captions, footnotes, figures, etc
-* [ ] Also in images/schemes!
+* [x] TODOs in overall intro
+* [x] No more red things
+* [x] No red last page
+* [x] Line break layout of \code{} fragments
+* [x] Captions and their figures/code listings on the same page
+* [x] No unmet references -> from log output
+* [x] check sizes of all \code{} parts, also in captions, footnotes, figures, etc
+* [x] Also in images/schemes!
 * [x] Table of contents: only depth 2
-* [ ] Remove TLDRs
-* [ ] Remove proof-read indications
-* [ ] Check crefs in clover picture
-* [ ] ToC: are the vertical spaces correct? before part 1 and 2, before and after summary, before bib
-* [ ] Last section before appendix: add \addtocontents{toc}{\protect\vspace{10pt}} after \section{blabla}
+* [x] Remove TLDRs
+* [x] Remove "proof-read" indications
+* [x] Check crefs in clover picture
+* [x] Search for "?" and the turned around one "¿"
+* [x] All eqs have a space before comma or full stop
+* [x] ToC: are the vertical spaces correct? before part 1 and 2, before and after summary, before bib
+* [x] Last section before appendix: add \addtocontents{toc}{\protect\vspace{10pt}} after \section{blabla}
+* [x] Check all quotes (no duplicates, etc.)
 * [ ] Push to github, add tag, add permalink to tagged PDF
-* [ ] Check all quotes (no duplicates, etc.)
 
 ## TODO after hand-in of the thesis
 

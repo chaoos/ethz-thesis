@@ -143,7 +143,7 @@ Apart from this, the preconditioning \emph{subtracts} the low modes by solving
 \begin{equation} \label{eq:var:dirac:equation:inexact:defl}
 L D \chi = L \eta \;,
 \qquad
-L = 1 - D \prolongator \coarse{D}^{-1} \restrictor
+L = 1 - D \prolongator \coarse{D}^{-1} \restrictor \;,
 \end{equation}
 for $\chi$ followed by reconstructing the full solution as
 \begin{equation} \label{eq:inexact:defl:solution:projection}
@@ -247,7 +247,7 @@ Before we continue, we will formulate multigrid recursively and shift in notatio
 \begin{equation}
 \onlvl{D}{\lvl} = \onlvl{\restrictor}{\lvl-1} \onlvl{D}{\lvl-1} \onlvl{\prolongator}{\lvl-1} \;,
 \qquad
-\lvl \in \{ 1, \ldots, \Nlvl-1 \}
+\lvl \in \{ 1, \ldots, \Nlvl-1 \} \;,
 \end{equation}
 where we define level \num{0} (also denoted as \Ln{0}) to be the fine grid
 \begin{equation}

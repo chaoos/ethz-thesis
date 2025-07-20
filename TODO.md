@@ -9,7 +9,7 @@
 * [x] dual lattice cleanup with shared memory and process block grid
 * [ ] asynch solver is a bit scattered around
 * [x] part1 intro end
-* [ ] consistency in notation of lattice size TxL^3 or L_0 L_1: Choose: L_0, L_1, L_2, L_3 everywhere!
+* [x] consistency in notation of lattice size TxL^3 or L_0 L_1: Choose: L_0, L_1, L_2, L_3 everywhere!
 * [x] chirality: numerical range plots
 * [ ] overall summary?
 * [ ] publish zenodo
@@ -58,6 +58,8 @@
 * [ ] \Nc, N_c -> \cNc (for coarse colors)
 * [ ] In all plots: \Ns, N_s -> \cNs (for coarse spins)
 * [ ] In all plots: \Nc, N_c -> \cNc (for coarse colors)
+* [x] Zitat Schulthess
+* [x] Pion mass scaling appendix
 
 ## TODO for Monday (14.07.25):
 
@@ -73,16 +75,16 @@
 * [x] Ackn
 * [x] ToC
 * [ ] Overall Intro
-* [ ] Part 1
-	* [ ] Part 1: Intro
-	* [ ] Part 1: openqxd
-	* [ ] Part 1: quda
-	* [ ] Part 1: interface
-	* [ ] Part 1: develop
-	* [ ] Part 1: performance
-	* [ ] Part 1: CI/CD
-	* [ ] Part 1: mem manager
-	* [ ] Part 1: Conclusions
+* [x] Part 1
+	* [x] Part 1: Intro
+	* [x] Part 1: openqxd
+	* [x] Part 1: quda
+	* [x] Part 1: interface
+	* [x] Part 1: develop
+	* [x] Part 1: performance
+	* [x] Part 1: CI/CD
+	* [x] Part 1: mem manager
+	* [x] Part 1: Conclusions
 * [x] Part 2
 	* [x] Part 2: Intro
 	* [x] Part 2: 2pt
@@ -100,7 +102,8 @@
 	* [ ] Appendix C: NR and SH
 	* [ ] Appendix D: Symmetries
 	* [ ] Appendix E: Notation
-	* [ ] Appendix F: License
+	* [ ] Appendix F: Physical Pion Masses
+	* [ ] Appendix G: License
 * [ ] Bibliography
 * [ ] List of Figures
 * [ ] List of Tables
@@ -118,10 +121,12 @@
 * [ ] Also in images/schemes!
 * [x] Table of contents: only depth 2
 * [ ] Remove TLDRs
+* [ ] Remove proof-read indications
 * [ ] Check crefs in clover picture
 * [ ] ToC: are the vertical spaces correct? before part 1 and 2, before and after summary, before bib
 * [ ] Last section before appendix: add \addtocontents{toc}{\protect\vspace{10pt}} after \section{blabla}
 * [ ] Push to github, add tag, add permalink to tagged PDF
+* [ ] Check all quotes (no duplicates, etc.)
 
 ## TODO after hand-in of the thesis
 

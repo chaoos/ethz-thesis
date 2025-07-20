@@ -9,22 +9,18 @@
 %Best Practices for Using the Interface in \openqxd
 %Utilizing the Interface in \openqxd
 
-% \dictum[Linus Torvalds]{%
-%   Talk is cheap. Show me the code. }%
-% \vskip 1em
-
 \dictum[Donald Knuth]{%
   Programming is the art of telling another human being what one wants the computer to do. }%
 \vskip 1em
 
 % \worktodo{Restructure a bit, separate into: general description of the interface (essentially the previous chapter) (side openqxd, side QUDA), how is the interface integrated into openqxd, how to port an existing program, how to write a new program}
 
-\readit{1}
+\readit{2}
 
 \tldr{develop intro}
 This chapter describes how to easily port an existing program within the framework of \openqxd to use the solvers available through the interface to \quda from the viewpoint of an \openqxd application-level developer.
 It starts with the general procedure of porting (\cref{sec:develop:overview}), followed by a description of the many ways how the solver can be accessed (\cref{sec:develop:solver}).
-The chapter concludes with a brief summary including limitations of the code (\cref{sec:develop:summary}).
+The chapter concludes with a brief summary including limitations of the current interface (\cref{sec:develop:summary}).
 
 \section{General procedure}
 \label{sec:develop:overview}
@@ -54,7 +50,7 @@ For a description of the provided functions in \code{quda\_utils.h} please refer
 % The second function, \code{quda\_finalize()}, requires no arguments and returns nothing. It is meant to be called right before the host application closes its logfile handle, since this function will write a summary to the logfile (if verbosity is at least \code{QUDA\_SUMMARIZE}).
 
 \tldr{main program example}
-A usual application ported to use the \quda interface may look like \cref{lst:example_program}. Note that the only additional required parts are highlighted, the rest is standard.
+A usual application, ported to use the \quda interface, may look like \cref{lst:example_program}. Note that the only additional required parts are highlighted, the rest is standard.
 This makes all solvers in \quda accessible in \openqxd.
 \begin{codelisting}
 \begin{minted}[highlightlines={3-5,21-23,27-29}]{c}
@@ -116,11 +112,11 @@ We reiterate that the solver interface function(s) have the same signature as so
 It was intentionally designed this way to allow seamless integration in such use cases.
 
 \tldr{compile time constant}
-If we build without the flag \code{QUDA\_INTERFACE}, the highlighted parts are not compiled and the code falls back to the standard function that dispatches the available solvers present in \openqxd
-\footnote{If then called with a \quda solver in the input file, the program will gracefully exit with a message \fncode{Unknown solver QUDA}.}.
+When built without the flag \code{QUDA\_INTERFACE}, the highlighted parts are not compiled and the code falls back to the standard function that dispatches the available solvers present in \openqxd
+\footnote{If then called with a \quda solver in the input file, the program will gracefully exit with a message \fncode{Unknown or unsupported solver}.}.
 With the flag set, we enable a new solver type \code{QUDA}.
 If the input file provides a solver of that type, the function in the snippet will offload the solve by calling the interface function \code{openQCD\_qudaInvert()}.
-The variable \code{id} in the code snippet \cref{lst:example_solver} is the solver identifier from the input file.
+The variable \code{id} in \cref{lst:example_solver} is the solver identifier from the input file.
 It has to be passed to the interface function because there could be multiple solver definitions; possibly with some offloaded, some not.
 The snippet assumes that the input file has been parsed already by \code{read\_solver\_parms()}.
 \begin{codelisting}
@@ -223,7 +219,7 @@ Application-level developers and most existing programs in \openqxd are very use
 \end{enumerate}
 
 To support this programming paradigm, we made the interface flexible. % in the sense that the user can work in the same way as with legacy \openqxd code.
-It is fully integrated into the relevant core components of the \openqxd, see \cref{sec:interface:legacy}.
+It is fully integrated into the relevant core components of \openqxd, see \cref{sec:interface:legacy}.
 This means that the programmer can use the functions \code{read\_solver\_parms} to read solver sections from the input file, \code{print\_solver\_parms} to print information about the parsed solvers, \code{write\_solver\_parms} to write solver settings to disk and \code{check\_solver\_parms} to compare solver setups.
 All these functions work with \quda solvers as well.
 For more details about these functions, see \cref{sec:interface:legacy}.
@@ -347,7 +343,7 @@ A program as \cref{lst:develop:serial} can be easily rewritten into one that use
 This may look as in \cref{lst:develop:pipelining}.
 For function descriptions, please refer to \cref{sec:interface:solver:async}.
 We can clearly identify the warm-up phase as the first iteration of the outer loop, and the wind-down phase as the finishing contraction in the last line.
-In between, we see the filled pipeline which solves the current set of sources and contracts the last set of solutions concurrently.
+In between, we see the filled pipeline which solves the current set of sources \emph{and} contracts the last set of solutions concurrently.
 Note that the contraction between the start and wait function must use the returned MPI communicator \code{comm}\footnote{We note that the global communicator \fncode{MPI\_COMM\_WORLD} provided by MPI to contain all processes will not work as expected in the above scenario between the start and wait functions and should be avoided because all threads belong to this communicator by definition. Communication using \fncode{MPI\_COMM\_WORLD} will most certainly error or misbehave on strict MPI implementations.}.
 Whatever communicator contained all ranks before the asynchronous calls (including \code{MPI\_COMM\_WORLD}) may safely be used again after the threads have joined, \ie after the wait function returned.
 \begin{codelisting}
@@ -462,7 +458,7 @@ A field transfer is expensive, since it consists of data reordering and memory c
 Reordering can be configured to happen either on the host or on the device.
 In any case, further memory copying is introduced.
 These transfers -- as of now -- cannot be disabled.
-In a future scenario where we may want to further process the fields on GPU after the solver call, it will be inefficient to perform unnecessary transfers between all kernels.
+In a future scenario where we may want to further process the fields on the GPU after the solver call, it will be inefficient to perform unnecessary transfers between all kernels.
 A conceptual solution to this problem is outlined in \cref{ch:p1:memory}.
 
 \tldr{Forced field transfers for all kernels}

@@ -1,8 +1,12 @@
 \chapter{Introduction to Part I}
 \label{ch:p1:introduction}
 
-\dictum[Thomas C. Schulthess]{%
-  \worktodo{When allocating resources on a cluster, it is the responsibility of the programmer to utilize all the available resources as efficient as possible. }}%
+% \dictum[Thomas C. Schulthess]{%
+%   \worktodo{When allocating resources on a cluster, it is the responsibility of the programmer to utilize all the available resources as efficient as possible. }}%
+% \vskip 1em
+
+\dictum[Linus Torvalds]{%
+  Talk is cheap. Show me the code. }%
 \vskip 1em
 
 \readit{1}
@@ -84,7 +88,7 @@ Since the training steps are comparable to a Markov chain, ML pipelines need to 
 \tldr{what is a GPU}
 Originally designed for efficient parallel real-time graphics rendering, GPUs are well-suited for this class of problems, since they have higher memory throughput than CPUs.
 They were designed with a wider memory bus at the cost of latency, heavily optimized for high throughput and sequential memory access as opposed to CPUs which are optimized for random memory access and low latency.
-The GPU is a latency hiding machine using caches with a less stringent cache coherency protocol than the CPU.
+Similar to the CPU, the GPU is a latency hiding machine using caches but with a less stringent cache coherency protocol.
 Explicit synchronization through memory barriers might be triggered manually by the developer to enforce all threads to see the same memory.
 While CPUs have powerful individual cores capable of branch prediction and high single-thread performance, GPUs have thousands of lightweight threads with limited control flow handling, not efficient for frequent branching and thread divergence.
 The loose cache coherency protocol, the wider memory bus, the reduced memory hierarchy depth and the highly parallel execution model -- featuring both SIMD (Single Instruction, Multiple Data) and SIMT (Single Instruction, Multiple Threads) -- make GPUs well-suited for many computational scientific tasks, such as machine learning, data analytics, and large-scale simulations.
@@ -108,7 +112,7 @@ For gauge field sampling, the gauge field defining the Dirac operator might chan
 On the other hand in case of observable evaluation, the gauge field does not change too frequently, meaning that the same linear system of equations has to be solved for possibly thousands of right-hand sides.
 The goal of this work is to offload solves in the context of observable evaluation to the accelerator.
 
-\worktodo{check if this still has a roter faden, because I removed theory: high-precision lattice is +QED and our theory approach: we do QCD+QEDC + Cstar boundaries}
+%\worktodo{check if this still has a roter faden, because I removed theory: high-precision lattice is +QED and our theory approach: we do QCD+QEDC + Cstar boundaries}
 
 \tldr{our CPU approach (up to now): we did this on CPU, MPI}
 Our codebase, \openqxd~\cite{openqxd,gitlab:openqxd}, extends the widely used \openqcd-1.6 package~\cite{online:openqcd} which supports the $O(a)$-improved Wilson fermion discretization (from now on, we will refer to these codebases simply as \openqxd and \openqcd, respectively).
@@ -137,7 +141,7 @@ Another alternative would be to change \openqxd's memory layouts to ones more fa
 \tldr{computationally: We do this now with solves to QUDA}
 Among the various possibilities for GPU-accelerating lattice QCD calculations, we choose to interface \openqxd with the \quda library~\cite{QUDApaper,Babich:2011np,Clark:2016rdz} -- a lattice QCD library which provides optimized algorithms for NVIDIA and AMD GPUs, including an efficient iterative solver for the Dirac equation as well as a state-of-the-art multigrid preconditioning tailored for lattice QCD.
 We implement C$^\star$ boundary conditions and QED effects, as these are features that are particular to \openqxd and do not yet exist in \quda.
-In this way we combine \openqxd's comprehensive physics toolset with \quda's GPU-accelerated operations, thus enhancing our simulations with an efficient GPU backend.
+In this way we combine \openqxd's comprehensive physics toolset with \qudas GPU-accelerated operations, thus enhancing our simulations with an efficient GPU backend.
 
 \tldr{review: quda}
 It makes sense to briefly review strategies of other simulation software packages common in the field.
@@ -188,7 +192,7 @@ It is interfaced to both \quda and Grid.
 % openQxD uses the Hybrid Monte Carlo algorithm for dynamical fermion lattice simulations, where the most time-consuming task is the repeated inversion of a large sparse operator to solve the Dirac equation. This Dirac operator, which connects nearest neighbor points on a 4D Euclidean spacetime lattice, has indices for Dirac spin, color charge, and space-time. By porting the Dirac solver to GPUs, the overall execution time of openQxD is expected to be significantly reduced.
 
 % Among the various possibilities for GPU-accelerating lattice QCD calculations, we choose to interface openQxD with the \quda library~\cite{QUDApaper}, which provides optimized algorithms for NVIDIA and AMD GPUs, including an efficient iterative solver for the Dirac equation. 
-% We implement C$^\star$ boundary conditions and QED effects, as these are features that are particular to openQxD and do not yet exist in \quda. In this way we combine openQxD's comprehensive physics toolset with \quda's GPU-accelerated operations, thus enhancing openQxD simulations with GPU performance.
+% We implement C$^\star$ boundary conditions and QED effects, as these are features that are particular to openQxD and do not yet exist in \quda. In this way we combine openQxD's comprehensive physics toolset with \qudas GPU-accelerated operations, thus enhancing openQxD simulations with GPU performance.
 % }
 
 \tldr{Definition of problem to offload}
@@ -236,7 +240,7 @@ from within \openqxd.
 The strategy for continuous integration and continuous delivery (CI/CD) is discussed in \cref{ch:p1:cicd}.
 Finally, \cref{ch:p1:memory} proposes a way to continue the developments
 %regarding the continuation of the PASC project~\cite{online:pasc2025}
-considering gauge field configuration generation on GPUs.
+considering gauge field configuration generation on GPUs, before \cref{ch:p1:conclusions} concludes the part.
 
 % \section{Dirac operator}
 

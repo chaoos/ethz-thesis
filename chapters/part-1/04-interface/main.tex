@@ -8,7 +8,7 @@
   When I wrote this, only God and I understood what I was doing. Now, God only knows. }%
 \vskip 1em
 
-\readit{1}
+\readit{2}
 
 \tldr{interface intro}
 This chapter documents the code required for interfacing \openqxd with \quda and describes design choices made.
@@ -32,7 +32,7 @@ As a teasing example for such an API function, we consider the solver wrapper wh
 \begin{minted}[linenos=false]{cpp}
 void invertQuda(void *h_x, void *h_b, QudaInvertParam *param);
 \end{minted}
-Here, \code{h\_x} and \code{h\_b} are void pointers pointing to the host spinor fields in \openqxd order, \ie base pointers to arrays of \code{spinor\_dble} structs, as described in \cref{sec:openqxd:spinor_field}.
+Here, \code{h\_x} and \code{h\_b} are void pointers pointing to the host spinor fields in \openqxd order, \ie base pointers to arrays of \code{spinor\_dble} structs, as described in \cref{sec:openqxd:spinor:field}.
 The \code{QudaInvertParam} struct parametrizes the solver (see \code{quda.h} and ref.~\cite{QUDApaper} for details).
 
 \tldr{2nd header file for the interface}
@@ -109,7 +109,7 @@ All reorder classes have to implement a \code{load} and a \code{save} method.
 \subsubsection{The \code{load} method}
 
 \tldr{load method in reorder classes}
-As the name suggests, it is called in parallel with a (local) checkerboard index \code{x\_cb}, a \code{parity} and -- in case of the gauge field --, a direction \code{dir}.
+As the name suggests the \code{load} method, \cref{lst:interface:save}, is called in parallel with a (local) checkerboard index \code{x\_cb}, a \code{parity} and -- in case of the gauge field --, a direction \code{dir}.
 \begin{codelisting}
 \begin{minted}[linenos=false]{cpp}
 // include/color_spinor_field_order.h:OpenQCDDiracOrder
@@ -138,15 +138,15 @@ __device__ __host__ inline void load(
 \caption{The load methods from the reorder classes.}
 \label{lst:interface:load}
 \end{codelisting}
-The array \code{v} is the output where in the body of the method we need to copy the field values from \openqxd.
+The array \code{v} is the output where, in the body of the method, we need to copy the field values from \openqxd.
 The instantiated object holds a property called \code{field}, \code{gauge} or \code{clover} for the base pointer to the \openqxd array for the spinor, gauge or clover field, respectively.
-Thus, we have to calculate the correct offset from the field base pointer.
+Thus, we have to calculate the correct offset \emph{from} the field base pointer.
 \Quda provides an (inlined) function \code{getCoords()} to translate the checkerboard and parity index into a (local) Euclidean 4-vector $x = (\vec{x}, t)$ in the (\xyzt)-convention with time coordinate last.
 
 \subsubsection{The \code{save} method}
 
 \tldr{save method in reorder classes}
-The \code{save} method works similarly to the \code{load} method, only now the values come from the \code{v} array and are copied to the correct offset from the field base pointer.
+The \code{save} method, \cref{lst:interface:save}, works similarly to the \code{load} method, only now the values come from the \code{v} array and are copied to the correct offset from the field base pointer.
 %Similarly for the \code{save} method, just that here we get values from the \code{v} array and need to copy them to the correct offset from the field base pointer.
 \begin{codelisting}
 \begin{minted}[linenos=false]{cpp}
@@ -215,7 +215,7 @@ Accessing a mapping array requires an additional memory read that goes through t
 In memory bound processes, such index mapping arithmetic adds no overhead.
 }.
 Instead, it is advisable to write a pure function $f \colon x \mapsto \hat{x}$ that implements the indexing array of \openqxd, \cref{eq:openqcd:ipt}, by calculating the index on the fly such that the compiler can properly inline the calculation.
-This has been implemented as \code{openqcd::ipt()} which is called in the load and save functions of all reorder classes.
+This has been implemented in \quda as \code{openqcd::ipt()} which is called in the load and save functions of all reorder classes.
 
 % We write the \code{OpenQCDDiracOrder} class that implements a \code{load()} and a \code{save()} method for the spinor fields:
 
@@ -229,13 +229,13 @@ This has been implemented as \code{openqcd::ipt()} which is called in the load a
 % These two methods are called by \quda in a loop with all possible values for \code{x\_cb} and \code{parity}, where \code{x\_cb} denotes the (local) checkerboard site index and \code{parity} the parity of the point.
 
 \tldr{xyzt conventions + more indices}
-After translating \quda's checkerboard/parity index into a (\xyzt) 4-vector using \code{getCoords}, we can permute the coordinates into the (\txyz)-convention, query the mapping function $f$ to obtain the offset from the base pointer in \openqxd for the desired lattice point and finally copy the data to or from the location pointed to by the variable \code{v}.
+After translating \qudas checkerboard/parity index into a (\xyzt) 4-vector using \code{getCoords}, we can permute the coordinates into the (\txyz)-convention, query the mapping function $f$ to obtain the offset from the base pointer in \openqxd for the desired lattice point and finally copy the data to or from the location pointed to by the variable \code{v}.
 The data can have additional internal indices that we describe for each field type separately in the following.
 
 \subsubsection{Spinor field}
 
 \tldr{Spinor indices and their order}
-As mentioned previously, spinor fields have indices $(x,\alpha,a)$, where we described how to transform the space-time index $x$ in the previous section.
+As mentioned previously, spinor fields have indices $(x,\alpha,a)$, spacetime, spin and color, where we described how to transform the space-time index $x$ in the previous section.
 Both \quda and \openqxd use the same order for spinor index $\alpha$ and color index $a$.
 Thus, at each space-time index we can copy $12=4 \cdot 3$ consecutive complex numbers (\ie \code{24*sizeof(Float)} bytes), where \code{Float} is a template parameter for real numbers (\code{double}, \code{float}, \code{half}) to or from the output array \code{v}.
 %This concludes spinor field reordering.
@@ -315,13 +315,13 @@ This requires us to transfer the missing gauge fields from one rank to the other
 void loadGaugeQuda(void *h_gauge, QudaGaugeParam *param);
 void saveGaugeQuda(void *h_gauge, QudaGaugeParam *param);
 \end{minted}
-where the void pointer \code{h\_gauge} points to the gauge fields in the CPU memory (the missing fields have to be available already) and \code{param} is a struct holding information about the gauge field and how it should be interpreted by the various Dirac operators supported by \quda.
+where the void pointer \code{h\_gauge} points to the gauge fields in the CPU memory (the missing boundary fields have to be present already) and \code{param} is a struct holding information about the gauge field and how it should be interpreted by the various Dirac operators supported by \quda.
 
 \tldr{direction in load/save}
 We implement an ordering class called \code{OpenQCDOrder} with corresponding load and save methods.
 The only difference to the spinor and clover field order classes is that the methods are called with an additional direction variable \code{dir}, see \cref{lst:interface:load,lst:interface:save}.
 For a fixed space-time $x$ and direction $\mu$, the remaining two color indices $(a,b)$ of the gauge field are row-major in both applications, thus we can copy $3\times 3$ consecutive complex numbers to or from \code{v}.
-The variable \code{dir} runs from $0$ to $3$ and denotes the positive link direction in \quda convention (see \cref{fig:gauge} right).
+The variable \code{dir} runs from $0$ to $3$ and denotes the positive link direction in \qudas (\xyzt)-convention (see \cref{fig:gauge} right).
 
 \subsection{Implementation of \CstarHeading boundary conditions in \quda}
 \label{sec:interface:cstar}
@@ -330,7 +330,7 @@ The variable \code{dir} runs from $0$ to $3$ and denotes the positive link direc
 \Quda does not support \Cstar boundary conditions, so we implement them in the \quda library.
 % , which are not yet implemented in \quda.
 %The implementation of these boundaries in \quda is the focus of the current section.
-Unlike periodic boundary conditions, we identify the field shifted by one lattice length not with itself but with its charge conjugation.
+Unlike periodic boundary conditions, we identify the field shifted by one lattice length not with itself, but with its charge conjugation.
 %A simple implementation consists in doubling the lattice size in $x$-direction (this choice of direction is arbitrary).
 %We refer to this as extended lattice, which consists of a physical and a mirror lattice.
 %The fields on the mirror lattice are related to the physical lattice by charge conjugation.
@@ -344,7 +344,7 @@ Thus, \Cstar boundary conditions are implemented by translation from physical to
 % \end{figure}
 
 \tldr{Also orbi construction}
-We choose to implement \Cstar boundary conditions in the same way as they are implemented in \openqxd\ -- by doubling of the lattice in $x$-direction and by imposing shifted boundaries as illustrated in \cref{fig:cstar:orbi}. Note that \openqxd requires at least two ranks in each direction of the process grid, where the lattice has \Cstar boundary conditions. This ensures that a rank only stores points in either the physical or mirror lattice.
+We choose to implement \Cstar boundary conditions in the same way as they were implemented in \openqxd\ -- by doubling of the lattice in $x$-direction and by imposing shifted boundaries as illustrated in \cref{fig:cstar:orbi}. Note that \openqxd requires at least two ranks in each direction of the process grid, where the lattice has \Cstar boundary conditions. This ensures that a rank only stores points in either the physical or mirror lattice.
 
 \tldr{Trick qudas process grid}
 When \quda initializes its communication grid topology, we specify the neighbors of each rank in all directions. This also respects the specific process placement when using \Cstar boundaries, see \cref{sec:interface:quda:init}. For \quda to setup communication among neighboring ranks, the function \code{comm\_rank\_displaced()} calculates the neighboring rank number given one of the (positive or negative) 8 directions (see its call graph \cref{fig:comm_rank_displaced}.).
@@ -435,7 +435,7 @@ The QCD+QED Clover term consists of both the QCD \ggrp{SU}{3} and the QED \ggrp{
 Both can be calculated in \openqxd.
 The resulting term is still diagonal in space-time and chirality and is Hermitian in color and spin.
 Therefore, it has the same representation in memory as the \ggrp{SU}{3} clover term alone and we can upload this new clover field to \quda using the clover field reordering class as discussed in \cref{sec:interface:field_reordering}.
-Thus, we decide on the gauge group whether the clover term is generated natively in \quda or transferred from \openqxd.
+Thus, we decide based on the gauge group whether the clover term is generated natively in \quda or transferred from \openqxd.
 
 \tldr{QCD+QED WC DOP achieved}
 Transferring the QCD+QED clover term and the \ggrp{U}{3} links as well as the changes in the process grid topology enables \quda to successfully handle the QCD+QED Wilson-Clover Dirac operator \cref{eq:Dw:QCD+QED}.
@@ -508,11 +508,11 @@ The interface holds the revision of the clover field separately and requires an 
 \tldr{How and why MG has to track}
 Multigrid preconditioning generates a subspace from approximate low modes of the Dirac operator\footnote{Large parts of \cref{part:variance} depend on multigrid and a thorough introduction to it will be given there.}.
 This requires tracking of all the parameters, gauge and clover fields, because the multigrid preconditioning operator depends on them.
-Therefore for every multigrid instance separately, we have to track all the parameters from above as well as the gauge field revisions.
+Therefore, for every multigrid instance separately, we have to track all the parameters from above as well as the gauge field revisions.
 This is to allow different interface usage scenarios:
 \begin{itemize}
   \item Scenario 1): As an example, we assume the user wants to perform multiple solves with two different flavors, \ie two different values of $\kappa$. We further assume the main loop in the program is written in a way that alternates between the two $\kappa$ values and invokes the same multigrid solver instance for every solve. This requires the interface to update the multigrid instance every time the user switches flavor. Therefore, we store the values of the tracked parameters that were used when generating the subspace.
-  \item Scenario 2): As in the previous scenario, we assume alternating between two flavors. However this time, the user specified two multigrid instances -- one for each flavor. Again, in a main loop of the program, the user might loop over the flavors, sets the new flavor parameters and calls the corresponding solver instance. By this, the multigrid subspaces require no update on every solver call because from the perspective of the multigrid instances the parameters never change from call to call.
+  \item Scenario 2): As in the previous scenario, we assume alternating between two flavors. However this time, the user specified two multigrid instances -- one for each flavor. Again, in a main loop of the program, the user might loop over the flavors, sets the new flavor parameters and calls the corresponding solver instance. By this, the multigrid subspaces require no update on every solver call, because, from the perspective of the multigrid instances, the parameters never change from call to call.
 \end{itemize}
 Clearly scenario 1) requires less memory than scenario 2) at the cost of updating the multigrid instance every time the flavor changes.
 However, a separate tracking of parameters and fields allows the user to flexibly work the way they prefer, without the interface imposing a programming paradigm.
@@ -532,7 +532,7 @@ As the name suggests, the fat update is computationally more expensive than the 
 \subsubsection{Dependency graph}
 
 \tldr{tracking dependency graph as overview}
-The dependency graph for the tracking of fields and parameters is plotted in \cref{fig:dep}.
+The dependency graph for the tracking of fields and parameters is presented in \cref{fig:dep}.
 The fields and parameters on the left and right of the dotted line live in \openqxd and \quda, respectively.
 %From left to right the fields and parameters get transferred.
 The fields and parameters get transferred from left to right.
@@ -564,7 +564,7 @@ It makes sure that all necessary preliminaries are fulfilled for kernels that ac
 The whole tracking mechanism discussed in \cref{sec:interface:track_params} is implemented by this function and is invoked by kernels, such as the Dirac operator or the inverter, to make sure they act on synchronized fields and parameters.
 The call graph is divided into three namespaces based on where the functions are defined; in \openqxd (top), in the interface code (center) and in \quda (bottom).
 Functions required for state tracking come from \openqxd; \code{get\_gfld\_flags} returns the current gauge field revision, \code{dirac\_parms} the currently active Dirac operator parameters and \code{flds\_parms} the gauge group.
-Solid lined arrows indicate that the pointed function is called every time by the pointing function, dashed arrows indicate that the pointed function is called only when necessary.
+Solid lined arrows indicate that the pointed function is called \emph{every time} by the pointing function, dashed arrows indicate that the pointed function is called \emph{only when necessary}.
 
 \subsection{The solver kernel}
 \label{sec:interface:solver:simple}
@@ -574,8 +574,8 @@ Solid lined arrows indicate that the pointed function is called every time by th
 \tldr{Main solver function + arg discussion}
 %The main piece of this work is the capability of offloading Dirac equation solves to the GPU.
 Next, we enable offloading Dirac equation solves to the GPU.
-This is achieved by interfacing \quda's solvers.
-From the side of \openqxd, this kernel exposes itself by the interface function
+This is achieved by interfacing \qudas solvers.
+From the side of \openqxd, this kernel exposes itself via the interface function
 \begin{minted}[]{cpp}
 double openQCD_qudaInvert(
     int id,
@@ -588,7 +588,7 @@ double openQCD_qudaInvert(
 which closely resembles native solver function calls in \openqxd in its signature.
 It takes \num{5} arguments:
 \begin{itemize}
-  \item \code{id}: The solver identifier from the input file, \ie \code{Solver \#}. The input file is the one which was given to \code{quda\_init()}.
+  \item \code{id}: The solver identifier from the input file, \ie \code{Solver \#}. The input file is the one which was given to \code{quda\_init()}. The form of the input file will be discussed in \cref{ch:appendix:running}.
   \item \code{mu}: In order to mimic the behavior of the openQCD solvers (e.g. \code{tmcg}, \code{sap\_gcr}, \code{dfl\_sap\_gcr}), the invert-function accepts a twisted mass parameter \code{mu} explicitly.
   \item \code{source}: The source spinor field $\eta$ (the right-hand side) given as a regular \openqxd array of \code{spinor\_dble} that might have been allocated and reserved using \code{alloc\_wsd()} and \code{reserve\_wsd()}, respectively. This field has to be allocated on the CPU and might be initialized as a point or random source when calling the function.
   \item \code{solution}: The solution spinor field $\psi$ as an allocated \code{spinor\_dble}, see \code{source}.
@@ -599,7 +599,7 @@ It takes \num{5} arguments:
 All fields passed and returned are host (CPU) fields in \openqxd order.
 The function may be called at any time after \code{quda\_init()}, see \cref{sec:interface:openqxd:init}.
 It will read in the input file provided to the interface by \code{quda\_init()}, parse the parameter and populate the solver parameters internally.
-The whole tracking mechanism discussed in \cref{sec:interface:track_params} is applied before this function calls the actual solver in \quda.
+The whole tracking mechanism discussed in \cref{sec:interface:track_params} is invoked before this function calls the actual solver in \quda.
 That means Dirac operator parameters like $\kappa, \hat{q}$ or the SW-coefficients will be synchronized, gauge and clover field may be transferred or generated and multigrid subspaces will be generated or updated if necessary.
 This makes the function versatile and suitable for different use cases, some of which are discussed in \cref{sec:develop:solver}.
 
@@ -610,7 +610,7 @@ This makes the function versatile and suitable for different use cases, some of 
 
 \tldr{mrhs kernel + arg discussion}
 For repeated solves of the Dirac equation with unchanged gauge field configuration and Dirac operator parameters, \quda offers the possibility to batch multiple solves together and by this reduce the overall memory footprint while increasing the arithmetic intensity, data locality and cache re-usage.
-This class of solvers is known as multiple right-hand sides (RHS) or block Krylov solvers \cite{Sakurai:2009rb,Nakamura:2011my,Birk:2011jly,Clark:2017ekr,Boyle:2024pio,Richtmann:2016kcq,Boyle:2014rwa}.
+This class of solvers is known as multiple right-hand sides (mRHS) or block Krylov solvers \cite{Sakurai:2009rb,Nakamura:2011my,Birk:2011jly,Clark:2017ekr,Boyle:2024pio,Richtmann:2016kcq,Boyle:2014rwa}.
 The interface function for a batched multiple right-hand side solve is
 \begin{minted}[]{cpp}
 void openQCD_qudaInvertMultiSrc(
@@ -632,17 +632,17 @@ The standard solver kernel and this function behave equally; the standard solver
 
 \tldr{async solver + implemenation concept}
 The solver kernels discussed in the two previous sections are executed by all ranks entering the function and remain blocking until the solver function returns.
-We have implemented an asynchronous way of calling the solver which may become interesting in certain observable evaluation scenarios, see \cref{sec:develop:async:way}.
+We have implemented an asynchronous way of calling the solver which may become interesting in certain observable evaluation scenarios discussed in \cref{sec:develop:async:way}.
 This is enabled by spawning a worker thread for each MPI rank that enters \quda and executes kernels, \cref{fig:interface:async}.
 The main thread stays on the CPU during the time of the asynchronous operation.
 It should communicate using communicator \num{1}, setup such that all the main threads are part of it but not the worker threads.
 The worker threads on the other hand will communicate using communicator \num{2} that includes all worker threads but not the main threads.
 Therefore, MPI calls issued by the main threads do not interfere with possibly concurrent MPI calls issued by the worker threads allowing seamless concurrent operation on the CPU and GPU.
 When the work is done, the worker threads are joined by the main threads and results are collected to ensure proper cleanup.
-The worker thread only exist during the asynchronous period which is between the start and wait functions discussed in \cref{sec:interface:solver:async:start,sec:interface:solver:async:wait}.
+The worker thread only exist during the asynchronous period which is between the start and wait functions discussed momentarily.
 \begin{figure}
   \includestandalone[width=\linewidth]{\dir/img/async}
-  \caption{Thread spawn and join concept for the asynchronous solver interface. All MPI ranks spawn their individual worker thread which interacts with \quda and communicates with a communicator setup to contain all worker threads. The main threads return immediately back to the CPU code and communicate using their dedicated communicator.}
+  \caption{Thread spawn and join concept for the asynchronous solver interface. All MPI ranks spawn their individual worker thread which interacts with \quda and communicates using a communicator that is setup to contain all worker threads. The main threads return immediately back to the CPU code and communicate using their dedicated communicator.}
   \label{fig:interface:async}
 \end{figure}
 
@@ -681,7 +681,7 @@ This is the job of the start function discussed next.
 \tldr{start function is instant for main thread}
 The start function \code{openQCD\_qudaInvertAsyncStart} takes no arguments.
 %This can be either \code{OPENQCD\_SOLVE\_SERIAL} implying to work through the queue in consecutive order, one solve at a time, or \code{OPENQCD\_SOLVE\_MRHS} to solve all registered solves concurrently calling the multiple right-hand sides solver in \quda\footnote{This is not yet available in the interface.}.
-It will fire up the solves registered by \code{openQCD\_qudaInvertAsyncDispatch} asynchronously.
+It will fire up the solves registered by the dispatch function asynchronously.
 The solves will be worked through in order of dispatching.
 Every rank entering this function will spawn its own worker thread using \code{pthread\_create} that enters the \quda solver in place of the main thread, \cref{fig:interface:async}.
 The main thread returns from the function immediately after spawning the worker thread ready to continue executing code on the CPU.
@@ -691,7 +691,7 @@ If the CPU code involves MPI communication, the programmer must use the MPI comm
 The returned communicator will properly include all the main threads but not the worker threads.
 %The worker threads may do their own MPI communication in \quda as well, but using a different MPI communicator to not clash with the communication of the main threads.
 This is only possible if MPI was initialized with the proper level of thread support\footnote{This is usually the highest level of thread support, \fncode{MPI\_THREAD\_MULTIPLE} introduced in MPI-2.0~\cite{standard:mpi-2.0}. The MPI implementation must ensure that the MPI functions are thread safe which will degrade their performance slightly. Not all MPI implementations support such a high level of thread support. The interface code will gracefully error if the required thread support is not available by the MPI implementation.}.
-Such an MPI initialization routine is provided by the interface \code{quda\_mpi\_init} which can be used instead of \code{MPI\_Init}, see \cref{sec:interface:openqxd:mpi:init}.
+Such an MPI initialization routine is provided by the interface \code{quda\_mpi\_init} which can be used as substitute of \code{MPI\_Init}, see \cref{sec:interface:openqxd:mpi:init}.
 %The interface provides an initialization function called \code{quda\_mpi\_init}, that can be used instead of \code{MPI\_Init}, see \cref{sec:interface:openqxd:mpi:init}.
 
 \subsubsection{Wait}
@@ -699,10 +699,10 @@ Such an MPI initialization routine is provided by the interface \code{quda\_mpi\
 
 \tldr{wait blocks until joined, collect results}
 Finally, the wait function \code{openQCD\_qudaInvertAsyncWait} will instruct the main threads to wait for the worker threads to finish and reap them using \code{pthread\_join}.
-If the worker threads have already finished when the main threads enter they will simply collect the results of the worker threads.
+If the worker threads have already finished when the main threads enter, they will simply collect the results of the worker threads.
 That is, the residuals, status variables and solution vectors.
 Thus, when exiting the wait function, the solves have finished and output variables are populated as if the solver was called synchronously.
-This gives the programmer the opportunity to perform work on the CPU between the start and the wait function.
+This gives the programmer the opportunity to perform work on the CPU between the start and the wait functions.
 
 \subsubsection{Multiple right-hand sides}
 
@@ -711,10 +711,10 @@ The asynchronous interface in this section naturally works in conjunction with t
 The start function will iterate through the $N_d$ dispatched solves, collect batches of $\Nrhs$ of them (where $\Nrhs$ is equal to the number of right-hand sides) and call the multiple right-hand sides solver kernel as many times as required to solve all the $N_d$ equations. % given in the input file under the respective solver id.
 
 \tldr{batching example}
-As an example, assume we have dispatched $N_d=12$ solves for a point source and the number of right-hand sides is $\Nrhs=5$.
+As an example, assume we have dispatched $N_d=12$ solves for a point source and the number of right-hand sides is set to $\Nrhs=5$.
 This will call the multiple right-hand sides solver routine \num{3} times in a loop.
 Its first iteration will solve the first \num{5} dispatched sources in parallel, then the second \num{5} solves in parallel, and finally with the remaining last \num{2} solves in parallel.
-Irrespective of the number of right-hand sides, the wait function will wait until all $N_d=12$ solves are complete, collect the results and return.
+Irrespective of the number of right-hand sides, the wait function will wait until all $N_d=12$ solves completed, collect the results and return.
 
 \subsection{Other offloaded kernels}
 
@@ -725,7 +725,7 @@ However, for testing and illustration purposes, some other kernels that only req
 They are mostly called from within the check routines that enter the CI/CD pipeline, see \cref{ch:p1:cicd}, such that parts of the interface can be tested in isolation.
 
 \tldr{incomplete list of other kernels}
-We do not discuss all kernels here but merely provide an incomplete list with brief explanations. More detailed descriptions can be found in the doxygen string of each function.
+We do not discuss all kernels here but merely provide an incomplete list with brief explanations. More detailed descriptions can be found in the doxygen string of the respective function.
 \begin{itemize}
   \item \code{openQCD\_qudaPlaquette()}: calculate the plaquette of the currently resident gauge field in \quda.
   \item \code{openQCD\_qudaGaugeLoad()}: transfer the gauge field explicitly independent of whether is it outdated or not.
@@ -734,12 +734,12 @@ We do not discuss all kernels here but merely provide an incomplete list with br
   \item \code{openQCD\_qudaCloverFree()()}: free the currently resident clover field in \quda.
   \item \code{openQCD\_qudaNorm()}: take the global norm of a CPU spinor field (involves spinor field transfer).
   \item \code{openQCD\_qudaGamma()}: apply a $\gamma$-matrix in \openqxd convention (involves spinor field transfer).
-  \item \code{openQCD\_qudaDw()}: apply the Wilson-Clover Dirac operator to a spinor\footnote{This kernel is fully worked out, functioning and behaves as the solver triggering the full parameter tracking mechanism.} (involves spinor field transfer).
+  \item \code{openQCD\_qudaDw()}: apply the Wilson-Clover Dirac operator to a spinor\footnote{This kernel is fully worked out, functioning and behaves as the solver, triggering the full parameter tracking mechanism.} (involves spinor field transfer).
   \item \code{openQCD\_qudaEigensolve()}: call the eigensolver\footnotemark[\value{footnote}] (involves spinor field transfer).
 \end{itemize}
 
 \tldr{list of noloads kernels}
-Additionally, we have implemented a few interface functions that operate on device fields rather than host fields to illustrate how the development of the interface could continue.
+Additionally, we have implemented a few interface functions that operate on device fields rather than host fields, to illustrate how the development of the interface could continue.
 \begin{itemize}
   \item \code{openQCD\_qudaH2D()}: allocate a device field, explicitly transfer a host spinor to the device and return its device pointer.
   \item \code{openQCD\_qudaD2H()}: explicitly transfer a device spinor to the host.
@@ -764,7 +764,7 @@ which deallocates all the solvers, eigensolvers and finalizes QUDA by calling \c
 \label{sec:interface:openqxd}
 
 \tldr{changes in openqxd + naming pattern}
-This section describes all the changes in \openqxd core components, new modules and functions.
+Moving on, this section describes all the changes in \openqxd core components, new modules and functions.
 All the interface functions which are related to or interact with \quda have a naming pattern with prefix \code{quda\_}.
 
 \subsection{MPI Initialization}
@@ -777,7 +777,8 @@ If the asynchronous solver functions from \cref{sec:interface:solver:async} are 
 \begin{minted}[linenos=false]{c}
 void quda_mpi_init(int *argc, char ***argv);
 \end{minted}
-rather than the usual \code{MPI\_Init} to ensure that MPI is initialized with the correct thread support and throws an error if initialization fails.
+rather than the usual \code{MPI\_Init} to ensure that MPI is initialized with the correct thread support.
+This function throws an error if initialization fails due to missing thread support.
 
 \subsection{\Quda Initialization}
 \label{sec:interface:openqxd:init}
@@ -789,7 +790,7 @@ openQCD_QudaInitArgs_t quda_init(char *infile, FILE *logfile);
 \end{minted}
 takes two arguments.
 The \code{infile} argument takes the path to an input file where the interface expects some parameters and solver configurations to be specified.
-The solver parameters from the input file are parsed in the interface code, not in \openqxd\footnote{We deliberately relinquished from passing the many solver parameters explicitly to \quda for multiple reasons. In the fast development cycle of \quda's codebase, new solver and parameters enter very frequently, requiring an update of the code every time. This should be done in \quda where it belongs to. Furthermore, parsing of input files in \openqxd is done in a very static, bulky and code-duplicating manner. We wanted to solve the problem of parsing the solver once and for all in the interface, forcing the programmer to not even try it to do it themselves.}.
+The solver parameters from the input file are parsed in the interface code, not in \openqxd\footnote{We deliberately relinquished from passing the many solver parameters explicitly to \quda for multiple reasons. In the fast development cycle of \qudas codebase, new solver and parameters enter very frequently, requiring an update of the code every time. This should be done in \quda where it belongs to. Furthermore, parsing of input files in \openqxd is done in a very static, bulky and code-duplicating manner. We wanted to solve the problem of parsing the solver once and for all in the interface, forcing the programmer to not even try it to do it themselves.}.
 The reader is advised to refer to \cref{sec:running:infile} for more details on the expected syntax of the input file.
 %For the expected syntax of the input file please refer to \cref{sec:running:infile}.
 The second argument -- \code{logfile} -- points to an open file descriptor where QUDA should log its output to.
@@ -819,15 +820,15 @@ This information is passed to QUDA by calling \code{openQCD\_qudaInit()}, see \c
 
 \tldr{Where to call it?}
 It is important where exactly \code{quda\_init} is called in the bootstrapping phase of a main program.
-The boundary conditions have to be set by \code{set\_bc\_parms} \emph{before} calling it because the process grid depends on them.
-The solvers have to be parsed by \code{read\_solver\_parms} \emph{after} calling it because this might trigger field transfers already.
+The boundary conditions have to be set by \code{set\_bc\_parms} \emph{before} calling the function, because the process grid depends on them.
+The solvers have to be parsed by \code{read\_solver\_parms} \emph{after} calling it, because this might trigger field transfers already.
 We have done our best to throw meaningful error messages if \code{quda\_init} is not called in the proper place.
 
 \subsection{Solver parsing, validation and printing}
 \label{sec:interface:legacy}
 
 \tldr{integration into solver parsing}
-The \quda solver interface is integrated into core components of \openqxd that parse, validate and print solver parameters.
+The \quda solver interface is integrated seamlessly into core components of \openqxd that parse, validate and print solver parameters.
 This means that the legacy functions
 \begin{minted}[]{c}
 void read_solver_parms(int isp);
@@ -865,7 +866,7 @@ The third function prints the whole solver setup, that is, all the parameters in
 \subsection{The \ggrp{U}{3} field}
 
 \tldr{need boundary point transfer}
-The fact that \openqxd and \quda have substantially different memory layouts, see \cref{fig:gauge}, implies that some lattice points in the interior of \quda's local lattice are boundary points in \openqxd's local lattice and vice versa.
+The fact that \openqxd and \quda have substantially different memory layouts, see \cref{fig:gauge}, implies that some lattice points in the interior of \qudas local lattice are boundary points in \openqxd's local lattice and vice versa.
 Therefore, \quda needs to access boundary points of the field on the CPU when performing the transfer and reordering of the data.
 
 \tldr{su3 u1 and u3 field separate, we added copybdnud function}
@@ -895,10 +896,10 @@ An example of such a program would be an observable contraction code utilizing M
 Such programs have an alternating CPU-GPU pattern.
 The CPU code usually strong scales well with the number of ranks, so one should fill up all available CPU cores with processes.
 However, on modern clusters we usually have 1-8 GPUs per node, but the number of CPU cores per node is significantly higher in the regime $\bigO(100)$.
-In this section, we will address this asymmetry of parallelizability between CPU and GPU and enable above use-cases to nevertheless perform well.
+In this section, we will address this asymmetry between CPU and GPU and enable above use-cases to nevertheless perform well.
 
 \tldr{dual process grid as concept + intergrid op}
-To enable such use cases, we have implemented the concept of what we call the \emph{dual process grid} in \openqxd, see \cref{fig:interface:dual_naive}, \ie an introduction of a second process grid topology.
+To enable such use cases, we have implemented the concept of what we call the \emph{dual process grid} in \openqxd, see \cref{fig:interface:dual_naive}, \ie the introduction of a second process grid topology.
 \begin{figure}
   \includestandalone[width=\linewidth]{\dir/img/two_grids_naive}
   \caption{Example of a global $8 \times 8$ lattice in 2D hosted by two different process grids. Left a $4 \times 4$ process grid with $N_w = 16$ ranks having local lattices of size $2 \times 2$ (a process block grid of $1 \times 1$) and right a $2 \times 2$ process grid with $N_q = 4$ ranks with local lattices of size $4 \times 4$.}
@@ -1038,7 +1039,7 @@ This chapter introduced a comprehensive interface to access all solvers in \quda
 Solvers can be accessed in numerous ways.%; either directly, with multiple RHS, or in the case of partial CPU workloads; in a heterogeneous way, or by defining a dual lattice.
 
 A possibility to invoke the solver resembling \openqxd's solvers is provided for seamless integration with minimal effort into existing programs.
-For new programs, the solver can also be called directly after initialization without detours to input file parsing, printing and validation common in \openqxd program, simplifying new developments.
+For new programs, the solver can also be called directly after initialization without detours to input file parsing, printing and validation common in \openqxd programs, simplifying new developments.
 Recent new features of \quda, such as blocked or multiple RHS solvers are accessible through the interface explicitly or naturally via the asynchronous solver function.
 This function spawn a thread that performs the solve on the GPU while the main thread instantly exits the function, ready to perform further work on the CPU allowing simultaneous utilization of the CPU and GPU.
 With equal workload, this hides entirely one of the two tasks increasing the efficiency.
@@ -1067,7 +1068,7 @@ Compatibility of the field memory layouts is guaranteed through reordering class
 Parameters and fields that may change throughout a run are tracked and updated in \quda accordingly if required before executing kernels dependent on them.
 
 The lattice QCD+QED Wilson-Clover Dirac operator as of \cref{eq:Dw:QCD+QED} is now supported in \quda and \Cstar boundary conditions were implemented analogous to \openqxd.
-The interface is capable of offloading Dirac equation solves of QCD-only lattices with periodic or \Cstar boundaries as well as QCD+QED lattices with \Cstar boundaries.
+The interface is capable of offloading Dirac equation solves of QCD-only lattices with periodic or \Cstar boundaries as well as QCD+QED lattices with \Cstar boundaries in \num{1}, \num{2} or \num{3} spatial directions.
 
 The next chapter describes how the interface can be accessed from the perspective of an \openqxd application-level developer.
 
@@ -1084,7 +1085,7 @@ The next chapter describes how the interface can be accessed from the perspectiv
 
 %\subsection{Field reordering}
 
-% In order to use \quda's functionality within \openqxd, one has to build \quda as a library, include the main header file (\code{quda.h}) and link \openqxd against it.
+% In order to use \qudas functionality within \openqxd, one has to build \quda as a library, include the main header file (\code{quda.h}) and link \openqxd against it.
 % As an example for a \quda function, we consider inversions of the Dirac operator, whose API call signature looks as follows:
 
 % \begin{minted}[]{cpp}

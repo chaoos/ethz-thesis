@@ -149,7 +149,7 @@ Note that we need to dynamically link every \openqxd binary that interfaces \qud
 % \todo{add ref to OpenQxD docs on compiling}, with the exception of needing to 
 
 \tldr{gcc flags for this}
-Hence, when compiling an \openqxd program, we add the path to \quda's \code{include} directory (e.g., \code{-I<path>} for gcc), the path to \quda's \code{lib} directory (e.g., \code{-L<path>} for gcc), and the named library (e.g., \code{-lquda} for gcc) in the linking phase. An example \code{Makefile} can be found under \code{devel/quda/Makefile} in the \openqxd development repository \cite{gitlab:openqxd-devel}.
+Hence, when compiling an \openqxd program, we add the path to \qudas \code{include} directory (e.g., \code{-I<path>} for gcc), the path to \qudas \code{lib} directory (e.g., \code{-L<path>} for gcc), and the named library (e.g., \code{-lquda} for gcc) in the linking phase. An example \code{Makefile} can be found under \code{devel/quda/Makefile} in the \openqxd development repository \cite{gitlab:openqxd-devel}.
 
 \tldr{env vars of openqxd + their description}
 To compile \openqxd against \quda, we require some environment variables to be set properly, \cref{lst:openqxd:env_vars}.

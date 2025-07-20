@@ -7,13 +7,13 @@
   If debugging is the process of removing software bugs, then programming must be the process of putting them in. }%
 \vskip 1em
 
-\readit{1}
+\readit{2}
 
 \tldr{CICD intro, git private}
 This chapter describes the continuous integration testing and deployment (CI/CD) pipeline as introduced in \openqxd's development repository\cite{gitlab:openqxd-devel}.
 At the time of writing this thesis the repository is private.
 As part of the goals of the PASC project\cite{pasc:project} and thus as part of this thesis, we instantiated CI/CD paradigms to the development workflow of \openqxd.
-This chapter details our strategy for continuous integration (\cref{sec:cicd:integration}), continuous testing directly on target hardware at CSCS (\cref{sec:cicd:testing}), software deployment to CSCS infrastructure (\cref{sec:cicd:deployment}) and finishes with a summary (\cref{sec:cicd:summary}).
+This chapter details our strategy for continuous integration (\cref{sec:cicd:integration}), continuous testing directly on target hardware at CSCS (\cref{sec:cicd:testing}), deployment to CSCS infrastructure (\cref{sec:cicd:deployment}) and finishes with a summary (\cref{sec:cicd:summary}).
 
 \section{Continuous integration}
 \label{sec:cicd:integration}
@@ -31,7 +31,7 @@ We decided on a testing strategy as follows:
     \item For continuous testing, the master branch is tested on a daily basis overnight at 1 am (CET) on local resources at ETH. This runs the GitLab pipeline described in \cref{sec:cicd:pipeline:gitlab}.
     \item For continuous testing, the master branch is tested every 3 months on GH200 machines at CSCS. This runs the CSCS pipeline described in \cref{sec:cicd:pipeline:cscs}.
     \item For continuous integration, every commit into every open merge-request is automatically tested on local resources at ETH. This runs the GitLab pipeline described in \cref{sec:cicd:pipeline:gitlab}.
-    \item{For continuous integration, open merge-requests can be tested by triggering the CSCS pipeline manually. This runs the CSCS pipeline described in \cref{sec:cicd:pipeline:cscs}. The pipeline can be trigger by commenting on any merge-request with \code{cscs-ci run default}, see \cref{fig:cicd:comment}. This will invoke a webhook that triggers CSCS services to pull the repository and run the pipeline. A short time after commenting, a new job appears in the pipeline view with stage external, see \cref{fig:cicd:external}.}
+    \item{For continuous integration, open merge-requests can be tested by triggering the CSCS pipeline manually. This runs the CSCS pipeline described in \cref{sec:cicd:pipeline:cscs}. The pipeline can be trigger by commenting on any merge-request with \code{cscs-ci run default}, see \cref{fig:cicd:comment}. This will invoke a webhook that triggers CSCS services to pull the repository and run the pipeline. A short time after commenting, a new job appears in the pipeline view with stage ``external'', see \cref{fig:cicd:external}.}
 \end{itemize}
 
 \begin{figure}
@@ -71,7 +71,7 @@ as an additional runner for this pipeline. The machine has 8 GPUs which makes it
 
 \tldr{Split into stages}
 The pipeline consists of three stages; prepare, build and test.
-In general the stages depends on each other, although there are jobs in the build stage which depend on nothing.
+In general the stages depends on each other, although there are jobs in the build stage with no dependencies.
 The individual stages will be discussed separately in the following.
 
 \subsubsection{The prepare stage}
@@ -123,21 +123,23 @@ Thus we compile \openqxd on a process grid of 1x2x2x2 with 8 ranks for these two
 Again this can be extended to other lattices.
 
 \begin{table}[t]
-  \centering
-  \begin{tabular}{ccccc}
-    \toprule
-    {ensemble}&
-    {$L_0 \times L^3$}&
-    {$m_{\pi}$ [MeV]}&
-    {boundary conditions}&
-    {\# configs} \\
-    \midrule
-    D5d  & $48 \times 24^3$ & 439 & periodic    & 2 \\
-    A360 & $64 \times 32^3$ & 360 & C$^{\star}$ in xyz directions & 2 \\
-    \bottomrule
-  \end{tabular}
-  \caption{\label{tab:cicd:ensembles}%
-    Ensembles used in the CI/CD pipeline. The periodic lattice D5d is taken from ref.~\cite{online:cls}, whereas the C$^{\star}$ lattice is taken from ref.~\cite{RCstar22}.}
+\centering
+\begin{tabular}{ccccc}
+  \toprule
+  {ensemble} &
+  {$L_0 \times L^3$} &
+  {$m_{\pi}$ [MeV]} &
+  {boundary conditions} &
+  {\# configs} \\
+  \midrule
+  D5d  & $48 \times 24^3$ & 439 & periodic    & 2 \\
+  A360 & $64 \times 32^3$ & 360 & C$^{\star}$ in xyz directions & 2 \\
+  \bottomrule
+\end{tabular}
+\caption{\label{tab:cicd:ensembles}%
+Ensembles used in the CI/CD pipeline.
+The lattice extent, denoted by $L$, indicates the spatial box extents, $L = L_1 = L_2 = L_3$ and $L_0 = 2L$.
+The periodic lattice D5d is taken from ref.~\cite{online:cls}, whereas the C$^{\star}$ lattice is taken from ref.~\cite{RCstar22}.}
 \end{table}
 
 \subsubsection{The test stage}
@@ -155,7 +157,7 @@ where \code{<N>} is the number of the check we run, \ie the check corresponds to
 We briefly discuss the binaries:
 \begin{itemize}
   \item \code{devel/quda/check1}: Checks the indexing functions of fields, \ie the arrays \code{ipt[VOLUME]} and \code{iup[VOLUME][4]} (see \code{main/README.global}) against the pure function implementations in \quda, \code{openQCD\_qudaIndexIpt} and \code{openQCD\_qudaIndexIup} respectively. Afterwards, the transfers of the gauge field to \quda and back are performed and compared to each other. Finally the plaquette on \quda and on \openqxd are computed and compared. This last test is done only with the $SU(3)$-valued gauge field, even if a QCD+QED lattice is given as input, since \quda is not capable of calculating the QCD+QED plaquette.
-  \item \code{devel/quda/check2}: This check performs a host-to-device and device-to-host transfer of a spinor field and compares the two on the host. Further the norm function as well as the gamma matrix applications are compared to make sure the gamma basis is the same. Finally we compare the Wilson-Clover Dirac operator by acting on a random spinor field on both \openqxd and \quda and compare them.
+  \item \code{devel/quda/check2}: This check performs a host-to-device and device-to-host transfer of a spinor field and compares the two on the host. Further the norm function as well as the gamma matrix applications are compared to make sure the gamma basis is consistent. Finally we compare the Wilson-Clover Dirac operator by acting on a random spinor field on both \openqxd and \quda and compare them.
   \item \code{devel/quda/check3}: We have implemented acceptance tests of solvers in \quda in this check. This means we call the solver in \quda according to its configuration from the input file provided to the executable. The relative residual of the yielded solution is checked explicitly against the Dirac operator in \openqxd and compared to the desired relative residual from the solver configuration. This tests the synchronous solver interface from \cref{sec:develop:sync:way} with multiple solver instances, one and multiple RHSs, with and without the dual process grid, all on a periodic and a \Cstar lattice.
   \item \code{devel/quda/check4}: Consists of a check of the eigensolver of \quda. This is currently not tested.
   \item \code{devel/quda/check5}: This check consists of acceptance tests for the asynchronous solver interface from \cref{sec:develop:async:way}. It performs the same tests as \code{check3} but with the asynchronous solver.
@@ -189,7 +191,7 @@ The test jobs download the archive corresponding to the lattice they run on, ver
 \label{sec:cicd:pipeline:cscs}
 
 \tldr{runs on GH200 at CSCS, costs, list of stages}
-This pipeline may only run on the official GH200 nodes at CSCS and is associated with an account having compute quota on the Daint Alps vCluster.
+This pipeline may only run on the official GH200 nodes at CSCS and is associated to an account with compute quota on the Daint Alps vCluster.
 \emph{Running this pipeline consumes nodehours of the associated account.}
 The entrypoint for this pipeline is in the openQxD-devel repository\cite{gitlab:openqxd-devel} under \code{ci/cscs\_default\_pipeline.yml}.
 It consists of two stages; build and test.
@@ -276,7 +278,7 @@ The pipeline consists of only one stage; deploy.
 \tldr{deploy stage, put uenv into cscs registry}
 This stage currently consists of only one job that deploys the previously built uenv image to the service namespace of the CSCS uenv registry.
 When deployed, a user on Daint Alps can just pull and start the image.
-One will find an already compiled version of \quda with all required environment variables set to build \openqxd against \quda, see \cref{sec:building:openqxd} for more details on building \openqxd and \cref{lst:openqxd:env_vars} for the required environment variables and \cref{sec:building:uenv} for more information on how to run the uenv.
+One will find an already compiled version of \quda with all required environment variables set to build \openqxd against \quda conveniently, see \cref{sec:building:openqxd} for more details on building \openqxd and \cref{lst:openqxd:env_vars} for the required environment variables and \cref{sec:building:uenv} for more information on how to run the uenv.
 
 \section{Summary}
 \label{sec:cicd:summary}
@@ -295,10 +297,10 @@ The above can be used as a basis for such an extension.
 
 For better communication with the upstream \quda development team, it would be advisable to integrate our CI/CD pipeline into theirs.
 Ideally their pipeline would trigger ours downstream and only report back successful if ours has passed too.
-Certainly this is only possible if the \openqxd developments repository is made public which is as of the writing of the thesis not the case.
+Certainly this is only possible if the \openqxd development repository is made public which is -- as of the writing of the thesis -- not yet the case.
 
-An interesting path to further pursue would be to add performance tests to the pipeline, for automatic regression detection.
-This would add another layer of trust into the code in the form of a performance verification.
+An interesting path to further pursue would be to add performance tests to the pipeline for automatic regression detection.
+This would add another layer of trust into the code in the form of a continuous performance verification.
 
 The next chapter introduces a memory management system for lattice fields suitable for heterogeneous architectures.
 

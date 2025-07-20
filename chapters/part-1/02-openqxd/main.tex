@@ -6,7 +6,7 @@
 \vskip 1em
 
 
-\readit{1}
+\readit{2}
 
 % \worktodo{openqxd, openqcd and its programming philosophy and paradigms,
 % memory layouts, allocating fields, non-pure functions and other shenanigans}
@@ -71,7 +71,7 @@ The lattice topology in terms of process grid, global and local lattice sizes is
 \end{codelisting}
 
 \tldr{lack of convenience in openqxd}
-The program was probably never intended to be used as framework to do arbitrary lattice calculations apart from gauge field sampling. There is no convenient single function to initialize and finalize a program written in \openqxd. The codebase is written in a very static way, highly optimized for its exact purpose, making additions and extension to the functionality hard to implement. This exposes itself in a lack of convenience functions for bootstrapping, input file parsing and validation, logging, profiling, field management, log file handling, field index abstraction and many more and culminates usually in lots of code duplication and boilerplate code.
+The program was probably never intended to be used as a framework to do arbitrary lattice calculations apart from gauge field sampling. There is no convenient single function to initialize and finalize a program written in \openqxd. The codebase is written in a very static way, highly optimized for its exact purpose, making additions and extension to the functionality hard to implement. This exposes itself in a lack of convenience functions for bootstrapping, input file parsing and validation, logging, profiling, field management, log file handling, field index abstraction and many more and culminates usually in lots of code duplication and boilerplate code.
 
 \tldr{translation units with lots of global state}
 A common pattern are translation units carrying static global state variables allocated by some initialization function and later accessed from functions within the translation unit. This implies that many functions in \openqxd have non-trivial side effects.% and are thus non-pure.
@@ -138,10 +138,10 @@ typedef struct
 \label{lst:openqxd:spinor}
 \end{codelisting}
 An individual field does not carry any further information apart from its actual data. Meta information like the local size of the field are globally available in terms of compile time constants and the precision of the underlying floating-point number is encoded in the naming of the struct.
-Furthermore, there is a single precision variant of this struct called \code{spinor} holding structs of type \code{su3\_vector} again holding \code{complex}.
+Furthermore, there is a single precision variant of this struct simply called \code{spinor} holding structs of type \code{su3\_vector} again holding \code{complex}.
 
 \tldr{complex numbers}
-As mentioned above \openqcd complies to the C89 standard. A native implementation of complex numbers was introduced in C99. This is the reason why \openqcd, and by this \openqxd, has two structs representing complex floats as defined in \cref{lst:openqxd:complex_double}.
+As mentioned, \openqcd complies to the C89 standard. A native implementation of complex numbers was introduced in C99. This is the reason why \openqcd, and by this \openqxd, has structs representing complex double and single precision floats as defined in \cref{lst:openqxd:complex_double}.
 \begin{codelisting}
 \begin{minted}[]{c}
 typedef struct
@@ -184,7 +184,7 @@ typedef struct
 As can be seen, there is no enforcement of the matrices being $\ggrp{SU}{3}$ nor compression of the gauge field exploiting the gauge group symmetry. All \num{9} complex numbers are explicitly written out as row-major matrix. An advantage of such a storage model is that it can easily be extended to arbitrary gauge groups. This made implementing QCD+QED which has a gauge group of $\ggrp{U}{3}$ straightforward, see \cref{sec:openqxd:qcd+qed}. A clear downside is performance. By exploiting the Lie-algebra structure of $\liealg{su}{3}$, the gauge field could be stored with \num{8} real degrees of freedom instead. This would reduce the size of the struct to \num{8} floating-point numbers instead of \num{18}. In memory bound kernels this would result in a speedup of about two.
 
 \tldr{gauge field index}
-The gauge field has indices $(x_{odd}, \pm \mu, a, b)$, where $x_{odd}$ is the lattice index (only odd points, $V_\mathrm{L}/2$ elements), $\mu \in \{\pm 0, \pm 1, \pm 2, \pm 3\}$ is the direction of the gauge link (in positive as well as negative direction, \ie 8 possibilities) and $a,b$ parameterize the row and column of the $\ggrp{SU}{3}$-valued gauge link (row-major).
+The gauge field has indices $(x_{odd}, \pm \mu, a, b)$, where $x_{odd}$ is the lattice index (only odd points, $V_\mathrm{L}/2$ elements), $\mu \in \{\pm 0, \pm 1, \pm 2, \pm 3\}$ is the direction of the gauge link (in positive as well as negative direction, \ie 8 possibilities) and $a,b$ parameterize the row and column of the $\ggrp{SU}{3}$-valued gauge link in row-major order.
 Thus, \openqxd stores the gauge links in all \num{8} directions at odd lattice points in contrast to most other common conventions which store \num{4} gauge links in positive directions for every lattice point.
 
 \section{The clover field}
@@ -266,7 +266,7 @@ These are described in more detail in the following two sections.
 
 \tldr{Cstar BCs = doubling lattice}
 C$^{\star}$ boundary conditions on the lattice can be implemented by means of doubling the lattice in a certain spatial dimension (taken arbitrarily as x-direction in the following).
-The doubled lattice will be called the extended lattice $\lat{ext}$ and the two copies physical lattice $\lat{phys}$ and mirror lattice $\lat{mirror}$.
+As described in \cref{sec:intro:cstar}, the doubled lattice will be called the extended lattice $\lat{ext}$ and the two copies physical lattice $\lat{phys}$ and mirror lattice $\lat{mirr}$.
 This is called the orbifold construction, see \cref{fig:cstar:orbi}.
 \begin{figure}
   \includestandalone[width=0.8\linewidth]{\dir/img/cstar}
@@ -310,7 +310,7 @@ This will become important later, because \quda is not capable of generating the
 % critical discussion, limits, summary
 
 We have introduced the simulation code \openqxd used and developed by the \RCstar collaboration.
-It is capable of simulating dynamical QCD+QED with \Cstar boundary conditions implemented through the orbifold construction
+It is capable of simulating dynamical QCD+QED with \Cstar boundary conditions implemented through the orbifold construction.
 %It is capable of \Cstar boundary conditions implemented through the orbifold construction, required for dynamical QCD+QED simulations.
 The code runs efficiently on CPU-based clusters parallelized purely via MPI.
 This is reflected via data structures as arrays of structs and linear algebra kernels being optimized for CPUs with little abstraction.

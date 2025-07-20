@@ -2,19 +2,19 @@
 \chapter{Field Memory Management in Heterogeneous Architectures}
 \label{ch:p1:memory}
 
-\readit{1}
+\readit{2}
 
 \tldr{mm intro}
 In future developments, we plan to unify spinor fields among \openqxd and \quda.
 This chpater describes a proposal for a memory management system for fields that does not come with tremendous implementation efforts, providing backward compatibility for already written programs and a framework to write programs utilizing the GPU with little porting effort, maximal flexibility for the developer and minimizing CPU-GPU traffic.
 It starts by motivating the need for such a system (\cref{sec:mm:motivation}) with explicit example codes and continues with a field unification scheme (\cref{sec:mm:unified:fields}).
-For minimal code refactoring on the side of \openqxd, we propose an (optional) procedure to automatically transfer fields from the GPU to CPU (\cref{sec:mm:implicit:transfers}) using \posix mechanisms, before concluding the chapter (\cref{sec:mm:summary}).
+For minimal code refactoring on the side of \openqxd, we propose an (optional) procedure to automatically transfer fields from the GPU to CPU using \posix mechanisms (\cref{sec:mm:implicit:transfers}), before concluding the chapter (\cref{sec:mm:summary}).
 
 \tldr{keep track of state on field level}
 The key idea is to not to deal with fields on the CPU separately from fields on the GPU.
 The system  keeps track of where each field currently resides (CPU, GPU or both), where it was last updated (CPU or GPU) and implicitly transfer the field if a function reads or writes to it.
 Such a system should be backward compatible with the memory layout of \openqxd.
-Using C macros, we may guide the compiler to the GPU-variants of certain functions that overwrite their CPU equivalents.
+Using C macros, we may guide the compiler to the GPU-variants of certain linear algebra functions that overwrite their CPU equivalents.
 
 \tldr{legacy coding possible}
 This will enable us to work in the framework of \openqxd in the same way as before and at the same time use GPU features. 
@@ -73,10 +73,10 @@ int main(int argc, char *argv[]) {
 \tldr{Dop overload to GPU just as AVX/SSE versions}
 Therefore, the Dirac operator, \code{Dw\_dble()}, is a function that takes fields in \openqxd and transfers the input field to the GPU, calls the Dirac operator in \quda and transfers the output field back.
 This type of function overloading already finds practice in \openqxd for functions that employ AVX or SSE instructions.
-It is achieved with compile time macros and C preprocessor directives, see \cref{lst:mm:pp_macros}.
-The snippet shows three implementations of the same function; a default implementation which is selected if no compile time flag is set, an implementation using AVX instructions and an implementation wrapping the GPU function call via \quda's interface API.
+It is achieved with compile time macros and C preprocessor directives illustrated in \cref{lst:mm:pp_macros}.
+The snippet shows three implementations of the same function; a default implementation which is selected if no compile time flag is set, an implementation using AVX instructions and an implementation wrapping the GPU function call via \qudas interface API.
 All of them act on regular spinor fields in \openqxd.
-At this stage, the GPU implementation has to transfer field(s) back and forth.
+At this stage, the GPU implementation has to transfer field(s) back and forth every time it is being called.
 
 \begin{codelisting}
 \begin{minted}[highlightlines={4-6}]{c}
@@ -139,7 +139,7 @@ Allocating multiple fields with \code{alloc\_wsd()} places the fields consecutiv
 \tldr{How to alter}
 We propose to alter the current allocation scheme for fields as in \cref{fig:mm:field2:proposed_scheme}.
 We stick a struct holding information called \code{spinor\_info} at the end of every spinor field.
-We spaced them out a bit, but nevertheless every field pointer still points to the first struct in the array of structs which can be passed into legacy functions; no violation of requirement~\ref{mm:req:R1}.
+By this, we spaced fields out a bit, but nevertheless every field pointer still points to the first struct in the array of structs which can be passed into legacy functions; no violation of requirement~\ref{mm:req:R1}.
 
 \begin{figure}
   \includestandalone[width=\linewidth]{\dir/img/field2}
@@ -151,11 +151,11 @@ We spaced them out a bit, but nevertheless every field pointer still points to t
 The \code{spinor\_info} struct holds information about the field such as
 \begin{itemize}
 	\item A void-pointer to the field on the GPU that points to the object instance in \quda representing the field.
-	\item A status flag indicating whether the field is in sync between CPU and GPU (both hold the same data), the field on the CPU is newer (CPU code has manipulated the field, such that the GPU field is outdated), or the other way around. Here we have to be careful in a potential implementation. A field that is not in one of the three mentioned states should never occur. This would lead to inconsistency.
+	\item A status flag indicating whether 1) the field is in sync between CPU and GPU (both hold the same data), 2) the field on the CPU is newer (CPU code has manipulated the field, such that the GPU field is outdated), or 3) the other way around. Here we have to be careful in a potential implementation. A field that is not in one of the three mentioned states should never occur. This would lead to inconsistency and it is the job of the field memory management system to make sure this never happens.
 	\item Other useful meta information, such as field size in bytes, precision, number of times the field was transferred for optimization purposes, etc.
 \end{itemize}
 For an implementation of the above field unification proposal only field allocation, deallocation, reservation and release functions need to be altered\footnote{Explicitly, these are \fncode{alloc\_wsd()}, \fncode{reserve\_wsd()}, \fncode{release\_wsd()} and their single precision variants.}.
-Furthermore, all legacy \openqxd function still work and operate on the base pointers in the same way as before.
+Furthermore, all legacy \openqxd functions still work and operate on the base pointers in the same way as before.
 Functions that are offloaded to the GPU will take the same CPU base-pointers as the legacy function.
 They will navigate to the \code{spinor\_info} struct by pointer arithmetic, check if the field needs to be transferred and do so if required.
 To operate on the field, they grab the GPU-field pointer.
@@ -182,14 +182,14 @@ For this we need to introduce two concepts.
 
 \tldr{mprotect, posix, OS mechanism, page-alignment}
 \Posix-compliant operating systems offer system calls for protecting a region of previously allocated memory.
-The region must be page-aligned, meaning that the pointer pointing to the begin of the region has to be the beginning of a new page and the region has to end at the end of a page, \ie the base pointer address and the size of the region in bytes have to be multiples of the page size\footnote{On most modern operating system the page size is \num{4096} bytes, if unknown it can be queried using the standard C library function \fncode{getpagesize()}.}.
-Allocating page-aligned memory cannot be done using the usual portable standard C library wrapper for dynamic memory allocation, \code{malloc()} (which allocates 8-byte aligned memory) but rather \code{posix\_memalign()} or \code{mmap()}.
+The region must be page-aligned, meaning that the pointer pointing to the start of the region has to be the beginning of a new page and the region has to end at the end of a page, \ie the base pointer address and the size of the region in bytes have to be multiples of the page size\footnote{On most modern operating system the page size is \num{4096} bytes, if unknown it can be queried using the standard C library function \fncode{getpagesize()}.}.
+Allocating page-aligned memory cannot be done using the usual portable standard C library wrapper for dynamic memory allocation, \code{malloc()} (which allocates 8-byte aligned memory) but rather \code{posix\_memalign()} or Linux' \code{mmap()}.
 However, when accessing a protected region of memory (by dereferencing a pointer) the operating system behaves as if we have never allocated the memory, \ie it triggers a segmentation fault.
 
 \tldr{Why mprotect exists}
 One might ask what is such a mechanism good for?
 When it comes to data security, operating systems have to offer mechanisms to prevent untrusted third party libraries to access sensitive data such as passwords that might lie in memory.
-Such regions can be protected and if a third party library attempts to access them a segmentation fault will be thrown.
+Such regions can be protected and if a dynamically linked third party library attempts to access them a segmentation fault will be thrown.
 
 \subsection{Signals}
 \label{sec:mm:signals}
@@ -233,7 +233,7 @@ We may again assume to have a spinor field in memory as depicted in \cref{fig:mm
   \caption{A spinor field in memory.}
   \label{fig:mm:field3:no_mprotect}
 \end{figure}
-At this stage we assume the base pointer to be page-aligned and the size of the allocation to be a multiple of the page size as discussed in \cref{sec:mm:mprotect}.
+At this stage, we assume the base pointer to be page-aligned and the size of the allocation to be a multiple of the page size as discussed in \cref{sec:mm:mprotect}.
 Furthermore, we assume the GPU has altered its copy of the field and the \code{spinor\_info} struct indicates the CPU field to be outdated.
 Therefore, we put a memory protection over the field, \cref{fig:mm:field4:mprotected}.
 \begin{figure}
@@ -241,7 +241,7 @@ Therefore, we put a memory protection over the field, \cref{fig:mm:field4:mprote
   \caption{A protected spinor field in memory visualized with a blue shield.}
   \label{fig:mm:field4:mprotected}
 \end{figure}
-Now consider entering a legacy function on the CPU with this field.
+Now consider entering a legacy function on the CPU with this field as argument.
 The function will access the data at some memory address in the protected region, \cref{fig:mm:field5:access}.
 \begin{figure}
   \includestandalone[width=\linewidth]{\dir/img/field5}
@@ -253,20 +253,20 @@ Ultimately this will trigger a segmentation fault and we enter the previously re
 \tldr{clean recovery, inspect offending address, transfer, ... updated field}
 What remains to do is properly process the signal and recover the application state before the signal happened but with updated field values.
 The signal handler will check if the segmentation fault was triggered by an actual memory access violation or by a memory protection violation.
-If it is an actual segmentation fault, we continue by raising it.
+If it is an actual segmentation fault raised through a bug in the code, we continue by raising it.
 This can be determined by looking at the offending pointer address which is given as payload to the signal, see \cref{sec:mm:signals}.
-If the address is in between the begin and end of a protected region, we know it is a memory protection violation, else it is a segmentation fault.
+If the address is in between the begin and end of a protected region, we know it is a memory protection violation, else it is a true segmentation fault.
 However in the former case, we proceed by first removing the protection and to navigate to the \code{spinor\_info} struct, check if the field is up-to-date, transfer if necessary, update the \code{spinor\_info} struct accordingly such that the next GPU function that operates on the field will trigger a transfer and finally exit the signal handler gracefully.
-This will restart the instruction that caused the segmentation fault which will be either a load or store from the \openqxd function, but we removed the protection and updated the field values.
-Thus the legacy function will continue processing, now with the updated field values.
+This will restart the instruction that caused the segmentation fault which will be either a load or store from within the legacy \openqxd function, but we removed the protection and updated the field values.
+Thus the legacy function will continue processing -- now with the updated field values.
 Note that the mode of how the field values are accessed within a legacy function does not matter, be it AVX or SSE intrinsics or dereferencing some pointer in the middle of the region, it will always trigger the segmentation fault and the procedure described above.
 
 \subsection{State diagram}
 
 \tldr{state diag of field, read/write indistinguishable}
 For the sake of completeness, the lifetime of such a field can be modeled as a finite-state machine whose state diagram is depicted in \cref{fig:mm:fsm}.
-We note that with this scheme, we cannot distinguish between a potential read or write in a segmentation fault on the CPU implying some unnecessary transfers only happening for very rare code patterns which we consider negligible.
-With this we have four different actions caused by the triggers:
+We note that with the scheme as described in \cref{sec:mm:implicit:transfers}, we cannot distinguish between a potential read or write in a segmentation fault signal handler on the CPU implying some unnecessary transfers only happening for very rare code patterns which we consider negligible.
+With this, we have four different actions caused by the triggers:
 \begin{enumerate}
   \item \emph{CPU r/w/rw}: As stated before, reads and writes cannot be distinguished on the CPU. The action they trigger is the following. Memory protection is removed if in place, the field is transferred to the CPU if and only if the old state was \code{GPU\_NEWER} and the state is changed to \code{CPU\_NEWER} no matter what it was before.
   \item \emph{GPU r}: If the field on the GPU is not allocated yet (pointer is \code{nullptr}), allocate it, transfer the field if and only if the old state was \code{CPU\_NEWER} (if enabled, disable memory protection for this), enable memory protection if not enabled yet and change the state to \code{IN\_SYNC}.
@@ -276,7 +276,7 @@ With this we have four different actions caused by the triggers:
 
 \begin{figure}
   \includestandalone[width=\linewidth]{\dir/img/fsm}
-  \caption{The state diagram of a spinor field as explained in the main text. There are three main states; \capcodeA{IN\_SYNC} indicating that the field values are equal on CPU and GPU, \capcodeA{CPU\_NEWER} and \capcodeA{GPU\_NEWER} indicating that the CPU/GPU has changed the field and the other one is outdated respectively. The key indicated as \emph{pointer} denotes the address of the field on the GPU initialized to \capcodeA{nullptr}. The protection states whether the memory on the CPU is protected according to \cref{sec:mm:mprotect}. The arrows denote triggers that cause actions to change the state of the field. There are three different triggers: read-only (\emph{r}), write-only (\emph{w}) and read-and-write (\emph{rw}) on two devices: CPU and GPU. For instance an arrow with text \emph{GPU: w/rw} indicates that the state change is triggered if the \emph{GPU} either \emph{writes} to the field or \emph{reads and writes} to the field.}
+  \caption{The state diagram of a spinor field as explained in the main text. There are three main states; \capcodeA{IN\_SYNC} indicating that the field values are equal on CPU and GPU, \capcodeA{CPU\_NEWER} and \capcodeA{GPU\_NEWER} indicating that the CPU/GPU has changed the field and the other one is outdated, respectively. The key indicated as \emph{pointer} denotes the address of the field on the GPU initialized to \capcodeA{nullptr}. The protection states whether the memory on the CPU is protected according to \cref{sec:mm:mprotect}. The arrows denote triggers that cause actions to change the state of the field. There are three different triggers: read-only (\emph{r}), write-only (\emph{w}) and read-and-write (\emph{rw}) on two devices: CPU and GPU. For instance an arrow with text \emph{GPU: w/rw} indicates that the state change is triggered if the \emph{GPU} either \emph{writes} to the field or \emph{reads and writes} to the field.}
   \label{fig:mm:fsm}
 \end{figure}
 
@@ -291,10 +291,10 @@ This is a minimal-effort maximal-outcome approach that allows \openqxd developer
 We also emphasize that this solution is meant for an intermediate phase, where certain functionality will stay on the CPU (probably for a long time) and we incrementally port kernel by kernel to the GPU without much overhead.
 This scheme was explained for spinor fields but can trivially be extended to gauge and clover fields.
 
-Since reads and writes cannot be distinguished on the CPU by the field management scheme, unnecessary field transfers are the result.
+Since reads and writes cannot be distinguished on the CPU by the field management scheme, unnecessary field transfers will result.
 Unless the underlying concept is changed, this cannot be easily solved.
 
-Furthermore, although working conceptually and tested in the small scale, it might be better to choose a scheme employing explicit transfers, rather than implicit ones.
+Furthermore, although working conceptually and verified in the small scale, it might be better to choose a scheme employing explicit transfers, rather than implicit ones.
 First, explicit transfers are visible in the code which increases its readability.
 Second, explicit transfers can be removed easily at wish for debugging or testing purposes.
 Third, the mechanism via the segmentation fault and memory protection exploits operating system features not meant for this kind of usage.

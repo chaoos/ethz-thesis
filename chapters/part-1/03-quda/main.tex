@@ -1,21 +1,25 @@
 \chapter{QUDA}
 \label{ch:p1:quda}
 
-\readit{1}
+\dictum[Bjarne Stroustrup]{%
+  C makes it easy to shoot yourself in the foot; C++ makes it harder, but when you do it blows your whole leg off. }%
+\vskip 1em
+
+\readit{2}
 
 %\worktodo{what is quda, its programming paradigms (cpp, OOP, functors, templating, abstraction, ...), its idiosyncrasies, capability of different precisions, gauge field reconstructs (gauge grp), ...}
 
 %\worktodo{initQuda, endQuda, loadCloverQuda loadGaugeQuda newMultigridQuda, createCloverQuda, updateMultigridQuda, freeCloverQuda, destroyMultigridQuda}
 
 In this chapter, we outline some of the main features, design choices and peculiarities of \quda, the library we offload Dirac equation solves to.
-We go through an example of a simple kernel and how it is being called internally (\cref{sec:quda:kernel:invocation}), followed by how lattice fields are abstracted (\cref{sec:quda:fields}).
+We go through an example of a simple kernel and how it is being called \quda-internally (\cref{sec:quda:kernel:invocation}), followed by how lattice fields are abstracted (\cref{sec:quda:fields}).
 \Quda comes with mixed precision solvers allowing fields to change their floating-point precision (\cref{sec:quda:precision}) and it supports compressed gauge field formats exploiting the gauge group symmetry (\cref{quda:compresed:formats}).
-We finish with a list of important functions exposed via \quda's header file (\cref{sec:quda:interface}) and a brief summary (\cref{sec:quda:summary}).
+We finish with a list of important functions exposed via \qudas header file (\cref{sec:quda:interface}) and a brief summary (\cref{sec:quda:summary}).
 
 \tldr{what is quda}
-\Quda \cite{QUDApaper} is a library written in CUDA C++ that contains a suite of efficient kernels and solvers to implement lattice QCD simulations. It can be used as a plug and play substitute for certain compute intensive tasks.
+\Quda \cite{QUDApaper} is a library written in C++ that contains a suite of efficient kernels and solvers to implement lattice QCD simulations. It can be used as a plug and play substitute for certain compute intensive tasks.
 \Quda is highly optimized to run on multiple GPUs and has backends for CUDA, HIP, SYCL and multi-threading, where it performs autotuning to determine empirically the best kernel launch parameters for every kernel separately.
-It thus runs efficiently on a variety of different hardware vendors.
+It thus runs efficiently on a variety of different hardware architectures and vendors.
 
 \tldr{qudas feature set}
 It has a very powerful and customizable solver suite, including a state-of-the-art multigrid implementation and comes with support for many different lattice discretizations, such as Wilson, Wilson-Clover, Twisted mass, Twisted-Clover, staggered, improved staggered, Domain-Wall and Möbius. In the meantime there is a large community of lattice practitioners actively working on and maintaining the software project.
@@ -90,12 +94,13 @@ The usage of C++ templates enables simple replacements for the precision of fiel
 
 \tldr{internal dof with symmetries}
 For fields whose internal degrees of freedom carry additional symmetry, such as the \ggrp{SU}{3}-valued gauge field, \quda provides compression formats for efficient representation in memory.
-This makes sense in memory-bound scenarios, because in kernels using such a field the produced memory traffic is decreased and the arithmetic intensity increased when the field is represented in a compressed format.
+%This makes sense in memory-bound scenarios, because, if the field is represented in a compressed format, memory traffic produced by kernels reading such a field is decreased whereas the arithmetic intensity is increased.
+This makes sense in memory-bound scenarios, as compressing the field reduces memory traffic and increases arithmetic intensity when read by a kernel.
 For certain gauge groups \quda allows the gauge field to be stored in the following formats
 \begin{itemize}
   %\item \code{QUDA\_RECONSTRUCT\_NO}: Store all \num{9} complex (\num{18} real) numbers per gauge link explicitly. This reconstruction type allows to use any arbitrary gauge group.
   \item \code{QUDA\_RECONSTRUCT\_NO}: This reconstruction type allows to use any arbitrary gauge group by storing all \num{9} complex (\num{18} real) numbers per gauge link explicitly.
-  \item \code{QUDA\_RECONSTRUCT\_8}: Reconstruct each gauge link from \num{8} real numbers. This is inspired by the Lie-algebra of \ggrp{SU}{3} which has \num{8} real degrees of freedom. It is the smallest representation in terms of bytes.
+  \item \code{QUDA\_RECONSTRUCT\_8}: Reconstruct each gauge link from \num{8} real numbers. This is inspired by the Lie-algebra of \ggrp{SU}{3} which has \num{8} real degrees of freedom. It is the smallest representation in terms of dimension.
   \item \code{QUDA\_RECONSTRUCT\_9}: If the \ggrp{SU}{3} matrix additionally carries a \ggrp{U}{1} phase, the Lie-algebra will have \num{9} real degrees of freedom.
   \item \code{QUDA\_RECONSTRUCT\_12}: A reconstruction type using \num{12} real numbers that is meant to be used for \ggrp{SU}{3}-valued gauge links and is more stable in reconstructing the $3 \times 3$ complex matrix.
   \item \code{QUDA\_RECONSTRUCT\_13}: Similar to the previous entry but with an additional \ggrp{U}{1} phase.
@@ -111,7 +116,7 @@ Comparing \code{QUDA\_RECONSTRUCT\_NO} with \code{QUDA\_RECONSTRUCT\_8}, we see 
 \label{sec:quda:interface}
 
 \tldr{some interface functions in quda.h}
-In the following, we will list interface functions exposed by \quda's interface via \code{quda.h} that are relevant in the remainder of this document, especially for the discussion of the interface, \cref{ch:p1:interface}.
+In the following, we will list interface functions exposed by \qudas interface via \code{quda.h} that are relevant in the remainder of this document, especially for the discussion of the interface, \cref{ch:p1:interface}.
 More detailed descriptions can be found in the doxygen string of each function.
 These functions may trigger field transfers or reordering:
 

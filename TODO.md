@@ -129,11 +129,12 @@
 * [x] ToC: are the vertical spaces correct? before part 1 and 2, before and after summary, before bib
 * [x] Last section before appendix: add \addtocontents{toc}{\protect\vspace{10pt}} after \section{blabla}
 * [x] Check all quotes (no duplicates, etc.)
-* [ ] Push to github, add tag, add permalink to tagged PDF
+* [x] Push to github, add tag, add permalink to tagged PDF
 
 ## TODO after hand-in of the thesis
 
 * [ ] Get Diss. No. from doctoral office
+* [x] Send Isabel Whatsapp to (see email from 23.06.2025 11:29)
 
 
 <!-- Funny quote

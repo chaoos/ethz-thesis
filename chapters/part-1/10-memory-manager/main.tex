@@ -28,8 +28,7 @@ Existing software with minimal adjustments will benefit from such a memory manag
 \Openqxd is a pure MPI code that runs efficiently on CPUs.
 The transition to utilize accelerators will be a long running intermediate phase, where parts of the code will run on the CPU and others on the GPU.
 We are mostly concerned with this intermediate phase in this chapter.
-More and more linear algebra kernels will be ported to the GPU throughout this phase.
-This requires a flexible system that deals with transferring and reordering the fields appropriately.
+As more and more linear algebra kernels will be ported to the GPU throughout this phase, we require a flexible system that deals with transferring and reordering the fields appropriately.
 We want to avoid transferring in every single function.
 Some transfers might be unnecessary, while others are crucial for code consistency.
 
@@ -96,7 +95,7 @@ functionA(spinor_dble *s) { ... }
 \end{codelisting}
 
 \tldr{problems in example program with unneeded transfers}
-We now go back to the example program, \cref{lst:mm:example_program}, and imagine the highlighted functions to be offloaded as in \cref{lst:mm:pp_macros}.
+We now go back to the example program, \cref{lst:mm:example_program}, and imagine the highlighted functions to be offloaded as of \cref{lst:mm:pp_macros}.
 This poses a problem, because the field \code{sd[N]} will be downloaded from the GPU in line 13 and uploaded again in line 14, even though the field is never processed on the CPU.
 In the next section, we propose a simple solution for this problem.
 
@@ -158,12 +157,12 @@ For an implementation of the above field unification proposal only field allocat
 Furthermore, all legacy \openqxd functions still work and operate on the base pointers in the same way as before.
 Functions that are offloaded to the GPU will take the same CPU base-pointers as the legacy function.
 They will navigate to the \code{spinor\_info} struct by pointer arithmetic, check if the field needs to be transferred and do so if required.
-To operate on the field, they grab the GPU-field pointer.
+To operate on the field, they grab the GPU-field pointer given in the info struct.
 Initially this will be a \NULL-pointer indicating the field on the GPU is not instantiated yet, triggering instantiation and memory allocation.
 Finally they will update the \code{spinor\_info} struct according to how they process the field (read-only, write-only or read-write).
 
 \tldr{currently we need explicit transfers}
-In the current stage of the memory management system, the GPU needs to explicitly transfer fields back to the CPU if it has changed them, such that the next CPU function operates on the updated values honoring requirements~\ref{mm:req:R2} and \ref{mm:req:R3}.
+In the current stage of the memory management system, the GPU needs to explicitly transfer fields back to the CPU, if it has changed them, such that the next CPU function operates on the updated values honoring requirements~\ref{mm:req:R2} and \ref{mm:req:R3}.
 In the next section, we will introduce a mechanism to loosen this requirement of explicit transfers while still respecting all requirements.
 
 \section{Implicit transfers}
@@ -175,7 +174,7 @@ When loosening the requirement mentioned in the previous section, we are posed w
 2) every function within \openqxd that operates on spinor fields has to maintain information held by the \code{spinor\_info} struct.
 According to requirement~\ref{mm:req:R3} we are not supposed to touch any function implemented in \openqxd.
 This might sound challenging at first sight, but a little creative thinking brings us to a solution using powerful operating system mechanisms.
-For this we need to introduce two concepts.
+For this we need to introduce two concepts; memory protection and signals.
 
 \subsection{Memory protection}
 \label{sec:mm:mprotect}
@@ -218,7 +217,7 @@ sigaction(SIGSEGV, &action, NULL);
 \caption{Registering a signal handler.}
 \label{lst:mm:sigaction}
 \end{codelisting}
-This will register a signal handler that receives additional information triggered by the \code{SA\_SIGINFO} flag from the \code{siginfo\_t} struct, namely the offending pointer address in \code{info->si\_addr} among many others.
+This will register a signal handler \code{handler} that receives additional information triggered by the \code{SA\_SIGINFO} flag from the \code{siginfo\_t} struct, namely the offending pointer address in \code{info->si\_addr} among many others.
 We will need this information later.
 The flag \code{SA\_RESTART} will continue the code by restarting the system call which caused the segmentation fault after the signal handler has returned.
 
@@ -252,14 +251,14 @@ Ultimately this will trigger a segmentation fault and we enter the previously re
 
 \tldr{clean recovery, inspect offending address, transfer, ... updated field}
 What remains to do is properly process the signal and recover the application state before the signal happened but with updated field values.
-The signal handler will check if the segmentation fault was triggered by an actual memory access violation or by a memory protection violation.
+The signal handler will check if the segmentation fault was triggered by an \emph{actual} memory access violation or by a memory protection violation.
 If it is an actual segmentation fault raised through a bug in the code, we continue by raising it.
 This can be determined by looking at the offending pointer address which is given as payload to the signal, see \cref{sec:mm:signals}.
 If the address is in between the begin and end of a protected region, we know it is a memory protection violation, else it is a true segmentation fault.
 However in the former case, we proceed by first removing the protection and to navigate to the \code{spinor\_info} struct, check if the field is up-to-date, transfer if necessary, update the \code{spinor\_info} struct accordingly such that the next GPU function that operates on the field will trigger a transfer and finally exit the signal handler gracefully.
 This will restart the instruction that caused the segmentation fault which will be either a load or store from within the legacy \openqxd function, but we removed the protection and updated the field values.
 Thus the legacy function will continue processing -- now with the updated field values.
-Note that the mode of how the field values are accessed within a legacy function does not matter, be it AVX or SSE intrinsics or dereferencing some pointer in the middle of the region, it will always trigger the segmentation fault and the procedure described above.
+Note that the mode of how the field values are accessed within the legacy function does not matter, be it AVX or SSE intrinsics or dereferencing some pointer in the middle of the region, it will always trigger the segmentation fault and the procedure as described above\footnote{We note that the above description is a simplified version. Operations executed inside the signal handler must be async-signal-safe. Memory allocations and MPI-calls are not async-signal-safe. There are multiple ways to implement the signal handler safely. We will not discuss them in detail, but rather mention some possibilities: 1) spawning a worker thread that is notified via a pipe to perform the unsafe operations, while the faulting thread in the signal handler waits on a low-level userspace futex, 2) using \fncode{userfaultfd}, where the kernel queues page-fault events on a file descriptor and a dedicated handler thread polls and processes these events.}.
 
 \subsection{State diagram}
 
@@ -291,14 +290,21 @@ This is a minimal-effort maximal-outcome approach that allows \openqxd developer
 We also emphasize that this solution is meant for an intermediate phase, where certain functionality will stay on the CPU (probably for a long time) and we incrementally port kernel by kernel to the GPU without much overhead.
 This scheme was explained for spinor fields but can trivially be extended to gauge and clover fields.
 
-Since reads and writes cannot be distinguished on the CPU by the field management scheme, unnecessary field transfers will result.
-Unless the underlying concept is changed, this cannot be easily solved.
+The approach works conceptually and has been successfully verified on a small scale.
+Since reads and writes cannot be distinguished on the CPU by the field management scheme, few unnecessary field transfers may occur\footnote{These are exactly two cases: 1) if the field is only written to (but not read from) by the CPU function, then the data is unnecessarily transferred to the CPU, 2) if the field is only read from (but not written to) by the CPU function, then the state is set to \fncode{CPU\_NEWER} instead of \fncode{IN\_SYNC} which will unnecessarily trigger a transfer in the next GPU function reading or read-writing the field.}.
+%Unless the underlying concept is changed, this cannot be easily solved.
+While this is generally acceptable in practice, adopting explicit transfers would provide finer control and make it possible to eliminate these cases entirely.
+Explicit transfers are directly visible in the code, which improves readability and makes it straightforward to disable them temporarily for debugging or testing.
+Finally, such a scheme would rely less on operating system features outside their intended scope, which may increase robustness and maintainability.
 
-Furthermore, although working conceptually and verified in the small scale, it might be better to choose a scheme employing explicit transfers, rather than implicit ones.
-First, explicit transfers are visible in the code which increases its readability.
-Second, explicit transfers can be removed easily at wish for debugging or testing purposes.
-Third, the mechanism via the segmentation fault and memory protection exploits operating system features not meant for this kind of usage.
-This could backfire at some point.
+% Furthermore, although working conceptually and verified in the small scale, it might be better to choose a scheme employing explicit transfers, rather than implicit ones.
+% First, explicit transfers are visible in the code which increases its readability.
+% Second, explicit transfers can be removed easily at wish for debugging or testing purposes.
+% Third, the mechanism via the segmentation fault and memory protection exploits operating system features not meant for this kind of usage.
+% This could backfire at some point.
+%Furthermore, although the approach works conceptually and has been successfully verified on a small scale, an alternative scheme employing explicit transfers could be considered too.
+%In addition, explicit transfers allow one to distinguish between read and write accesses, thereby eliminating unnecessary data movement.
+%They further allow to distinguish read and write accesses on the CPU, eliminating unnecessary transfers.
 
 The next chapter will conclude the part about GPU porting of Dirac solvers by summarizing the key developments and discussing their broader implications.
 

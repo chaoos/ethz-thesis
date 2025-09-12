@@ -4,7 +4,7 @@
 \readit{1}
 
 \tldr{running intro}
-This chapter describes how to run the interface checks manually\footnote{For automated testing, please refer to \cref{ch:p1:cicd}.} and how the interface exposes itself to the user of openQxD once the software has been succesfully compiled.
+This chapter describes how to run the interface checks manually\footnote{For automated testing, please refer to \cref{ch:p1:cicd}.} and how the interface exposes itself to the user of openQxD once the software has been successfully compiled.
 \Cref{sec:running:infile} discusses the general input file format, whereas \cref{sec:running:solver,sec:running:multgrid} discuss the appearances of general and multigrid solver sections in input files.
 
 \section{The input file}
@@ -44,10 +44,10 @@ solve_type      QUDA_DIRECT_SOLVE
 The section name in the above example is \code{Solver 3}, thus the solver identifier is \num{3}.
 This is the argument \code{id} that has to be provided when calling the solver with one of the various solver kernels, see \cref{sec:develop:solver,sec:interface:solver:simple,sec:interface:solver:mrhs,sec:interface:solver:async}.
 For the section to be a valid \quda solver section we need to specify the key-value pair \code{solver = QUDA}, else the setup function will throw an error message if fed with \code{id=3}.
-All the remaining keys parameterize the various members of the \code{QudaInvertParam} struct and we refer the reader to its documentation \cite{QUDApaper,github:quda}.
+All the remaining keys parametrize the various members of the \code{QudaInvertParam} struct and we refer the reader to its documentation \cite{QUDApaper,github:quda}.
 We note that every enum in \code{<quda>/include/quda\_enum.h} can be used as value for the key-value pairs in the input file for readability, so that the user doesn't have to write \code{2} for \code{QUDA\_GCR\_INVERTER} for instance.
 The example section above is minimal, \ie it only sets required parameters; it solves the Wilson-Clover Dirac equation using a BiCGSTAB solver without any preconditioning to a relative residual of $10^{-4}$.
-We may have mutiple sections as the one above each one enumerated by a unique identifier \code{id}.
+We may have multiple sections as the one above each one enumerated by a unique identifier \code{id}.
 
 \section{Parametrizing a multigrid solver}
 \label{sec:running:multgrid}
@@ -74,7 +74,7 @@ cuda_prec_precondition  QUDA_HALF_PRECISION
 Different from the simple example in the previous section is that we specify a preconditioner via \code{inv\_type\_precondition}.
 Multigrid is special in the sense that it requires many more parameters to be set.
 Namely the number of levels and an additional section of parameters for each level separately.
-This is specifed by a second section in the input file that may look as
+This is specified by a second section in the input file that may look as
 \begin{minted}[]{ini}
 [Solver 4 Multigrid]
 n_level                 2
@@ -82,7 +82,7 @@ generate_all_levels     QUDA_BOOLEAN_TRUE
 run_verify              QUDA_BOOLEAN_FALSE
 compute_null_vector     QUDA_COMPUTE_NULL_VECTOR_YES
 \end{minted}
-This addtional section describes the multigrid preconditioner to consist of 2 levels.
+This additional section describes the multigrid preconditioner to consist of 2 levels.
 The name of the section is fixed to be
 \begin{minted}[linenos=false]{ini}
 [Solver <N> Multigrid]

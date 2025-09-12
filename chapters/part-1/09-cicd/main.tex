@@ -51,7 +51,7 @@ We decided on a testing strategy as follows:
 \tldr{2 pipelines: gitlab + CSCS}
 Thus there are two separate pipelines.
 One that runs on via GitLab on local resources at ETH, and one that runs via CSCS on GH200 nodes at CSCS.
-Both pipelines are independent and completely detached from each other, they may run in parallel or not.
+Both pipelines are independent and completely detached from each other; they may run in parallel or not.
 
 \subsection{GitLab pipeline}
 \label{sec:cicd:pipeline:gitlab}
@@ -194,12 +194,12 @@ The test jobs download the archive corresponding to the lattice they run on, ver
 This pipeline may only run on the official GH200 nodes at CSCS and is associated to an account with compute quota on the Daint Alps vCluster.
 \emph{Running this pipeline consumes nodehours of the associated account.}
 The entrypoint for this pipeline is in the openQxD-devel repository\cite{gitlab:openqxd-devel} under \code{ci/cscs\_default\_pipeline.yml}.
-It consists of two stages; build and test.
+It consists of two stages: build and test.
 
 \subsubsection{The build stage}
 
 \tldr{build uenv, spack package, descriptive}
-In this stage, we build and install the newest develop version of \quda using Spack\cite{Gamblin_The_Spack_Package_2015} directly into a so called uenv\cite{online:cscs:uenv} image.
+In this stage, we build and install the newest develop version of \quda using Spack\cite{Gamblin_The_Spack_Package_2015} directly into a so-called uenv\cite{online:cscs:uenv} image.
 For this to work, we need \quda as a Spack package, see \cref{sec:building:quda:spack}.
 Using this machinery, the descriptive build job for \quda is very simple:
 \begin{minted}[]{yaml}

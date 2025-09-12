@@ -489,7 +489,7 @@ This decomposition into level-contributions comes natural as illustrated in \cre
 % \begin{subfigure}{0.45\textwidth}
 % \includestandalone[width=\linewidth]{\dir/img/mg_corr_3d}
 % \end{subfigure}
-\caption{(a) Grouping into contributions of multigrid levels of a $1$-point correlator. (b) Grouping into contribution on multigrid levels of a $2$-point connected correlator into \num{8} multigrid levels. Elements of the correlator tensor $C_{ij}$, \cref{eq:Cijk} are assigned to grid levels \Ln{k}. The sum of the orange shaded elements correspond to the \Ln{0}-contribution of the correlator, green to \Ln{1}, red to \Ln{2} etc. Summing all tensor elements is equal to summing all levels and results in the full correlator. (c) Example of a $3$-point connected correlator tensor grouping into \num{4} multigrid levels. \takenpart }
+\caption{(a) Grouping into contributions of multigrid levels of a $1$-point correlator. (b) Grouping into contribution on multigrid levels of a $2$-point connected correlator into \num{8} multigrid levels. Elements of the correlator tensor $C_{ij}$, \cref{eq:Cijk} are assigned to grid levels \Ln{k}. The sum of the orange shaded elements correspond to the \Ln{0}-contribution of the correlator, green to \Ln{1}, red to \Ln{2}, etc. Summing all tensor elements is equal to summing all levels and results in the full correlator. (c) Example of a $3$-point connected correlator tensor grouping into \num{4} multigrid levels. \takenpart }
 \label{fig:mg:corr}
 \end{figure}
 Crucial about this decomposition is that every level can be evaluated separately with a different strategy in terms of number and type of sources.
@@ -967,7 +967,7 @@ Low-mode averaging is a special case of this decomposition with a trivial coarse
 % * critical discussion, limits
 %   * HMC problematic
 
-\tldr{recursice vs loop: different features regarding smoothing and flexibility}
+\tldr{recursive vs loop: different features regarding smoothing and flexibility}
 When approaching the multigrid propagator decomposition, some features do depend of the mathematical formulation of it.
 We can either formulate it in a recursive way, resulting a slightly reduced flexibility in choices for coarse lattice sizes.
 Or alternatively through a relaxed formulation where every level is a coarsening of the fine grid only, giving more flexibility.

@@ -6,7 +6,7 @@
 
 \tldr{mm intro}
 In future developments, we plan to unify spinor fields among \openqxd and \quda.
-This chpater describes a proposal for a memory management system for fields that does not come with tremendous implementation efforts, providing backward compatibility for already written programs and a framework to write programs utilizing the GPU with little porting effort, maximal flexibility for the developer and minimizing CPU-GPU traffic.
+This chapter describes a proposal for a memory management system for fields that does not come with tremendous implementation efforts, providing backward compatibility for already written programs and a framework to write programs utilizing the GPU with little porting effort, maximal flexibility for the developer and minimizing CPU-GPU traffic.
 It starts by motivating the need for such a system (\cref{sec:mm:motivation}) with explicit example codes and continues with a field unification scheme (\cref{sec:mm:unified:fields}).
 For minimal code refactoring on the side of \openqxd, we propose an (optional) procedure to automatically transfer fields from the GPU to CPU using \posix mechanisms (\cref{sec:mm:implicit:transfers}), before concluding the chapter (\cref{sec:mm:summary}).
 

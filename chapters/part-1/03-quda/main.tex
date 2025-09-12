@@ -104,7 +104,7 @@ For certain gauge groups \quda allows the gauge field to be stored in the follow
   \item \code{QUDA\_RECONSTRUCT\_9}: If the \ggrp{SU}{3} matrix additionally carries a \ggrp{U}{1} phase, the Lie-algebra will have \num{9} real degrees of freedom.
   \item \code{QUDA\_RECONSTRUCT\_12}: A reconstruction type using \num{12} real numbers that is meant to be used for \ggrp{SU}{3}-valued gauge links and is more stable in reconstructing the $3 \times 3$ complex matrix.
   \item \code{QUDA\_RECONSTRUCT\_13}: Similar to the previous entry but with an additional \ggrp{U}{1} phase.
-  \item \code{QUDA\_RECONSTRUCT\_10}: A \num{10}-number parameterization used for storing the momentum field.
+  \item \code{QUDA\_RECONSTRUCT\_10}: A \num{10}-number parametrization used for storing the momentum field.
 \end{itemize}
 Comparing \code{QUDA\_RECONSTRUCT\_NO} with \code{QUDA\_RECONSTRUCT\_8}, we see that the former stores \num{18} real numbers, whereas the latter only needs \num{8}. Memory boundedness of a kernel involving such a field implies roughly a speedup of $18/8 > 2$ when using the compressed format over the uncompressed one.
 
@@ -144,7 +144,7 @@ These functions may trigger field transfers or reordering:
 
 \Quda is a lattice QCD library running efficiently on GPUs of various vendors via CUDA, HIP and SYCL backend abstractions.
 It comes with a state-of-the-art mixed-precision multigrid solver optimized for many lattice QCD Dirac operators such as the Wilson-Clover one.
-Abstraction is practiced in terms of operator overloading, class inheritance and heavy templating.
+Abstraction is practised in terms of operator overloading, class inheritance and heavy templating.
 It offers a basic interface for usage as a library.
 \Cstar boundary conditions and the QCD+QED Wilson-Clover Dirac operator are missing features which we implemented.
 

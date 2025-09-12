@@ -167,7 +167,7 @@ The processes were pinned such that data exchange only happens inside a NUMA dom
 %This is only communication inside the NUMA domain.
 Nevertheless, the whole field has to be moved in memory in all cases.
 %, making the dependency on the ranks per node flat.
-As expected, for the periodic lattice G8 compared to the the \Cstar lattice D300 (both have the same physical lattice size), we observe roughly a ratio of \num{2}.
+As expected, for the periodic lattice G8 compared to the \Cstar lattice D300 (both have the same physical lattice size), we observe roughly a ratio of \num{2}.
 
 \tldr{dual: fill node is good}
 The dual lattice is primarily used when there is some non-negligible pure-MPI workload left on the CPU.
@@ -460,7 +460,7 @@ Its time to solution is paramount with the trade-off of bad strong scaling.
 %It is a periodic extension of D300 respecting global boundary conditions.
 %Its scaling is good up to \num{512} GPUs.
 For this reason, the plot shows a third (somewhat artificial) lattice D300x16.
-This lattice consists of periodically extended copies of D300 in all \num{4} spacetime directions by a factor of \num{2} respecting global boundary conditions, \ie, \num{16} times larger than the original D300.
+This lattice consists of periodically extended copies of D300 in all \num{4} spacetime directions by a factor of \num{2} respecting global boundary conditions, \ie \num{16} times larger than the original D300.
 Such a lattice belongs to the largest ones appearing in the field (sometimes called monster lattice).
 D300x16 has physical lattice extents $L_0 \times L^{3} = 256 \times 128^{3}$.
 The fact that this lattice scales well up to \num{512} GPUs indicates that the code is ready for substantially larger problem sizes.
@@ -546,7 +546,7 @@ The fact that the largest lattice considered strong scales up to \num{512} GPUs 
 %On the other side, evaluating observables usually consists of computations on $\bigO(1000)$ independent gauge field configurations.
 %Solving the Dirac equation on all configs of an ensemble can easily be done embarrassingly parallel with one job of size \numrange{8}{16} nodes per config and a RHS batch size of \numrange{4}{32}.
 
-Computations on the CPU can efficiently be overlapped with concurrent solves on the GPU, if power supply of the machine allows it as proven on \emph{Leonardo Booster}.
+Computations on the CPU can efficiently be overlapped with concurrent solves on the GPU, if the power supply of the machine allows it, as proven on \emph{Leonardo Booster}.
 Finally, for maximizing node utilization of reminiscent CPU workloads, it can conveniently be scaled out within the node by using the dual process grid adding negligible performance overhead.
 
 The inherent challenging strong scaling of multigrid is not a big problem for multiple reasons.

@@ -39,7 +39,7 @@ Feynman's path integral description of QFT is used as a representation, where th
 A typical lattice QCD ensemble, with a volume on the order of a few fermi and lattice spacings well below \num{1} fermi\footnote{To simulate nucleons for instance, one requires lattice extents of a few fermi because the nucleon radius is about \num{1} fm, whereas the lattice spacing must be significantly smaller than that for a proper resolution.}, contains at least $\bigO(10^8)$ degrees of freedom, including flavors, colors, and space-time indices.
 This introduces the need for modern high-performance computing (HPC) infrastructure for their evaluation\footnote{
 This is not the only reason.
-Such large lattices would fit into memory of a large node nowadays, e.g. HPE Superdome Flex~\cite{online:superdome} systems come with a maximal memory capacity of \SI{48}{\tera \byte}.
+Such large lattices would fit into memory of a large node nowadays, \eg HPE Superdome Flex~\cite{online:superdome} systems come with a maximal memory capacity of \SI{48}{\tera \byte}.
 The bottleneck is usually the memory bandwidth, not capacity, and by this time to solution.
 Bandwidth can be multiplied by distribution over several nodes, reducing time to solution.
 Furthermore, slow decorrelation along the Molecular Dynamics trajectory leads to large autocorrelation times and a substantial increase in time to solution for sampling independent gauge fields -- a process inherently serial due to its Markov chain nature.
@@ -67,10 +67,10 @@ e^{i S[\psi, \bar{\psi}, A]} \;.
 \end{equation}
 In this equation, the fundamental degrees of freedom are the fields $\psi$, $\bar{\psi}$ and $A$.
 $S$ denotes the action of the theory and $Z = \int \DD \psi \DD \bar{\psi} \DD A e^{i S[\psi, \bar{\psi}, A]}$ the partition function.
-The observable $\observable{O}$ is a functional of the fields and can be any time-ordered correlation function.
+The observable $\observable{O}[\psi, \bar{\psi}, A]$ is a functional of the fields and can be any time-ordered correlation function.
 Here, $\psi$ and $\bar{\psi}$ may represent fermionic particles and $A$ a gauge boson.
 The bosonic field is vectorial, the fermionic one spinorial and Grassmann-valued.
-It is a standard result in fermionic QFT that the fermion degrees of freedom in the partition function $Z$ can be integrated out, such that
+It is a standard result in fermionic QFT that the fermion degrees of freedom in the partition function $Z$ can be integrated out, such that $Z$ simplifies
 \begin{equation}
 Z = \int \DD A \det(D) e^{i S[A]} \;.
 \end{equation}
@@ -79,7 +79,7 @@ For the first time, we encounter the operator that has a central role in this do
 \begin{equation}
 D_{\mu} = \partial_{\mu} + ig A_{\mu}^{a} T^{a} \;,
 \end{equation}
-where the $T^{a}$ are the generators of the gauge group's Lie-algebra and $g$ the coupling.
+where the $T^{a}$ are the generators of the gauge group's Lie-algebra and $g$ the gauge coupling.
 These derivatives were introduced to retain Lorentz-invariance of the kinetic fermion part of the action $S$.
 Inevitably, this introduced another field $A$ which is vector-valued, massless and mediates the interaction among fermions.
 In the context of quantum electrodynamics (QED) with gauge group $\ggrp{U}{1}$, this results in the photon mediating the electromagnetic interaction, whereas for an $\ggrp{SU}{3}$ gauge group this results in the \num{8} gluons mediating the strong interaction of quantum chromodynamics (QCD).
@@ -401,7 +401,7 @@ with variance $\observable{O}^{2} / N$.
 % }
 
 For the remaining integral over the gauge field in \cref{eq:eclidean:exp:value} Markov Chain Monte Carlo methods are usually applied to sample the integral\footnote{The field is very active in finding cheaper alternative solutions to this. Machine learning and AI are promising candidates.}.
-According to the probability density \cref{eq:prob:density}, sampling algorithms generate a Markov chain of so called \df{gauge field configurations}.
+According to the probability density \cref{eq:prob:density}, sampling algorithms generate a Markov chain of so-called \df{gauge field configurations}.
 It is challenging for the Markov process to satisfy ergodicity~\cite{10.1063/5.0004106,PhysRevLett.60.1243} (all configurations can be reached) and detailed balance (probability flow into a configuration equals the flow out).
 
 With dynamical fermions in lattice field theory, most common is the Hybrid Monte Carlo algorithm~\cite{DUANE1987216} (HMC).
@@ -541,12 +541,12 @@ On the other hand, results should not depend on the regulator and renormalizatio
 Renormalization of the theory's parameters on the lattice is done by the choice of the lines of constant physics in the phase space of bare parameters.
 Operators like vector currents and bilinears require additional multiplicative renormalization constants.
 The tuning fixes certain physical quantities, like hadron masses or decay constants to external input.
-In general, after renormalization, the computed quantities still have lattice artifacts, \ie terms proportional to powers of $a^{n}$ for some $n \geq 1$.
+In general, after renormalization, the computed quantities still have lattice artefacts, \ie terms proportional to powers of $a^{n}$ for some $n \geq 1$.
 These are finally removed by the continuum limit $a \to 0$.
 As the lattice spacing becomes finer, simulation cost increases dramatically.
 
 \tldr{critical slowing down}
-For typical lattice QCD simulations with dynamical fermions, the computational simulation cost in the lattice spacing $a$ and the lattice volume $V$ can be modeled as~\cite{Luscher:1998pe}
+For typical lattice QCD simulations with dynamical fermions, the computational simulation cost in the lattice spacing $a$ and the lattice volume $V$ can be modelled as~\cite{Luscher:1998pe}
 \begin{equation}
 \text{simulation cost} = \bigO( a^{-z} V^{p} )\;,
 \end{equation}
@@ -841,7 +841,7 @@ Z =
 
 \label{sec:intro:gm2:windows}
 
-The community pushed forward the practice of comparing so called \df{windows} of the LO-HVP contribution, first introduced in ref.~\cite{Lehner:2017kuc,RBC_2018}.
+The community pushed forward the practice of comparing so-called \df{windows} of the LO-HVP contribution, first introduced in ref.~\cite{Lehner:2017kuc,RBC_2018}.
 The integral over Euclidean time in \cref{eq:a:mu:lohvp} is split into three regions.
 Restricted to the windows, the quantity allows for better comparison among lattice groups, because each window has different sources of uncertainty.
 The boundaries of the integral are smoothed of by a convolution with a hyperbolic tangent,
@@ -858,7 +858,7 @@ with
 \begin{equation}
 \Theta(t_0, t_1, \Delta) = \frac{1}{2} \left( 1 + \tanh\left( \frac{t_0 - t_1}{\Delta} \right) \right) \;.
 \end{equation}
-The function is smooth and has a width parameterized by $\Delta$, to which the community agreed for $\Delta = 0.15$ fm, $t_0 = 0.4$ fm and $t_1 = 1.0$ fm~\cite{RBC_2018}.
+The function is smooth and has a width parametrized by $\Delta$, to which the community agreed for $\Delta = 0.15$ fm, $t_0 = 0.4$ fm and $t_1 = 1.0$ fm~\cite{RBC_2018}.
 Through this choice, the intermediate window (W) is less sensitive to discretization effects and the signal-to-noise ratio problem which are dominant in the short-distance (SD) and long-distance (LD) window, respectively.
 
 
@@ -1228,7 +1228,7 @@ Therefore, we explored heterogeneous computing as well in \cref{sec:develop:asyn
 
 \tldr{algorithmic improvements are needed}
 As important as software developments and efficient utilization of available resources are, the field will not advance without algorithmic developments.
-Specially methods to systematically and iteratively improve estimations of observables by obtaining minimal variance are pivotal for numerical high precision studies of physical quantities.
+Especially methods to systematically and iteratively improve estimations of observables by obtaining minimal variance are pivotal for numerical high precision studies of physical quantities.
 As traditional estimators either fail the translation average or become prohibitively expensive as we approach large, physical lattices, we need efficient variance reduction methods utilizing the available resources more efficiently.
 
 
@@ -1316,7 +1316,7 @@ Some were taken from the publication~\cite{mglma}.
    \item[\cref{ch:p2:lc}]: Local coherence is a concept known in literature. This chapter briefly introduces the concept. No original results are presented here.
    \item[\cref{ch:p2:multigrid}]: Multigrid preconditioning is an established concept and widely used in the field. The original research consists of the decomposition of the propagator, its usage as variance reduction method and developments that follow. This was developed by me based on advise and feedback of colleagues and collaborators.
    \item[\cref{ch:p2:numerics}]: I have developed the observable evaluation code, based on functionality of \openqxd, the recursive multigrid code and all results were generated by me. The gauge fields used for the numerical analysis of the method, apart from the lattice F7~\cite{online:cls}, were generated by Tim Harris. Feedback from my supervisor Marina Marinković and Tim Harris helped improve the simulation strategy.
-   \item[\cref{ch:p2:chirality}]: Theoretical insight from this chapter are my own. Textbook results from numerical range theory were used, but also indicated if so. Ideas about preservation of chirality are partially based on existing literature. Many of the formal proofs are original results.
+   \item[\cref{ch:p2:chirality}]: Theoretical insight from this chapter is my own. Textbook results from numerical range theory were used, but also indicated if so. Ideas about preservation of chirality are partially based on existing literature. Many of the formal proofs are original results.
    \item[\cref{ch:p2:conclusions}]: This chapter was written by me and reflects my own views and conclusions.
    \end{description}
 \item[\cref{ch:summary}]: This chapter was written by me and reflects my own views and conclusions.

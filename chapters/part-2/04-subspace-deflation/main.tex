@@ -84,7 +84,7 @@ One which we call the \df{restrictor} $\restrictor$ restricts a spinor $\psi$ to
 where the subscript notation $\psi_{[i]}$ indicates the $i$-th component of the vector $\psi$ (see \cref{sec:notation:index}) and the scalar product goes over all indices of spinors; color, spin and spacetime.
 
 \tldr{prolongator definition}
-The second one which we call the \df{prolongator} $\prolongator$ prolongates information back from the subspace to the vector space of spinors.
+The second, which we call the \df{prolongator} $\prolongator$, prolongs information back from the subspace to the vector space of spinors.
 It acts as
 \begin{align}
 &\begin{aligned}
@@ -180,7 +180,7 @@ Furthermore, with the $\phi_i$ eigenmodes the projector commutes with the operat
 \prop_{e} &= PS = \prolongator \coarse{Q}^{-1} \restrictor \gamma^5 \;,
 \end{align}
 compare \cref{eq:prop:lma}.
-This shows, that $S_e$ is a low-rank approximation to $S$ in terms of its spectral decomposition with
+This shows that $S_e$ is a low-rank approximation to $S$ in terms of its spectral decomposition with
 \begin{equation}
 \norm{S_e - S}_2
 % = \norm{\sum_{i=N}^{12 V} \frac{1}{\lambda_i} \evec_i \evec_i^{d\dagger} }
@@ -200,11 +200,11 @@ Although this parameter is under direct user control the memory requirements of 
 We have generalized the idea of low-mode averaging to deflation of an arbitrary subspace.
 This led to a definition of linear operators restricted to that subspace which we refer to as coarsenings or coarse-grid operators.
 %These dimensionally reduced operators are projected to the features of the subspace.
-Such operators constitutes a form of dimensional reduction via feature projection.
+Such operators constitute a form of dimensional reduction via feature projection.
 %Such operators need not be diagonal, as is the case for LMA.
 %This chapter introduced the deflation of arbitrary subspaces specified by an orthonormal basis set of spinor fields.
 To move data from the fine to the coarse subspace and vice versa, we specified inter-grid operators referred to as restrictor and prolongator.
-We encountered that low-mode averaging is special case of subspace deflation with a certain choice of basis making the coarse operator diagonal.
+We encountered that low-mode averaging is a special case of subspace deflation with a certain choice of basis making the coarse operator diagonal.
 
 In the next chapter we introduce the decomposition of the lattice into blocks.
 This will clarify why the Hilbert space $\coarse{\vslattice}$ was called ``coarse''.

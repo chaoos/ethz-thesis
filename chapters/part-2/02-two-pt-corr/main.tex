@@ -171,7 +171,7 @@ The chapter ends with a brief summary (\cref{sec:2pt:summary}).
 % - \frac{\omega^{2} - \sqrt{ \omega^{2} + 4 m_{\mu}^{2} \omega^{2} }}{ 2 m_{\mu}^{2} \omega^{2} }.
 % \end{equation}
 
-The observable of interest in this part is the the connected leading order hadronic vacuum polarization contribution (LO-HVP) to the anomalous magnetic moment of the muon as introduced in \cref{sec:intro:gm2}.
+The observable of interest in this part is the connected leading order hadronic vacuum polarization contribution (LO-HVP) to the anomalous magnetic moment of the muon as introduced in \cref{sec:intro:gm2}.
 The connected LO-HVP piece which dominates the error budget is itself a comparably simple observable, but suffers from the numerically infeasible long distance translation average cost on large lattices.
 The piece we calculate on the lattice is the Euclidean time correlator \cref{eq:coor1}, which in a post-processing phase enters the main integral for the connected LO-HVP contribution \cref{eq:a:mu:lohvp}.
 Before we move on, we need to define the degrees of freedom on a spacetime lattice.
@@ -636,8 +636,8 @@ We have introduced the main observable of interest in this thesis -- the connect
 Evaluated on large lattices, the connected LO-HVP is numerically infeasible in the long distance translation average.
 Two common simple strategies for its evaluation have been discussed
 
-First, a direct evaluation using point sources that goes along the choice of a set of sources points (called $\Omega$ in the text, a subset of all lattice points).
-The cost is linear its cardinality $\lvert \Omega \rvert$ and to obtain a full translation average (\ie minimal variance) the set has to include all $V$ lattice points $\Omega = \idxspacetime$, resulting in a cost of $12 V$ Dirac equation solves -- at least a quadratic cost scaling in the volume $\bigO(V^{2})$.
+First, a direct evaluation using point sources that goes along the choice of a set of source points (called $\Omega$ in the text, a subset of all lattice points).
+The cost is linear in its cardinality $\lvert \Omega \rvert$ and to obtain a full translation average (\ie minimal variance) the set has to include all $V$ lattice points $\Omega = \idxspacetime$, resulting in a cost of $12 V$ Dirac equation solves -- at least a quadratic cost scaling in the volume $\bigO(V^{2})$.
 
 Second, we introduced the Hutchinson method, a stochastic estimator using random wall-sources.
 With its stochastic identity fixed at time-slice $z_0$, it introduces an implicit translation average over the spatial lattice $\lvert \Omega \rvert = L_1 L_2 L_3$.

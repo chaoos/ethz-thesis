@@ -198,7 +198,7 @@ It is interfaced to both \quda and Grid.
 \tldr{Definition of problem to offload}
 We are interested in solving the lattice Dirac equation~\cref{eq:dirac:equation} on the GPU.
 %The system of linear equations of interest is the Dirac equation on the lattice~\cref{eq:dirac:equation}.
-It is the most time intensitve kernel given many right-hand sides $\eta$.
+It is the most time intensive kernel given many right-hand sides $\eta$.
 Offloading this kernel allows us to retain the functionality of existing applications while interfacing only a minimal set of parameters.
 The interface needs to transmit field data from one application to the other.
 Different conventions, memory layouts, data types, precisions, storage formats, freedom in $\gamma$-basis choice, boundary conditions and many more have to be taken into account when designing an interface.

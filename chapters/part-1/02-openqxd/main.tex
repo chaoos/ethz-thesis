@@ -84,7 +84,7 @@ The usage of a quite old standard of the C programming language has implications
 
 \tldr{Field layouts differ}
 In order to offload the aforementioned system of linear equations, all involved fields defined on the lattice in \openqxd have to be mapped to fields on the lattice in \quda.
-In the following, we discus the layouts of these fields and the way they are represented in \openqxd.
+In the following, we discuss the layouts of these fields and the way they are represented in \openqxd.
 
 \section{Space-time indexing}
 \label{sec:openqxd:index}
@@ -94,7 +94,7 @@ Denoting the rank-local lattice extent in direction $\mu=0,1,2,3$ by $L_\mu \in 
 \begin{equation} \label{eq:lexi}
 \Lambda(x, L) := L_3 L_2 L_1 x_0 + L_3 L_2 x_1 + L_3 x_2 + x_3 \;.
 \end{equation}
-\Openqxd orders the indices in so called cache-blocks; a decomposition of the rank-local lattice into equal blocks of extent $B_\mu \in \mathbb{N}$ in direction $\mu$. Within a block, points are indexed lexicographically $\Lambda(b, B)$ as in \cref{eq:lexi}, but the $L_\mu$ replaced by $B_\mu$ and $x$ replaced by the block local Euclidean index $b$, such that $b_\mu = x_\mu \mod B_\mu \in \{ 0, \dots, B_\mu -1 \}$.
+\Openqxd orders the indices in so-called cache-blocks; a decomposition of the rank-local lattice into equal blocks of extent $B_\mu \in \mathbb{N}$ in direction $\mu$. Within a block, points are indexed lexicographically $\Lambda(b, B)$ as in \cref{eq:lexi}, but the $L_\mu$ replaced by $B_\mu$ and $x$ replaced by the block local Euclidean index $b$, such that $b_\mu = x_\mu \mod B_\mu \in \{ 0, \dots, B_\mu -1 \}$.
 Furthermore, the blocks themselves are indexed lexicographically within the rank-local lattice decomposition into blocks, \ie $\Lambda(n, N_B)$, where we denote the number of blocks in direction $\mu$ as $N_{B,\mu} = L_\mu / B_\mu$, and the Euclidean index of the block as $n$, such that $n_\mu = \lfloor x_\mu / B_\mu \rfloor \in \{ 0, \dots, N_{B,i} -1 \}$.
 
 \tldr{even odd ordering}
@@ -184,7 +184,7 @@ typedef struct
 As can be seen, there is no enforcement of the matrices being $\ggrp{SU}{3}$ nor compression of the gauge field exploiting the gauge group symmetry. All \num{9} complex numbers are explicitly written out as row-major matrix. An advantage of such a storage model is that it can easily be extended to arbitrary gauge groups. This made implementing QCD+QED which has a gauge group of $\ggrp{U}{3}$ straightforward, see \cref{sec:openqxd:qcd+qed}. A clear downside is performance. By exploiting the Lie-algebra structure of $\liealg{su}{3}$, the gauge field could be stored with \num{8} real degrees of freedom instead. This would reduce the size of the struct to \num{8} floating-point numbers instead of \num{18}. In memory bound kernels this would result in a speedup of about two.
 
 \tldr{gauge field index}
-The gauge field has indices $(x_{odd}, \pm \mu, a, b)$, where $x_{odd}$ is the lattice index (only odd points, $V_\mathrm{L}/2$ elements), $\mu \in \{\pm 0, \pm 1, \pm 2, \pm 3\}$ is the direction of the gauge link (in positive as well as negative direction, \ie 8 possibilities) and $a,b$ parameterize the row and column of the $\ggrp{SU}{3}$-valued gauge link in row-major order.
+The gauge field has indices $(x_{odd}, \pm \mu, a, b)$, where $x_{odd}$ is the lattice index (only odd points, $V_\mathrm{L}/2$ elements), $\mu \in \{\pm 0, \pm 1, \pm 2, \pm 3\}$ is the direction of the gauge link (in positive as well as negative direction, \ie 8 possibilities) and $a,b$ parametrize the row and column of the $\ggrp{SU}{3}$-valued gauge link in row-major order.
 Thus, \openqxd stores the gauge links in all \num{8} directions at odd lattice points in contrast to most other common conventions which store \num{4} gauge links in positive directions for every lattice point.
 
 \section{The clover field}

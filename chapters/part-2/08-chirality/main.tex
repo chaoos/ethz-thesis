@@ -34,7 +34,7 @@ The main result we want to establish numerically in this chapter is
 \kappa(\coarse{D}) \leq \kappa(D) \;.
 \end{equation}
 The condition number of the coarse Dirac operator should be bounded from above by the fine-grid condition number.
-We will not mathematically proof this inequality, but provide strong numerical evidence for its truth if chirality is strongly preserved.
+We will not mathematically prove this inequality, but provide strong numerical evidence for its truth if chirality is strongly preserved.
 This section continues specifying spin and chirality, followed by the concept of coarse chirality (\cref{sec:chirality:coarse}) and continues with implications of its weak preservation (\cref{sec:chirality:weak}).
 Numerical ranges, spectral hulls and their symmetries of coarse and fine operators are investigated (\cref{sec:chirality:nr,sec:chirality:sh}), followed by a study of the chiral implications to low-lying spectra of Hermitian Dirac operators (\cref{sec:chirality:evs}) as well as their variance contribution (\cref{sec:chirality:variance}).
 The section ends with a description of the numerical methods used (\cref{sec:chirality:methods}) and a summary (\cref{sec:chirality:summary}).
@@ -45,7 +45,7 @@ To achieve \cref{eq:cond:init}, we need to discuss the spin degrees of freedom c
 Recapping \cref{sec:lc:spin}, a Dirac spinor has \num{4} spin degrees of freedom; a tensor product of two chiral ones and two non-chiral ones.
 When generating the coarse grid, we may define projectors to individual spins or chiralities, projecting the basis fields, which finally leads to additional spin degree of freedom on the coarse grid inherited from the fine grid.
 Formally, assuming we have two spin projectors $P_0$ and $P_1$ that only act on the spins, we redefine the restrictor and prolongator analogue to \cref{eq:R:redef:1,eq:T:redef:1} one more time by considering the spin degrees of freedom.
-The coarse spinors now posses coarse spacetime $\coarse{x} \in \coarse{\idxspacetime}$, coarse color $\coarse{a} \in \coarse{\idxcolor}$ and additionally coarse spin $\coarse{\alpha} \in \coarse{\idxspin} = \{0, 1\}$ indices.
+The coarse spinors now possess coarse spacetime $\coarse{x} \in \coarse{\idxspacetime}$, coarse color $\coarse{a} \in \coarse{\idxcolor}$ and additionally coarse spin $\coarse{\alpha} \in \coarse{\idxspin} = \{0, 1\}$ indices.
 The spin indices are inherited from the spin projectors $P_0$ and $P_1$ -- in case of two projectors $\cNs = 2$.
 The restrictor then acts on a fine-grid spinor $\psi$ as
 \begin{equation} \label{eq:R:redef:2}
@@ -308,7 +308,7 @@ Thus, \cref{eq:lemma:sigma} implies \cref{eq:lemma:involution}.
 Coarse operators inherit Hermiticity from fine ones.
 Thus, a Hermitian involution is unitary; \cref{eq:lemma:involution} implies \cref{eq:lemma:unitary}.
 
-Assuming we have a unitary, we calculate explicitely,
+Assuming we have a unitary, we calculate explicitly,
 \begin{align}
 \tr([P, \Gamma^{5}]^{2})
 &= 2 \left[ \tr(P \Gamma^{5} P \Gamma^{5})  - \tr(P) \right] \\
@@ -574,7 +574,7 @@ As we will see, the Wilson and Wilson-Clover lattice Dirac operators are \emph{n
 \subsection{Hermitian positive definite systems}
 
 First, we will look at coarsenings of Hermitian positive definite (HPD) systems.
-They form the easiest class of operators and we will analytically proof that for such an operator the condition numbers obey $\kappa(\coarse{A}) \leq \kappa(A)$, irrespective of how it is coarsened.
+They form the easiest class of operators and we will analytically prove that for such an operator the condition numbers obey $\kappa(\coarse{A}) \leq \kappa(A)$, irrespective of how it is coarsened.
 
 \begin{theorem}[Condition of coarse HPD operators] \label{thm:cond:hpd}
 Assume $A$ to be a Hermitian positive definite operator acting on the fine-grid lattice, $A \colon \vslattice \rightarrow \vslattice$. Then the condition number of the coarse-grid operator $\coarse{A}$ is bound from above by the condition number of the fine-grid operator,
@@ -1127,7 +1127,7 @@ Both coarse operators were constructed using a $6^{4}$ block size and $\cNc=20$ 
 
 \Cref{fig:chirality:spectrum} presents the results.
 In blue the first \num{100} actual smallest-magnitude eigenvalues of the fine-grid Hermitian operator $Q = \Gamma^5 D$ are plotted.
-The $\cNc=20$ lowest ones where taken to generate the coarse subspace for both scenarios.
+The $\cNc=20$ lowest ones were taken to generate the coarse subspace for both scenarios.
 For both coarse operators we also plotted their first \num{100} smallest-magnitude eigenvalues in yellow and green.
 In the lower left panel their magnitudes are plotted, the top panel is a zoom to the relevant region of the lower right panel, which shows a tick for every eigenvalue at its magnitude for comparison.
 Every fine-grid eigenvalue has a grey vertical line drawn for eye guidance.
@@ -1146,7 +1146,7 @@ The preserved chiral properties do not only have impact on the spectrum but also
 We generated the same two subspaces as in \cref{sec:chirality:evs} for the lattice F7 with $\cNc=50$ low modes of $Q$ for the ``LMA'' and ``2-level MG LMA'' estimators from \cref{tab:lma:estimators} and looked at their \Ln{0} variance contribution.
 \Cref{fig:chirality:variance} shows the impact of coarse chirality on the variances.
 The yellow data corresponds to case \caseX{1}, whereas the green data to case \caseX{2sc}.
-We can clearly see a tremendous benefit from of strong chirality preservation as it removes the bulk of the variance from the expensive \Ln{0} term.
+We can clearly see a tremendous benefit from strong chirality preservation as it removes the bulk of the variance from the expensive \Ln{0} term.
 Variance contributing to the large distance regime therefore originates from both chiral sectors equally.
 Even though the \caseX{2sc}-subspace is twice as large as the one from \caseX{1}, it is a tradeoff absolutely worth doing, not only for the coarse condition but also for its variance contribution.
 \begin{figure}

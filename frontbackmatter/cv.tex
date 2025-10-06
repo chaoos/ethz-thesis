@@ -1,7 +1,16 @@
 %*******************************************************
 % CV
 %*******************************************************
-\pdfbookmark[1]{Curriculum Vitae}{cv}
+%\pdfbookmark[1]{Curriculum Vitae}{cv}
+% work-around to have small caps also here in the headline
+\manualmark%
+\markboth{\spacedlowsmallcaps{Curriculum Vitae}}{\spacedlowsmallcaps{Curriculum Vitae}} % work-around to have small caps also
+%\phantomsection
+\refstepcounter{dummy}
+%\addtocontents{toc}{\protect\vspace{\beforebibskip}} % to have the bib a bit from the rest in the toc
+\addcontentsline{toc}{chapter}{\tocEntry{Curriculum Vitae}}
+\label{app:cv}
+
 
 \bigskip
 
@@ -14,45 +23,91 @@
 \section*{Personal data}
 
 \noindent\cvleft{Name}%
-\cvright{\worktodo{Albert Einstein}}\\
+\cvright{Roman Gruber}\\
 %
 \cvleft{Date of Birth}%
-\cvright{March 14, 1879}\\
+\cvright{February 13, 1987}\\
 %
 \cvleft{Place of Birth}%
-\cvright{Ulm, Germany}\\
+\cvright{Thalwil, Switzerland}\\
 %
 \cvleft{Citizen of}%
 \cvright{Switzerland}
 
 \section*{Education}
 
-\noindent\cvleft{1896 --~1900}%
+\noindent\cvleft{2021 --~2025}%
 \cvright{%
-  Eidgenössisches Polytechnikum, \\
+  ETH Zürich, \\
   Zürich, Switzerland\\
-  \emph{Final degree:} Diploma
+  \emph{Final degree:} Doctor of Science ETH in Physics
 }\vspace{0.75em}
 
-\noindent\cvleft{1895 --~1896}%
+\noindent\cvleft{2019 --~2021}%
 \cvright{%
-  Aargauische Kantonsschule (grammar school)\\
-  Aarau, Switzerland \\
-  \emph{Final degree:} Matura (university entrance diploma)
+  ETH Zürich, \\
+  Zürich, Switzerland\\
+  \emph{Final degree:} Master of Science ETH in Physics
 }\vspace{0.75em}
 
-\noindent\cvleft{--~July 1894}%
+\noindent\cvleft{2016 --~2019}%
 \cvright{%
-  Luitpold-Gymnasium (grammar school)\\
-  Munich, Germany
-}
+  ETH Zürich, \\
+  Zürich, Switzerland\\
+  \emph{Final degree:} Bachelor of Science ETH in Physics
+}\vspace{0.75em}
+
+\noindent\cvleft{2015 --~2016}%
+\cvright{%
+  AKAD, \\
+  Zürich, Switzerland\\
+  \emph{Final degree:} Ergänzungsprüfung Passerelle ’Berufsmaturität, Fachmaturität - Universitäre Hochschulen’ (university entrance diploma)
+}\vspace{0.75em}
+
+\noindent\cvleft{2013 --~2014}%
+\cvright{%
+  AKAD, \\
+  Zürich, Switzerland\\
+  \emph{Final degree:} Professional Maturity
+}\vspace{0.75em}
+
+\noindent\cvleft{2002 --~2004}%
+\cvright{%
+  Siemens Schweiz AG, \\
+  Zürich, Switzerland\\
+  \emph{Apprenticeship as Computer Scientist}
+}\vspace{0.75em}
 
 \section*{Employment}
 
-\noindent\cvleft{June 1902 --}%
+\noindent\cvleft{Jan 2022 --~Oct 2022}%
 \cvright{%
-  Technical Expert, III Class\\
-  \emph{Federal Office for Intellectual Property},\\ Bern, Switzerland
+  Software Engineer \\
+  \emph{Berner Fachhochschule BFH},\\ Bern, Switzerland
+}\vspace{0.75em}
+
+\noindent\cvleft{Mar 2019 --~Dec 2021}%
+\cvright{%
+  Software Engineer \\
+  \emph{University of Bern},\\ Bern, Switzerland
+}\vspace{0.75em}
+
+\noindent\cvleft{2012 --~Sep 2021}%
+\cvright{%
+  Systems Engineer \\
+  \emph{Berufs- und Weiterbildung Zofingen},\\ Zofingen, Switzerland
+}\vspace{0.75em}
+
+\noindent\cvleft{2009 --~2010}%
+\cvright{%
+  Web Application Developer \\
+  \emph{Die Denkstein GmbH},\\ Wädenswil, Switzerland
+}\vspace{0.75em}
+
+\noindent\cvleft{2006 --~2008}%
+\cvright{%
+  Service Technician, 3rd Level Support \\
+  \emph{Fujitsu Siemens Computers},\\ Zürich, Switzerland
 }\vspace{0.75em}
 
 \endgroup
